@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.13.36105.23
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "JJs2DEngine", "JJs2DEngine\JJs2DEngine.vcxproj", "{1AA1AEAB-E51B-4738-9251-A6520CA97B9A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1AA1AEAB-E51B-4738-9251-A6520CA97B9A}.Debug|x64.ActiveCfg = Debug|x64
+		{1AA1AEAB-E51B-4738-9251-A6520CA97B9A}.Debug|x64.Build.0 = Debug|x64
+		{1AA1AEAB-E51B-4738-9251-A6520CA97B9A}.Release|x64.ActiveCfg = Release|x64
+		{1AA1AEAB-E51B-4738-9251-A6520CA97B9A}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {34E7F94B-A6F9-423C-8FB1-AD65C75BF406}
+	EndGlobalSection
+EndGlobal
