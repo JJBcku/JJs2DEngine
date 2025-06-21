@@ -1,6 +1,9 @@
 #pragma once
 
 #include <stdint.h>
+#include <memory>
+
+#include <VulkanSimplified/VSMain/VSMain.h>
 
 namespace JJs2DEngine
 {
@@ -13,6 +16,6 @@ namespace JJs2DEngine
 		~MainInternal();
 
 	private:
-		uint64_t _stump;
+		std::unique_ptr<VS::Main> VSMain;
 	};
 }

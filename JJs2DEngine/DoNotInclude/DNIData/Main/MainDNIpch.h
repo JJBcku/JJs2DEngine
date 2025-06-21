@@ -5,4 +5,4 @@
 #include <memory>
 #include <stdint.h>
 
-#include "NamespaceAliasesInternal.h"
+#include "../../DNIData/Common/NamespaceAliasesInternal.h"

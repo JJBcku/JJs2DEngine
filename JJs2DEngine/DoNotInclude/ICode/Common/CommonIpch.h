@@ -1,9 +1,7 @@
 #pragma once
 
-#include "MainIframework.h"
+#include "CommonIframework.h"
 
-#include <memory>
 #include <stdint.h>
-#include <string>
 
 #include "../../DNIData/Common/NamespaceAliasesInternal.h"

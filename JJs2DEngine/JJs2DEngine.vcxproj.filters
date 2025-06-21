@@ -27,18 +27,63 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="DoNotInclude\DNIData\V2DMain\NamespaceAliasesInternal.h">
+    <ClInclude Include="DoNotInclude\DNIData\Main\MainDNIframework.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="DoNotInclude\DNIData\V2DMain\MainDNIframework.h">
+    <ClInclude Include="DoNotInclude\DNIData\Main\MainDNIpch.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="DoNotInclude\DNIData\V2DMain\MainDNIpch.h">
+    <ClInclude Include="DoNotInclude\DNIData\Common\NamespaceAliasesInternal.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DoNotInclude\ICode\Main\MainIframework.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DoNotInclude\ICode\Main\MainIpch.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DoNotInclude\DNIData\Main\MainInternal.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Main\Main.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Main\MainDef.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Main\MainInitializationData.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Common\VersionData.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DoNotInclude\ICode\Common\CommonIframework.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DoNotInclude\ICode\Common\CommonIpch.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="DoNotInclude\DNIData\V2DMain\MainDNIpch.cpp">
+    <ClCompile Include="DoNotInclude\DNIData\Main\MainDNIpch.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DoNotInclude\ICode\Main\Main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DoNotInclude\ICode\Main\MainInitializationData.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DoNotInclude\ICode\Main\MainIpch.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DoNotInclude\DNIData\Main\MainInternal.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DoNotInclude\ICode\Common\CommonIpch.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DoNotInclude\ICode\Common\VersionData.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

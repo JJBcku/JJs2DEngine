@@ -5,6 +5,7 @@ namespace JJs2DEngine
 {
 	MainInitializationData::MainInitializationData()
 	{
-		stump = 0;
+		appName = "Unknown";
+		appVariantName = "Unknown";
 	}
 }
