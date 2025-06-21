@@ -5,6 +5,8 @@ VisualStudioVersion = 17.13.36105.23
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "JJs2DEngine", "JJs2DEngine\JJs2DEngine.vcxproj", "{1AA1AEAB-E51B-4738-9251-A6520CA97B9A}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "JJs2DEngineTest", "JJs2DEngineTest\JJs2DEngineTest.vcxproj", "{272951DA-AB15-4744-B3A0-4703600C3600}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -15,6 +17,10 @@ Global
 		{1AA1AEAB-E51B-4738-9251-A6520CA97B9A}.Debug|x64.Build.0 = Debug|x64
 		{1AA1AEAB-E51B-4738-9251-A6520CA97B9A}.Release|x64.ActiveCfg = Release|x64
 		{1AA1AEAB-E51B-4738-9251-A6520CA97B9A}.Release|x64.Build.0 = Release|x64
+		{272951DA-AB15-4744-B3A0-4703600C3600}.Debug|x64.ActiveCfg = Debug|x64
+		{272951DA-AB15-4744-B3A0-4703600C3600}.Debug|x64.Build.0 = Debug|x64
+		{272951DA-AB15-4744-B3A0-4703600C3600}.Release|x64.ActiveCfg = Release|x64
+		{272951DA-AB15-4744-B3A0-4703600C3600}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
