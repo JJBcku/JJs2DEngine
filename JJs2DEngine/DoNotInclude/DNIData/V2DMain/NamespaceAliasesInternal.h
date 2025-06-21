@@ -2,4 +2,4 @@
 
 namespace VulkanSimplified {};
 
-using VS = ::VulkanSimplified;
+namespace VS = ::VulkanSimplified;
