@@ -1,5 +1,7 @@
 #pragma once
 
+#include <stdint.h>
+
 namespace JJ2DE
 {
 	struct MainInitializationData;
