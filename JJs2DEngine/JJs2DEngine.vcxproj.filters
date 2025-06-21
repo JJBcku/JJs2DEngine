@@ -26,4 +26,20 @@
       <UniqueIdentifier>{6fc817f9-48a7-4795-b30d-d1aaee4457bd}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="DoNotInclude\DNIData\V2DMain\NamespaceAliasesInternal.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DoNotInclude\DNIData\V2DMain\MainDNIframework.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DoNotInclude\DNIData\V2DMain\MainDNIpch.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="DoNotInclude\DNIData\V2DMain\MainDNIpch.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
 </Project>
