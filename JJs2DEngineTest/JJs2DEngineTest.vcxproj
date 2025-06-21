@@ -102,6 +102,7 @@
   <ItemGroup>
     <ClInclude Include="CreateMainClass.h" />
     <ClInclude Include="MainDataCollection.h" />
+    <ClInclude Include="NamespaceAliases.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="RunProgram.h" />
   </ItemGroup>

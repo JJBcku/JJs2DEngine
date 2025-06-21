@@ -5,4 +5,6 @@
 #include <stdint.h>
 #include <stdexcept>
 
+#include "NamespaceAliases.h"
+
 #endif

@@ -3,7 +3,7 @@
 
 #include "../../DNIData/Main/MainInternal.h"
 
-namespace JJ2DE
+namespace JJs2DEngine
 {
 	Main::Main(const MainInitializationData& initData) : _internal(std::make_unique<MainInternal>(initData))
 	{

@@ -2,7 +2,7 @@
 
 #include <stdint.h>
 
-namespace JJ2DE
+namespace JJs2DEngine
 {
 	struct MainInitializationData
 	{

@@ -1,7 +1,7 @@
 #include "MainIpch.h"
 #include "../../../Include/Main/MainInitializationData.h"
 
-namespace JJ2DE
+namespace JJs2DEngine
 {
 	MainInitializationData::MainInitializationData()
 	{

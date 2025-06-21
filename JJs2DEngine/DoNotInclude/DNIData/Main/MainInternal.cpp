@@ -3,7 +3,7 @@
 
 #include "../../../Include/Main/MainInitializationData.h"
 
-namespace JJ2DE
+namespace JJs2DEngine
 {
 	MainInternal::MainInternal(const MainInitializationData& initData) : _stump(initData.stump)
 	{

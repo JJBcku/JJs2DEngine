@@ -2,7 +2,7 @@
 
 #include <memory>
 
-namespace JJ2DE
+namespace JJs2DEngine
 {
 	struct MainInitializationData;
 	class MainInternal;

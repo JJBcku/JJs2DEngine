@@ -1,6 +1,6 @@
 #pragma once
 
-namespace JJ2DE
+namespace JJs2DEngine
 {
 	class Main;
 }
