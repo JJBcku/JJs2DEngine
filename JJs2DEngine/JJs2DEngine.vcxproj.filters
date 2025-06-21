@@ -13,5 +13,17 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Header Files\Do Not Include">
+      <UniqueIdentifier>{719788f0-9023-4516-99fd-c89cf8826025}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Include">
+      <UniqueIdentifier>{152ee039-98fc-4f46-829f-5e6ae65c78ce}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Do Not Include">
+      <UniqueIdentifier>{35f01f72-e867-46e0-b110-41a006c6d3d1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Include">
+      <UniqueIdentifier>{6fc817f9-48a7-4795-b30d-d1aaee4457bd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
 </Project>
