@@ -1,8 +1,6 @@
 #include "MainIpch.h"
 #include "../../../Include/Main/Main.h"
 
-#include "../../../Include/Main/MainInitializationData.h"
-
 #include "../../DNIData/Main/MainInternal.h"
 
 namespace JJ2DE
