@@ -10,7 +10,7 @@ namespace VulkanSimplified
 		HOST_VISIBLE = 0x2,
 		HOST_COHERENT = 0x4,
 		HOST_CACHED = 0x8,
-		LAZYLY_ALLOCATED = 0x10,
+		LAZILY_ALLOCATED = 0x10,
 		PROTECTED = 0x20,
 	};
 }
