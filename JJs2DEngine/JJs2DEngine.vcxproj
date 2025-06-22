@@ -112,6 +112,9 @@
     </ProjectReference>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="DoNotInclude\DNIData\Common\CommonDNIframework.h" />
+    <ClInclude Include="DoNotInclude\DNIData\Common\CommonDNIpch.h" />
+    <ClInclude Include="DoNotInclude\DNIData\Common\VersionDataInternal.h" />
     <ClInclude Include="DoNotInclude\DNIData\Main\MainDNIframework.h" />
     <ClInclude Include="DoNotInclude\DNIData\Main\MainDNIpch.h" />
     <ClInclude Include="DoNotInclude\DNIData\Common\NamespaceAliasesInternal.h" />
@@ -120,12 +123,27 @@
     <ClInclude Include="DoNotInclude\ICode\Main\MainIframework.h" />
     <ClInclude Include="DoNotInclude\ICode\Main\MainIpch.h" />
     <ClInclude Include="DoNotInclude\DNIData\Main\MainInternal.h" />
+    <ClInclude Include="Include\Common\EngineVersion.h" />
     <ClInclude Include="Include\Common\VersionData.h" />
     <ClInclude Include="Include\Main\Main.h" />
     <ClInclude Include="Include\Main\MainDef.h" />
     <ClInclude Include="Include\Main\MainInitializationData.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="DoNotInclude\DNIData\Common\CommonDNIpch.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">CommonDNIpch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)CommonDNIpch.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">CommonDNIpch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)CommonDNIpch.pch</PrecompiledHeaderOutputFile>
+    </ClCompile>
+    <ClCompile Include="DoNotInclude\DNIData\Common\VersionDataInternal.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">CommonDNIpch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)CommonDNIpch.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">CommonDNIpch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)CommonDNIpch.pch</PrecompiledHeaderOutputFile>
+    </ClCompile>
     <ClCompile Include="DoNotInclude\DNIData\Main\MainDNIpch.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">MainDNIpch.h</PrecompiledHeaderFile>
       <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)MainDNIpch.pch</PrecompiledHeaderOutputFile>

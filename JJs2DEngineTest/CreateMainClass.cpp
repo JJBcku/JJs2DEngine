@@ -6,7 +6,7 @@
 #include <MainInitializationData.h>
 #include <Main.h>
 
-#include <VersionData.h>
+#include <EngineVersion.h>
 
 void CreateMainClass(MainDataCollection& data)
 {
@@ -20,7 +20,7 @@ void CreateMainClass(MainDataCollection& data)
 	mainInitData.appVariantName = "x64 Release";
 #endif
 
-	mainInitData.appVersion = JJ2DE::EngineVersion;
+	mainInitData.appVersion = JJ2DE::engineVersion;
 
 	mainInitData.minVulkanVersion = { 1,0,0,0 };
 	mainInitData.maxVulkanVersion = { 1,0,0,0 };

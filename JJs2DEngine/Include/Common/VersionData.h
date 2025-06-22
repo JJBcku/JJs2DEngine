@@ -1,6 +1,7 @@
 #pragma once
 
 #include <stdint.h>
+#include <compare>
 
 namespace JJs2DEngine
 {
@@ -13,7 +14,9 @@ namespace JJs2DEngine
 
 		VersionData();
 		VersionData(uint16_t majorVersion, uint16_t minorVersion, uint16_t patchVersion, uint16_t variantVersion);
+
+		std::strong_ordering operator<=>(const VersionData& rhs) const noexcept = default;
+		bool operator==(const VersionData& rhs) const noexcept = default;
 	};
 
-	static VersionData EngineVersion = VersionData(0, 0, 2, 0);
 }

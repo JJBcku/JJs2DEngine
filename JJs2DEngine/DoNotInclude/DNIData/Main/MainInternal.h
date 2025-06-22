@@ -17,5 +17,7 @@ namespace JJs2DEngine
 
 	private:
 		std::unique_ptr<VS::Main> VSMain;
+
+		void CreateInstance(const MainInitializationData& initData);
 	};
 }

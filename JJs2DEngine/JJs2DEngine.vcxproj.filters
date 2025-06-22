@@ -63,6 +63,18 @@
     <ClInclude Include="DoNotInclude\ICode\Common\CommonIpch.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="DoNotInclude\DNIData\Common\CommonDNIframework.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DoNotInclude\DNIData\Common\CommonDNIpch.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DoNotInclude\DNIData\Common\VersionDataInternal.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Common\EngineVersion.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DoNotInclude\DNIData\Main\MainDNIpch.cpp">
@@ -84,6 +96,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="DoNotInclude\ICode\Common\VersionData.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DoNotInclude\DNIData\Common\CommonDNIpch.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DoNotInclude\DNIData\Common\VersionDataInternal.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
