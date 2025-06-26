@@ -75,6 +75,9 @@
     <ClInclude Include="Include\Common\EngineVersion.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Include\Common\DeviceData.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DoNotInclude\DNIData\Main\MainDNIpch.cpp">
@@ -102,6 +105,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="DoNotInclude\DNIData\Common\VersionDataInternal.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DoNotInclude\ICode\Common\DeviceData.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

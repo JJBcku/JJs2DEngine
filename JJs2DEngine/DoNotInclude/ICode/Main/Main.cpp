@@ -13,4 +13,9 @@ namespace JJs2DEngine
 	{
 	}
 
+	const std::vector<DeviceData>& Main::GetDeviceList() const
+	{
+		return _internal->GetDeviceList();
+	}
+
 }

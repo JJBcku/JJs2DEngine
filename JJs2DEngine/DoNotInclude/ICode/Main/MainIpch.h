@@ -6,5 +6,6 @@
 #include <stdint.h>
 #include <string>
 #include <compare>
+#include <vector>
 
 #include "../../DNIData/Common/NamespaceAliasesInternal.h"
