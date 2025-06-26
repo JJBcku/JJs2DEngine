@@ -43,32 +43,32 @@ void CreateMainClass(MainDataCollection& data)
 
 bool CompareDevices(const JJ2DE::DeviceData& currentBest, const JJ2DE::DeviceData& compared)
 {
-	if (compared.maxVulkanVersion > currentBest.maxVulkanVersion)
-		return true;
+	if (currentBest.maxVulkanVersion > compared.maxVulkanVersion)
+		return false;
 
-	if (compared.deviceLocalMemory > currentBest.deviceLocalMemory)
-		return true;
+	if (currentBest.deviceLocalMemory > compared.deviceLocalMemory)
+		return false;
 
-	if (compared.queueSupport.noVideoCodingGraphicQueueFamily.has_value() && !currentBest.queueSupport.noVideoCodingGraphicQueueFamily.has_value())
-		return true;
+	if (currentBest.queueSupport.noVideoCodingGraphicQueueFamily.has_value() && !compared.queueSupport.noVideoCodingGraphicQueueFamily.has_value())
+		return false;
 
-	if (compared.queueSupport.transferQueueFamily.has_value() && !currentBest.queueSupport.transferQueueFamily.has_value())
-		return true;
-	else if ((!compared.queueSupport.transferQueueFamily.has_value() && !currentBest.queueSupport.transferQueueFamily.has_value()) &&
-		(compared.queueSupport.computeQueueFamily.has_value() && !currentBest.queueSupport.computeQueueFamily.has_value()))
-		return true;
+	if (currentBest.queueSupport.transferQueueFamily.has_value() && !compared.queueSupport.transferQueueFamily.has_value())
+		return false;
+	else if ((!currentBest.queueSupport.transferQueueFamily.has_value() && !compared.queueSupport.transferQueueFamily.has_value()) &&
+		(currentBest.queueSupport.computeQueueFamily.has_value() && !compared.queueSupport.computeQueueFamily.has_value()))
+		return false;
 
-	if (compared.swapchainSupport.Support16BitSwapchain() && !currentBest.swapchainSupport.Support16BitSwapchain())
-		return true;
-	else if ((!compared.swapchainSupport.Support16BitSwapchain() && !currentBest.swapchainSupport.Support16BitSwapchain()) &&
-		(compared.swapchainSupport.Support10BitSwapchain() && !currentBest.swapchainSupport.Support10BitSwapchain()))
-		return true;
+	if (currentBest.swapchainSupport.Support16BitSwapchain() && !compared.swapchainSupport.Support16BitSwapchain())
+		return false;
+	else if ((!currentBest.swapchainSupport.Support16BitSwapchain() && !compared.swapchainSupport.Support16BitSwapchain()) &&
+		(currentBest.swapchainSupport.Support10BitSwapchain() && !compared.swapchainSupport.Support10BitSwapchain()))
+		return false;
 
-	if (compared.textureSupport.Support16BitUncompressedTextures() && !currentBest.textureSupport.Support16BitUncompressedTextures())
-		return true;
+	if (currentBest.textureSupport.Support16BitUncompressedTextures() && !compared.textureSupport.Support16BitUncompressedTextures())
+		return false;
 
-	if (compared.depthStencilSupport.SupportFloatDepth() && !currentBest.depthStencilSupport.SupportFloatDepth())
-		return true;
+	if (currentBest.depthStencilSupport.SupportFloatDepth() && !compared.depthStencilSupport.SupportFloatDepth())
+		return false;
 
-	return false;
+	return true;
 }
