@@ -43,10 +43,10 @@ void CreateMainClass(MainDataCollection& data)
 
 bool CompareDevices(const JJ2DE::DeviceData& currentBest, const JJ2DE::DeviceData& compared)
 {
-	if (currentBest.maxVulkanVersion > compared.maxVulkanVersion)
+	if (currentBest.maxVulkanVersion >= compared.maxVulkanVersion)
 		return false;
 
-	if (currentBest.deviceLocalMemory > compared.deviceLocalMemory)
+	if (currentBest.deviceLocalMemory >= compared.deviceLocalMemory)
 		return false;
 
 	if (currentBest.queueSupport.noVideoCodingGraphicQueueFamily.has_value() && !compared.queueSupport.noVideoCodingGraphicQueueFamily.has_value())
