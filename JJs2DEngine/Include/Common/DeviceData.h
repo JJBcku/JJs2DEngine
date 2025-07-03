@@ -36,8 +36,8 @@ namespace JJs2DEngine
 
 	struct DeviceSwapchainSupport
 	{
-		uint32_t minSwapchainImages;
-		uint32_t maxSwapchainImages;
+		uint32_t minFramesInFlight;
+		uint32_t maxFramesInFlight;
 
 		bool swapchainRGB16Unorm;
 		bool swapchainRGBA16Unorm;
@@ -50,6 +50,7 @@ namespace JJs2DEngine
 
 		bool swapchainBGR8Unorm;
 		bool swapchainBGRA8Unorm;
+
 		bool swapchainABGR8Unorm;
 
 		DeviceSwapchainSupport();

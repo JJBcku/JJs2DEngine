@@ -25,8 +25,8 @@ namespace JJs2DEngine
 
 	DeviceSwapchainSupport::DeviceSwapchainSupport()
 	{
-		minSwapchainImages = 0;
-		maxSwapchainImages = 0;
+		minFramesInFlight = 0;
+		maxFramesInFlight = 0;
 
 		swapchainRGB16Unorm = false;
 		swapchainRGBA16Unorm = false;
@@ -39,6 +39,7 @@ namespace JJs2DEngine
 
 		swapchainBGR8Unorm = false;
 		swapchainBGRA8Unorm = false;
+
 		swapchainABGR8Unorm = false;
 	}
 

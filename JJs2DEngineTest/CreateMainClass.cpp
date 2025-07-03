@@ -9,7 +9,10 @@
 #include <EngineVersion.h>
 #include <DeviceData.h>
 
+#include <DeviceSettings.h>
+
 static bool CompareDevices(const JJ2DE::DeviceData& currentBest, const JJ2DE::DeviceData& compared);
+static JJ2DE::DeviceSettings CreateDeviceSettings(const JJ2DE::DeviceData& device);
 
 void CreateMainClass(MainDataCollection& data)
 {
@@ -39,6 +42,8 @@ void CreateMainClass(MainDataCollection& data)
 		if (CompareDevices(deviceList[currentBest], deviceList[i]))
 			currentBest = i;
 	}
+
+	data.main->CreateDevice(currentBest, CreateDeviceSettings(deviceList[currentBest]));
 }
 
 bool CompareDevices(const JJ2DE::DeviceData& currentBest, const JJ2DE::DeviceData& compared)
@@ -71,4 +76,56 @@ bool CompareDevices(const JJ2DE::DeviceData& currentBest, const JJ2DE::DeviceDat
 		return false;
 
 	return true;
+}
+
+JJ2DE::DeviceSettings CreateDeviceSettings(const JJ2DE::DeviceData& device)
+{
+	JJ2DE::DeviceSettings ret;
+	ret.windowWidth = 1080;
+	ret.aspectRatio = JJ2DE::AspectRatio::ASPECT_RATIO_16_9;
+
+	ret.framesInFlight = std::min(device.swapchainSupport.minFramesInFlight + 1, device.swapchainSupport.maxFramesInFlight);
+
+	{
+		if (device.swapchainSupport.swapchainRGB16Unorm)
+			ret.swapchainFormat = JJ2DE::SwapchainFormat::SWAPCHAIN_FORMAT_RGB16;
+		else if (device.swapchainSupport.swapchainRGBA16Unorm)
+			ret.swapchainFormat = JJ2DE::SwapchainFormat::SWAPCHAIN_FORMAT_RGBA16;
+		else if (device.swapchainSupport.swapchainA2RGB10Unorm)
+			ret.swapchainFormat = JJ2DE::SwapchainFormat::SWAPCHAIN_FORMAT_A2RGB10;
+		else if (device.swapchainSupport.swapchainA2BGR10Unorm)
+			ret.swapchainFormat = JJ2DE::SwapchainFormat::SWAPCHAIN_FORMAT_A2BGR10;
+		else if (device.swapchainSupport.swapchainRGB8Unorm)
+			ret.swapchainFormat = JJ2DE::SwapchainFormat::SWAPCHAIN_FORMAT_RGB8;
+		else if (device.swapchainSupport.swapchainBGR8Unorm)
+			ret.swapchainFormat = JJ2DE::SwapchainFormat::SWAPCHAIN_FORMAT_BGR8;
+		else if (device.swapchainSupport.swapchainRGBA8Unorm)
+			ret.swapchainFormat = JJ2DE::SwapchainFormat::SWAPCHAIN_FORMAT_RGBA8;
+		else if (device.swapchainSupport.swapchainBGRA8Unorm)
+			ret.swapchainFormat = JJ2DE::SwapchainFormat::SWAPCHAIN_FORMAT_BGRA8;
+		else
+			ret.swapchainFormat = JJ2DE::SwapchainFormat::SWAPCHAIN_FORMAT_ABGR8;
+	}
+
+	{
+		if (device.textureSupport.textureRGBA16UNORM)
+			ret.textureFormat = JJ2DE::TextureFormat::TEXTURE_FORMAT_RGBA16;
+		else if (device.textureSupport.textureRGBA8UNORM)
+			ret.textureFormat = JJ2DE::TextureFormat::TEXTURE_FORMAT_RGBA8;
+		else
+			ret.textureFormat = JJ2DE::TextureFormat::TEXTURE_FORMAT_BGRA8;
+	}
+
+	{
+		if (device.depthStencilSupport.D32Float)
+			ret.depthFormat = JJ2DE::DepthFormat::DEPTH_FORMAT_D32;
+		else if (device.depthStencilSupport.D32FloatS8Int)
+			ret.depthFormat = JJ2DE::DepthFormat::DEPTH_FORMAT_D32_S8;
+		else if (device.depthStencilSupport.D24UnormS8Int)
+			ret.depthFormat = JJ2DE::DepthFormat::DEPTH_FORMAT_D24_S8;
+		else
+			ret.depthFormat = ret.depthFormat = JJ2DE::DepthFormat::DEPTH_FORMAT_X8_D24;
+	}
+
+	return ret;
 }

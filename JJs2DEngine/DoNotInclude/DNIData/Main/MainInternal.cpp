@@ -20,7 +20,11 @@
 #include <VulkanSimplified/VSInstance/VSDeviceVulkan10Properties.h>
 #include <VulkanSimplified/VSInstance/VSDeviceVulkan10FeatureFlags.h>
 #include <VulkanSimplified/VSInstance/VSDeviceQueueFamilyData.h>
+
 #include <VulkanSimplified/VSInstance/VSInstance.h>
+#include <VulkanSimplified/VSInstance/VSLogicalDeviceCreateInfo.h>
+
+#include <VulkanSimplified/VSDevice/VSDeviceInitialCapacitiesList.h>
 
 #include <VulkanSimplified/VSCommon/VSMemoryDataList.h>
 #include <VulkanSimplified/VSCommon/VSMemoryHeapProperties.h>
@@ -53,6 +57,100 @@ namespace JJs2DEngine
 	const std::vector<DeviceData>& MainInternal::GetDeviceList() const
 	{
 		return _deviceList;
+	}
+
+	void MainInternal::CreateDevice(size_t deviceIndex, const DeviceSettings& deviceSettings)
+	{
+		if (_currentDevicesSettings.has_value())
+			throw std::runtime_error("MainInternal::CreateDevice Error: Function tried to create already existing devices!");
+
+		if (deviceIndex >= _deviceList.size())
+			throw std::runtime_error("MainInternal::CreateDevice Error: Function was given an erroneous device index value!");
+
+		const auto& deviceData = _deviceList[deviceIndex];
+
+		VS::LogicalDeviceCreationData creationData;
+		creationData.physicalGPUIndex = deviceData.deviceIndex;
+		creationData.queuesCreationInfo.reserve(2);
+
+		VS::QueueCreationData queueData;
+		queueData.queuesPriorities.push_back(std::numeric_limits<uint16_t>::max());
+
+		if (deviceData.queueSupport.noVideoCodingGraphicQueueFamily.has_value())
+		{
+			queueData.queuesFamily = deviceData.queueSupport.noVideoCodingGraphicQueueFamily.value();
+		}
+		else
+		{
+			queueData.queuesFamily = deviceData.queueSupport.videoCodingGraphicQueueFamily.value();
+		}
+
+		creationData.queuesCreationInfo.push_back(queueData);
+
+		if (deviceData.queueSupport.transferQueueFamily.has_value())
+		{
+			queueData.queuesFamily = deviceData.queueSupport.transferQueueFamily.value();
+			creationData.queuesCreationInfo.push_back(queueData);
+		}
+		else if (deviceData.queueSupport.computeQueueFamily.has_value())
+		{
+			queueData.queuesFamily = deviceData.queueSupport.computeQueueFamily.value();
+			creationData.queuesCreationInfo.push_back(queueData);
+		}
+
+		auto instance = _VSMain->GetInstance();
+		instance.CreateLogicalDevice(creationData, {});
+
+		creationData.requestedExtensionPacks.swapchainBase = true;
+
+		_currentDevicesSettings = deviceSettings;
+	}
+
+	void MainInternal::RecreateDevice(size_t deviceIndex, const DeviceSettings& deviceSettings)
+	{
+		if (_currentDevicesSettings.has_value())
+			_currentDevicesSettings.reset();
+
+		if (deviceIndex >= _deviceList.size())
+			throw std::runtime_error("MainInternal::RecreateDevice Error: Function was given an erroneous device index value!");
+
+		const auto& deviceData = _deviceList[deviceIndex];
+
+		VS::LogicalDeviceCreationData creationData;
+		creationData.physicalGPUIndex = deviceData.deviceIndex;
+		creationData.queuesCreationInfo.reserve(2);
+
+		VS::QueueCreationData queueData;
+		queueData.queuesPriorities.push_back(std::numeric_limits<uint16_t>::max());
+
+		if (deviceData.queueSupport.noVideoCodingGraphicQueueFamily.has_value())
+		{
+			queueData.queuesFamily = deviceData.queueSupport.noVideoCodingGraphicQueueFamily.value();
+		}
+		else
+		{
+			queueData.queuesFamily = deviceData.queueSupport.videoCodingGraphicQueueFamily.value();
+		}
+
+		creationData.queuesCreationInfo.push_back(queueData);
+
+		if (deviceData.queueSupport.transferQueueFamily.has_value())
+		{
+			queueData.queuesFamily = deviceData.queueSupport.transferQueueFamily.value();
+			creationData.queuesCreationInfo.push_back(queueData);
+		}
+		else if (deviceData.queueSupport.computeQueueFamily.has_value())
+		{
+			queueData.queuesFamily = deviceData.queueSupport.computeQueueFamily.value();
+			creationData.queuesCreationInfo.push_back(queueData);
+		}
+
+		creationData.requestedExtensionPacks.swapchainBase = true;
+
+		auto instance = _VSMain->GetInstance();
+		instance.CreateLogicalDevice(creationData, {});
+
+		_currentDevicesSettings = deviceSettings;
 	}
 
 	void MainInternal::CreateInstance(const MainInitializationData& initData)
@@ -104,7 +202,12 @@ namespace JJs2DEngine
 
 		for (size_t i = 0; i < deviceAmount; ++i)
 		{
-			auto deviceData = CompileUsefullDeviceData(instance.GetPhysicalDeviceData(i), i);
+			auto physicalData = instance.GetPhysicalDeviceData(i);
+
+			if (!physicalData.GetDeviceExtensionPacks().swapchainBase)
+				continue;
+
+			auto deviceData = CompileUsefullDeviceData(physicalData, i);
 
 			if (CheckDevicesUsefullness(deviceData, _minVulkanVersion))
 			{
@@ -280,8 +383,8 @@ namespace JJs2DEngine
 		auto& formatSwapchainSupport = deviceSwapchainSupport.surfaceSupportedSwapchainFormats;
 		
 		{
-			ret.swapchainSupport.minSwapchainImages = deviceSwapchainSupport.minImageCount;
-			ret.swapchainSupport.maxSwapchainImages = deviceSwapchainSupport.maxImageCount;
+			ret.swapchainSupport.minFramesInFlight = deviceSwapchainSupport.minImageCount;
+			ret.swapchainSupport.maxFramesInFlight = deviceSwapchainSupport.maxImageCount;
 
 			ret.swapchainSupport.swapchainRGB16Unorm = CheckFormatSwapchainSupport(formatImageSupport, formatSwapchainSupport, VS::DATA_FORMAT_RGB16_UNORM);
 			ret.swapchainSupport.swapchainRGBA16Unorm = CheckFormatSwapchainSupport(formatImageSupport, formatSwapchainSupport, VS::DATA_FORMAT_RGBA16_UNORM);
@@ -294,6 +397,7 @@ namespace JJs2DEngine
 
 			ret.swapchainSupport.swapchainBGR8Unorm = CheckFormatSwapchainSupport(formatImageSupport, formatSwapchainSupport, VS::DATA_FORMAT_BGR8_UNORM);
 			ret.swapchainSupport.swapchainBGRA8Unorm = CheckFormatSwapchainSupport(formatImageSupport, formatSwapchainSupport, VS::DATA_FORMAT_BGRA8_UNORM);
+
 			ret.swapchainSupport.swapchainABGR8Unorm = CheckFormatSwapchainSupport(formatImageSupport, formatSwapchainSupport, VS::DATA_FORMAT_ABGR8_UNORM_PACK32);
 		}
 

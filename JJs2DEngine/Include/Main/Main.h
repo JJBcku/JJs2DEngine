@@ -9,6 +9,7 @@ namespace JJs2DEngine
 	class MainInternal;
 
 	struct DeviceData;
+	struct DeviceSettings;
 
 	class Main
 	{
@@ -17,6 +18,9 @@ namespace JJs2DEngine
 		~Main();
 
 		const std::vector<DeviceData>& GetDeviceList() const;
+
+		void CreateDevice(size_t deviceIndex, const DeviceSettings& deviceSettings);
+		void RecreateDevice(size_t deviceIndex, const DeviceSettings& deviceSettings);
 
 	private:
 		std::unique_ptr<MainInternal> _internal;

@@ -3,12 +3,15 @@
 #include <stdint.h>
 #include <memory>
 #include <vector>
+#include <optional>
 
 #include <VulkanSimplified/VSMain/VSMain.h>
 
 #include <VulkanSimplified/VSInstance/VSInstance.h>
 
 #include "../../../Include/Common/VersionData.h"
+
+#include "../../../Include/Main/DeviceSettings.h"
 
 namespace JJs2DEngine
 {
@@ -23,12 +26,20 @@ namespace JJs2DEngine
 
 		const std::vector<DeviceData>& GetDeviceList() const;
 
+		void CreateDevice(size_t deviceIndex, const DeviceSettings& deviceSettings);
+		void RecreateDevice(size_t deviceIndex, const DeviceSettings& deviceSettings);
+
 	private:
 		std::unique_ptr<VS::Main> _VSMain;
 		VersionData _minVulkanVersion;
 		VersionData _maxVulkanVersion;
 
 		std::vector<DeviceData> _deviceList;
+
+		std::optional<DeviceSettings> _currentDevicesSettings;
+
+		size_t graphicsQueueIndex;
+		std::optional<size_t> transferOnlyQueueIndex;
 
 		void CreateInstance(const MainInitializationData& initData);
 		void EnumerateDevices();
