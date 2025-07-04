@@ -72,7 +72,7 @@ bool CompareDevices(const JJ2DE::DeviceData& currentBest, const JJ2DE::DeviceDat
 	if (currentBest.textureSupport.Support16BitUncompressedTextures() && !compared.textureSupport.Support16BitUncompressedTextures())
 		return false;
 
-	if (currentBest.depthStencilSupport.SupportFloatDepth() && !compared.depthStencilSupport.SupportFloatDepth())
+	if (currentBest.depthStencilSupport.D32Float && !compared.depthStencilSupport.D32Float)
 		return false;
 
 	return true;
@@ -119,12 +119,8 @@ JJ2DE::DeviceSettings CreateDeviceSettings(const JJ2DE::DeviceData& device)
 	{
 		if (device.depthStencilSupport.D32Float)
 			ret.depthFormat = JJ2DE::DepthFormat::DEPTH_FORMAT_D32;
-		else if (device.depthStencilSupport.D32FloatS8Int)
-			ret.depthFormat = JJ2DE::DepthFormat::DEPTH_FORMAT_D32_S8;
-		else if (device.depthStencilSupport.D24UnormS8Int)
-			ret.depthFormat = JJ2DE::DepthFormat::DEPTH_FORMAT_D24_S8;
 		else
-			ret.depthFormat = ret.depthFormat = JJ2DE::DepthFormat::DEPTH_FORMAT_X8_D24;
+			ret.depthFormat = JJ2DE::DepthFormat::DEPTH_FORMAT_D32_S8;
 	}
 
 	return ret;

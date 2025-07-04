@@ -87,21 +87,13 @@ namespace JJs2DEngine
 
 	DeviceDepthStencilSupport::DeviceDepthStencilSupport()
 	{
-		D24UnormS8Int = false;
-		D32FloatS8Int = false;
-
-		X8D24Unorm = false;
 		D32Float = false;
+		D32FloatS8Int = false;
 	}
 
 	bool DeviceDepthStencilSupport::SupportAnyDepthFormat() const
 	{
-		return D24UnormS8Int || D32FloatS8Int || X8D24Unorm || D32Float;
-	}
-
-	bool DeviceDepthStencilSupport::SupportFloatDepth() const
-	{
-		return D32FloatS8Int || D32Float;
+		return D32Float || D32FloatS8Int;
 	}
 
 	DeviceData::DeviceData()

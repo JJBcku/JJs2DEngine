@@ -88,16 +88,12 @@ namespace JJs2DEngine
 
 	struct DeviceDepthStencilSupport
 	{
-		bool D24UnormS8Int;
-		bool D32FloatS8Int;
-
-		bool X8D24Unorm;
 		bool D32Float;
+		bool D32FloatS8Int;
 
 		DeviceDepthStencilSupport();
 
 		bool SupportAnyDepthFormat() const;
-		bool SupportFloatDepth() const;
 
 		std::strong_ordering operator<=>(const DeviceDepthStencilSupport& rhs) const noexcept = default;
 		bool operator==(const DeviceDepthStencilSupport& rhs) const noexcept = default;

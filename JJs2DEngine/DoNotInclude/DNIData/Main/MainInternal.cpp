@@ -413,11 +413,8 @@ namespace JJs2DEngine
 		}
 
 		{
-			ret.depthStencilSupport.D24UnormS8Int = VS::CheckFormatSupport(formatImageSupport.depthStencilAttachment, VS::DATA_FORMAT_D24_UNORM_S8_UINT);
-			ret.depthStencilSupport.D32FloatS8Int = VS::CheckFormatSupport(formatImageSupport.depthStencilAttachment, VS::DATA_FORMAT_D32_SFLOAT_S8_UINT);
-
-			ret.depthStencilSupport.X8D24Unorm = VS::CheckFormatSupport(formatImageSupport.depthStencilAttachment, VS::DATA_FORMAT_X8D24_UNORM_PACK32);
 			ret.depthStencilSupport.D32Float = VS::CheckFormatSupport(formatImageSupport.depthStencilAttachment, VS::DATA_FORMAT_D32_SFLOAT);
+			ret.depthStencilSupport.D32FloatS8Int = VS::CheckFormatSupport(formatImageSupport.depthStencilAttachment, VS::DATA_FORMAT_D32_SFLOAT_S8_UINT);
 		}
 
 		return ret;

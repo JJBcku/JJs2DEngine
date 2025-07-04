@@ -40,11 +40,8 @@ namespace JJs2DEngine
 	enum class DepthFormat : uint64_t
 	{
 		DEPTH_FORMAT_UNSET = 0,
-		DEPTH_FORMAT_D24_S8 = 1,
+		DEPTH_FORMAT_D32 = 1,
 		DEPTH_FORMAT_D32_S8 = 2,
-
-		DEPTH_FORMAT_X8_D24 = 4,
-		DEPTH_FORMAT_D32 = 8,
 	};
 
 	struct DeviceSettings
