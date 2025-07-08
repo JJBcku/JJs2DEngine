@@ -223,8 +223,10 @@ namespace JJs2DEngine
 	static bool CheckFormatSwapchainSupport(const VS::FormatsSupportedImageFeaturesList& supportedImageFormats,
 		const VS::SurfaceSupportedColorspaceFormatsLists& surfaceColorspace, const VS::DataFormatSetIndependentID& formatID)
 	{
-		return VS::CheckFormatSupport(supportedImageFormats.blitSrc, formatID) && VS::CheckFormatSupport(supportedImageFormats.blitDst, formatID) &&
-			VS::CheckFormatSupport(supportedImageFormats.colorAttachment, formatID) && VS::CheckFormatSupport(supportedImageFormats.sampledImage, formatID) &&
+		return VS::CheckFormatSupport(supportedImageFormats.blitSrc, formatID) &&
+			VS::CheckFormatSupport(supportedImageFormats.blitDst, formatID) &&
+			VS::CheckFormatSupport(supportedImageFormats.colorAttachment, formatID) &&
+			VS::CheckFormatSupport(supportedImageFormats.sampledImage, formatID) &&
 			VS::CheckFormatSupport(surfaceColorspace.srgbNonlinearColorspace, formatID);
 	}
 
