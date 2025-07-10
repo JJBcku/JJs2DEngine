@@ -59,15 +59,15 @@ namespace JJs2DEngine
 		return _deviceList;
 	}
 
-	void MainInternal::CreateDevice(size_t deviceIndex, const DeviceSettings& deviceSettings)
+	void MainInternal::CreateDevice(const DeviceSettings& deviceSettings)
 	{
 		if (_currentDevicesSettings.has_value())
 			throw std::runtime_error("MainInternal::CreateDevice Error: Function tried to create already existing devices!");
 
-		if (deviceIndex >= _deviceList.size())
+		if (deviceSettings.deviceIndex >= _deviceList.size())
 			throw std::runtime_error("MainInternal::CreateDevice Error: Function was given an erroneous device index value!");
 
-		const auto& deviceData = _deviceList[deviceIndex];
+		const auto& deviceData = _deviceList[deviceSettings.deviceIndex];
 
 		VS::LogicalDeviceCreationData creationData;
 		creationData.physicalGPUIndex = deviceData.deviceIndex;
@@ -106,15 +106,15 @@ namespace JJs2DEngine
 		_currentDevicesSettings = deviceSettings;
 	}
 
-	void MainInternal::RecreateDevice(size_t deviceIndex, const DeviceSettings& deviceSettings)
+	void MainInternal::RecreateDevice(const DeviceSettings& deviceSettings)
 	{
 		if (_currentDevicesSettings.has_value())
 			_currentDevicesSettings.reset();
 
-		if (deviceIndex >= _deviceList.size())
+		if (deviceSettings.deviceIndex >= _deviceList.size())
 			throw std::runtime_error("MainInternal::RecreateDevice Error: Function was given an erroneous device index value!");
 
-		const auto& deviceData = _deviceList[deviceIndex];
+		const auto& deviceData = _deviceList[deviceSettings.deviceIndex];
 
 		VS::LogicalDeviceCreationData creationData;
 		creationData.physicalGPUIndex = deviceData.deviceIndex;

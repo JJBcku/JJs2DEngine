@@ -5,6 +5,8 @@ namespace JJs2DEngine
 {
 	DeviceSettings::DeviceSettings()
 	{
+		deviceIndex = std::numeric_limits<size_t>::max();
+
 		windowWidth = 0;
 		aspectRatio = AspectRatio::UNSET;
 

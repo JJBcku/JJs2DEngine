@@ -12,7 +12,7 @@
 #include <DeviceSettings.h>
 
 static bool CompareDevices(const JJ2DE::DeviceData& currentBest, const JJ2DE::DeviceData& compared);
-static JJ2DE::DeviceSettings CreateDeviceSettings(const JJ2DE::DeviceData& device);
+static JJ2DE::DeviceSettings CreateDeviceSettings(const JJ2DE::DeviceData& device, size_t deviceIndex);
 
 void CreateMainClass(MainDataCollection& data)
 {
@@ -43,7 +43,7 @@ void CreateMainClass(MainDataCollection& data)
 			currentBest = i;
 	}
 
-	data.main->CreateDevice(currentBest, CreateDeviceSettings(deviceList[currentBest]));
+	data.main->CreateDevice(CreateDeviceSettings(deviceList[currentBest], currentBest));
 }
 
 bool CompareDevices(const JJ2DE::DeviceData& currentBest, const JJ2DE::DeviceData& compared)
@@ -78,9 +78,11 @@ bool CompareDevices(const JJ2DE::DeviceData& currentBest, const JJ2DE::DeviceDat
 	return true;
 }
 
-JJ2DE::DeviceSettings CreateDeviceSettings(const JJ2DE::DeviceData& device)
+JJ2DE::DeviceSettings CreateDeviceSettings(const JJ2DE::DeviceData& device, size_t deviceIndex)
 {
 	JJ2DE::DeviceSettings ret;
+	ret.deviceIndex = deviceIndex;
+
 	ret.windowWidth = 1080;
 	ret.aspectRatio = JJ2DE::AspectRatio::ASPECT_RATIO_16_9;
 

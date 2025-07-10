@@ -18,14 +18,14 @@ namespace JJs2DEngine
 		return _internal->GetDeviceList();
 	}
 
-	void Main::CreateDevice(size_t deviceIndex, const DeviceSettings& deviceSettings)
+	void Main::CreateDevice(const DeviceSettings& deviceSettings)
 	{
-		_internal->CreateDevice(deviceIndex, deviceSettings);
+		_internal->CreateDevice(deviceSettings);
 	}
 
-	void Main::RecreateDevice(size_t deviceIndex, const DeviceSettings& deviceSettings)
+	void Main::RecreateDevice(const DeviceSettings& deviceSettings)
 	{
-		_internal->RecreateDevice(deviceIndex, deviceSettings);
+		_internal->RecreateDevice(deviceSettings);
 	}
 
 }

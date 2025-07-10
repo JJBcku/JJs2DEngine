@@ -46,6 +46,8 @@ namespace JJs2DEngine
 
 	struct DeviceSettings
 	{
+		size_t deviceIndex;
+
 		uint32_t windowWidth;
 		AspectRatio aspectRatio;
 
