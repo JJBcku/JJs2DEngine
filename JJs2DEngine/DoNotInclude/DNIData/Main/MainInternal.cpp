@@ -8,6 +8,8 @@
 
 #include "../Common/VersionDataInternal.h"
 
+#include "PipelineListInternal.h"
+
 #include <VulkanSimplified/VSMain/VSMainInitData.h>
 #include <VulkanSimplified/VSMain/VSInstanceExtensionPacksList.h>
 #include <VulkanSimplified/VSMain/VSInstanceLayerPacksList.h>
@@ -86,30 +88,37 @@ namespace JJs2DEngine
 		}
 
 		creationData.queuesCreationInfo.push_back(queueData);
+		_graphicsQueueIndex = 0;
 
 		if (deviceData.queueSupport.transferQueueFamily.has_value())
 		{
 			queueData.queuesFamily = deviceData.queueSupport.transferQueueFamily.value();
 			creationData.queuesCreationInfo.push_back(queueData);
+			_transferOnlyQueueIndex = 1;
 		}
 		else if (deviceData.queueSupport.computeQueueFamily.has_value())
 		{
 			queueData.queuesFamily = deviceData.queueSupport.computeQueueFamily.value();
 			creationData.queuesCreationInfo.push_back(queueData);
+			_transferOnlyQueueIndex = 1;
 		}
+
+		creationData.requestedExtensionPacks.swapchainBase = true;
 
 		auto instance = _VSMain->GetInstance();
 		instance.CreateLogicalDevice(creationData, {});
 
-		creationData.requestedExtensionPacks.swapchainBase = true;
-
 		_currentDevicesSettings = deviceSettings;
+		_pipelineList = std::make_unique<PipelineListInternal>(deviceSettings.pipelineListInitData);
 	}
 
 	void MainInternal::RecreateDevice(const DeviceSettings& deviceSettings)
 	{
 		if (_currentDevicesSettings.has_value())
+		{
 			_currentDevicesSettings.reset();
+			_pipelineList.reset();
+		}
 
 		if (deviceSettings.deviceIndex >= _deviceList.size())
 			throw std::runtime_error("MainInternal::RecreateDevice Error: Function was given an erroneous device index value!");
@@ -122,14 +131,19 @@ namespace JJs2DEngine
 
 		VS::QueueCreationData queueData;
 		queueData.queuesPriorities.push_back(std::numeric_limits<uint16_t>::max());
+		_graphicsQueueIndex = 0;
+
+		_transferOnlyQueueIndex.reset();
 
 		if (deviceData.queueSupport.noVideoCodingGraphicQueueFamily.has_value())
 		{
 			queueData.queuesFamily = deviceData.queueSupport.noVideoCodingGraphicQueueFamily.value();
+			_transferOnlyQueueIndex = 1;
 		}
 		else
 		{
 			queueData.queuesFamily = deviceData.queueSupport.videoCodingGraphicQueueFamily.value();
+			_transferOnlyQueueIndex = 1;
 		}
 
 		creationData.queuesCreationInfo.push_back(queueData);
@@ -151,6 +165,7 @@ namespace JJs2DEngine
 		instance.CreateLogicalDevice(creationData, {});
 
 		_currentDevicesSettings = deviceSettings;
+		_pipelineList = std::make_unique<PipelineListInternal>(deviceSettings.pipelineListInitData);
 	}
 
 	void MainInternal::CreateInstance(const MainInitializationData& initData)

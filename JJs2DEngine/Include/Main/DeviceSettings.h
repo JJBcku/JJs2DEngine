@@ -2,6 +2,8 @@
 
 #include <stdint.h>
 
+#include "PipelineListInitializationData.h"
+
 namespace JJs2DEngine
 {
 	enum class AspectRatio : uint32_t
@@ -56,6 +58,8 @@ namespace JJs2DEngine
 		SwapchainFormat swapchainFormat;
 		TextureFormat textureFormat;
 		DepthFormat depthFormat;
+
+		PipelineListInitializationData pipelineListInitData;
 
 		DeviceSettings();
 	};

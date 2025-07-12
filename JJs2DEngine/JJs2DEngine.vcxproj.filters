@@ -81,6 +81,12 @@
     <ClInclude Include="Include\Main\DeviceSettings.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="DoNotInclude\DNIData\Main\PipelineListInternal.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Main\PipelineListInitializationData.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DoNotInclude\DNIData\Main\MainDNIpch.cpp">
@@ -114,6 +120,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="DoNotInclude\ICode\Main\DeviceSettings.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DoNotInclude\DNIData\Main\PipelineListInternal.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DoNotInclude\ICode\Main\PipelineListInitializationData.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -118,6 +118,7 @@
     <ClInclude Include="DoNotInclude\DNIData\Main\MainDNIframework.h" />
     <ClInclude Include="DoNotInclude\DNIData\Main\MainDNIpch.h" />
     <ClInclude Include="DoNotInclude\DNIData\Common\NamespaceAliasesInternal.h" />
+    <ClInclude Include="DoNotInclude\DNIData\Main\PipelineListInternal.h" />
     <ClInclude Include="DoNotInclude\ICode\Common\CommonIframework.h" />
     <ClInclude Include="DoNotInclude\ICode\Common\CommonIpch.h" />
     <ClInclude Include="Include\Common\DeviceData.h" />
@@ -130,6 +131,7 @@
     <ClInclude Include="Include\Main\Main.h" />
     <ClInclude Include="Include\Main\MainDef.h" />
     <ClInclude Include="Include\Main\MainInitializationData.h" />
+    <ClInclude Include="Include\Main\PipelineListInitializationData.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DoNotInclude\DNIData\Common\CommonDNIpch.cpp">
@@ -153,6 +155,12 @@
       <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)MainDNIpch.pch</PrecompiledHeaderOutputFile>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="DoNotInclude\DNIData\Main\PipelineListInternal.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">MainDNIpch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)MainDNIpch.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">MainDNIpch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)MainDNIpch.pch</PrecompiledHeaderOutputFile>
     </ClCompile>
     <ClCompile Include="DoNotInclude\ICode\Common\CommonIpch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -207,6 +215,12 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">MainDNIpch.h</PrecompiledHeaderFile>
       <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)MainDNIpch.pch</PrecompiledHeaderOutputFile>
+    </ClCompile>
+    <ClCompile Include="DoNotInclude\ICode\Main\PipelineListInitializationData.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">MainIpch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)MainIpch.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">MainIpch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)MainIpch.pch</PrecompiledHeaderOutputFile>
     </ClCompile>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
