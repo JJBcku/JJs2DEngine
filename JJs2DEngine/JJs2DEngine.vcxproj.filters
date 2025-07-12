@@ -25,108 +25,132 @@
     <Filter Include="Source Files\Include">
       <UniqueIdentifier>{6fc817f9-48a7-4795-b30d-d1aaee4457bd}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Do Not Include\Common">
+      <UniqueIdentifier>{75a36a46-6c75-46f8-b291-eec0f5eb3843}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Include\Common">
+      <UniqueIdentifier>{46da4875-3050-4ba4-b53b-70e949452e9e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Do Not Include\Main">
+      <UniqueIdentifier>{32eb935f-f2be-44b9-b348-435e3a3a1a0f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Include\Main">
+      <UniqueIdentifier>{1c261181-ba99-4856-b0c7-fa1a43056a51}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Do Not Include\Common">
+      <UniqueIdentifier>{45dabc3a-c854-4bf1-a77f-0b85bb65abf9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Do Not Include\Main">
+      <UniqueIdentifier>{b98b35a5-872a-4599-9853-bbd4c7502feb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Include\Common">
+      <UniqueIdentifier>{1234ceb6-fee4-49d1-978b-d268ee712854}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Include\Main">
+      <UniqueIdentifier>{4025cc71-dbf8-443e-be4b-6f24908fafc7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="DoNotInclude\DNIData\Main\MainDNIframework.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="DoNotInclude\DNIData\Main\MainDNIpch.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="DoNotInclude\DNIData\Common\NamespaceAliasesInternal.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="DoNotInclude\ICode\Main\MainIframework.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="DoNotInclude\ICode\Main\MainIpch.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="DoNotInclude\DNIData\Main\MainInternal.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Include\Main\Main.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Include\Main\MainDef.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Include\Main\MainInitializationData.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Include\Common\VersionData.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="DoNotInclude\ICode\Common\CommonIframework.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="DoNotInclude\ICode\Common\CommonIpch.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="DoNotInclude\DNIData\Common\CommonDNIframework.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Do Not Include\Common</Filter>
     </ClInclude>
     <ClInclude Include="DoNotInclude\DNIData\Common\CommonDNIpch.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Do Not Include\Common</Filter>
     </ClInclude>
-    <ClInclude Include="DoNotInclude\DNIData\Common\VersionDataInternal.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="DoNotInclude\ICode\Common\CommonIframework.h">
+      <Filter>Header Files\Include\Common</Filter>
     </ClInclude>
-    <ClInclude Include="Include\Common\EngineVersion.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="DoNotInclude\ICode\Common\CommonIpch.h">
+      <Filter>Header Files\Include\Common</Filter>
     </ClInclude>
-    <ClInclude Include="Include\Common\DeviceData.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="Include\Main\Main.h">
+      <Filter>Header Files\Include\Main</Filter>
     </ClInclude>
-    <ClInclude Include="Include\Main\DeviceSettings.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="Include\Main\MainDef.h">
+      <Filter>Header Files\Include\Main</Filter>
     </ClInclude>
-    <ClInclude Include="DoNotInclude\DNIData\Main\PipelineListInternal.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="DoNotInclude\DNIData\Main\MainDNIframework.h">
+      <Filter>Header Files\Do Not Include\Main</Filter>
+    </ClInclude>
+    <ClInclude Include="DoNotInclude\DNIData\Main\MainDNIpch.h">
+      <Filter>Header Files\Do Not Include\Main</Filter>
+    </ClInclude>
+    <ClInclude Include="DoNotInclude\ICode\Main\MainIframework.h">
+      <Filter>Header Files\Include\Main</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Main\MainInitializationData.h">
+      <Filter>Header Files\Include\Main</Filter>
+    </ClInclude>
+    <ClInclude Include="DoNotInclude\ICode\Main\MainIpch.h">
+      <Filter>Header Files\Include\Main</Filter>
+    </ClInclude>
+    <ClInclude Include="DoNotInclude\DNIData\Main\MainInternal.h">
+      <Filter>Header Files\Do Not Include\Main</Filter>
     </ClInclude>
     <ClInclude Include="Include\Main\PipelineListInitializationData.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Include\Main</Filter>
+    </ClInclude>
+    <ClInclude Include="DoNotInclude\DNIData\Common\VersionDataInternal.h">
+      <Filter>Header Files\Do Not Include\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="DoNotInclude\DNIData\Common\NamespaceAliasesInternal.h">
+      <Filter>Header Files\Do Not Include\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Common\VersionData.h">
+      <Filter>Header Files\Include\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Common\EngineVersion.h">
+      <Filter>Header Files\Include\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="DoNotInclude\DNIData\Main\PipelineListInternal.h">
+      <Filter>Header Files\Do Not Include\Main</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Common\DeviceData.h">
+      <Filter>Header Files\Include\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Main\DeviceSettings.h">
+      <Filter>Header Files\Include\Main</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="DoNotInclude\DNIData\Main\MainDNIpch.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="DoNotInclude\ICode\Main\Main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="DoNotInclude\ICode\Main\MainInitializationData.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="DoNotInclude\ICode\Main\MainIpch.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="DoNotInclude\DNIData\Main\MainInternal.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="DoNotInclude\DNIData\Common\CommonDNIpch.cpp">
+      <Filter>Source Files\Do Not Include\Common</Filter>
     </ClCompile>
     <ClCompile Include="DoNotInclude\ICode\Common\CommonIpch.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Include\Common</Filter>
     </ClCompile>
-    <ClCompile Include="DoNotInclude\ICode\Common\VersionData.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="DoNotInclude\DNIData\Main\MainDNIpch.cpp">
+      <Filter>Source Files\Do Not Include\Main</Filter>
     </ClCompile>
-    <ClCompile Include="DoNotInclude\DNIData\Common\CommonDNIpch.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="DoNotInclude\ICode\Main\MainIpch.cpp">
+      <Filter>Source Files\Include\Main</Filter>
     </ClCompile>
     <ClCompile Include="DoNotInclude\DNIData\Common\VersionDataInternal.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Do Not Include\Common</Filter>
     </ClCompile>
-    <ClCompile Include="DoNotInclude\ICode\Common\DeviceData.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="DoNotInclude\ICode\Main\Main.cpp">
+      <Filter>Source Files\Include\Main</Filter>
     </ClCompile>
-    <ClCompile Include="DoNotInclude\ICode\Main\DeviceSettings.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="DoNotInclude\DNIData\Main\PipelineListInternal.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="DoNotInclude\ICode\Main\MainInitializationData.cpp">
+      <Filter>Source Files\Include\Main</Filter>
     </ClCompile>
     <ClCompile Include="DoNotInclude\ICode\Main\PipelineListInitializationData.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Include\Main</Filter>
+    </ClCompile>
+    <ClCompile Include="DoNotInclude\ICode\Common\DeviceData.cpp">
+      <Filter>Source Files\Include\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="DoNotInclude\ICode\Common\VersionData.cpp">
+      <Filter>Source Files\Include\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="DoNotInclude\ICode\Main\DeviceSettings.cpp">
+      <Filter>Source Files\Include\Main</Filter>
+    </ClCompile>
+    <ClCompile Include="DoNotInclude\DNIData\Main\MainInternal.cpp">
+      <Filter>Source Files\Do Not Include\Main</Filter>
+    </ClCompile>
+    <ClCompile Include="DoNotInclude\DNIData\Main\PipelineListInternal.cpp">
+      <Filter>Source Files\Do Not Include\Main</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
