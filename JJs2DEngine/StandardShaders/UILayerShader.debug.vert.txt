@@ -1,7 +1,7 @@
 ; SPIR-V
 ; Version: 1.0
 ; Generator: Google Shaderc over Glslang; 11
-; Bound: 67
+; Bound: 78
 ; Schema: 0
                OpCapability Shader
           %1 = OpExtInstImport "GLSL.std.450"
@@ -30,9 +30,9 @@
                OpMemberDecorate %gl_PerVertex 1 BuiltIn PointSize
                OpMemberDecorate %gl_PerVertex 2 BuiltIn ClipDistance
                OpMemberDecorate %gl_PerVertex 3 BuiltIn CullDistance
-               OpDecorate %inSize Location 0
+               OpDecorate %inSize Location 1
                OpDecorate %outTexCoord Location 0
-               OpDecorate %inTexCoord Location 1
+               OpDecorate %inTexCoord Location 0
        %void = OpTypeVoid
           %3 = OpTypeFunction %void
       %float = OpTypeFloat 32
@@ -74,9 +74,9 @@
 %_ptr_Input_v2float = OpTypePointer Input %v2float
      %inSize = OpVariable %_ptr_Input_v2float Input
 %_ptr_Output_v4float = OpTypePointer Output %v4float
-%_ptr_Output_v2float = OpTypePointer Output %v2float
-%outTexCoord = OpVariable %_ptr_Output_v2float Output
- %inTexCoord = OpVariable %_ptr_Input_v2float Input
+%outTexCoord = OpVariable %_ptr_Output_v4float Output
+%_ptr_Input_v4float = OpTypePointer Input %v4float
+ %inTexCoord = OpVariable %_ptr_Input_v4float Input
        %main = OpFunction %void None %3
           %5 = OpLabel
  %verticePos = OpVariable %_ptr_Function_v4float Function
@@ -101,7 +101,18 @@
          %60 = OpCompositeConstruct %v4float %56 %57 %58 %59
          %62 = OpAccessChain %_ptr_Output_v4float %_ %int_0
                OpStore %62 %60
-         %66 = OpLoad %v2float %inTexCoord
-               OpStore %outTexCoord %66
+         %66 = OpLoad %v4float %inTexCoord
+         %67 = OpVectorShuffle %v2float %66 %66 0 1
+         %68 = OpLoad %v4float %verticePos
+         %69 = OpVectorShuffle %v2float %68 %68 0 1
+         %70 = OpFMul %v2float %67 %69
+         %71 = OpLoad %v4float %inTexCoord
+         %72 = OpVectorShuffle %v2float %71 %71 2 3
+         %73 = OpCompositeExtract %float %70 0
+         %74 = OpCompositeExtract %float %70 1
+         %75 = OpCompositeExtract %float %72 0
+         %76 = OpCompositeExtract %float %72 1
+         %77 = OpCompositeConstruct %v4float %73 %74 %75 %76
+               OpStore %outTexCoord %77
                OpReturn
                OpFunctionEnd
