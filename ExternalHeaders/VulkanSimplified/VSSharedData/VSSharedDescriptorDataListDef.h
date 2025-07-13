@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../../Include/VSCommon/VSDescriptorTypeFlagsDef.h"
-#include "../../Include/VSCommon/VSShaderTypeFlagsDef.h"
+#include "../VSCommon/VSDescriptorTypeFlagsDef.h"
+#include "../VSCommon/VSShaderTypeFlagsDef.h"
 
 namespace VulkanSimplified
 {
