@@ -2,11 +2,11 @@
 
 #include <CustomLists\IDObjectDef.h>
 
-#include "../../Include/VSCommon/VSAccessFlagsDef.h"
-#include "../../Include/VSCommon/VSImageSampleFlagsDef.h"
-#include "../../Include/VSCommon/VSImageLayoutFlagsDef.h"
-#include "../../Include/VSCommon/VSPipelineStageFlagsDef.h"
-#include "../../Include/VSCommon/VSRenderPassAttachmentOPDef.h"
+#include "../VSCommon/VSAccessFlagsDef.h"
+#include "../VSCommon/VSImageSampleFlagsDef.h"
+#include "../VSCommon/VSImageLayoutFlagsDef.h"
+#include "../VSCommon/VSPipelineStageFlagsDef.h"
+#include "../VSCommon/VSRenderPassAttachmentOPDef.h"
 
 #include "VSSharedRenderPassDataListDef.h"
 
