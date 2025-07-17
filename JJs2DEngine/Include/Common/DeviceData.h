@@ -39,18 +39,13 @@ namespace JJs2DEngine
 		uint32_t minFramesInFlight;
 		uint32_t maxFramesInFlight;
 
-		bool swapchainRGB16Unorm;
 		bool swapchainRGBA16Unorm;
 
 		bool swapchainA2RGB10Unorm;
 		bool swapchainA2BGR10Unorm;
 
-		bool swapchainRGB8Unorm;
 		bool swapchainRGBA8Unorm;
-
-		bool swapchainBGR8Unorm;
 		bool swapchainBGRA8Unorm;
-
 		bool swapchainABGR8Unorm;
 
 		DeviceSwapchainSupport();

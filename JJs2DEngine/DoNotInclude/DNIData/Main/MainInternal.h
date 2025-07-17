@@ -18,7 +18,7 @@ namespace JJs2DEngine
 	struct MainInitializationData;
 	struct DeviceData;
 
-	class PipelineListInternal;
+	class RenderDataInternal;
 
 	class MainInternal
 	{
@@ -43,7 +43,7 @@ namespace JJs2DEngine
 		size_t _graphicsQueueIndex;
 		std::optional<size_t> _transferOnlyQueueIndex;
 
-		std::unique_ptr<PipelineListInternal> _pipelineList;
+		std::unique_ptr<RenderDataInternal> _pipelineList;
 
 		void CreateInstance(const MainInitializationData& initData);
 		void EnumerateDevices();

@@ -9,5 +9,8 @@
 #include <utility>
 #include <vector>
 #include <optional>
+#include <fstream>
+#include <filesystem>
+#include <array>
 
 #include "../../DNIData/Common/NamespaceAliasesInternal.h"

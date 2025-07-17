@@ -8,7 +8,7 @@
 
 #include "../Common/VersionDataInternal.h"
 
-#include "PipelineListInternal.h"
+#include "RenderDataInternal.h"
 
 #include <VulkanSimplified/VSMain/VSMainInitData.h>
 #include <VulkanSimplified/VSMain/VSInstanceExtensionPacksList.h>
@@ -27,10 +27,14 @@
 #include <VulkanSimplified/VSInstance/VSLogicalDeviceCreateInfo.h>
 
 #include <VulkanSimplified/VSDevice/VSDeviceInitialCapacitiesList.h>
+#include <VulkanSimplified/VSDevice/VSDeviceMain.h>
 
 #include <VulkanSimplified/VSCommon/VSMemoryDataList.h>
 #include <VulkanSimplified/VSCommon/VSMemoryHeapProperties.h>
 #include <VulkanSimplified/VSCommon/VSMemoryTypeProperties.h>
+
+#include <VulkanSimplified/VSCommon/VSSurfacePresentModes.h>
+#include <VulkanSimplified/VSCommon/VSImageUsageFlags.h>
 
 namespace JJs2DEngine
 {
@@ -109,7 +113,8 @@ namespace JJs2DEngine
 		instance.CreateLogicalDevice(creationData, {});
 
 		_currentDevicesSettings = deviceSettings;
-		_pipelineList = std::make_unique<PipelineListInternal>(deviceSettings.pipelineListInitData);
+		_pipelineList = std::make_unique<RenderDataInternal>(deviceSettings.currentPipelineSettings, deviceSettings.preInitializedPipelineSettings,
+			instance.GetChoosenDevicesMainClass(), _VSMain->GetSharedDataMainList());
 	}
 
 	void MainInternal::RecreateDevice(const DeviceSettings& deviceSettings)
@@ -165,7 +170,8 @@ namespace JJs2DEngine
 		instance.CreateLogicalDevice(creationData, {});
 
 		_currentDevicesSettings = deviceSettings;
-		_pipelineList = std::make_unique<PipelineListInternal>(deviceSettings.pipelineListInitData);
+		_pipelineList = std::make_unique<RenderDataInternal>(deviceSettings.currentPipelineSettings, deviceSettings.preInitializedPipelineSettings,
+			instance.GetChoosenDevicesMainClass(), _VSMain->GetSharedDataMainList());
 	}
 
 	void MainInternal::CreateInstance(const MainInitializationData& initData)
@@ -220,6 +226,17 @@ namespace JJs2DEngine
 			auto physicalData = instance.GetPhysicalDeviceData(i);
 
 			if (!physicalData.GetDeviceExtensionPacks().swapchainBase)
+				continue;
+
+			auto& surfaceSupport = physicalData.GetSurfaceSupport();
+
+			if (!surfaceSupport.has_value())
+				continue;
+
+			if ((surfaceSupport.value().surfacePresentModes & VS::PRESENT_MODE_FIFO_STRICT) != VS::PRESENT_MODE_FIFO_STRICT)
+				continue;
+
+			if ((surfaceSupport.value().surfaceUsageFlags & VS::IMAGE_USAGE_TRANSFER_DST) != VS::IMAGE_USAGE_TRANSFER_DST)
 				continue;
 
 			auto deviceData = CompileUsefullDeviceData(physicalData, i);
@@ -403,18 +420,13 @@ namespace JJs2DEngine
 			ret.swapchainSupport.minFramesInFlight = deviceSwapchainSupport.minImageCount;
 			ret.swapchainSupport.maxFramesInFlight = deviceSwapchainSupport.maxImageCount;
 
-			ret.swapchainSupport.swapchainRGB16Unorm = CheckFormatSwapchainSupport(formatImageSupport, formatSwapchainSupport, VS::DATA_FORMAT_RGB16_UNORM);
 			ret.swapchainSupport.swapchainRGBA16Unorm = CheckFormatSwapchainSupport(formatImageSupport, formatSwapchainSupport, VS::DATA_FORMAT_RGBA16_UNORM);
 
 			ret.swapchainSupport.swapchainA2RGB10Unorm = CheckFormatSwapchainSupport(formatImageSupport, formatSwapchainSupport, VS::DATA_FORMAT_A2_BGR10_UNORM_PACK32);
 			ret.swapchainSupport.swapchainA2BGR10Unorm = CheckFormatSwapchainSupport(formatImageSupport, formatSwapchainSupport, VS::DATA_FORMAT_A2_RGB10_UNORM_PACK32);
 
-			ret.swapchainSupport.swapchainRGB8Unorm = CheckFormatSwapchainSupport(formatImageSupport, formatSwapchainSupport, VS::DATA_FORMAT_RGB8_UNORM);
 			ret.swapchainSupport.swapchainRGBA8Unorm = CheckFormatSwapchainSupport(formatImageSupport, formatSwapchainSupport, VS::DATA_FORMAT_RGBA8_UNORM);
-
-			ret.swapchainSupport.swapchainBGR8Unorm = CheckFormatSwapchainSupport(formatImageSupport, formatSwapchainSupport, VS::DATA_FORMAT_BGR8_UNORM);
 			ret.swapchainSupport.swapchainBGRA8Unorm = CheckFormatSwapchainSupport(formatImageSupport, formatSwapchainSupport, VS::DATA_FORMAT_BGRA8_UNORM);
-
 			ret.swapchainSupport.swapchainABGR8Unorm = CheckFormatSwapchainSupport(formatImageSupport, formatSwapchainSupport, VS::DATA_FORMAT_ABGR8_UNORM_PACK32);
 		}
 

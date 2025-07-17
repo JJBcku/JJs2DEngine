@@ -1,8 +1,7 @@
 #pragma once
 
 #include <stdint.h>
-
-#include "PipelineListInitializationData.h"
+#include <vector>
 
 namespace JJs2DEngine
 {
@@ -14,20 +13,15 @@ namespace JJs2DEngine
 
 	enum class SwapchainFormat : uint64_t
 	{
-		SWAPCHAIN_FORMAT_UNSET = 0,
-		SWAPCHAIN_FORMAT_RGB16 = 1,
-		SWAPCHAIN_FORMAT_RGBA16 = 2,
+		SWAPCHAIN_FORMAT_UNSET = 0x0,
+		SWAPCHAIN_FORMAT_RGBA16 = 0x1,
 
-		SWAPCHAIN_FORMAT_A2RGB10 = 4,
-		SWAPCHAIN_FORMAT_A2BGR10 = 8,
+		SWAPCHAIN_FORMAT_A2RGB10 = 0x2,
+		SWAPCHAIN_FORMAT_A2BGR10 = 0x4,
 
-		SWAPCHAIN_FORMAT_RGB8 = 0x10,
-		SWAPCHAIN_FORMAT_RGBA8 = 0x20,
-
-		SWAPCHAIN_FORMAT_BGR8 = 0x40,
-		SWAPCHAIN_FORMAT_BGRA8 = 0x80,
-
-		SWAPCHAIN_FORMAT_ABGR8 = 0x100,
+		SWAPCHAIN_FORMAT_RGBA8 = 0x8,
+		SWAPCHAIN_FORMAT_BGRA8 = 0x10,
+		SWAPCHAIN_FORMAT_ABGR8 = 0x20,
 	};
 
 	enum class TextureFormat : uint64_t
@@ -46,20 +40,29 @@ namespace JJs2DEngine
 		DEPTH_FORMAT_D32_S8 = 2,
 	};
 
-	struct DeviceSettings
+	struct PipelineSettings
 	{
-		size_t deviceIndex;
-
-		uint32_t windowWidth;
+		uint32_t renderWidth;
 		AspectRatio aspectRatio;
-
-		uint64_t framesInFlight;
 
 		SwapchainFormat swapchainFormat;
 		TextureFormat textureFormat;
 		DepthFormat depthFormat;
 
-		PipelineListInitializationData pipelineListInitData;
+		PipelineSettings();
+	};
+
+	struct DeviceSettings
+	{
+		size_t deviceIndex;
+
+		uint64_t framesInFlight;
+		uint32_t windowWidth;
+		AspectRatio aspectRatio;
+
+		size_t currentPipelineSettings;
+
+		std::vector<PipelineSettings> preInitializedPipelineSettings;
 
 		DeviceSettings();
 	};

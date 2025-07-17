@@ -83,47 +83,49 @@ JJ2DE::DeviceSettings CreateDeviceSettings(const JJ2DE::DeviceData& device, size
 	JJ2DE::DeviceSettings ret;
 	ret.deviceIndex = deviceIndex;
 
-	ret.windowWidth = 1080;
+	ret.windowWidth = 1920;
 	ret.aspectRatio = JJ2DE::AspectRatio::ASPECT_RATIO_16_9;
 
 	ret.framesInFlight = std::min(device.swapchainSupport.minFramesInFlight + 1, device.swapchainSupport.maxFramesInFlight);
 
+	JJ2DE::PipelineSettings currentPipelineSettings;
+
+	currentPipelineSettings.renderWidth = 1920;
+	currentPipelineSettings.aspectRatio = JJ2DE::AspectRatio::ASPECT_RATIO_16_9;
+
 	{
-		if (device.swapchainSupport.swapchainRGB16Unorm)
-			ret.swapchainFormat = JJ2DE::SwapchainFormat::SWAPCHAIN_FORMAT_RGB16;
-		else if (device.swapchainSupport.swapchainRGBA16Unorm)
-			ret.swapchainFormat = JJ2DE::SwapchainFormat::SWAPCHAIN_FORMAT_RGBA16;
+		if (device.swapchainSupport.swapchainRGBA16Unorm)
+			currentPipelineSettings.swapchainFormat = JJ2DE::SwapchainFormat::SWAPCHAIN_FORMAT_RGBA16;
 		else if (device.swapchainSupport.swapchainA2RGB10Unorm)
-			ret.swapchainFormat = JJ2DE::SwapchainFormat::SWAPCHAIN_FORMAT_A2RGB10;
+			currentPipelineSettings.swapchainFormat = JJ2DE::SwapchainFormat::SWAPCHAIN_FORMAT_A2RGB10;
 		else if (device.swapchainSupport.swapchainA2BGR10Unorm)
-			ret.swapchainFormat = JJ2DE::SwapchainFormat::SWAPCHAIN_FORMAT_A2BGR10;
-		else if (device.swapchainSupport.swapchainRGB8Unorm)
-			ret.swapchainFormat = JJ2DE::SwapchainFormat::SWAPCHAIN_FORMAT_RGB8;
-		else if (device.swapchainSupport.swapchainBGR8Unorm)
-			ret.swapchainFormat = JJ2DE::SwapchainFormat::SWAPCHAIN_FORMAT_BGR8;
+			currentPipelineSettings.swapchainFormat = JJ2DE::SwapchainFormat::SWAPCHAIN_FORMAT_A2BGR10;
 		else if (device.swapchainSupport.swapchainRGBA8Unorm)
-			ret.swapchainFormat = JJ2DE::SwapchainFormat::SWAPCHAIN_FORMAT_RGBA8;
+			currentPipelineSettings.swapchainFormat = JJ2DE::SwapchainFormat::SWAPCHAIN_FORMAT_RGBA8;
 		else if (device.swapchainSupport.swapchainBGRA8Unorm)
-			ret.swapchainFormat = JJ2DE::SwapchainFormat::SWAPCHAIN_FORMAT_BGRA8;
+			currentPipelineSettings.swapchainFormat = JJ2DE::SwapchainFormat::SWAPCHAIN_FORMAT_BGRA8;
 		else
-			ret.swapchainFormat = JJ2DE::SwapchainFormat::SWAPCHAIN_FORMAT_ABGR8;
+			currentPipelineSettings.swapchainFormat = JJ2DE::SwapchainFormat::SWAPCHAIN_FORMAT_ABGR8;
 	}
 
 	{
 		if (device.textureSupport.textureRGBA16UNORM)
-			ret.textureFormat = JJ2DE::TextureFormat::TEXTURE_FORMAT_RGBA16;
+			currentPipelineSettings.textureFormat = JJ2DE::TextureFormat::TEXTURE_FORMAT_RGBA16;
 		else if (device.textureSupport.textureRGBA8UNORM)
-			ret.textureFormat = JJ2DE::TextureFormat::TEXTURE_FORMAT_RGBA8;
+			currentPipelineSettings.textureFormat = JJ2DE::TextureFormat::TEXTURE_FORMAT_RGBA8;
 		else
-			ret.textureFormat = JJ2DE::TextureFormat::TEXTURE_FORMAT_BGRA8;
+			currentPipelineSettings.textureFormat = JJ2DE::TextureFormat::TEXTURE_FORMAT_BGRA8;
 	}
 
 	{
 		if (device.depthStencilSupport.D32Float)
-			ret.depthFormat = JJ2DE::DepthFormat::DEPTH_FORMAT_D32;
+			currentPipelineSettings.depthFormat = JJ2DE::DepthFormat::DEPTH_FORMAT_D32;
 		else
-			ret.depthFormat = JJ2DE::DepthFormat::DEPTH_FORMAT_D32_S8;
+			currentPipelineSettings.depthFormat = JJ2DE::DepthFormat::DEPTH_FORMAT_D32_S8;
 	}
+
+	ret.preInitializedPipelineSettings.push_back(currentPipelineSettings);
+	ret.currentPipelineSettings = 0;
 
 	return ret;
 }

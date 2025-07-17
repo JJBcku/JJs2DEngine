@@ -28,16 +28,13 @@ namespace JJs2DEngine
 		minFramesInFlight = 0;
 		maxFramesInFlight = 0;
 
-		swapchainRGB16Unorm = false;
 		swapchainRGBA16Unorm = false;
 
 		swapchainA2RGB10Unorm = false;
 		swapchainA2BGR10Unorm = false;
 
-		swapchainRGB8Unorm = false;
 		swapchainRGBA8Unorm = false;
 
-		swapchainBGR8Unorm = false;
 		swapchainBGRA8Unorm = false;
 
 		swapchainABGR8Unorm = false;
@@ -45,7 +42,7 @@ namespace JJs2DEngine
 
 	bool DeviceSwapchainSupport::Support8BitSwapchain() const
 	{
-		return swapchainRGB8Unorm || swapchainRGBA8Unorm ||  swapchainBGR8Unorm || swapchainBGRA8Unorm || swapchainABGR8Unorm;
+		return swapchainRGBA8Unorm ||  swapchainBGRA8Unorm || swapchainABGR8Unorm;
 	}
 
 	bool DeviceSwapchainSupport::Support10BitSwapchain() const
@@ -55,7 +52,7 @@ namespace JJs2DEngine
 
 	bool DeviceSwapchainSupport::Support16BitSwapchain() const
 	{
-		return swapchainRGB16Unorm || swapchainRGBA16Unorm;
+		return swapchainRGBA16Unorm;
 	}
 
 	bool DeviceSwapchainSupport::SupportAnySwapchainFormatSize() const

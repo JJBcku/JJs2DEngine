@@ -87,9 +87,6 @@
     <ClInclude Include="DoNotInclude\DNIData\Main\MainInternal.h">
       <Filter>Header Files\Do Not Include\Main</Filter>
     </ClInclude>
-    <ClInclude Include="Include\Main\PipelineListInitializationData.h">
-      <Filter>Header Files\Include\Main</Filter>
-    </ClInclude>
     <ClInclude Include="DoNotInclude\DNIData\Common\VersionDataInternal.h">
       <Filter>Header Files\Do Not Include\Common</Filter>
     </ClInclude>
@@ -102,7 +99,7 @@
     <ClInclude Include="Include\Common\EngineVersion.h">
       <Filter>Header Files\Include\Common</Filter>
     </ClInclude>
-    <ClInclude Include="DoNotInclude\DNIData\Main\PipelineListInternal.h">
+    <ClInclude Include="DoNotInclude\DNIData\Main\RenderDataInternal.h">
       <Filter>Header Files\Do Not Include\Main</Filter>
     </ClInclude>
     <ClInclude Include="Include\Common\DeviceData.h">
@@ -110,6 +107,12 @@
     </ClInclude>
     <ClInclude Include="Include\Main\DeviceSettings.h">
       <Filter>Header Files\Include\Main</Filter>
+    </ClInclude>
+    <ClInclude Include="DoNotInclude\DNIData\Main\PipelineCacheHeaders.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DoNotInclude\DNIData\Main\DeviceSettingsInternal.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -134,9 +137,6 @@
     <ClCompile Include="DoNotInclude\ICode\Main\MainInitializationData.cpp">
       <Filter>Source Files\Include\Main</Filter>
     </ClCompile>
-    <ClCompile Include="DoNotInclude\ICode\Main\PipelineListInitializationData.cpp">
-      <Filter>Source Files\Include\Main</Filter>
-    </ClCompile>
     <ClCompile Include="DoNotInclude\ICode\Common\DeviceData.cpp">
       <Filter>Source Files\Include\Common</Filter>
     </ClCompile>
@@ -149,8 +149,14 @@
     <ClCompile Include="DoNotInclude\DNIData\Main\MainInternal.cpp">
       <Filter>Source Files\Do Not Include\Main</Filter>
     </ClCompile>
-    <ClCompile Include="DoNotInclude\DNIData\Main\PipelineListInternal.cpp">
+    <ClCompile Include="DoNotInclude\DNIData\Main\RenderDataInternal.cpp">
       <Filter>Source Files\Do Not Include\Main</Filter>
+    </ClCompile>
+    <ClCompile Include="DoNotInclude\DNIData\Main\PipelineCacheHeaders.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DoNotInclude\DNIData\Main\DeviceSettingsInternal.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

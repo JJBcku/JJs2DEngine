@@ -3,18 +3,25 @@
 
 namespace JJs2DEngine
 {
-	DeviceSettings::DeviceSettings()
+	PipelineSettings::PipelineSettings()
 	{
-		deviceIndex = std::numeric_limits<size_t>::max();
-
-		windowWidth = 0;
+		renderWidth = 0;
 		aspectRatio = AspectRatio::UNSET;
-
-		framesInFlight = 0;
 
 		swapchainFormat = SwapchainFormat::SWAPCHAIN_FORMAT_UNSET;
 		textureFormat = TextureFormat::TEXTURE_FORMAT_UNSET;
 		depthFormat = DepthFormat::DEPTH_FORMAT_UNSET;
+	}
+
+	DeviceSettings::DeviceSettings()
+	{
+		deviceIndex = std::numeric_limits<size_t>::max();
+
+		framesInFlight = 0;
+		windowWidth = 0;
+		aspectRatio = AspectRatio::UNSET;
+
+		currentPipelineSettings = std::numeric_limits<size_t>::max();
 	}
 
 }
