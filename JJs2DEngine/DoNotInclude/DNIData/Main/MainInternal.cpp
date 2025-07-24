@@ -45,7 +45,7 @@ namespace JJs2DEngine
 	static DeviceData CompileUsefullDeviceData(const VS::PhysicalDeviceData& deviceData, uint64_t deviceIndex);
 	static bool CheckDevicesUsefullness(const DeviceData& deviceData, VersionData minVulkanVersion);
 
-	MainInternal::MainInternal(const MainInitializationData& initData)
+	MainInternal::MainInternal(const MainInitializationData& initData) : _dataFolder(initData.dataFolder)
 	{
 		VS::MainInitData VSInitData;
 
@@ -136,7 +136,7 @@ namespace JJs2DEngine
 		instance.CreateLogicalDevice(creationData, {});
 
 		_currentDevicesSettings = deviceSettings;
-		_pipelineList = std::make_unique<RenderDataInternal>(deviceSettings.currentPipelineSettings, deviceSettings.preInitializedPipelineSettings,
+		_pipelineList = std::make_unique<RenderDataInternal>(deviceSettings.currentPipelineSettings, deviceSettings.preInitializedPipelineSettings, _dataFolder,
 			instance.GetChoosenDevicesMainClass(), _VSMain->GetSharedDataMainList());
 	}
 

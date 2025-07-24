@@ -76,34 +76,34 @@ namespace JJs2DEngine
 
 	constexpr uint32_t imagesInTextureArray = 8;
 
-	RenderDataInternal::RenderDataInternal(size_t currentPipelineSettings, const std::vector<PipelineSettings>& preInitializedPipelineSettings,
+	RenderDataInternal::RenderDataInternal(size_t currentPipelineSettings, const std::vector<PipelineSettings>& preInitializedPipelineSettings, const std::string& dataFolder,
 		VS::DeviceMain device, VS::SharedDataMainList sharedData) : _device(device), _sharedData(sharedData), _currentPipelineSettings(currentPipelineSettings)
 	{
 		bool uiCacheCreateMainHeader = false;
 
-		if (!fs::exists(pipelineCacheDirectoryName))
+		if (!fs::exists(dataFolder + pipelineCacheDirectoryName))
 		{
-			fs::create_directory(pipelineCacheDirectoryName);
+			fs::create_directory(dataFolder + pipelineCacheDirectoryName);
 
 			uiCacheCreateMainHeader = true;
 		}
 
-		if (fs::exists(UIPipelineFullName))
+		if (fs::exists(dataFolder + UIPipelineFullName))
 		{
-			LoadUIPipelineCacheFile();
+			LoadUIPipelineCacheFile(dataFolder);
 		}
 		else
 		{
-			CreateUIPipelineCacheFile();
+			CreateUIPipelineCacheFile(dataFolder);
 		}
 
-		if (fs::exists(GammaCorrectionPipelineFullName))
+		if (fs::exists(dataFolder + GammaCorrectionPipelineFullName))
 		{
-			LoadGammaCorrectionPipelineCacheFile();
+			LoadGammaCorrectionPipelineCacheFile(dataFolder);
 		}
 		else
 		{
-			CreateGammaCorrectionPipelineCacheFile();
+			CreateGammaCorrectionPipelineCacheFile(dataFolder);
 		}
 
 		auto shaderList = _device.GetShaderLists();
@@ -152,7 +152,7 @@ namespace JJs2DEngine
 			}
 
 			_uiPipelineList = devicePipelineList.AddGraphicPipelines(creationDataList, _uiPipelineCache, creationDataList.size() * 8);
-			SaveUIPipelineCacheFile();
+			SaveUIPipelineCacheFile(dataFolder);
 		}
 
 		{
@@ -181,7 +181,7 @@ namespace JJs2DEngine
 			}
 
 			_gammaCorrectionPipelineList = devicePipelineList.AddGraphicPipelines(creationDataList, _gammaCorrectionPipelineCache, creationDataList.size() * 8);
-			SaveGammaCorrectionPipelineCacheFile();
+			SaveGammaCorrectionPipelineCacheFile(dataFolder);
 		}
 	}
 
@@ -189,13 +189,13 @@ namespace JJs2DEngine
 	{
 	}
 
-	void RenderDataInternal::CreateUIPipelineCacheFile()
+	void RenderDataInternal::CreateUIPipelineCacheFile(const std::string& dataFolder)
 	{
 		auto pipelineDataList = _device.GetPipelineDataLists();
 
 		std::fstream uiPipelineCacheFile;
 
-		uiPipelineCacheFile.open(UIPipelineFullName, std::ios_base::binary | std::ios_base::in | std::ios_base::out | std::ios_base::trunc);
+		uiPipelineCacheFile.open(dataFolder + UIPipelineFullName, std::ios_base::binary | std::ios_base::in | std::ios_base::out | std::ios_base::trunc);
 
 		if (!uiPipelineCacheFile.is_open())
 			throw std::runtime_error("RenderDataInternal::CreateUIPipelineCacheFile Error: Program failed to open the pipeline cache file!");
@@ -217,13 +217,13 @@ namespace JJs2DEngine
 		uiPipelineCacheFile.close();
 	}
 
-	void RenderDataInternal::LoadUIPipelineCacheFile()
+	void RenderDataInternal::LoadUIPipelineCacheFile(const std::string& dataFolder)
 	{
 		auto pipelineDataList = _device.GetPipelineDataLists();
 
 		std::ifstream uiPipelineCacheFile;
 
-		uiPipelineCacheFile.open(UIPipelineFullName, std::ios_base::binary | std::ios_base::in | std::ios_base::out);
+		uiPipelineCacheFile.open(dataFolder + UIPipelineFullName, std::ios_base::binary | std::ios_base::in | std::ios_base::out);
 
 		if (!uiPipelineCacheFile.is_open())
 			throw std::runtime_error("RenderDataInternal::LoadUIPipelineCacheFile Error: Program failed to open the pipeline cache file!");
@@ -291,7 +291,7 @@ namespace JJs2DEngine
 		uiPipelineCacheFile.close();
 	}
 
-	void RenderDataInternal::SaveUIPipelineCacheFile()
+	void RenderDataInternal::SaveUIPipelineCacheFile(const std::string& dataFolder)
 	{
 		auto pipelineDataList = _device.GetPipelineDataLists();
 		std::ifstream uiPipelineCacheInFile;
@@ -318,7 +318,7 @@ namespace JJs2DEngine
 			return;
 
 		PipelineCacheElementHeader elementHeader, oldElementHeader;
-		uiPipelineCacheInFile.open(UIPipelineFullName, std::ios_base::binary | std::ios_base::in);
+		uiPipelineCacheInFile.open(dataFolder + UIPipelineFullName, std::ios_base::binary | std::ios_base::in);
 
 		if (!uiPipelineCacheInFile.is_open())
 			throw std::runtime_error("RenderDataInternal::SaveUIPipelineCacheFile: Program failed to open the pipeline cache in file!");
@@ -349,7 +349,7 @@ namespace JJs2DEngine
 
 		uiPipelineCacheInFile.close();
 
-		uiPipelineCacheOutFile.open(UIPipelineFullName, std::ios_base::binary | std::ios_base::out | std::ios_base::in);
+		uiPipelineCacheOutFile.open(dataFolder + UIPipelineFullName, std::ios_base::binary | std::ios_base::out | std::ios_base::in);
 
 		if (!uiPipelineCacheOutFile.is_open())
 			throw std::runtime_error("RenderDataInternal::SaveUIPipelineCacheFile: Program failed to open the pipeline cache out file!");
@@ -399,13 +399,13 @@ namespace JJs2DEngine
 		uiPipelineCacheOutFile.close();
 	}
 
-	void RenderDataInternal::CreateGammaCorrectionPipelineCacheFile()
+	void RenderDataInternal::CreateGammaCorrectionPipelineCacheFile(const std::string& dataFolder)
 	{
 		auto pipelineDataList = _device.GetPipelineDataLists();
 
 		std::fstream gammaCorrectionPipelineCacheFile;
 
-		gammaCorrectionPipelineCacheFile.open(GammaCorrectionPipelineFullName, std::ios_base::binary | std::ios_base::in | std::ios_base::out | std::ios_base::trunc);
+		gammaCorrectionPipelineCacheFile.open(dataFolder + GammaCorrectionPipelineFullName, std::ios_base::binary | std::ios_base::in | std::ios_base::out | std::ios_base::trunc);
 
 		if (!gammaCorrectionPipelineCacheFile.is_open())
 			throw std::runtime_error("RenderDataInternal::CreateGammaCorrectionPipelineCacheFile Error: Program failed to open the pipeline cache file!");
@@ -428,13 +428,13 @@ namespace JJs2DEngine
 		gammaCorrectionPipelineCacheFile.close();
 	}
 
-	void RenderDataInternal::LoadGammaCorrectionPipelineCacheFile()
+	void RenderDataInternal::LoadGammaCorrectionPipelineCacheFile(const std::string& dataFolder)
 	{
 		auto pipelineDataList = _device.GetPipelineDataLists();
 
 		std::ifstream gammaCorrectionCacheFile;
 
-		gammaCorrectionCacheFile.open(GammaCorrectionPipelineFullName, std::ios_base::binary | std::ios_base::in | std::ios_base::out);
+		gammaCorrectionCacheFile.open(dataFolder + GammaCorrectionPipelineFullName, std::ios_base::binary | std::ios_base::in | std::ios_base::out);
 
 		if (!gammaCorrectionCacheFile.is_open())
 			throw std::runtime_error("RenderDataInternal::LoadGammaCorrectionPipelineCacheFile Error: Program failed to open the pipeline cache file!");
@@ -502,7 +502,7 @@ namespace JJs2DEngine
 		gammaCorrectionCacheFile.close();
 	}
 
-	void RenderDataInternal::SaveGammaCorrectionPipelineCacheFile()
+	void RenderDataInternal::SaveGammaCorrectionPipelineCacheFile(const std::string& dataFolder)
 	{
 		auto pipelineDataList = _device.GetPipelineDataLists();
 		std::ifstream gammaCorrectionPipelineCacheInFile;
@@ -529,7 +529,7 @@ namespace JJs2DEngine
 			return;
 
 		PipelineCacheElementHeader elementHeader, oldElementHeader;
-		gammaCorrectionPipelineCacheInFile.open(GammaCorrectionPipelineFullName, std::ios_base::binary | std::ios_base::in);
+		gammaCorrectionPipelineCacheInFile.open(dataFolder + GammaCorrectionPipelineFullName, std::ios_base::binary | std::ios_base::in);
 
 		if (!gammaCorrectionPipelineCacheInFile.is_open())
 			throw std::runtime_error("RenderDataInternal::SaveGammaCorrectionPipelineCacheFile: Program failed to open the pipeline cache in file!");
@@ -560,7 +560,7 @@ namespace JJs2DEngine
 
 		gammaCorrectionPipelineCacheInFile.close();
 
-		gammaCorrectionPipelineCacheOutFile.open(GammaCorrectionPipelineFullName, std::ios_base::binary | std::ios_base::out | std::ios_base::in);
+		gammaCorrectionPipelineCacheOutFile.open(dataFolder + GammaCorrectionPipelineFullName, std::ios_base::binary | std::ios_base::out | std::ios_base::in);
 
 		if (!gammaCorrectionPipelineCacheOutFile.is_open())
 			throw std::runtime_error("RenderDataInternal::SaveGammaCorrectionPipelineCacheFile: Program failed to open the pipeline cache out file!");

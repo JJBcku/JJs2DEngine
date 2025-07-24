@@ -22,7 +22,7 @@ namespace JJs2DEngine
 	class RenderDataInternal
 	{
 	public:
-		RenderDataInternal(size_t currentPipelineSettings, const std::vector<PipelineSettings>& preInitializedPipelineSettings,
+		RenderDataInternal(size_t currentPipelineSettings, const std::vector<PipelineSettings>& preInitializedPipelineSettings, const std::string& dataFolder,
 			VS::DeviceMain device, VS::SharedDataMainList sharedData);
 		~RenderDataInternal();
 
@@ -61,13 +61,13 @@ namespace JJs2DEngine
 		IDObject<VS::AutoCleanupPipelineLayout> _gammaCorrectionPipelineLayout;
 		std::vector<IDObject<VS::AutoCleanupGraphicsPipeline>> _gammaCorrectionPipelineList;
 
-		void CreateUIPipelineCacheFile();
-		void LoadUIPipelineCacheFile();
-		void SaveUIPipelineCacheFile();
+		void CreateUIPipelineCacheFile(const std::string& dataFolder);
+		void LoadUIPipelineCacheFile(const std::string& dataFolder);
+		void SaveUIPipelineCacheFile(const std::string& dataFolder);
 
-		void CreateGammaCorrectionPipelineCacheFile();
-		void LoadGammaCorrectionPipelineCacheFile();
-		void SaveGammaCorrectionPipelineCacheFile();
+		void CreateGammaCorrectionPipelineCacheFile(const std::string& dataFolder);
+		void LoadGammaCorrectionPipelineCacheFile(const std::string& dataFolder);
+		void SaveGammaCorrectionPipelineCacheFile(const std::string& dataFolder);
 
 		std::vector<char> LoadShaderFile(std::string shaderName);
 

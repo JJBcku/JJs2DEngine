@@ -7,5 +7,7 @@ namespace JJs2DEngine
 	{
 		appName = "Unknown";
 		appVariantName = "Unknown";
+
+		dataFolder = "";
 	}
 }

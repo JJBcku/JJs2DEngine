@@ -4,6 +4,7 @@
 #include <memory>
 #include <vector>
 #include <optional>
+#include <string>
 
 #include <VulkanSimplified/VSMain/VSMain.h>
 
@@ -39,6 +40,8 @@ namespace JJs2DEngine
 		std::unique_ptr<VS::Main> _VSMain;
 		VersionData _minVulkanVersion;
 		VersionData _maxVulkanVersion;
+
+		std::string _dataFolder;
 
 		std::vector<DeviceData> _deviceList;
 
