@@ -1,6 +1,8 @@
 #include "MainIpch.h"
 #include "../../../Include/Main/DeviceSettings.h"
 
+#include "../../../Include/Main/AspectRatio.h"
+
 namespace JJs2DEngine
 {
 	PipelineSettings::PipelineSettings()
@@ -18,8 +20,6 @@ namespace JJs2DEngine
 		deviceIndex = std::numeric_limits<size_t>::max();
 
 		framesInFlight = 0;
-		windowWidth = 0;
-		aspectRatio = AspectRatio::UNSET;
 
 		currentPipelineSettings = std::numeric_limits<size_t>::max();
 	}

@@ -2,15 +2,13 @@
 
 #include <stdint.h>
 #include <vector>
+#include <string>
+
+#include "AspectRatioDef.h"
+#include "WindowCreationData.h"
 
 namespace JJs2DEngine
 {
-	enum class AspectRatio : uint32_t
-	{
-		UNSET = 0,
-		ASPECT_RATIO_16_9 = 1,
-	};
-
 	enum class SwapchainFormat : uint64_t
 	{
 		SWAPCHAIN_FORMAT_UNSET = 0x0,
@@ -57,8 +55,8 @@ namespace JJs2DEngine
 		size_t deviceIndex;
 
 		uint64_t framesInFlight;
-		uint32_t windowWidth;
-		AspectRatio aspectRatio;
+
+		WindowCreationData windowData;
 
 		size_t currentPipelineSettings;
 

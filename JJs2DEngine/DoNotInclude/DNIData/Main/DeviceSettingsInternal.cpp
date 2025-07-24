@@ -1,6 +1,8 @@
 #include "MainDNIpch.h"
 #include "DeviceSettingsInternal.h"
 
+#include "../../../Include/Main/AspectRatio.h"
+
 namespace JJs2DEngine
 {
 	VS::DataFormatSetIndependentID TranslateToFormat(SwapchainFormat format)

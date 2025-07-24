@@ -114,6 +114,15 @@
     <ClInclude Include="DoNotInclude\DNIData\Main\DeviceSettingsInternal.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Include\Main\AspectRatio.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Main\AspectRatioDef.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Main\WindowCreationData.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DoNotInclude\DNIData\Common\CommonDNIpch.cpp">
@@ -156,6 +165,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="DoNotInclude\DNIData\Main\DeviceSettingsInternal.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DoNotInclude\ICode\Main\WindowCreationData.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
