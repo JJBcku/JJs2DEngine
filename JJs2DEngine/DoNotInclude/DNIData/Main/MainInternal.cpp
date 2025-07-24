@@ -119,7 +119,7 @@ namespace JJs2DEngine
 			instance.GetChoosenDevicesMainClass(), _VSMain->GetSharedDataMainList());
 	}
 
-	void MainInternal::RecreateDevice(const DeviceSettings& deviceSettings)
+	/*void MainInternal::RecreateDevice(const DeviceSettings& deviceSettings)
 	{
 		if (_currentDevicesSettings.has_value())
 		{
@@ -174,7 +174,7 @@ namespace JJs2DEngine
 		_currentDevicesSettings = deviceSettings;
 		_pipelineList = std::make_unique<RenderDataInternal>(deviceSettings.currentPipelineSettings, deviceSettings.preInitializedPipelineSettings,
 			instance.GetChoosenDevicesMainClass(), _VSMain->GetSharedDataMainList());
-	}
+	}*/
 
 	void MainInternal::CreateInstance(const MainInitializationData& initData)
 	{

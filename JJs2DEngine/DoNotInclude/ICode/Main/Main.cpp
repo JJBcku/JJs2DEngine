@@ -23,9 +23,4 @@ namespace JJs2DEngine
 		_internal->CreateDevice(deviceSettings);
 	}
 
-	void Main::RecreateDevice(const DeviceSettings& deviceSettings)
-	{
-		_internal->RecreateDevice(deviceSettings);
-	}
-
 }
