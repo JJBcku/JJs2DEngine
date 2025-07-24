@@ -108,20 +108,20 @@
     <ClInclude Include="Include\Main\DeviceSettings.h">
       <Filter>Header Files\Include\Main</Filter>
     </ClInclude>
-    <ClInclude Include="DoNotInclude\DNIData\Main\PipelineCacheHeaders.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="DoNotInclude\DNIData\Main\DeviceSettingsInternal.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Do Not Include\Main</Filter>
+    </ClInclude>
+    <ClInclude Include="DoNotInclude\DNIData\Main\PipelineCacheHeaders.h">
+      <Filter>Header Files\Do Not Include\Main</Filter>
     </ClInclude>
     <ClInclude Include="Include\Main\AspectRatio.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Include\Main</Filter>
     </ClInclude>
     <ClInclude Include="Include\Main\AspectRatioDef.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Include\Main</Filter>
     </ClInclude>
     <ClInclude Include="Include\Main\WindowCreationData.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Include\Main</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -161,14 +161,14 @@
     <ClCompile Include="DoNotInclude\DNIData\Main\RenderDataInternal.cpp">
       <Filter>Source Files\Do Not Include\Main</Filter>
     </ClCompile>
-    <ClCompile Include="DoNotInclude\DNIData\Main\PipelineCacheHeaders.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="DoNotInclude\DNIData\Main\DeviceSettingsInternal.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Do Not Include\Main</Filter>
+    </ClCompile>
+    <ClCompile Include="DoNotInclude\DNIData\Main\PipelineCacheHeaders.cpp">
+      <Filter>Source Files\Do Not Include\Main</Filter>
     </ClCompile>
     <ClCompile Include="DoNotInclude\ICode\Main\WindowCreationData.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Include\Main</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
