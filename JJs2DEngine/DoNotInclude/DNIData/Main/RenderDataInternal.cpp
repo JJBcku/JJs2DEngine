@@ -81,6 +81,9 @@ namespace JJs2DEngine
 	{
 		bool uiCacheCreateMainHeader = false;
 
+		if (dataFolder != "" && !fs::exists(dataFolder))
+			throw std::runtime_error("RenderDataInternal Constructor Error: Program was given an non-existent data folder!");
+
 		if (!fs::exists(dataFolder + pipelineCacheDirectoryName))
 		{
 			fs::create_directory(dataFolder + pipelineCacheDirectoryName);
