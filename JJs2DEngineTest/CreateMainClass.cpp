@@ -3,6 +3,8 @@
 
 #include "MainDataCollection.h"
 
+#include <Miscellaneous/Bool64.h>
+
 #include <MainInitializationData.h>
 #include <Main.h>
 
@@ -89,7 +91,7 @@ JJ2DE::DeviceSettings CreateDeviceSettings(const JJ2DE::DeviceData& device, size
 	ret.windowData.windowTitle = "JJ2DEngine Test Window";
 	ret.windowData.windowWidth = 1920;
 	ret.windowData.aspectRatio = JJ2DE::AspectRatio::ASPECT_RATIO_16_9;
-	ret.windowData.fullscreenWindow = false;
+	ret.windowData.fullscreenWindow = Misc::BOOL64_FALSE;
 
 	JJ2DE::PipelineSettings currentPipelineSettings;
 
