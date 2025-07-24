@@ -107,7 +107,7 @@ namespace JJs2DEngine
 		}
 
 		auto shaderList = _device.GetShaderLists();
-		auto standardFragmentShaderData = LoadShaderFile(standardFragmentShaderName + fragmentShaderExtension);
+		auto standardFragmentShaderData = LoadShaderFile(dataFolder + standardFragmentShaderName + fragmentShaderExtension);
 		_standardFragmentShaderID = shaderList.CreateFragmentShaderModule(*standardFragmentShaderData.data(), standardFragmentShaderData.size(), 0x10);
 
 		auto imageList = _device.GetImageDataLists();
@@ -133,7 +133,7 @@ namespace JJs2DEngine
 		creationDataList.reserve(preInitializedPipelineSettings.size());
 
 		{
-			auto uiLayerVertexShaderData = LoadShaderFile(uiLayerVertexShaderName + vertexShaderExtension);
+			auto uiLayerVertexShaderData = LoadShaderFile(dataFolder + uiLayerVertexShaderName + vertexShaderExtension);
 			_uiVertexShaderID = shaderList.CreateVertexShaderModule(*uiLayerVertexShaderData.data(), uiLayerVertexShaderData.size(), 0x10);
 
 			_uiDescriptorSetLayout = deviceDescriptorList.AddDescriptorSetLayout(0, { {textureDescriptorBinding, std::vector<decltype(sampler)>(imagesInTextureArray, sampler)} }, 0x10);
@@ -156,10 +156,10 @@ namespace JJs2DEngine
 		}
 
 		{
-			auto gammaCorrectionFragmentShaderData = LoadShaderFile(gammaCorrectionFragmentShaderName + fragmentShaderExtension);
+			auto gammaCorrectionFragmentShaderData = LoadShaderFile(dataFolder + gammaCorrectionFragmentShaderName + fragmentShaderExtension);
 			_gammaCorrectionFragmentShaderID = shaderList.CreateFragmentShaderModule(*gammaCorrectionFragmentShaderData.data(), gammaCorrectionFragmentShaderData.size(), 0x10);
 
-			auto gammaCorrectionVertexShaderData = LoadShaderFile(gammaCorrectionVertexShaderName + vertexShaderExtension);
+			auto gammaCorrectionVertexShaderData = LoadShaderFile(dataFolder + gammaCorrectionVertexShaderName + vertexShaderExtension);
 			_gammaCorrectionVertexShaderID = shaderList.CreateVertexShaderModule(*gammaCorrectionVertexShaderData.data(), gammaCorrectionVertexShaderData.size(), 0x10);
 
 			auto gammaCorrectionDescriptorBinding = sharedDescriptorData.AddUniqueDescriptorSetLayoutBindingsData(VS::DescriptorTypeFlagBits::INPUT_ATTACHMENT, 1,
