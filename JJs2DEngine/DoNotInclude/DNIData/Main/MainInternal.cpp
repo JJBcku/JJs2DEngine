@@ -45,7 +45,7 @@ namespace JJs2DEngine
 	static DeviceData CompileUsefullDeviceData(const VS::PhysicalDeviceData& deviceData, uint64_t deviceIndex);
 	static bool CheckDevicesUsefullness(const DeviceData& deviceData, VersionData minVulkanVersion);
 
-	MainInternal::MainInternal(const MainInitializationData& initData) : _dataFolder(initData.dataFolder)
+	MainInternal::MainInternal(const MainInitializationData& initData)
 	{
 		VS::MainInitData VSInitData;
 
@@ -53,6 +53,8 @@ namespace JJs2DEngine
 
 		_minVulkanVersion = initData.minVulkanVersion;
 		_maxVulkanVersion = initData.maxVulkanVersion;
+
+		_dataFolder = initData.dataFolder;
 
 		CreateInstance(initData);
 		EnumerateDevices();
