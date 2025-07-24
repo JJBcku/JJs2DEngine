@@ -75,6 +75,9 @@ namespace JJs2DEngine
 		if (deviceSettings.deviceIndex >= _deviceList.size())
 			throw std::runtime_error("MainInternal::CreateDevice Error: Function was given an erroneous device index value!");
 
+		if (deviceSettings.currentPipelineSettings >= deviceSettings.preInitializedPipelineSettings.size())
+			throw std::runtime_error("MainInternal::CreateDevice Error: Function was given an erroneous current pipeline index value!");
+
 		const auto& deviceData = _deviceList[deviceSettings.deviceIndex];
 
 		VS::LogicalDeviceCreationData creationData;
