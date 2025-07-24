@@ -16,7 +16,11 @@
 namespace JJs2DEngine
 {
 	struct MainInitializationData;
+
 	struct DeviceData;
+	struct DeviceSwapchainSupport;
+	struct DeviceTextureSupport;
+	struct DeviceDepthStencilSupport;
 
 	class RenderDataInternal;
 
@@ -47,5 +51,9 @@ namespace JJs2DEngine
 
 		void CreateInstance(const MainInitializationData& initData);
 		void EnumerateDevices();
+
+		bool CheckSwapchainFormatAvailability(SwapchainFormat format, const DeviceSwapchainSupport& deviceData);
+		bool CheckTexturesFormatAvailability(TextureFormat format, const DeviceTextureSupport& deviceData);
+		bool CheckDepthFormatAvailability(DepthFormat format, const DeviceDepthStencilSupport& deviceData);
 	};
 }

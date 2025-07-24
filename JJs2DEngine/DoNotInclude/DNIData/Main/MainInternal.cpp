@@ -80,6 +80,24 @@ namespace JJs2DEngine
 
 		const auto& deviceData = _deviceList[deviceSettings.deviceIndex];
 
+		if (deviceSettings.framesInFlight < deviceData.swapchainSupport.minFramesInFlight)
+			throw std::runtime_error("MainInternal::CreateDevice Error: Function was given frames in flight value below the minimum!");
+
+		if (deviceSettings.framesInFlight > deviceData.swapchainSupport.maxFramesInFlight)
+			throw std::runtime_error("MainInternal::CreateDevice Error: Function was given frames in flight value above the maximum!");
+
+		for (auto& setting : deviceSettings.preInitializedPipelineSettings)
+		{
+			if (!CheckSwapchainFormatAvailability(setting.swapchainFormat, deviceData.swapchainSupport))
+				throw std::runtime_error("MainInternal::CreateDevice Error: One of preinitialized pipelines has a swapchain format unsupported by the device!");
+
+			if (!CheckTexturesFormatAvailability(setting.textureFormat, deviceData.textureSupport))
+				throw std::runtime_error("MainInternal::CreateDevice Error: One of preinitialized pipelines has a texture format unsupported by the device!");
+
+			if (!CheckDepthFormatAvailability(setting.depthFormat, deviceData.depthStencilSupport))
+				throw std::runtime_error("MainInternal::CreateDevice Error: One of preinitialized pipelines has a depth format unsupported by the device!");
+		}
+
 		VS::LogicalDeviceCreationData creationData;
 		creationData.physicalGPUIndex = deviceData.deviceIndex;
 		creationData.queuesCreationInfo.reserve(2);
@@ -255,6 +273,84 @@ namespace JJs2DEngine
 
 		if (_deviceList.empty())
 			throw std::runtime_error("MainInternal::EnumerateDevices Error: Program found no usefull GPU's!");
+	}
+
+	bool MainInternal::CheckSwapchainFormatAvailability(SwapchainFormat format, const DeviceSwapchainSupport& deviceData)
+	{
+		bool ret = false;
+
+		switch (format)
+		{
+		case JJs2DEngine::SwapchainFormat::SWAPCHAIN_FORMAT_UNSET:
+			break;
+		case JJs2DEngine::SwapchainFormat::SWAPCHAIN_FORMAT_RGBA16:
+			ret = deviceData.swapchainRGBA16Unorm;
+			break;
+		case JJs2DEngine::SwapchainFormat::SWAPCHAIN_FORMAT_A2RGB10:
+			ret = deviceData.swapchainA2RGB10Unorm;
+			break;
+		case JJs2DEngine::SwapchainFormat::SWAPCHAIN_FORMAT_A2BGR10:
+			ret = deviceData.swapchainA2BGR10Unorm;
+			break;
+		case JJs2DEngine::SwapchainFormat::SWAPCHAIN_FORMAT_RGBA8:
+			ret = deviceData.swapchainRGBA8Unorm;
+			break;
+		case JJs2DEngine::SwapchainFormat::SWAPCHAIN_FORMAT_BGRA8:
+			ret = deviceData.swapchainBGRA8Unorm;
+			break;
+		case JJs2DEngine::SwapchainFormat::SWAPCHAIN_FORMAT_ABGR8:
+			ret = deviceData.swapchainABGR8Unorm;
+			break;
+		default:
+			break;
+		}
+
+		return ret;
+	}
+
+	bool MainInternal::CheckTexturesFormatAvailability(TextureFormat format, const DeviceTextureSupport& deviceData)
+	{
+		bool ret = false;
+
+		switch (format)
+		{
+		case JJs2DEngine::TextureFormat::TEXTURE_FORMAT_UNSET:
+			break;
+		case JJs2DEngine::TextureFormat::TEXTURE_FORMAT_RGBA16:
+			ret = deviceData.textureRGBA16UNORM;
+			break;
+		case JJs2DEngine::TextureFormat::TEXTURE_FORMAT_RGBA8:
+			ret = deviceData.textureRGBA8UNORM;
+			break;
+		case JJs2DEngine::TextureFormat::TEXTURE_FORMAT_BGRA8:
+			ret = deviceData.textureBGRA8UNORM;
+			break;
+		default:
+			break;
+		}
+
+		return ret;
+	}
+
+	bool MainInternal::CheckDepthFormatAvailability(DepthFormat format, const DeviceDepthStencilSupport& deviceData)
+	{
+		bool ret = false;
+
+		switch (format)
+		{
+		case JJs2DEngine::DepthFormat::DEPTH_FORMAT_UNSET:
+			break;
+		case JJs2DEngine::DepthFormat::DEPTH_FORMAT_D32:
+			ret = deviceData.D32Float;
+			break;
+		case JJs2DEngine::DepthFormat::DEPTH_FORMAT_D32_S8:
+			ret = deviceData.D32FloatS8Int;
+			break;
+		default:
+			break;
+		}
+
+		return ret;
 	}
 
 	static bool CheckFormatSwapchainSupport(const VS::FormatsSupportedImageFeaturesList& supportedImageFormats,
