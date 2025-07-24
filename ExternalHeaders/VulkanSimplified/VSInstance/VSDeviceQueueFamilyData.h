@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../VSCommon/VSBool64.h"
+#include <Miscellaneous/Bool64Def.h>
 
 #include <stdint.h>
 
@@ -29,7 +29,7 @@ namespace VulkanSimplified
 		uint32_t minImageTransferGranularityHeight;
 		uint32_t minImageTransferGranularityDepth;
 
-		Bool64 presentationSupport;
+		Misc::Bool64 presentationSupport;
 
 		QueueFamilyData();
 		~QueueFamilyData();

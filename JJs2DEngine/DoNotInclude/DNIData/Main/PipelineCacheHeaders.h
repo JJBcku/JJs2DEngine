@@ -1,7 +1,7 @@
 #pragma once
 
 #include <array>
-#include <VulkanSimplified/VSCommon/VSBool64.h>
+#include <Miscellaneous/Bool64Def.h>
 
 namespace JJs2DEngine
 {
@@ -19,7 +19,7 @@ namespace JJs2DEngine
 	{
 		uint64_t elementSize;
 		uint64_t elementCRC64WE;
-		VS::Bool64 deleted;
+		Misc::Bool64 deleted;
 
 		PipelineCacheElementHeader();
 	};

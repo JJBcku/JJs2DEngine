@@ -10,6 +10,8 @@
 
 #include "RenderDataInternal.h"
 
+#include <Miscellaneous/Bool64.h>
+
 #include <VulkanSimplified/VSMain/VSMainInitData.h>
 #include <VulkanSimplified/VSMain/VSInstanceExtensionPacksList.h>
 #include <VulkanSimplified/VSMain/VSInstanceLayerPacksList.h>
@@ -318,7 +320,7 @@ namespace JJs2DEngine
 			auto biggestGranularity = std::max(std::max(family.minImageTransferGranularityWidth, family.minImageTransferGranularityHeight), family.minImageTransferGranularityDepth);
 			bool better = false;
 
-			if ((family.queueTypes & VS::QUEUE_TYPE_GRAPHICS) == VS::QUEUE_TYPE_GRAPHICS && family.presentationSupport == VS::BOOL64_TRUE)
+			if ((family.queueTypes & VS::QUEUE_TYPE_GRAPHICS) == VS::QUEUE_TYPE_GRAPHICS && family.presentationSupport == Misc::BOOL64_TRUE)
 			{
 				if ((family.queueTypes & VS::QUEUE_TYPE_VIDEO_ENCODE) != VS::QUEUE_TYPE_VIDEO_ENCODE &&
 					(family.queueTypes & VS::QUEUE_TYPE_VIDEO_DECODE) != VS::QUEUE_TYPE_VIDEO_DECODE)

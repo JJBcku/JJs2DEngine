@@ -1,6 +1,8 @@
 #include "MainDNIpch.h"
 #include "PipelineCacheHeaders.h"
 
+#include <Miscellaneous/Bool64.h>
+
 namespace JJs2DEngine
 {
 	PipelineCacheMainHeader::PipelineCacheMainHeader()
@@ -13,7 +15,7 @@ namespace JJs2DEngine
 	{
 		elementSize = 0;
 		elementCRC64WE = 0;
-		deleted = VS::BOOL64_FALSE;
+		deleted = Misc::BOOL64_FALSE;
 	}
 
 }

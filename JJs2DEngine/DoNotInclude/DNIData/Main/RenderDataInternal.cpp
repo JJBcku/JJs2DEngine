@@ -10,6 +10,8 @@
 
 #include <CPPCRC/cppcrc.h>
 
+#include <Miscellaneous/Bool64.h>
+
 #include <VulkanSimplified/VSDevice/VSDescriptorDataLists.h>
 #include <VulkanSimplified/VSDevice/VSShaderLists.h>
 #include <VulkanSimplified/VSDevice/VSPipelineDataLists.h>
@@ -246,7 +248,7 @@ namespace JJs2DEngine
 			if (!uiPipelineCacheFile.good())
 				throw std::runtime_error("RenderDataInternal::LoadUIPipelineCacheFile Error: Program failed to read a pipeline cache's element header!");
 
-			if (elementHeader.deleted != VS::BOOL64_FALSE)
+			if (elementHeader.deleted != Misc::BOOL64_FALSE)
 				continue;
 
 			uiPipelineCompatibleData.resize(elementHeader.elementSize);
@@ -358,7 +360,7 @@ namespace JJs2DEngine
 			if (!uiPipelineCacheOutFile.good())
 				throw std::runtime_error("RenderDataInternal::SaveUIPipelineCacheFile: Program failed to move writing position to the old header!");
 
-			oldElementHeader.deleted = VS::BOOL64_TRUE;
+			oldElementHeader.deleted = Misc::BOOL64_TRUE;
 
 			uiPipelineCacheOutFile.write(reinterpret_cast<const char*>(&oldElementHeader), sizeof(oldElementHeader));
 			if (!uiPipelineCacheOutFile.good())
@@ -371,7 +373,7 @@ namespace JJs2DEngine
 
 		elementHeader.elementSize = dataToSave.size();
 		elementHeader.elementCRC64WE = currentDataCRC64WE;
-		elementHeader.deleted = VS::BOOL64_FALSE;
+		elementHeader.deleted = Misc::BOOL64_FALSE;
 
 		uiPipelineCacheOutFile.write(reinterpret_cast<const char*>(&elementHeader), sizeof(elementHeader));
 		if (!uiPipelineCacheOutFile.good())
@@ -457,7 +459,7 @@ namespace JJs2DEngine
 			if (!gammaCorrectionCacheFile.good())
 				throw std::runtime_error("RenderDataInternal::LoadGammaCorrectionPipelineCacheFile Error: Program failed to read a pipeline cache's element header!");
 
-			if (elementHeader.deleted != VS::BOOL64_FALSE)
+			if (elementHeader.deleted != Misc::BOOL64_FALSE)
 				continue;
 
 			uiPipelineCompatibleData.resize(elementHeader.elementSize);
@@ -569,7 +571,7 @@ namespace JJs2DEngine
 			if (!gammaCorrectionPipelineCacheOutFile.good())
 				throw std::runtime_error("RenderDataInternal::SaveGammaCorrectionPipelineCacheFile: Program failed to move writing position to the old header!");
 
-			oldElementHeader.deleted = VS::BOOL64_TRUE;
+			oldElementHeader.deleted = Misc::BOOL64_TRUE;
 
 			gammaCorrectionPipelineCacheOutFile.write(reinterpret_cast<const char*>(&oldElementHeader), sizeof(oldElementHeader));
 			if (!gammaCorrectionPipelineCacheOutFile.good())
@@ -582,7 +584,7 @@ namespace JJs2DEngine
 
 		elementHeader.elementSize = dataToSave.size();
 		elementHeader.elementCRC64WE = currentDataCRC64WE;
-		elementHeader.deleted = VS::BOOL64_FALSE;
+		elementHeader.deleted = Misc::BOOL64_FALSE;
 
 		gammaCorrectionPipelineCacheOutFile.write(reinterpret_cast<const char*>(&elementHeader), sizeof(elementHeader));
 		if (!gammaCorrectionPipelineCacheOutFile.good())

@@ -1,8 +1,8 @@
 #pragma once
 
-#include "VSBool64Def.h"
+#include "Bool64Def.h"
 
-namespace VulkanSimplified
+namespace Misc
 {
 	enum Bool64Values : Bool64
 	{
