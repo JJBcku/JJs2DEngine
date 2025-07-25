@@ -1,5 +1,5 @@
 #include "MainIpch.h"
-#include "../../../Include/Main/WindowCreationData.h"
+#include "../../../Include/Main/WindowInitializationData.h"
 
 #include "../../../Include/Main/AspectRatio.h"
 
@@ -7,7 +7,7 @@
 
 namespace JJs2DEngine
 {
-	WindowCreationData::WindowCreationData()
+	WindowInitializationData::WindowInitializationData()
 	{
 		windowTitle = "Unnamed";
 		windowWidth = 0;

@@ -8,6 +8,7 @@
 
 #include "../Common/VersionDataInternal.h"
 
+#include "WindowDataInternal.h"
 #include "RenderDataInternal.h"
 
 #include <Miscellaneous/Bool64.h>
@@ -138,6 +139,8 @@ namespace JJs2DEngine
 		instance.CreateLogicalDevice(creationData, {});
 
 		_currentDevicesSettings = deviceSettings;
+
+		_windowData = std::make_unique<WindowDataInternal>(deviceSettings.windowData, static_cast<uint32_t>(deviceSettings.framesInFlight));
 		_pipelineList = std::make_unique<RenderDataInternal>(deviceSettings.currentPipelineSettings, deviceSettings.preInitializedPipelineSettings, _dataFolder,
 			instance.GetChoosenDevicesMainClass(), _VSMain->GetSharedDataMainList());
 	}

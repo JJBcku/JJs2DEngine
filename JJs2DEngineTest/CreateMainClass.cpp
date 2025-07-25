@@ -89,7 +89,7 @@ JJ2DE::DeviceSettings CreateDeviceSettings(const JJ2DE::DeviceData& device, size
 	ret.framesInFlight = std::min(device.swapchainSupport.minFramesInFlight + 1, device.swapchainSupport.maxFramesInFlight);
 
 	ret.windowData.windowTitle = "JJ2DEngine Test Window";
-	ret.windowData.windowWidth = 1920;
+	ret.windowData.windowWidth = 1280;
 	ret.windowData.aspectRatio = JJ2DE::AspectRatio::ASPECT_RATIO_16_9;
 	ret.windowData.fullscreenWindow = Misc::BOOL64_FALSE;
 

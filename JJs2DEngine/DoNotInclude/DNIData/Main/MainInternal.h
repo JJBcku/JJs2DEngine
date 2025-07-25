@@ -23,6 +23,7 @@ namespace JJs2DEngine
 	struct DeviceTextureSupport;
 	struct DeviceDepthStencilSupport;
 
+	class WindowDataInternal;
 	class RenderDataInternal;
 
 	class MainInternal
@@ -50,6 +51,7 @@ namespace JJs2DEngine
 		size_t _graphicsQueueIndex;
 		std::optional<size_t> _transferOnlyQueueIndex;
 
+		std::unique_ptr<WindowDataInternal> _windowData;
 		std::unique_ptr<RenderDataInternal> _pipelineList;
 
 		void CreateInstance(const MainInitializationData& initData);

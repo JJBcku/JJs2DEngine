@@ -6,13 +6,13 @@
 
 namespace JJs2DEngine
 {
-	struct WindowCreationData
+	struct WindowInitializationData
 	{
 		std::string windowTitle;
 		uint32_t windowWidth;
 		AspectRatio aspectRatio;
 		Misc::Bool64 fullscreenWindow;
 
-		WindowCreationData();
+		WindowInitializationData();
 	};
 }

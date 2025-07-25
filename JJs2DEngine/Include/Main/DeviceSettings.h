@@ -5,7 +5,7 @@
 #include <string>
 
 #include "AspectRatioDef.h"
-#include "WindowCreationData.h"
+#include "WindowInitializationData.h"
 
 namespace JJs2DEngine
 {
@@ -56,7 +56,7 @@ namespace JJs2DEngine
 
 		uint64_t framesInFlight;
 
-		WindowCreationData windowData;
+		WindowInitializationData windowData;
 
 		size_t currentPipelineSettings;
 

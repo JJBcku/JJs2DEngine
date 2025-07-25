@@ -120,8 +120,11 @@
     <ClInclude Include="Include\Main\AspectRatioDef.h">
       <Filter>Header Files\Include\Main</Filter>
     </ClInclude>
-    <ClInclude Include="Include\Main\WindowCreationData.h">
+    <ClInclude Include="Include\Main\WindowInitializationData.h">
       <Filter>Header Files\Include\Main</Filter>
+    </ClInclude>
+    <ClInclude Include="DoNotInclude\DNIData\Main\WindowDataInternal.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -167,8 +170,11 @@
     <ClCompile Include="DoNotInclude\DNIData\Main\PipelineCacheHeaders.cpp">
       <Filter>Source Files\Do Not Include\Main</Filter>
     </ClCompile>
-    <ClCompile Include="DoNotInclude\ICode\Main\WindowCreationData.cpp">
+    <ClCompile Include="DoNotInclude\ICode\Main\WindowInitializationData.cpp">
       <Filter>Source Files\Include\Main</Filter>
+    </ClCompile>
+    <ClCompile Include="DoNotInclude\DNIData\Main\WindowDataInternal.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
