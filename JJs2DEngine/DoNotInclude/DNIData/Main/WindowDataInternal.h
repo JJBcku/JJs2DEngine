@@ -17,12 +17,17 @@ namespace JJs2DEngine
 		WindowDataInternal(const WindowInitializationData& initData, uint32_t framesInFlight, VS::DataFormatSetIndependentID format, VS::WindowList& windowList);
 		~WindowDataInternal();
 
+		void ChangeSwapchainFormat(VS::DataFormatSetIndependentID newFormat);
+
 	private:
 		VS::WindowList& _windowList;
 
 		std::string _windowTitle;
 		uint32_t _windowWidth;
 		uint32_t _windowHeight;
+
+		uint64_t _framesInFlight;
+		VS::DataFormatSetIndependentID _format;
 
 		Misc::Bool64 _fullscreen;
 

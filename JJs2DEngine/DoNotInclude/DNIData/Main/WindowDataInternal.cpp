@@ -13,6 +13,8 @@
 #include <VulkanSimplified/VSDevice/VSWindowCreationData.h>
 #include <VulkanSimplified/VSDevice/VSSwapchainCreationData.h>
 
+#include <VulkanSimplified/VSCommon/VSDataFormatFlags.h>
+
 namespace JJs2DEngine
 {
 	WindowDataInternal::WindowDataInternal(const WindowInitializationData& initData, uint32_t framesInFlight, VS::DataFormatSetIndependentID format, VS::WindowList& windowList) :
@@ -55,10 +57,33 @@ namespace JJs2DEngine
 		swapchainCreationData.imageAmount = framesInFlight;
 
 		window.CreateSwapchain(swapchainCreationData, true);
+
+		_framesInFlight = framesInFlight;
+		_format = format;
 	}
 
 	WindowDataInternal::~WindowDataInternal()
 	{
+	}
+
+	void WindowDataInternal::ChangeSwapchainFormat(VS::DataFormatSetIndependentID newFormat)
+	{
+		if (_format == newFormat)
+			return;
+
+		VS::SwapchainCreationData swapchainCreationData;
+
+		swapchainCreationData.compositeAlphaMode = VS::COMPOSITE_ALPHA_OPAQUE;
+		swapchainCreationData.surfaceTranformMode = VS::SURFACE_TRASFORM_IDENTITY;
+		swapchainCreationData.surfacePresentMode = VS::PRESENT_MODE_FIFO_STRICT;
+		swapchainCreationData.format = newFormat;
+
+		swapchainCreationData.imageAmount = static_cast<uint32_t>(_framesInFlight);
+
+		auto window = _windowList.GetWindow(_windowID);
+		window.CreateSwapchain(swapchainCreationData, false);
+
+		_format = newFormat;
 	}
 
 }
