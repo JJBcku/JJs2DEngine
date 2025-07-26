@@ -31,7 +31,6 @@ namespace VulkanSimplified
 		ImageUsageFlags surfaceUsageFlags;
 		CompositeAlphaFlags surfaceSupportedCompositeAlphaModes;
 		SurfaceTransformFlags surfaceSupportedTransformations;
-		SurfaceTransformFlagBits surfaceDefaultTransformation;
 		SurfacePresentModes surfacePresentModes;
 		SurfaceSupportedColorspaceFormatsLists surfaceSupportedSwapchainFormats;
 

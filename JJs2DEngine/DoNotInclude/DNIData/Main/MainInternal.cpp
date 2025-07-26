@@ -279,9 +279,6 @@ namespace JJs2DEngine
 			if ((surfaceSupport.value().surfaceSupportedTransformations & VS::SURFACE_TRASFORM_IDENTITY) != VS::SURFACE_TRASFORM_IDENTITY)
 				continue;
 
-			if (surfaceSupport.value().surfaceDefaultTransformation != VS::SURFACE_TRASFORM_IDENTITY)
-				continue;
-
 			if ((surfaceSupport.value().surfacePresentModes & VS::PRESENT_MODE_FIFO_STRICT) != VS::PRESENT_MODE_FIFO_STRICT)
 				continue;
 
