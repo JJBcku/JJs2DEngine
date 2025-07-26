@@ -6,6 +6,7 @@
 
 namespace VulkanSimplified
 {
+	class CommandPoolMainList;
 	class CommandPoolQFGroupListInternal;
 }
 

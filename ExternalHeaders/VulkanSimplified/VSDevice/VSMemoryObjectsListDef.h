@@ -5,5 +5,6 @@
 
 namespace VulkanSimplified
 {
+	class MemoryObjectsList;
 	class MemoryAllocationData;
 }

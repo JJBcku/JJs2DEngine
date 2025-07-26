@@ -2,6 +2,8 @@
 
 namespace VulkanSimplified
 {
+	class DataBufferLists;
+
 	class AutoCleanupVertexBuffer;
 	class AutoCleanupStagingBuffer;
 	class AutoCleanupIndexBuffer;

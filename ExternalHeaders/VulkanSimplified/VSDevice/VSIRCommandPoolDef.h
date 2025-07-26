@@ -6,6 +6,8 @@
 
 namespace VulkanSimplified
 {
+	class IRCommandPool;
+
 	class PrimaryIRCommandBufferInternal;
 	class SecondaryIRCommandBufferInternal;
 }

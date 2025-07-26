@@ -2,6 +2,7 @@
 
 namespace VulkanSimplified
 {
+	class RenderPassList;
 	class AutoCleanupRenderPass;
 
 	struct RenderPassAttachmentData;

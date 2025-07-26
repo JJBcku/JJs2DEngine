@@ -2,6 +2,8 @@
 
 namespace VulkanSimplified
 {
+	class ImageDataLists;
+
 	class AutoCleanupColorRenderTargetImage;
 	class AutoCleanupDepthStencilRenderTargetImage;
 	class AutoCleanupResolveRenderTargetImage;

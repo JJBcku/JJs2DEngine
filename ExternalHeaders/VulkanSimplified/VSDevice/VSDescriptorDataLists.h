@@ -2,7 +2,7 @@
 
 #include <CustomLists\IDObjectDef.h>
 
-#include "VSDescriptorDataListDef.h"
+#include "VSDescriptorDataListsDef.h"
 
 #include "../VSCommon/VSDescriptorTypeFlagsDef.h"
 

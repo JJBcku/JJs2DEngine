@@ -8,7 +8,7 @@
 #include "VSDataBufferListsDef.h"
 #include "VSImageDataListsDef.h"
 #include "VSIndexTypeDef.h"
-#include "VSDescriptorDataListDef.h"
+#include "VSDescriptorDataListsDef.h"
 
 #include "VSCommandBufferUsage.h"
 

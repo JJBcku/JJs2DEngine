@@ -4,6 +4,7 @@
 
 namespace VulkanSimplified
 {
+	class WindowList;
 	class WindowInternal;
 }
 
