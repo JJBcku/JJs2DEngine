@@ -543,8 +543,8 @@ namespace JJs2DEngine
 
 			ret.swapchainSupport.swapchainRGBA16Unorm = CheckFormatSwapchainSupport(formatImageSupport, formatSwapchainSupport, VS::DATA_FORMAT_RGBA16_UNORM);
 
-			ret.swapchainSupport.swapchainA2RGB10Unorm = CheckFormatSwapchainSupport(formatImageSupport, formatSwapchainSupport, VS::DATA_FORMAT_A2_BGR10_UNORM_PACK32);
-			ret.swapchainSupport.swapchainA2BGR10Unorm = CheckFormatSwapchainSupport(formatImageSupport, formatSwapchainSupport, VS::DATA_FORMAT_A2_RGB10_UNORM_PACK32);
+			ret.swapchainSupport.swapchainA2RGB10Unorm = CheckFormatSwapchainSupport(formatImageSupport, formatSwapchainSupport, VS::DATA_FORMAT_A2_RGB10_UNORM_PACK32);
+			ret.swapchainSupport.swapchainA2BGR10Unorm = CheckFormatSwapchainSupport(formatImageSupport, formatSwapchainSupport, VS::DATA_FORMAT_A2_BGR10_UNORM_PACK32);
 
 			ret.swapchainSupport.swapchainRGBA8Unorm = CheckFormatSwapchainSupport(formatImageSupport, formatSwapchainSupport, VS::DATA_FORMAT_RGBA8_UNORM);
 			ret.swapchainSupport.swapchainBGRA8Unorm = CheckFormatSwapchainSupport(formatImageSupport, formatSwapchainSupport, VS::DATA_FORMAT_BGRA8_UNORM);
