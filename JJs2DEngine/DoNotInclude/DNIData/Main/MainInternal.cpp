@@ -8,6 +8,8 @@
 
 #include "../Common/VersionDataInternal.h"
 
+#include "DeviceSettingsInternal.h"
+
 #include "WindowDataInternal.h"
 #include "RenderDataInternal.h"
 
@@ -31,12 +33,15 @@
 
 #include <VulkanSimplified/VSDevice/VSDeviceInitialCapacitiesList.h>
 #include <VulkanSimplified/VSDevice/VSDeviceMain.h>
+#include <VulkanSimplified/VSDevice/VSWindowList.h>
 
 #include <VulkanSimplified/VSCommon/VSMemoryDataList.h>
 #include <VulkanSimplified/VSCommon/VSMemoryHeapProperties.h>
 #include <VulkanSimplified/VSCommon/VSMemoryTypeProperties.h>
 
+#include <VulkanSimplified/VSCommon/VSCompositeAlphaFlags.h>
 #include <VulkanSimplified/VSCommon/VSSurfacePresentModes.h>
+#include <VulkanSimplified/VSCommon/VSSurfaceTransformFlags.h>
 #include <VulkanSimplified/VSCommon/VSImageUsageFlags.h>
 
 namespace JJs2DEngine
@@ -140,9 +145,13 @@ namespace JJs2DEngine
 
 		_currentDevicesSettings = deviceSettings;
 
-		_windowData = std::make_unique<WindowDataInternal>(deviceSettings.windowData, static_cast<uint32_t>(deviceSettings.framesInFlight));
+		auto device = instance.GetChoosenDevicesMainClass();
+		auto windowList = device.GetWindowList();
+
+		_windowData = std::make_unique<WindowDataInternal>(deviceSettings.windowData, static_cast<uint32_t>(deviceSettings.framesInFlight),
+			TranslateToFormat(deviceSettings.preInitializedPipelineSettings[deviceSettings.currentPipelineSettings].swapchainFormat), windowList);
 		_pipelineList = std::make_unique<RenderDataInternal>(deviceSettings.currentPipelineSettings, deviceSettings.preInitializedPipelineSettings, _dataFolder,
-			instance.GetChoosenDevicesMainClass(), _VSMain->GetSharedDataMainList());
+			device, _VSMain->GetSharedDataMainList());
 	}
 
 	/*void MainInternal::RecreateDevice(const DeviceSettings& deviceSettings)
@@ -261,10 +270,19 @@ namespace JJs2DEngine
 			if (!surfaceSupport.has_value())
 				continue;
 
-			if ((surfaceSupport.value().surfacePresentModes & VS::PRESENT_MODE_FIFO_STRICT) != VS::PRESENT_MODE_FIFO_STRICT)
+			if ((surfaceSupport.value().surfaceUsageFlags & VS::IMAGE_USAGE_TRANSFER_DST) != VS::IMAGE_USAGE_TRANSFER_DST)
 				continue;
 
-			if ((surfaceSupport.value().surfaceUsageFlags & VS::IMAGE_USAGE_TRANSFER_DST) != VS::IMAGE_USAGE_TRANSFER_DST)
+			if ((surfaceSupport.value().surfaceSupportedCompositeAlphaModes & VS::COMPOSITE_ALPHA_OPAQUE) != VS::COMPOSITE_ALPHA_OPAQUE)
+				continue;
+
+			if ((surfaceSupport.value().surfaceSupportedTransformations & VS::SURFACE_TRASFORM_IDENTITY) != VS::SURFACE_TRASFORM_IDENTITY)
+				continue;
+
+			if (surfaceSupport.value().surfaceDefaultTransformation != VS::SURFACE_TRASFORM_IDENTITY)
+				continue;
+
+			if ((surfaceSupport.value().surfacePresentModes & VS::PRESENT_MODE_FIFO_STRICT) != VS::PRESENT_MODE_FIFO_STRICT)
 				continue;
 
 			auto deviceData = CompileUsefullDeviceData(physicalData, i);
