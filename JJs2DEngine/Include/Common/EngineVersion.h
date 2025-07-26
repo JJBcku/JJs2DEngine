@@ -4,5 +4,5 @@
 
 namespace JJs2DEngine
 {
-	static VersionData engineVersion = VersionData(0, 1, 0, 0);
+	static VersionData engineVersion = VersionData(0, 2, 0, 0);
 }
