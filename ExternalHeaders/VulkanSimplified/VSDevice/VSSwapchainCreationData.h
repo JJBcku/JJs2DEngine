@@ -1,6 +1,8 @@
 #pragma once
 
+#include "../VSCommon/VSCompositeAlphaFlags.h"
 #include "../VSCommon/VSSurfacePresentModes.h"
+#include "../VSCommon/VSSurfaceTransformFlags.h"
 #include "../VSCommon/VSDataFormatFlags.h"
 
 #include <vector>
@@ -10,6 +12,8 @@ namespace VulkanSimplified
 {
 	struct SwapchainCreationData
 	{
+		CompositeAlphaFlagBits compositeAlphaMode;
+		SurfaceTransformFlagBits surfaceTranformMode;
 		SurfacePresentModeBits surfacePresentMode;
 		DataFormatSetIndependentID format;
 
