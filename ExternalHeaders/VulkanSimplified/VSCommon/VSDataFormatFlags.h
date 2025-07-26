@@ -277,6 +277,9 @@ namespace VulkanSimplified
 		DataFormatSetIndependentID(DataFormatFifthFlagSetBits format);
 		DataFormatSetIndependentID(DataFormatSixthFlagSetBits format);
 		DataFormatSetIndependentID(DataFormatSeventhFlagSetBits format);
+
+		std::strong_ordering operator<=>(const DataFormatSetIndependentID& rhs) const noexcept = default;
+		bool operator==(const DataFormatSetIndependentID& rhs) const noexcept = default;
 	};
 
 	bool CheckFormatSupport(const DataFormatFullSetList& checkedSet, const DataFormatSetIndependentID& formatID);
