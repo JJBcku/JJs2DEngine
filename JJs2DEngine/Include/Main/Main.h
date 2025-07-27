@@ -26,6 +26,7 @@ namespace JJs2DEngine
 		Misc::Bool64 IsWindowClosed() const;
 
 		void HandleEvents();
+		void WaitForIdleDevice() const;
 
 	private:
 		std::unique_ptr<MainInternal> _internal;

@@ -33,4 +33,9 @@ namespace JJs2DEngine
 		return _internal->HandleEvents();
 	}
 
+	void Main::WaitForIdleDevice() const
+	{
+		_internal->WaitForIdleDevice();
+	}
+
 }

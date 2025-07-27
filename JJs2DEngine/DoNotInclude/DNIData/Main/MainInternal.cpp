@@ -35,6 +35,7 @@
 
 #include <VulkanSimplified/VSDevice/VSDeviceInitialCapacitiesList.h>
 #include <VulkanSimplified/VSDevice/VSDeviceMain.h>
+#include <VulkanSimplified/VSDevice/VSDeviceCore.h>
 #include <VulkanSimplified/VSDevice/VSSynchronizationDataLists.h>
 #include <VulkanSimplified/VSDevice/VSWindowList.h>
 
@@ -177,6 +178,12 @@ namespace JJs2DEngine
 	{
 		auto eventHandler = _VSMain->GetSdlEventHandler();
 		eventHandler.HandleEvents();
+	}
+
+	void MainInternal::WaitForIdleDevice() const
+	{
+		auto deviceCore = _VSMain->GetInstance().GetChoosenDevicesMainClass().GetDeviceCore();
+		deviceCore.WaitIdle();
 	}
 
 	/*void MainInternal::RecreateDevice(const DeviceSettings& deviceSettings)

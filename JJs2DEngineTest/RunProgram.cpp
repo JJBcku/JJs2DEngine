@@ -21,4 +21,6 @@ void RunProgram()
 	{
 		main.HandleEvents();
 	}
+
+	main.WaitForIdleDevice();
 }
