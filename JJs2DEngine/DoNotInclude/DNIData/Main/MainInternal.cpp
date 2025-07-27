@@ -33,6 +33,7 @@
 
 #include <VulkanSimplified/VSDevice/VSDeviceInitialCapacitiesList.h>
 #include <VulkanSimplified/VSDevice/VSDeviceMain.h>
+#include <VulkanSimplified/VSDevice/VSSynchronizationDataLists.h>
 #include <VulkanSimplified/VSDevice/VSWindowList.h>
 
 #include <VulkanSimplified/VSCommon/VSMemoryDataList.h>
@@ -147,9 +148,10 @@ namespace JJs2DEngine
 
 		auto device = instance.GetChoosenDevicesMainClass();
 		auto windowList = device.GetWindowList();
+		auto synchroList = device.GetSynchronizationDataLists();
 
 		_windowData = std::make_unique<WindowDataInternal>(deviceSettings.windowData, static_cast<uint32_t>(deviceSettings.framesInFlight),
-			TranslateToFormat(deviceSettings.preInitializedPipelineSettings[deviceSettings.currentPipelineSettings].swapchainFormat), windowList);
+			TranslateToFormat(deviceSettings.preInitializedPipelineSettings[deviceSettings.currentPipelineSettings].swapchainFormat), windowList, synchroList);
 		_pipelineList = std::make_unique<RenderDataInternal>(deviceSettings.currentPipelineSettings, deviceSettings.preInitializedPipelineSettings, _dataFolder,
 			device, _VSMain->GetSharedDataMainList());
 	}

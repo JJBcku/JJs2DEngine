@@ -7,6 +7,7 @@
 
 #include <Miscellaneous/Bool64.h>
 
+#include <VulkanSimplified/VSDevice/VSSynchronizationDataLists.h>
 #include <VulkanSimplified/VSDevice/VSWindowList.h>
 #include <VulkanSimplified/VSDevice/VSWindow.h>
 
@@ -17,8 +18,17 @@
 
 namespace JJs2DEngine
 {
-	WindowDataInternal::WindowDataInternal(const WindowInitializationData& initData, uint32_t framesInFlight, VS::DataFormatSetIndependentID format, VS::WindowList& windowList) :
-		_windowList(windowList)
+	struct PerFrameData
+	{
+		IDObject<VS::AutoCleanupFence> _framePresented;
+		IDObject<VS::AutoCleanupSemaphore> _imageAquired;
+		IDObject<VS::AutoCleanupSemaphore> _renderingFinished;
+
+		PerFrameData() {};
+	};
+
+	WindowDataInternal::WindowDataInternal(const WindowInitializationData& initData, uint32_t framesInFlight, VS::DataFormatSetIndependentID format, VS::WindowList& windowList,
+		VS::SynchronizationDataLists& synchroList) : _windowList(windowList)
 	{
 		_windowTitle = initData.windowTitle;
 
@@ -60,6 +70,17 @@ namespace JJs2DEngine
 
 		_framesInFlight = framesInFlight;
 		_format = format;
+
+		_perFrameData.resize(framesInFlight);
+
+		for (size_t i = 0; i < framesInFlight; ++i)
+		{
+			auto& frameData = _perFrameData[i];
+
+			frameData._framePresented = synchroList.AddFence(true, framesInFlight);
+			frameData._imageAquired = synchroList.AddSemaphore(static_cast<size_t>(framesInFlight) * 8);
+			frameData._renderingFinished = synchroList.AddSemaphore(static_cast<size_t>(framesInFlight) * 8);
+		}
 	}
 
 	WindowDataInternal::~WindowDataInternal()
