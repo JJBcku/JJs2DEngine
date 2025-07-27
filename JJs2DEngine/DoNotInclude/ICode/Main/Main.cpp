@@ -23,4 +23,14 @@ namespace JJs2DEngine
 		_internal->CreateDevice(deviceSettings);
 	}
 
+	Misc::Bool64 Main::IsWindowClosed() const
+	{
+		return _internal->IsWindowClosed();
+	}
+
+	void Main::HandleEvents()
+	{
+		return _internal->HandleEvents();
+	}
+
 }

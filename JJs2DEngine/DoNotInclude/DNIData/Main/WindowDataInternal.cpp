@@ -18,14 +18,9 @@
 
 namespace JJs2DEngine
 {
-	struct PerFrameData
+	PerFrameData::PerFrameData()
 	{
-		IDObject<VS::AutoCleanupFence> _framePresented;
-		IDObject<VS::AutoCleanupSemaphore> _imageAquired;
-		IDObject<VS::AutoCleanupSemaphore> _renderingFinished;
-
-		PerFrameData() {};
-	};
+	}
 
 	WindowDataInternal::WindowDataInternal(const WindowInitializationData& initData, uint32_t framesInFlight, VS::DataFormatSetIndependentID format, VS::WindowList& windowList,
 		VS::SynchronizationDataLists& synchroList) : _windowList(windowList)
@@ -105,6 +100,14 @@ namespace JJs2DEngine
 		window.CreateSwapchain(swapchainCreationData, false);
 
 		_format = newFormat;
+	}
+
+	const PerFrameData& WindowDataInternal::GetFrameData(size_t frameIndex) const
+	{
+		if (frameIndex >= _perFrameData.size())
+			throw std::runtime_error("WindowDataInternal::GetFrameData Error: Program tried to read past the vector data!");
+
+		return _perFrameData[frameIndex];
 	}
 
 }

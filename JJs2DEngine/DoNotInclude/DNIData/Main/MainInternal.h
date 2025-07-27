@@ -6,6 +6,10 @@
 #include <optional>
 #include <string>
 
+#include <Miscellaneous/Bool64Def.h>
+#include <CustomLists/IDObject.h>
+#include <VulkanSimplified/VSMain/EventHandler/SdlEventHandlerTypedefs.h>
+
 #include <VulkanSimplified/VSMain/VSMain.h>
 
 #include <VulkanSimplified/VSInstance/VSInstance.h>
@@ -37,6 +41,10 @@ namespace JJs2DEngine
 		void CreateDevice(const DeviceSettings& deviceSettings);
 		//void RecreateDevice(const DeviceSettings& deviceSettings);
 
+		Misc::Bool64 IsWindowClosed() const;
+
+		void HandleEvents();
+
 	private:
 		std::unique_ptr<VS::Main> _VSMain;
 		VersionData _minVulkanVersion;
@@ -54,11 +62,18 @@ namespace JJs2DEngine
 		std::unique_ptr<WindowDataInternal> _windowData;
 		std::unique_ptr<RenderDataInternal> _pipelineList;
 
+		IDObject<std::pair<VS::QuitEventFunction, void*>> _quitRegistrationID;
+		Misc::Bool64 _windowClosed;
+
 		void CreateInstance(const MainInitializationData& initData);
 		void EnumerateDevices();
 
 		bool CheckSwapchainFormatAvailability(SwapchainFormat format, const DeviceSwapchainSupport& deviceData);
 		bool CheckTexturesFormatAvailability(TextureFormat format, const DeviceTextureSupport& deviceData);
 		bool CheckDepthFormatAvailability(DepthFormat format, const DeviceDepthStencilSupport& deviceData);
+
+		bool HandleQuitEvent();
+
+		static bool HandleQuitEventStatic(const VS::SdlQuitEventData&, void* instancePointer);
 	};
 }

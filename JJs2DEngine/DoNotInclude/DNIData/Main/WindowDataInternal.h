@@ -15,7 +15,15 @@
 namespace JJs2DEngine
 {
 	struct WindowInitializationData;
-	struct PerFrameData;
+
+	struct PerFrameData
+	{
+		IDObject<VS::AutoCleanupFence> _framePresented;
+		IDObject<VS::AutoCleanupSemaphore> _imageAquired;
+		IDObject<VS::AutoCleanupSemaphore> _renderingFinished;
+
+		PerFrameData();
+	};
 
 	class WindowDataInternal
 	{
@@ -25,6 +33,8 @@ namespace JJs2DEngine
 		~WindowDataInternal();
 
 		void ChangeSwapchainFormat(VS::DataFormatSetIndependentID newFormat);
+
+		const PerFrameData& GetFrameData(size_t frameIndex) const;
 
 	private:
 		VS::WindowList& _windowList;

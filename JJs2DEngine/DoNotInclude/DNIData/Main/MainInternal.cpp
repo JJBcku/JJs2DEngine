@@ -19,6 +19,8 @@
 #include <VulkanSimplified/VSMain/VSInstanceExtensionPacksList.h>
 #include <VulkanSimplified/VSMain/VSInstanceLayerPacksList.h>
 
+#include <VulkanSimplified/VSMain/EventHandler/SdlEventHandler.h>
+
 #include <VulkanSimplified/VSInstance/VSInstanceCreationData.h>
 #include <VulkanSimplified/VSInstance/VSDeviceSwapchainSupportData.h>
 #include <VulkanSimplified/VSInstance/VSDevicesSupportedFormats.h>
@@ -63,12 +65,22 @@ namespace JJs2DEngine
 
 		_dataFolder = initData.dataFolder;
 
+		_windowClosed = Misc::BOOL64_FALSE;
+
+		auto eventHandler = _VSMain->GetSdlEventHandler();
+		_quitRegistrationID = eventHandler.RegisterQuitEventCallback(MainInternal::HandleQuitEventStatic, this, 0);
+
 		CreateInstance(initData);
 		EnumerateDevices();
 	}
 
 	MainInternal::~MainInternal()
 	{
+		if (_VSMain)
+		{
+			auto eventHandler = _VSMain->GetSdlEventHandler();
+			eventHandler.UnRegisterQuitEventCallback(_quitRegistrationID, false);
+		}
 	}
 
 	const std::vector<DeviceData>& MainInternal::GetDeviceList() const
@@ -154,6 +166,17 @@ namespace JJs2DEngine
 			TranslateToFormat(deviceSettings.preInitializedPipelineSettings[deviceSettings.currentPipelineSettings].swapchainFormat), windowList, synchroList);
 		_pipelineList = std::make_unique<RenderDataInternal>(deviceSettings.currentPipelineSettings, deviceSettings.preInitializedPipelineSettings, _dataFolder,
 			device, _VSMain->GetSharedDataMainList());
+	}
+
+	Misc::Bool64 MainInternal::IsWindowClosed() const
+	{
+		return _windowClosed;
+	}
+
+	void MainInternal::HandleEvents()
+	{
+		auto eventHandler = _VSMain->GetSdlEventHandler();
+		eventHandler.HandleEvents();
 	}
 
 	/*void MainInternal::RecreateDevice(const DeviceSettings& deviceSettings)
@@ -373,6 +396,20 @@ namespace JJs2DEngine
 		}
 
 		return ret;
+	}
+
+	bool MainInternal::HandleQuitEvent()
+	{
+		_windowClosed = Misc::BOOL64_TRUE;
+		return true;
+	}
+
+	bool MainInternal::HandleQuitEventStatic(const VS::SdlQuitEventData&, void* instancePointer)
+	{
+		if (instancePointer == nullptr)
+			throw std::runtime_error("MainInternal::HandleQuitEventStatic Error: Program tried to dereference null pointer!");
+
+		return static_cast<MainInternal*>(instancePointer)->HandleQuitEvent();
 	}
 
 	static bool CheckFormatSwapchainSupport(const VS::FormatsSupportedImageFeaturesList& supportedImageFormats,
