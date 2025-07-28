@@ -5,8 +5,8 @@
 
 #include <VulkanSimplified/VSCommon/VSDataFormatFlags.h>
 
-#include <VulkanSimplified/VSDevice/VSSynchronizationDataListsDef.h>
-#include <VulkanSimplified/VSDevice/VSWindowListDef.h>
+#include <VulkanSimplified/VSDevice/VSSynchronizationDataLists.h>
+#include <VulkanSimplified/VSDevice/VSWindowList.h>
 
 #include <vector>
 #include <string>
@@ -30,8 +30,8 @@ namespace JJs2DEngine
 	class WindowDataInternal
 	{
 	public:
-		WindowDataInternal(const WindowInitializationData& initData, uint32_t framesInFlight, VS::DataFormatSetIndependentID format, VS::WindowList& windowList,
-			VS::SynchronizationDataLists& synchroList);
+		WindowDataInternal(const WindowInitializationData& initData, uint32_t framesInFlight, VS::DataFormatSetIndependentID format, VS::WindowList windowList,
+			VS::SynchronizationDataLists synchroList);
 		~WindowDataInternal();
 
 		void ChangeSwapchainFormat(VS::DataFormatSetIndependentID newFormat);
@@ -39,7 +39,8 @@ namespace JJs2DEngine
 		const PerFrameData& GetFrameData(size_t frameIndex) const;
 
 	private:
-		VS::WindowList& _windowList;
+		VS::WindowList _windowList;
+		VS::SynchronizationDataLists _synchroList;
 
 		std::string _windowTitle;
 		uint32_t _windowWidth;

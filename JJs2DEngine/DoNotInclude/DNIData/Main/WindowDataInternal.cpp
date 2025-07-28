@@ -7,8 +7,6 @@
 
 #include <Miscellaneous/Bool64.h>
 
-#include <VulkanSimplified/VSDevice/VSSynchronizationDataLists.h>
-#include <VulkanSimplified/VSDevice/VSWindowList.h>
 #include <VulkanSimplified/VSDevice/VSWindow.h>
 
 #include <VulkanSimplified/VSDevice/VSWindowCreationData.h>
@@ -22,8 +20,8 @@ namespace JJs2DEngine
 	{
 	}
 
-	WindowDataInternal::WindowDataInternal(const WindowInitializationData& initData, uint32_t framesInFlight, VS::DataFormatSetIndependentID format, VS::WindowList& windowList,
-		VS::SynchronizationDataLists& synchroList) : _windowList(windowList)
+	WindowDataInternal::WindowDataInternal(const WindowInitializationData& initData, uint32_t framesInFlight, VS::DataFormatSetIndependentID format, VS::WindowList windowList,
+		VS::SynchronizationDataLists synchroList) : _windowList(windowList), _synchroList(synchroList)
 	{
 		_windowTitle = initData.windowTitle;
 
@@ -72,11 +70,11 @@ namespace JJs2DEngine
 		{
 			auto& frameData = _perFrameData[i];
 
-			frameData._renderingFinishedFence = synchroList.AddFence(true, static_cast<size_t>(framesInFlight) * 2);
-			frameData._transferFinishedFence = synchroList.AddFence(true, static_cast<size_t>(framesInFlight) * 2);
-			frameData._transferFinishedSemaphore = synchroList.AddSemaphore(static_cast<size_t>(framesInFlight) * 8);
-			frameData._imageAcquiredSemaphore = synchroList.AddSemaphore(static_cast<size_t>(framesInFlight) * 8);
-			frameData._renderingFinishedSemaphore = synchroList.AddSemaphore(static_cast<size_t>(framesInFlight) * 8);
+			frameData._renderingFinishedFence = _synchroList.AddFence(true, static_cast<size_t>(framesInFlight) * 2);
+			frameData._transferFinishedFence = _synchroList.AddFence(true, static_cast<size_t>(framesInFlight) * 2);
+			frameData._transferFinishedSemaphore = _synchroList.AddSemaphore(static_cast<size_t>(framesInFlight) * 8);
+			frameData._imageAcquiredSemaphore = _synchroList.AddSemaphore(static_cast<size_t>(framesInFlight) * 8);
+			frameData._renderingFinishedSemaphore = _synchroList.AddSemaphore(static_cast<size_t>(framesInFlight) * 8);
 		}
 	}
 
