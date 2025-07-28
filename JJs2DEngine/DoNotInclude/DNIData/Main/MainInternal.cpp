@@ -102,10 +102,10 @@ namespace JJs2DEngine
 
 		const auto& deviceData = _deviceList[deviceSettings.deviceIndex];
 
-		if (deviceSettings.framesInFlight < deviceData.swapchainSupport.minFramesInFlight)
+		if (deviceSettings.graphicsFramesInFlight < deviceData.swapchainSupport.minFramesInFlight)
 			throw std::runtime_error("MainInternal::CreateDevice Error: Function was given frames in flight value below the minimum!");
 
-		if (deviceSettings.framesInFlight > deviceData.swapchainSupport.maxFramesInFlight)
+		if (deviceSettings.graphicsFramesInFlight > deviceData.swapchainSupport.maxFramesInFlight)
 			throw std::runtime_error("MainInternal::CreateDevice Error: Function was given frames in flight value above the maximum!");
 
 		for (auto& setting : deviceSettings.preInitializedPipelineSettings)
@@ -160,11 +160,10 @@ namespace JJs2DEngine
 		_currentDevicesSettings = deviceSettings;
 
 		auto device = instance.GetChoosenDevicesMainClass();
-		auto windowList = device.GetWindowList();
-		auto synchroList = device.GetSynchronizationDataLists();
 
-		_windowData = std::make_unique<WindowDataInternal>(deviceSettings.windowData, static_cast<uint32_t>(deviceSettings.framesInFlight),
-			TranslateToFormat(deviceSettings.preInitializedPipelineSettings[deviceSettings.currentPipelineSettings].swapchainFormat), windowList, synchroList);
+		_windowData = std::make_unique<WindowDataInternal>(deviceSettings.windowData, static_cast<uint32_t>(deviceSettings.graphicsFramesInFlight),
+			TranslateToFormat(deviceSettings.preInitializedPipelineSettings[deviceSettings.currentPipelineSettings].swapchainFormat), device.GetWindowList(),
+			device.GetSynchronizationDataLists(), device.GetImageDataLists());
 		_pipelineList = std::make_unique<RenderDataInternal>(deviceSettings.currentPipelineSettings, deviceSettings.preInitializedPipelineSettings, _dataFolder,
 			device, _VSMain->GetSharedDataMainList());
 	}

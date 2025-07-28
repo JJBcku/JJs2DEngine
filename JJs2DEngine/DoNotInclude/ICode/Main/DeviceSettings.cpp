@@ -19,7 +19,8 @@ namespace JJs2DEngine
 	{
 		deviceIndex = std::numeric_limits<size_t>::max();
 
-		framesInFlight = 0;
+		transferFramesInFlight = 0;
+		graphicsFramesInFlight = 0;
 
 		currentPipelineSettings = std::numeric_limits<size_t>::max();
 	}

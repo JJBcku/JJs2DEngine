@@ -54,7 +54,8 @@ namespace JJs2DEngine
 	{
 		size_t deviceIndex;
 
-		uint64_t framesInFlight;
+		uint32_t transferFramesInFlight;
+		uint32_t graphicsFramesInFlight;
 
 		WindowInitializationData windowData;
 
