@@ -18,9 +18,11 @@ namespace JJs2DEngine
 
 	struct PerFrameData
 	{
-		IDObject<VS::AutoCleanupFence> _framePresented;
-		IDObject<VS::AutoCleanupSemaphore> _imageAquired;
-		IDObject<VS::AutoCleanupSemaphore> _renderingFinished;
+		IDObject<VS::AutoCleanupFence> _transferFinishedFence;
+		IDObject<VS::AutoCleanupFence> _renderingFinishedFence;
+		IDObject<VS::AutoCleanupSemaphore> _transferFinishedSemaphore;
+		IDObject<VS::AutoCleanupSemaphore> _imageAcquiredSemaphore;
+		IDObject<VS::AutoCleanupSemaphore> _renderingFinishedSemaphore;
 
 		PerFrameData();
 	};

@@ -72,9 +72,11 @@ namespace JJs2DEngine
 		{
 			auto& frameData = _perFrameData[i];
 
-			frameData._framePresented = synchroList.AddFence(true, framesInFlight);
-			frameData._imageAquired = synchroList.AddSemaphore(static_cast<size_t>(framesInFlight) * 8);
-			frameData._renderingFinished = synchroList.AddSemaphore(static_cast<size_t>(framesInFlight) * 8);
+			frameData._renderingFinishedFence = synchroList.AddFence(true, static_cast<size_t>(framesInFlight) * 2);
+			frameData._transferFinishedFence = synchroList.AddFence(true, static_cast<size_t>(framesInFlight) * 2);
+			frameData._transferFinishedSemaphore = synchroList.AddSemaphore(static_cast<size_t>(framesInFlight) * 8);
+			frameData._imageAcquiredSemaphore = synchroList.AddSemaphore(static_cast<size_t>(framesInFlight) * 8);
+			frameData._renderingFinishedSemaphore = synchroList.AddSemaphore(static_cast<size_t>(framesInFlight) * 8);
 		}
 	}
 
