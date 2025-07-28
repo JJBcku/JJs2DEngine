@@ -2,6 +2,8 @@
 
 #include "VSDataFormatFlagsDef.h"
 
+#include <compare>
+
 namespace VulkanSimplified
 {
 	enum DataFormatFirstFlagSetBits : DataFormatFlags
