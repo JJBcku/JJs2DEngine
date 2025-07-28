@@ -86,7 +86,7 @@ JJ2DE::DeviceSettings CreateDeviceSettings(const JJ2DE::DeviceData& device, size
 	JJ2DE::DeviceSettings ret;
 	ret.deviceIndex = deviceIndex;
 
-	ret.framesInFlight = std::min(device.swapchainSupport.minFramesInFlight + 1, device.swapchainSupport.maxFramesInFlight);
+	ret.graphicsFramesInFlight = std::min(device.swapchainSupport.minFramesInFlight + 1, device.swapchainSupport.maxFramesInFlight);
 
 	ret.windowData.windowTitle = "JJ2DEngine Test Window";
 	ret.windowData.windowWidth = 1280;

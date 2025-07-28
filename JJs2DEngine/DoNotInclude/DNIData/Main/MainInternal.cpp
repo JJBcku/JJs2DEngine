@@ -163,7 +163,7 @@ namespace JJs2DEngine
 
 		_windowData = std::make_unique<WindowDataInternal>(deviceSettings.windowData, static_cast<uint32_t>(deviceSettings.graphicsFramesInFlight),
 			TranslateToFormat(deviceSettings.preInitializedPipelineSettings[deviceSettings.currentPipelineSettings].swapchainFormat), device.GetWindowList(),
-			device.GetSynchronizationDataLists(), device.GetImageDataLists());
+			device.GetSynchronizationDataLists());
 		_pipelineList = std::make_unique<RenderDataInternal>(deviceSettings.currentPipelineSettings, deviceSettings.preInitializedPipelineSettings, _dataFolder,
 			device, _VSMain->GetSharedDataMainList());
 	}
