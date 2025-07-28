@@ -703,7 +703,7 @@ namespace JJs2DEngine
 		ret.shaderStages[1].shaderDeviceID.fragmentShader.fragmentShaderID = _standardFragmentShaderID;
 
 		auto vertexInTexCoord = sharedPipelineList.AddUniqueVertexAttributeDescriptionData(0, VS::DATA_FORMAT_RGBA32_SFLOAT, 0x10);
-		auto vertexInSize = sharedPipelineList.AddUniqueVertexAttributeDescriptionData(16, VS::DATA_FORMAT_RG32_SFLOAT, 0x10);
+		auto vertexInSize = sharedPipelineList.AddUniqueVertexAttributeDescriptionData(16, VS::DATA_FORMAT_RGB32_SFLOAT, 0x10);
 
 		auto vertexInstanceBinding = sharedPipelineList.AddUniqueVertexBindingData(24, VS::VertexBindingInputRate::INSTANCE, { vertexInTexCoord, vertexInSize }, 0x10);
 

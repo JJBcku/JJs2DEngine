@@ -1,7 +1,7 @@
 #version 450
 
 layout(location = 0) in vec4 inTexCoord;
-layout(location = 1) in vec2 inSize;
+layout(location = 1) in vec3 inSize;
 
 layout(location = 0) out vec4 outTexCoord;
 
@@ -18,6 +18,6 @@ void main()
 {
 	vec4 verticePos = vertexData[vertexIndexes[gl_VertexIndex]];
 
-	gl_Position = vec4(verticePos.xy * inSize, verticePos.zw);
+	gl_Position = vec4(verticePos.xy * inSize.xy, inSize.z, verticePos.w);
 	outTexCoord = vec4(inTexCoord.xy * verticePos.xy, inTexCoord.zw);
 }
