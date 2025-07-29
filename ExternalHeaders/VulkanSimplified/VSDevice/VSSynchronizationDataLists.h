@@ -31,6 +31,9 @@ namespace VulkanSimplified
 
 		IDObject<AutoCleanupSemaphore> AddSemaphore(size_t addOnReserving = 0);
 
+		bool RemoveFence(IDObject<AutoCleanupFence> fenceID, bool throwOnIDNotFound);
+		bool RemoveSemaphore(IDObject<AutoCleanupSemaphore> semaphoreID, bool throwOnIDNotFound);
+
 	private:
 		SynchronizationDataListsInternal& _internal;
 	};
