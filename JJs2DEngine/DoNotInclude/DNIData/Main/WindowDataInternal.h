@@ -87,5 +87,9 @@ namespace JJs2DEngine
 
 		VS::MemoryAllocationFullID _colorImageMemory;
 		VS::MemoryAllocationFullID _depthImageMemory;
+
+		void RedoSwapchain(VS::DataFormatSetIndependentID colorFormat, uint32_t framesInFlight);
+		void RedoPerFrameData(VS::DataFormatSetIndependentID colorFormat, uint32_t framesInFlight, uint32_t width, uint32_t height);
+		void RedoDepthImage(VS::DataFormatSetIndependentID depthFormat, uint32_t width, uint32_t height);
 	};
 }

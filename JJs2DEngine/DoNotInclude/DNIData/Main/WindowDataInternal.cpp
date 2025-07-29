@@ -158,81 +158,14 @@ namespace JJs2DEngine
 		}
 
 		if (redoSwapchain)
-		{
-			VS::SwapchainCreationData swapchainCreationData;
-
-			swapchainCreationData.compositeAlphaMode = VS::COMPOSITE_ALPHA_OPAQUE;
-			swapchainCreationData.surfaceTranformMode = VS::SURFACE_TRASFORM_IDENTITY;
-			swapchainCreationData.surfacePresentMode = VS::PRESENT_MODE_FIFO_STRICT;
-			swapchainCreationData.format = newSwapchainData.colorFormat;
-
-			swapchainCreationData.imageAmount = static_cast<uint32_t>(newSwapchainData.framesInFlight);
-
-			auto window = _windowList.GetWindow(_windowID);
-			window.CreateSwapchain(swapchainCreationData, false);
-		}
+			RedoSwapchain(newSwapchainData.colorFormat, static_cast<uint32_t>(newSwapchainData.framesInFlight));
 
 		if (redoSynchro || redoColorImage)
-		{
-			for (size_t i = 0; i < _perFrameData.size(); ++i)
-			{
-				auto& frameData = _perFrameData[i];
-				_imageList.RemoveColorRenderTargetImage(frameData._colorImage, true);
-
-				if (redoSynchro)
-				{
-					_synchroList.RemoveFence(frameData._renderingFinishedFence, true);
-					_synchroList.RemoveFence(frameData._transferFinishedFence, true);
-					_synchroList.RemoveSemaphore(frameData._imageAcquiredSemaphore, true);
-					_synchroList.RemoveSemaphore(frameData._renderingFinishedSemaphore, true);
-					_synchroList.RemoveSemaphore(frameData._renderingFinishedSemaphore, true);
-				}
-			}
-
-			_memoryList.FreeMemory(_colorImageMemory, true, true);
-
-			if (redoSynchro)
-				_perFrameData.resize(newSwapchainData.framesInFlight);
-
-			for (size_t i = 0; i < _perFrameData.size(); ++i)
-			{
-				auto& frameData = _perFrameData[i];
-				frameData._colorImage = _imageList.AddColorRenderTargetImage(newSwapchainData.renderImagesWidth, newSwapchainData.renderImagesWidth, newSwapchainData.colorFormat,
-					VS::SAMPLE_1, {}, false, false, 1, newSwapchainData.framesInFlight + 1);
-
-				if (redoSynchro)
-				{
-					frameData._renderingFinishedFence = _synchroList.AddFence(_perFrameData.size() * 2);
-					frameData._transferFinishedFence = _synchroList.AddFence(_perFrameData.size() * 2);
-
-					frameData._transferFinishedSemaphore = _synchroList.AddSemaphore(_perFrameData.size() * 8);
-					frameData._imageAcquiredSemaphore = _synchroList.AddSemaphore(_perFrameData.size() * 8);
-					frameData._renderingFinishedSemaphore = _synchroList.AddSemaphore(_perFrameData.size() * 8);
-				}
-			}
-
-			_colorImageMemory = _memoryList.AllocateMemory(_imageList.GetColorRenderTargetImagesSize(_perFrameData.back()._colorImage) * _perFrameData.size(), _perFrameData.size(),
-				_colorMemoryProperties, _imageList.GetColorRenderTargetImagesMemoryTypeMask(_perFrameData.back()._colorImage), 0x10);
-
-			for (size_t i = 0; i < _perFrameData.size(); ++i)
-			{
-				_imageList.BindColorRenderTargetImage(_perFrameData[i]._colorImage, _colorImageMemory, 0x10);
-				_perFrameData[i]._colorImageView = _imageList.AddColorRenderTargetImageView(_perFrameData[i]._colorImage);
-			}
-		}
+			RedoPerFrameData(newSwapchainData.colorFormat, static_cast<uint32_t>(newSwapchainData.framesInFlight),
+				newSwapchainData.renderImagesWidth, newSwapchainData.renderImagesHeight);
 
 		if (redoDepthImage)
-		{
-			_imageList.RemoveDepthStencilRenderTargetImage(_depthImage, true);
-			_memoryList.FreeMemory(_depthImageMemory, true, true);
-
-			_depthImage = _imageList.AddDepthStencilRenderTargetImage(newSwapchainData.renderImagesWidth, newSwapchainData.renderImagesWidth, newSwapchainData.depthFormat,
-				VS::SAMPLE_1, {}, false, true, 1, newSwapchainData.framesInFlight + 1);
-			_depthImageMemory = _memoryList.AllocateMemory(_imageList.GetDepthStencilRenderTargetImagesSize(_depthImage), 1, _depthMemoryProperties,
-				_imageList.GetDepthStencilRenderTargetImagesMemoryTypeMask(_depthImage), 0x10);
-			_imageList.BindDepthStencilRenderTargetImage(_depthImage, _depthImageMemory);
-			_depthImageView = _imageList.AddDepthStencilRenderTargetImageView(_depthImage);
-		}
+			RedoDepthImage(newSwapchainData.depthFormat, newSwapchainData.renderImagesWidth, newSwapchainData.renderImagesHeight);
 
 		_swapchainData = newSwapchainData;
 	}
@@ -243,6 +176,84 @@ namespace JJs2DEngine
 			throw std::runtime_error("WindowDataInternal::GetFrameData Error: Program tried to read past the vector data!");
 
 		return _perFrameData[frameIndex];
+	}
+
+	void WindowDataInternal::RedoSwapchain(VS::DataFormatSetIndependentID colorFormat, uint32_t framesInFlight)
+	{
+		VS::SwapchainCreationData swapchainCreationData;
+
+		swapchainCreationData.compositeAlphaMode = VS::COMPOSITE_ALPHA_OPAQUE;
+		swapchainCreationData.surfaceTranformMode = VS::SURFACE_TRASFORM_IDENTITY;
+		swapchainCreationData.surfacePresentMode = VS::PRESENT_MODE_FIFO_STRICT;
+		swapchainCreationData.format = colorFormat;
+
+		swapchainCreationData.imageAmount = framesInFlight;
+
+		auto window = _windowList.GetWindow(_windowID);
+		window.CreateSwapchain(swapchainCreationData, false);
+	}
+
+	void WindowDataInternal::RedoPerFrameData(VS::DataFormatSetIndependentID colorFormat, uint32_t framesInFlight, uint32_t width, uint32_t height)
+	{
+		bool redoSynchro = framesInFlight != _perFrameData.size();
+
+		for (size_t i = 0; i < _perFrameData.size(); ++i)
+		{
+			auto& frameData = _perFrameData[i];
+			_imageList.RemoveColorRenderTargetImage(frameData._colorImage, true);
+
+			if (redoSynchro)
+			{
+				_synchroList.RemoveFence(frameData._renderingFinishedFence, true);
+				_synchroList.RemoveFence(frameData._transferFinishedFence, true);
+				_synchroList.RemoveSemaphore(frameData._imageAcquiredSemaphore, true);
+				_synchroList.RemoveSemaphore(frameData._renderingFinishedSemaphore, true);
+				_synchroList.RemoveSemaphore(frameData._renderingFinishedSemaphore, true);
+			}
+		}
+
+		_memoryList.FreeMemory(_colorImageMemory, true, true);
+
+		if (redoSynchro)
+			_perFrameData.resize(framesInFlight);
+
+		for (size_t i = 0; i < _perFrameData.size(); ++i)
+		{
+			auto& frameData = _perFrameData[i];
+			frameData._colorImage = _imageList.AddColorRenderTargetImage(width, height, colorFormat,
+				VS::SAMPLE_1, {}, false, false, 1, static_cast<size_t>(framesInFlight) + 1);
+
+			if (redoSynchro)
+			{
+				frameData._renderingFinishedFence = _synchroList.AddFence(_perFrameData.size() * 2);
+				frameData._transferFinishedFence = _synchroList.AddFence(_perFrameData.size() * 2);
+
+				frameData._transferFinishedSemaphore = _synchroList.AddSemaphore(_perFrameData.size() * 8);
+				frameData._imageAcquiredSemaphore = _synchroList.AddSemaphore(_perFrameData.size() * 8);
+				frameData._renderingFinishedSemaphore = _synchroList.AddSemaphore(_perFrameData.size() * 8);
+			}
+		}
+
+		_colorImageMemory = _memoryList.AllocateMemory(_imageList.GetColorRenderTargetImagesSize(_perFrameData.back()._colorImage) * _perFrameData.size(), _perFrameData.size(),
+			_colorMemoryProperties, _imageList.GetColorRenderTargetImagesMemoryTypeMask(_perFrameData.back()._colorImage), 0x10);
+
+		for (size_t i = 0; i < _perFrameData.size(); ++i)
+		{
+			_imageList.BindColorRenderTargetImage(_perFrameData[i]._colorImage, _colorImageMemory, static_cast<size_t>(framesInFlight) + 1);
+			_perFrameData[i]._colorImageView = _imageList.AddColorRenderTargetImageView(_perFrameData[i]._colorImage);
+		}
+	}
+
+	void WindowDataInternal::RedoDepthImage(VS::DataFormatSetIndependentID depthFormat, uint32_t width, uint32_t height)
+	{
+		_imageList.RemoveDepthStencilRenderTargetImage(_depthImage, true);
+		_memoryList.FreeMemory(_depthImageMemory, true, true);
+
+		_depthImage = _imageList.AddDepthStencilRenderTargetImage(width, height, depthFormat, VS::SAMPLE_1, {}, false, true, 1);
+		_depthImageMemory = _memoryList.AllocateMemory(_imageList.GetDepthStencilRenderTargetImagesSize(_depthImage), 1, _depthMemoryProperties,
+			_imageList.GetDepthStencilRenderTargetImagesMemoryTypeMask(_depthImage), 0x10);
+		_imageList.BindDepthStencilRenderTargetImage(_depthImage, _depthImageMemory);
+		_depthImageView = _imageList.AddDepthStencilRenderTargetImageView(_depthImage);
 	}
 
 }
