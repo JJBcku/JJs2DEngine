@@ -163,6 +163,9 @@ namespace JJs2DEngine
 
 		auto& currentPipeline = deviceSettings.preInitializedPipelineSettings[deviceSettings.currentPipelineSettings];
 
+		_renderDataList = std::make_unique<RenderDataInternal>(deviceSettings.currentPipelineSettings, deviceSettings.preInitializedPipelineSettings, _dataFolder,
+			device, _VSMain->GetSharedDataMainList());
+
 		RenderImagesData windowRenderData;
 		windowRenderData.framesInFlight = deviceSettings.graphicsFramesInFlight;
 		windowRenderData.colorFormat = TranslateToFormat(currentPipeline.swapchainFormat);
@@ -170,11 +173,10 @@ namespace JJs2DEngine
 
 		windowRenderData.renderImagesWidth = currentPipeline.renderWidth;
 		windowRenderData.renderImagesHeight = GetHeight(currentPipeline.renderWidth, currentPipeline.aspectRatio);
+		windowRenderData.renderPassID = _renderDataList->GetCurrentRenderPass();
 
 		_windowData = std::make_unique<WindowDataInternal>(deviceSettings.windowData, windowRenderData, device.GetWindowList(), device.GetSynchronizationDataLists(),
 			device.GetImageDataLists(), device.GetMemoryObjectsList());
-		_pipelineList = std::make_unique<RenderDataInternal>(deviceSettings.currentPipelineSettings, deviceSettings.preInitializedPipelineSettings, _dataFolder,
-			device, _VSMain->GetSharedDataMainList());
 	}
 
 	Misc::Bool64 MainInternal::IsWindowClosed() const

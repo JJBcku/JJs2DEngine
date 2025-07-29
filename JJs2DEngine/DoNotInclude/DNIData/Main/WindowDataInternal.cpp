@@ -8,13 +8,13 @@
 #include <Miscellaneous/Bool64.h>
 
 #include <VulkanSimplified/VSCommon/VSImageSampleFlags.h>
+#include <VulkanSimplified/VSCommon/VSDataFormatFlags.h>
 
 #include <VulkanSimplified/VSDevice/VSWindow.h>
+#include <VulkanSimplified/VSDevice/VSMultitypeImagesID.h>
 
 #include <VulkanSimplified/VSDevice/VSWindowCreationData.h>
 #include <VulkanSimplified/VSDevice/VSSwapchainCreationData.h>
-
-#include <VulkanSimplified/VSCommon/VSDataFormatFlags.h>
 
 namespace JJs2DEngine
 {
@@ -96,22 +96,22 @@ namespace JJs2DEngine
 		{
 			auto& frameData = _perFrameData[i];
 
-			frameData._renderingFinishedFence = _synchroList.AddFence(_perFrameData.size() * 2);
-			frameData._transferFinishedFence = _synchroList.AddFence(_perFrameData.size() * 2);
+			frameData.renderingFinishedFence = _synchroList.AddFence(_perFrameData.size() * 2);
+			frameData.transferFinishedFence = _synchroList.AddFence(_perFrameData.size() * 2);
 
-			frameData._transferFinishedSemaphore = _synchroList.AddSemaphore(_perFrameData.size() * 8);
-			frameData._imageAcquiredSemaphore = _synchroList.AddSemaphore(_perFrameData.size() * 8);
-			frameData._renderingFinishedSemaphore = _synchroList.AddSemaphore(_perFrameData.size() * 8);
+			frameData.transferFinishedSemaphore = _synchroList.AddSemaphore(_perFrameData.size() * 8);
+			frameData.imageAcquiredSemaphore = _synchroList.AddSemaphore(_perFrameData.size() * 8);
+			frameData.renderingFinishedSemaphore = _synchroList.AddSemaphore(_perFrameData.size() * 8);
 
-			frameData._colorImage = _imageList.AddColorRenderTargetImage(swapchainData.renderImagesWidth, swapchainData.renderImagesHeight, swapchainData.colorFormat,
+			frameData.colorImage = _imageList.AddColorRenderTargetImage(swapchainData.renderImagesWidth, swapchainData.renderImagesHeight, swapchainData.colorFormat,
 				VS::SAMPLE_1, {}, false, 1, _perFrameData.size() + 1);
 		}
 
 		_depthImage = _imageList.AddDepthStencilRenderTargetImage(swapchainData.renderImagesWidth, swapchainData.renderImagesHeight, swapchainData.depthFormat,
 			VS::SAMPLE_1, {}, false, 1, _perFrameData.size() + 1);
 
-		_colorImageMemory = _memoryList.AllocateMemory(imageList.GetColorRenderTargetImagesSize(_perFrameData.back()._colorImage) * _perFrameData.size(), _perFrameData.size(),
-			_colorMemoryProperties, imageList.GetColorRenderTargetImagesMemoryTypeMask(_perFrameData.back()._colorImage), 0x10);
+		_colorImageMemory = _memoryList.AllocateMemory(imageList.GetColorRenderTargetImagesSize(_perFrameData.back().colorImage) * _perFrameData.size(), _perFrameData.size(),
+			_colorMemoryProperties, imageList.GetColorRenderTargetImagesMemoryTypeMask(_perFrameData.back().colorImage), 0x10);
 
 		_depthImageMemory = _memoryList.AllocateMemory(imageList.GetDepthStencilRenderTargetImagesSize(_depthImage), 1, _depthMemoryProperties,
 			imageList.GetDepthStencilRenderTargetImagesMemoryTypeMask(_depthImage), 0x10);
@@ -119,12 +119,28 @@ namespace JJs2DEngine
 		for (size_t i = 0; i < _perFrameData.size(); ++i)
 		{
 			auto& frameData = _perFrameData[i];
-			imageList.BindColorRenderTargetImage(frameData._colorImage, _colorImageMemory);
-			frameData._colorImageView = imageList.AddColorRenderTargetImageView(frameData._colorImage);
+			imageList.BindColorRenderTargetImage(frameData.colorImage, _colorImageMemory);
+			frameData.colorImageView = imageList.AddColorRenderTargetImageView(frameData.colorImage);
 		}
 
 		imageList.BindDepthStencilRenderTargetImage(_depthImage, _depthImageMemory);
 		_depthImageView = imageList.AddDepthStencilRenderTargetImageView(_depthImage);
+
+		_framebuffers.reserve(static_cast<size_t>(swapchainData.framesInFlight));
+		std::vector<std::pair<VS::RenderTargetImagesID, IDObject<VS::AutoCleanupImageView>>> attachments;
+		attachments.resize(2);
+		attachments[1].first = _depthImage;
+		attachments[1].second = _depthImageView;
+
+		for (size_t i = 0; i < _framebuffers.capacity(); ++i)
+		{
+			auto& frameData = _perFrameData[i];
+			attachments[0].first = frameData.colorImage;
+			attachments[0].second = frameData.colorImageView;
+
+			_framebuffers.push_back(_imageList.AddFramebuffer(swapchainData.renderPassID, attachments, swapchainData.renderImagesWidth, swapchainData.renderImagesHeight,
+				1, _framebuffers.capacity()));
+		}
 	}
 
 	WindowDataInternal::~WindowDataInternal()
@@ -140,22 +156,36 @@ namespace JJs2DEngine
 		bool redoColorImage = false;
 		bool redoDepthImage = false;
 		bool redoSynchro = false;
+		bool redoFramebuffer = false;
 
 		if (_swapchainData.colorFormat != newSwapchainData.colorFormat || _swapchainData.framesInFlight != newSwapchainData.framesInFlight)
 		{
 			redoSwapchain = true;
 			redoColorImage = true;
+			redoFramebuffer = true;
 			redoSynchro = _swapchainData.framesInFlight != newSwapchainData.framesInFlight;
 		}
 
 		if (_swapchainData.depthFormat != newSwapchainData.depthFormat)
+		{
 			redoDepthImage = true;
+			redoFramebuffer = true;
+		}
 
 		if (_swapchainData.renderImagesWidth != newSwapchainData.renderImagesWidth || _swapchainData.renderImagesHeight != newSwapchainData.renderImagesHeight)
 		{
 			redoColorImage = true;
 			redoDepthImage = true;
+			redoFramebuffer = true;
 		}
+
+		if (_swapchainData.renderPassID != newSwapchainData.renderPassID)
+		{
+			redoFramebuffer = true;
+		}
+
+		if (redoFramebuffer)
+			DeleteFramebuffers();
 
 		if (redoSwapchain)
 			RedoSwapchain(newSwapchainData.colorFormat, static_cast<uint32_t>(newSwapchainData.framesInFlight));
@@ -166,6 +196,9 @@ namespace JJs2DEngine
 
 		if (redoDepthImage)
 			RedoDepthImage(newSwapchainData.depthFormat, newSwapchainData.renderImagesWidth, newSwapchainData.renderImagesHeight);
+
+		if (redoFramebuffer)
+			RedoFramebuffers(newSwapchainData.renderPassID, newSwapchainData.renderImagesWidth, newSwapchainData.renderImagesHeight);
 
 		_swapchainData = newSwapchainData;
 	}
@@ -200,15 +233,15 @@ namespace JJs2DEngine
 		for (size_t i = 0; i < _perFrameData.size(); ++i)
 		{
 			auto& frameData = _perFrameData[i];
-			_imageList.RemoveColorRenderTargetImage(frameData._colorImage, true);
+			_imageList.RemoveColorRenderTargetImage(frameData.colorImage, true);
 
 			if (redoSynchro)
 			{
-				_synchroList.RemoveFence(frameData._renderingFinishedFence, true);
-				_synchroList.RemoveFence(frameData._transferFinishedFence, true);
-				_synchroList.RemoveSemaphore(frameData._imageAcquiredSemaphore, true);
-				_synchroList.RemoveSemaphore(frameData._renderingFinishedSemaphore, true);
-				_synchroList.RemoveSemaphore(frameData._renderingFinishedSemaphore, true);
+				_synchroList.RemoveFence(frameData.renderingFinishedFence, true);
+				_synchroList.RemoveFence(frameData.transferFinishedFence, true);
+				_synchroList.RemoveSemaphore(frameData.imageAcquiredSemaphore, true);
+				_synchroList.RemoveSemaphore(frameData.renderingFinishedSemaphore, true);
+				_synchroList.RemoveSemaphore(frameData.renderingFinishedSemaphore, true);
 			}
 		}
 
@@ -220,27 +253,27 @@ namespace JJs2DEngine
 		for (size_t i = 0; i < _perFrameData.size(); ++i)
 		{
 			auto& frameData = _perFrameData[i];
-			frameData._colorImage = _imageList.AddColorRenderTargetImage(width, height, colorFormat,
+			frameData.colorImage = _imageList.AddColorRenderTargetImage(width, height, colorFormat,
 				VS::SAMPLE_1, {}, false, false, 1, static_cast<size_t>(framesInFlight) + 1);
 
 			if (redoSynchro)
 			{
-				frameData._renderingFinishedFence = _synchroList.AddFence(_perFrameData.size() * 2);
-				frameData._transferFinishedFence = _synchroList.AddFence(_perFrameData.size() * 2);
-
-				frameData._transferFinishedSemaphore = _synchroList.AddSemaphore(_perFrameData.size() * 8);
-				frameData._imageAcquiredSemaphore = _synchroList.AddSemaphore(_perFrameData.size() * 8);
-				frameData._renderingFinishedSemaphore = _synchroList.AddSemaphore(_perFrameData.size() * 8);
+				frameData.renderingFinishedFence = _synchroList.AddFence(_perFrameData.size() * 2);
+				frameData.transferFinishedFence = _synchroList.AddFence(_perFrameData.size() * 2);
+				
+				frameData.transferFinishedSemaphore = _synchroList.AddSemaphore(_perFrameData.size() * 8);
+				frameData.imageAcquiredSemaphore = _synchroList.AddSemaphore(_perFrameData.size() * 8);
+				frameData.renderingFinishedSemaphore = _synchroList.AddSemaphore(_perFrameData.size() * 8);
 			}
 		}
 
-		_colorImageMemory = _memoryList.AllocateMemory(_imageList.GetColorRenderTargetImagesSize(_perFrameData.back()._colorImage) * _perFrameData.size(), _perFrameData.size(),
-			_colorMemoryProperties, _imageList.GetColorRenderTargetImagesMemoryTypeMask(_perFrameData.back()._colorImage), 0x10);
+		_colorImageMemory = _memoryList.AllocateMemory(_imageList.GetColorRenderTargetImagesSize(_perFrameData.back().colorImage) * _perFrameData.size(), _perFrameData.size(),
+			_colorMemoryProperties, _imageList.GetColorRenderTargetImagesMemoryTypeMask(_perFrameData.back().colorImage), 0x10);
 
 		for (size_t i = 0; i < _perFrameData.size(); ++i)
 		{
-			_imageList.BindColorRenderTargetImage(_perFrameData[i]._colorImage, _colorImageMemory, static_cast<size_t>(framesInFlight) + 1);
-			_perFrameData[i]._colorImageView = _imageList.AddColorRenderTargetImageView(_perFrameData[i]._colorImage);
+			_imageList.BindColorRenderTargetImage(_perFrameData[i].colorImage, _colorImageMemory, static_cast<size_t>(framesInFlight) + 1);
+			_perFrameData[i].colorImageView = _imageList.AddColorRenderTargetImageView(_perFrameData[i].colorImage);
 		}
 	}
 
@@ -254,6 +287,35 @@ namespace JJs2DEngine
 			_imageList.GetDepthStencilRenderTargetImagesMemoryTypeMask(_depthImage), 0x10);
 		_imageList.BindDepthStencilRenderTargetImage(_depthImage, _depthImageMemory);
 		_depthImageView = _imageList.AddDepthStencilRenderTargetImageView(_depthImage);
+	}
+
+	void WindowDataInternal::DeleteFramebuffers()
+	{
+		for (size_t i = 0; _framebuffers.size(); ++i)
+		{
+			_imageList.RemoveFramebuffer(_framebuffers[i], true);
+		}
+
+		_framebuffers.clear();
+	}
+
+	void WindowDataInternal::RedoFramebuffers(IDObject<VS::AutoCleanupRenderPass> renderPassID, uint32_t width, uint32_t height)
+	{
+		_framebuffers.resize(_perFrameData.size());
+
+		std::vector<std::pair<VS::RenderTargetImagesID, IDObject<VS::AutoCleanupImageView>>> attachments;
+		attachments.resize(2);
+		attachments[1].first = _depthImage;
+		attachments[1].second = _depthImageView;
+
+		for (size_t i = 0; i < _framebuffers.size(); ++i)
+		{
+			auto& frameData = _perFrameData[i];
+			attachments[0].first = frameData.colorImage;
+			attachments[0].second = frameData.colorImageView;
+
+			_framebuffers[i] = _imageList.AddFramebuffer(renderPassID, attachments, width, height, 1, _framebuffers.size());
+		}
 	}
 
 }

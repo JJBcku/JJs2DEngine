@@ -192,6 +192,11 @@ namespace JJs2DEngine
 	{
 	}
 
+	IDObject<VS::AutoCleanupRenderPass> RenderDataInternal::GetCurrentRenderPass() const
+	{
+		return _renderPassList[_currentPipelineSettings];
+	}
+
 	void RenderDataInternal::CreateUIPipelineCacheFile(const std::string& dataFolder)
 	{
 		auto pipelineDataList = _device.GetPipelineDataLists();

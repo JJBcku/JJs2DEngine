@@ -60,8 +60,8 @@ namespace JJs2DEngine
 		size_t _graphicsQueueIndex;
 		std::optional<size_t> _transferOnlyQueueIndex;
 
+		std::unique_ptr<RenderDataInternal> _renderDataList;
 		std::unique_ptr<WindowDataInternal> _windowData;
-		std::unique_ptr<RenderDataInternal> _pipelineList;
 
 		IDObject<std::pair<VS::QuitEventFunction, void*>> _quitRegistrationID;
 		Misc::Bool64 _windowClosed;

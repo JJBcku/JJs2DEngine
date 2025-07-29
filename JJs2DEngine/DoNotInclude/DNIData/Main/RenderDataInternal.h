@@ -26,6 +26,8 @@ namespace JJs2DEngine
 			VS::DeviceMain device, VS::SharedDataMainList sharedData);
 		~RenderDataInternal();
 
+		IDObject<VS::AutoCleanupRenderPass> GetCurrentRenderPass() const;
+
 	private:
 		VS::DeviceMain _device;
 		VS::SharedDataMainList _sharedData;

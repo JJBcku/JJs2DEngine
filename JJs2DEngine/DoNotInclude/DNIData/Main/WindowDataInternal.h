@@ -23,15 +23,15 @@ namespace JJs2DEngine
 
 	struct PerFrameData
 	{
-		IDObject<VS::AutoCleanupFence> _transferFinishedFence;
-		IDObject<VS::AutoCleanupFence> _renderingFinishedFence;
+		IDObject<VS::AutoCleanupFence> transferFinishedFence;
+		IDObject<VS::AutoCleanupFence> renderingFinishedFence;
 
-		IDObject<VS::AutoCleanupSemaphore> _transferFinishedSemaphore;
-		IDObject<VS::AutoCleanupSemaphore> _imageAcquiredSemaphore;
-		IDObject<VS::AutoCleanupSemaphore> _renderingFinishedSemaphore;
+		IDObject<VS::AutoCleanupSemaphore> transferFinishedSemaphore;
+		IDObject<VS::AutoCleanupSemaphore> imageAcquiredSemaphore;
+		IDObject<VS::AutoCleanupSemaphore> renderingFinishedSemaphore;
 
-		IDObject<VS::AutoCleanupColorRenderTargetImage> _colorImage;
-		IDObject<VS::AutoCleanupImageView> _colorImageView;
+		IDObject<VS::AutoCleanupColorRenderTargetImage> colorImage;
+		IDObject<VS::AutoCleanupImageView> colorImageView;
 
 		PerFrameData();
 	};
@@ -44,6 +44,8 @@ namespace JJs2DEngine
 
 		uint32_t renderImagesWidth;
 		uint32_t renderImagesHeight;
+
+		IDObject<VS::AutoCleanupRenderPass> renderPassID;
 
 		RenderImagesData();
 
@@ -82,6 +84,7 @@ namespace JJs2DEngine
 		std::vector<VS::MemoryTypeProperties> _depthMemoryProperties;
 
 		std::vector<PerFrameData> _perFrameData;
+		std::vector<IDObject<VS::AutoCleanupFramebuffer>> _framebuffers;
 		IDObject<VS::AutoCleanupDepthStencilRenderTargetImage> _depthImage;
 		IDObject<VS::AutoCleanupImageView> _depthImageView;
 
@@ -91,5 +94,8 @@ namespace JJs2DEngine
 		void RedoSwapchain(VS::DataFormatSetIndependentID colorFormat, uint32_t framesInFlight);
 		void RedoPerFrameData(VS::DataFormatSetIndependentID colorFormat, uint32_t framesInFlight, uint32_t width, uint32_t height);
 		void RedoDepthImage(VS::DataFormatSetIndependentID depthFormat, uint32_t width, uint32_t height);
+
+		void DeleteFramebuffers();
+		void RedoFramebuffers(IDObject<VS::AutoCleanupRenderPass> renderPassID, uint32_t width, uint32_t height);
 	};
 }
