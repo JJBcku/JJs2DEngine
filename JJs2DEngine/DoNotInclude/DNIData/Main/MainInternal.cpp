@@ -161,9 +161,18 @@ namespace JJs2DEngine
 
 		auto device = instance.GetChoosenDevicesMainClass();
 
-		_windowData = std::make_unique<WindowDataInternal>(deviceSettings.windowData, static_cast<uint32_t>(deviceSettings.graphicsFramesInFlight),
-			TranslateToFormat(deviceSettings.preInitializedPipelineSettings[deviceSettings.currentPipelineSettings].swapchainFormat), device.GetWindowList(),
-			device.GetSynchronizationDataLists());
+		auto& currentPipeline = deviceSettings.preInitializedPipelineSettings[deviceSettings.currentPipelineSettings];
+
+		RenderImagesData windowRenderData;
+		windowRenderData.framesInFlight = deviceSettings.graphicsFramesInFlight;
+		windowRenderData.colorFormat = TranslateToFormat(currentPipeline.swapchainFormat);
+		windowRenderData.depthFormat = TranslateToFormat(currentPipeline.depthFormat);
+
+		windowRenderData.renderImagesWidth = currentPipeline.renderWidth;
+		windowRenderData.renderImagesHeight = GetHeight(currentPipeline.renderWidth, currentPipeline.aspectRatio);
+
+		_windowData = std::make_unique<WindowDataInternal>(deviceSettings.windowData, windowRenderData, device.GetWindowList(), device.GetSynchronizationDataLists(),
+			device.GetImageDataLists(), device.GetMemoryObjectsList());
 		_pipelineList = std::make_unique<RenderDataInternal>(deviceSettings.currentPipelineSettings, deviceSettings.preInitializedPipelineSettings, _dataFolder,
 			device, _VSMain->GetSharedDataMainList());
 	}
