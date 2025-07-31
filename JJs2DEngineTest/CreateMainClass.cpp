@@ -88,6 +88,15 @@ JJ2DE::DeviceSettings CreateDeviceSettings(const JJ2DE::DeviceData& device, size
 
 	ret.graphicsFramesInFlight = std::min(device.swapchainSupport.minFramesInFlight + 1, device.swapchainSupport.maxFramesInFlight);
 
+	{
+		if (device.textureSupport.textureRGBA16UNORM)
+			ret.textureFormat = JJ2DE::TextureFormat::TEXTURE_FORMAT_RGBA16;
+		else if (device.textureSupport.textureRGBA8UNORM)
+			ret.textureFormat = JJ2DE::TextureFormat::TEXTURE_FORMAT_RGBA8;
+		else
+			ret.textureFormat = JJ2DE::TextureFormat::TEXTURE_FORMAT_BGRA8;
+	}
+
 	ret.windowData.windowTitle = "JJ2DEngine Test Window";
 	ret.windowData.windowWidth = 1280;
 	ret.windowData.aspectRatio = JJ2DE::AspectRatio::ASPECT_RATIO_16_9;
@@ -111,15 +120,6 @@ JJ2DE::DeviceSettings CreateDeviceSettings(const JJ2DE::DeviceData& device, size
 			currentPipelineSettings.swapchainFormat = JJ2DE::SwapchainFormat::SWAPCHAIN_FORMAT_BGRA8;
 		else
 			currentPipelineSettings.swapchainFormat = JJ2DE::SwapchainFormat::SWAPCHAIN_FORMAT_ABGR8;
-	}
-
-	{
-		if (device.textureSupport.textureRGBA16UNORM)
-			currentPipelineSettings.textureFormat = JJ2DE::TextureFormat::TEXTURE_FORMAT_RGBA16;
-		else if (device.textureSupport.textureRGBA8UNORM)
-			currentPipelineSettings.textureFormat = JJ2DE::TextureFormat::TEXTURE_FORMAT_RGBA8;
-		else
-			currentPipelineSettings.textureFormat = JJ2DE::TextureFormat::TEXTURE_FORMAT_BGRA8;
 	}
 
 	{

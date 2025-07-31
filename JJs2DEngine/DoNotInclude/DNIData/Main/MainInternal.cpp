@@ -108,13 +108,13 @@ namespace JJs2DEngine
 		if (deviceSettings.graphicsFramesInFlight > deviceData.swapchainSupport.maxFramesInFlight)
 			throw std::runtime_error("MainInternal::CreateDevice Error: Function was given frames in flight value above the maximum!");
 
+		if (!CheckTexturesFormatAvailability(deviceSettings.textureFormat, deviceData.textureSupport))
+			throw std::runtime_error("MainInternal::CreateDevice Error: The choosen texture format is unsupported by the device!");
+
 		for (auto& setting : deviceSettings.preInitializedPipelineSettings)
 		{
 			if (!CheckSwapchainFormatAvailability(setting.swapchainFormat, deviceData.swapchainSupport))
 				throw std::runtime_error("MainInternal::CreateDevice Error: One of preinitialized pipelines has a swapchain format unsupported by the device!");
-
-			if (!CheckTexturesFormatAvailability(setting.textureFormat, deviceData.textureSupport))
-				throw std::runtime_error("MainInternal::CreateDevice Error: One of preinitialized pipelines has a texture format unsupported by the device!");
 
 			if (!CheckDepthFormatAvailability(setting.depthFormat, deviceData.depthStencilSupport))
 				throw std::runtime_error("MainInternal::CreateDevice Error: One of preinitialized pipelines has a depth format unsupported by the device!");

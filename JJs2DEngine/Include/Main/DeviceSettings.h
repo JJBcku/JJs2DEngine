@@ -44,7 +44,6 @@ namespace JJs2DEngine
 		AspectRatio aspectRatio;
 
 		SwapchainFormat swapchainFormat;
-		TextureFormat textureFormat;
 		DepthFormat depthFormat;
 
 		PipelineSettings();
@@ -56,6 +55,8 @@ namespace JJs2DEngine
 
 		uint32_t transferFramesInFlight;
 		uint32_t graphicsFramesInFlight;
+
+		TextureFormat textureFormat;
 
 		WindowInitializationData windowData;
 
