@@ -74,7 +74,7 @@ namespace JJs2DEngine
 
 	namespace fs = std::filesystem;
 
-	constexpr uint32_t imagesInTextureArray = 8;
+	constexpr uint32_t imagesInTextureArray = 20;
 
 	RenderDataInternal::RenderDataInternal(size_t currentPipelineSettings, const std::vector<PipelineSettings>& preInitializedPipelineSettings, const std::string& dataFolder,
 		VS::DeviceMain device, VS::SharedDataMainList sharedData) : _device(device), _sharedData(sharedData), _currentPipelineSettings(currentPipelineSettings)
