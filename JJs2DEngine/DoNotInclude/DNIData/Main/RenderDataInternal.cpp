@@ -313,7 +313,7 @@ namespace JJs2DEngine
 
 		uint64_t currentDataCRC64WE = CRC64::WE::calc(dataToSave.data(), dataToSave.size());
 
-		if (dataToSave.size() != _uiPipelineCompatibleSavedSize.value_or(0U))
+		if (!_uiPipelineCompatibleSavedSize.has_value() || dataToSave.size() != _uiPipelineCompatibleSavedSize.value())
 		{
 			saveData = true;
 		}
@@ -524,7 +524,7 @@ namespace JJs2DEngine
 
 		uint64_t currentDataCRC64WE = CRC64::WE::calc(dataToSave.data(), dataToSave.size());
 
-		if (dataToSave.size() != _gammaCorrectionPipelineCompatibleSavedSize.value_or(0U))
+		if (!_gammaCorrectionPipelineCompatibleSavedSize.has_value() || dataToSave.size() != _gammaCorrectionPipelineCompatibleSavedSize.value())
 		{
 			saveData = true;
 		}
