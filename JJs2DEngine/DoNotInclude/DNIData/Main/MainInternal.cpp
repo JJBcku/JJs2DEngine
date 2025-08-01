@@ -99,6 +99,9 @@ namespace JJs2DEngine
 		if (deviceSettings.deviceIndex >= _deviceList.size())
 			throw std::runtime_error("MainInternal::CreateDevice Error: Function was given an erroneous device index value!");
 
+		if (deviceSettings.currentPipelineSettings >= deviceSettings.preInitializedPipelineSettings.size())
+			throw std::runtime_error("MainInternal::CreateDevice Error: Function was given an erroneous current pipeline index value!");
+
 		const auto& deviceData = _deviceList[deviceSettings.deviceIndex];
 
 		if (deviceSettings.graphicsFramesInFlight < deviceData.swapchainSupport.minFramesInFlight)
@@ -163,36 +166,10 @@ namespace JJs2DEngine
 
 		auto device = instance.GetChoosenDevicesMainClass();
 
-		std::vector<PipelineSettings> fullPipelineList;
-		fullPipelineList.reserve(deviceSettings.preInitializedPipelineSettings.size() + 1);
+		auto& currentPipeline = deviceSettings.preInitializedPipelineSettings[deviceSettings.currentPipelineSettings];
 
-		std::optional<size_t> currentPipelineIndex;
-
-		if (!deviceSettings.preInitializedPipelineSettings.empty())
-		{
-			fullPipelineList = deviceSettings.preInitializedPipelineSettings;
-			std::stable_sort(fullPipelineList.begin(), fullPipelineList.end());
-			fullPipelineList.erase(std::unique(fullPipelineList.begin(), fullPipelineList.end()));
-
-			for (size_t i = 0; i < fullPipelineList.size(); ++i)
-			{
-				if (fullPipelineList[i] == deviceSettings.currentPipelineSettings)
-				{
-					currentPipelineIndex = i;
-					break;
-				}
-			}
-		}
-
-		if (!currentPipelineIndex.has_value())
-		{
-			currentPipelineIndex = fullPipelineList.size();
-			fullPipelineList.push_back(deviceSettings.currentPipelineSettings);
-		}
-
-		_renderDataList = std::make_unique<RenderDataInternal>(currentPipelineIndex.value(), fullPipelineList, _dataFolder, device, _VSMain->GetSharedDataMainList());
-
-		auto& currentPipeline = fullPipelineList[currentPipelineIndex.value()];
+		_renderDataList = std::make_unique<RenderDataInternal>(deviceSettings.currentPipelineSettings, deviceSettings.preInitializedPipelineSettings, _dataFolder,
+			device, _VSMain->GetSharedDataMainList());
 
 		RenderImagesData windowRenderData;
 		windowRenderData.framesInFlight = deviceSettings.graphicsFramesInFlight;

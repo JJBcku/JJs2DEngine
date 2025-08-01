@@ -129,7 +129,8 @@ JJ2DE::DeviceSettings CreateDeviceSettings(const JJ2DE::DeviceData& device, size
 			currentPipelineSettings.depthFormat = JJ2DE::DepthFormat::DEPTH_FORMAT_D32_S8;
 	}
 
-	ret.currentPipelineSettings = currentPipelineSettings;
+	ret.preInitializedPipelineSettings.push_back(currentPipelineSettings);
+	ret.currentPipelineSettings = 0;
 
 	return ret;
 }
