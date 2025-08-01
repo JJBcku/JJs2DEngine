@@ -8,12 +8,12 @@ namespace JJs2DEngine
 	InputDataListInternal::InputDataListInternal(std::chrono::high_resolution_clock::time_point currentTime, VS::SdlEventHandler eventHandler) : _eventHandler(eventHandler),
 		_currentTime(currentTime)
 	{
-		RegisterWindowEvent();
+		RegisterWindowEventHandler();
 	}
 
 	InputDataListInternal::~InputDataListInternal()
 	{
-		UnregisterWindowEvent();
+		UnregisterWindowEventHandler();
 	}
 
 	void InputDataListInternal::UpdateCurrentTime(std::chrono::high_resolution_clock::time_point currentTime)
@@ -21,14 +21,14 @@ namespace JJs2DEngine
 		_currentTime = currentTime;
 	}
 
-	void InputDataListInternal::RegisterWindowEvent()
+	void InputDataListInternal::RegisterWindowEventHandler()
 	{
-		_windowEventID = _eventHandler.RegisterWindowEventCallback(HandleWindowEventStatic, this, 0x10);
+		_windowEventHandlerID = _eventHandler.RegisterWindowEventCallback(HandleWindowEventStatic, this, 0x10);
 	}
 
-	void InputDataListInternal::UnregisterWindowEvent()
+	void InputDataListInternal::UnregisterWindowEventHandler()
 	{
-		_eventHandler.UnRegisterWindowEventCallback(_windowEventID, true);
+		_eventHandler.UnRegisterWindowEventCallback(_windowEventHandlerID, true);
 	}
 
 	bool InputDataListInternal::HandleWindowEvent(const VS::SdlWindowEventData& eventData)
@@ -46,14 +46,14 @@ namespace JJs2DEngine
 		return static_cast<InputDataListInternal*>(pointer)->HandleWindowEvent(eventData);
 	}
 
-	void InputDataListInternal::RegisterKeyboardEvent()
+	void InputDataListInternal::RegisterKeyboardEventHandler()
 	{
-		_keyboardEventID = _eventHandler.RegisterKeyboardEventCallback(HandleKeyboardEventStatic, this, 0x10);
+		_keyboardEventHandlerID = _eventHandler.RegisterKeyboardEventCallback(HandleKeyboardEventStatic, this, 0x10);
 	}
 
-	void InputDataListInternal::UnregisterKeyboardEvent()
+	void InputDataListInternal::UnregisterKeyboardEventHandler()
 	{
-		_eventHandler.UnRegisterKeyboardEventCallback(_keyboardEventID, true);
+		_eventHandler.UnRegisterKeyboardEventCallback(_keyboardEventHandlerID, true);
 	}
 
 	bool InputDataListInternal::HandleKeyboardEvent(const VS::SdlKeyboardEventData& eventData)

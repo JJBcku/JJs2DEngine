@@ -21,17 +21,17 @@ namespace JJs2DEngine
 
 		std::chrono::high_resolution_clock::time_point _currentTime;
 
-		IDObject<std::pair<VS::WindowEventFunction, void*>> _windowEventID;
-		IDObject<std::pair<VS::KeyboardEventFunction, void*>> _keyboardEventID;
+		IDObject<std::pair<VS::WindowEventFunction, void*>> _windowEventHandlerID;
+		IDObject<std::pair<VS::KeyboardEventFunction, void*>> _keyboardEventHandlerID;
 
-		void RegisterWindowEvent();
-		void UnregisterWindowEvent();
+		void RegisterWindowEventHandler();
+		void UnregisterWindowEventHandler();
 
 		bool HandleWindowEvent(const VS::SdlWindowEventData& eventData);
 		static bool HandleWindowEventStatic(const VS::SdlWindowEventData& eventData, void* pointer);
 
-		void RegisterKeyboardEvent();
-		void UnregisterKeyboardEvent();
+		void RegisterKeyboardEventHandler();
+		void UnregisterKeyboardEventHandler();
 
 		bool HandleKeyboardEvent(const VS::SdlKeyboardEventData& eventData);
 		static bool HandleKeyboardEventStatic(const VS::SdlKeyboardEventData& eventData, void* pointer);
