@@ -132,6 +132,9 @@
     <ClInclude Include="Include\Main\InputDataList.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Include\Main\KeyPressData.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DoNotInclude\DNIData\Common\CommonDNIpch.cpp">
@@ -186,6 +189,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="DoNotInclude\ICode\Main\InputDataList.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DoNotInclude\ICode\Main\KeyPressData.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
