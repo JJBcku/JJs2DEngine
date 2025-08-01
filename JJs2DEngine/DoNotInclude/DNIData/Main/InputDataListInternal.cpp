@@ -46,4 +46,24 @@ namespace JJs2DEngine
 		return static_cast<InputDataListInternal*>(pointer)->HandleWindowEvent(eventData);
 	}
 
+	void InputDataListInternal::RegisterKeyboardEvent()
+	{
+		_keyboardEventID = _eventHandler.RegisterKeyboardEventCallback(HandleKeyboardEventStatic, this, 0x10);
+	}
+
+	void InputDataListInternal::UnregisterKeyboardEvent()
+	{
+		_eventHandler.UnRegisterKeyboardEventCallback(_keyboardEventID, true);
+	}
+
+	bool InputDataListInternal::HandleKeyboardEvent(const VS::SdlKeyboardEventData& eventData)
+	{
+		return true;
+	}
+
+	bool InputDataListInternal::HandleKeyboardEventStatic(const VS::SdlKeyboardEventData& eventData, void* pointer)
+	{
+		return static_cast<InputDataListInternal*>(pointer)->HandleKeyboardEvent(eventData);
+	}
+
 }
