@@ -22,8 +22,6 @@ namespace JJs2DEngine
 		graphicsFramesInFlight = 0;
 
 		textureFormat = TextureFormat::TEXTURE_FORMAT_UNSET;
-
-		currentPipelineSettings = std::numeric_limits<size_t>::max();
 	}
 
 }

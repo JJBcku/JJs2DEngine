@@ -1,11 +1,12 @@
 #pragma once
 
+#include "AspectRatioDef.h"
+#include "WindowInitializationData.h"
+
 #include <stdint.h>
 #include <vector>
 #include <string>
-
-#include "AspectRatioDef.h"
-#include "WindowInitializationData.h"
+#include <compare>
 
 namespace JJs2DEngine
 {
@@ -47,6 +48,9 @@ namespace JJs2DEngine
 		DepthFormat depthFormat;
 
 		PipelineSettings();
+
+		std::strong_ordering operator<=>(const PipelineSettings& rhs) const noexcept = default;
+		bool operator==(const PipelineSettings& rhs) const noexcept = default;
 	};
 
 	struct DeviceSettings
@@ -60,10 +64,13 @@ namespace JJs2DEngine
 
 		WindowInitializationData windowData;
 
-		size_t currentPipelineSettings;
+		PipelineSettings currentPipelineSettings;
 
 		std::vector<PipelineSettings> preInitializedPipelineSettings;
 
 		DeviceSettings();
+
+		std::strong_ordering operator<=>(const DeviceSettings& rhs) const noexcept = default;
+		bool operator==(const DeviceSettings& rhs) const noexcept = default;
 	};
 }

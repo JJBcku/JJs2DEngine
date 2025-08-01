@@ -4,6 +4,8 @@
 
 #include <Miscellaneous/Bool64Def.h>
 
+#include <compare>
+
 namespace JJs2DEngine
 {
 	struct WindowInitializationData
@@ -14,5 +16,8 @@ namespace JJs2DEngine
 		Misc::Bool64 fullscreenWindow;
 
 		WindowInitializationData();
+
+		std::strong_ordering operator<=>(const WindowInitializationData& rhs) const noexcept = default;
+		bool operator==(const WindowInitializationData& rhs) const noexcept = default;
 	};
 }
