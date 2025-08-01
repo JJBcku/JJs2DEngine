@@ -9,5 +9,6 @@
 #include <vector>
 #include <optional>
 #include <chrono>
+#include <utility>
 
 #include "../../DNIData/Common/NamespaceAliasesInternal.h"

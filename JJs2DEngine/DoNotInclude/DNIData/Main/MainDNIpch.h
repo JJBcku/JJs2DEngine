@@ -13,5 +13,6 @@
 #include <filesystem>
 #include <array>
 #include <chrono>
+#include <utility>
 
 #include "../../DNIData/Common/NamespaceAliasesInternal.h"
