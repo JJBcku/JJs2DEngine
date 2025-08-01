@@ -9,11 +9,13 @@ namespace JJs2DEngine
 		_currentTime(currentTime)
 	{
 		RegisterWindowEventHandler();
+		RegisterKeyboardEventHandler();
 	}
 
 	InputDataListInternal::~InputDataListInternal()
 	{
 		UnregisterWindowEventHandler();
+		UnregisterKeyboardEventHandler();
 	}
 
 	void InputDataListInternal::UpdateCurrentTime(std::chrono::high_resolution_clock::time_point currentTime)
