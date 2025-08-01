@@ -12,5 +12,6 @@
 #include <fstream>
 #include <filesystem>
 #include <array>
+#include <chrono>
 
 #include "../../DNIData/Common/NamespaceAliasesInternal.h"

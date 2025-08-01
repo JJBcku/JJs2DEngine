@@ -7,5 +7,7 @@
 #include <string>
 #include <compare>
 #include <vector>
+#include <optional>
+#include <chrono>
 
 #include "../../DNIData/Common/NamespaceAliasesInternal.h"
