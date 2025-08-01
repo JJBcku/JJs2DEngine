@@ -12,4 +12,9 @@ namespace JJs2DEngine
 	{
 	}
 
+	void InputDataListInternal::UpdateCurrentTime(std::chrono::high_resolution_clock::time_point currentTime)
+	{
+		_currentTime = currentTime;
+	}
+
 }

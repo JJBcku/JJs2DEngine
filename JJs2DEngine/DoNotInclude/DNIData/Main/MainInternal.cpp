@@ -191,6 +191,8 @@ namespace JJs2DEngine
 	{
 		_lastCurrentTime = _currentTime;
 		_currentTime = std::chrono::high_resolution_clock::now();
+
+		_inputDataList->UpdateCurrentTime(_currentTime);
 	}
 
 	Misc::Bool64 MainInternal::IsWindowClosed() const

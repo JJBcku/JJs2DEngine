@@ -12,6 +12,8 @@ namespace JJs2DEngine
 		InputDataListInternal(std::chrono::high_resolution_clock::time_point currentTime, VS::SdlEventHandler eventHandler);
 		~InputDataListInternal();
 
+		void UpdateCurrentTime(std::chrono::high_resolution_clock::time_point currentTime);
+
 	private:
 		VS::SdlEventHandler _eventHandler;
 
