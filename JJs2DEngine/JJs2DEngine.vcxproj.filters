@@ -124,16 +124,16 @@
       <Filter>Header Files\Include\Main</Filter>
     </ClInclude>
     <ClInclude Include="DoNotInclude\DNIData\Main\WindowDataInternal.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Do Not Include\Main</Filter>
     </ClInclude>
     <ClInclude Include="DoNotInclude\DNIData\Main\InputDataListInternal.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Include\Main\InputDataList.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Do Not Include\Main</Filter>
     </ClInclude>
     <ClInclude Include="Include\Main\KeyPressData.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Include\Main</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Main\InputDataList.h">
+      <Filter>Header Files\Include\Main</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -182,17 +182,17 @@
     <ClCompile Include="DoNotInclude\ICode\Main\WindowInitializationData.cpp">
       <Filter>Source Files\Include\Main</Filter>
     </ClCompile>
-    <ClCompile Include="DoNotInclude\DNIData\Main\WindowDataInternal.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="DoNotInclude\ICode\Main\InputDataList.cpp">
+      <Filter>Source Files\Include\Main</Filter>
     </ClCompile>
     <ClCompile Include="DoNotInclude\DNIData\Main\InputDataListInternal.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Do Not Include\Main</Filter>
     </ClCompile>
-    <ClCompile Include="DoNotInclude\ICode\Main\InputDataList.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="DoNotInclude\DNIData\Main\WindowDataInternal.cpp">
+      <Filter>Source Files\Do Not Include\Main</Filter>
     </ClCompile>
     <ClCompile Include="DoNotInclude\ICode\Main\KeyPressData.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Include\Main</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
