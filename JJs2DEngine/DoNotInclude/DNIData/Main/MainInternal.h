@@ -5,6 +5,7 @@
 #include <vector>
 #include <optional>
 #include <string>
+#include <chrono>
 
 #include <Miscellaneous/Bool64Def.h>
 #include <CustomLists/IDObject.h>
@@ -41,6 +42,8 @@ namespace JJs2DEngine
 		void CreateDevice(const DeviceSettings& deviceSettings);
 		//void RecreateDevice(const DeviceSettings& deviceSettings);
 
+		void UpdateCurrentTime();
+
 		Misc::Bool64 IsWindowClosed() const;
 
 		void HandleEvents();
@@ -59,6 +62,9 @@ namespace JJs2DEngine
 
 		size_t _graphicsQueueIndex;
 		std::optional<size_t> _transferOnlyQueueIndex;
+
+		std::optional<std::chrono::high_resolution_clock::time_point> _lastCurrentTime;
+		std::chrono::high_resolution_clock::time_point _currentTime;
 
 		std::unique_ptr<RenderDataInternal> _renderDataList;
 		std::unique_ptr<WindowDataInternal> _windowData;

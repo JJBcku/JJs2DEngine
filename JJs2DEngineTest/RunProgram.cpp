@@ -19,6 +19,7 @@ void RunProgram()
 
 	while (main.IsWindowClosed() != Misc::BOOL64_TRUE)
 	{
+		main.UpdateCurrentTime();
 		main.HandleEvents();
 	}
 

@@ -23,6 +23,11 @@ namespace JJs2DEngine
 		_internal->CreateDevice(deviceSettings);
 	}
 
+	void Main::UpdateCurrentTime()
+	{
+		_internal->UpdateCurrentTime();
+	}
+
 	Misc::Bool64 Main::IsWindowClosed() const
 	{
 		return _internal->IsWindowClosed();

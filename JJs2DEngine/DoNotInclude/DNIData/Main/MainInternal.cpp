@@ -73,6 +73,8 @@ namespace JJs2DEngine
 
 		CreateInstance(initData);
 		EnumerateDevices();
+
+		_currentTime = std::chrono::high_resolution_clock::now();
 	}
 
 	MainInternal::~MainInternal()
@@ -159,6 +161,9 @@ namespace JJs2DEngine
 
 		_currentDevicesSettings = deviceSettings;
 
+		_lastCurrentTime = _currentTime;
+		_currentTime = std::chrono::high_resolution_clock::now();
+
 		auto device = instance.GetChoosenDevicesMainClass();
 
 		auto& currentPipeline = deviceSettings.preInitializedPipelineSettings[deviceSettings.currentPipelineSettings];
@@ -177,6 +182,12 @@ namespace JJs2DEngine
 
 		_windowData = std::make_unique<WindowDataInternal>(deviceSettings.windowData, windowRenderData, device.GetWindowList(), device.GetSynchronizationDataLists(),
 			device.GetImageDataLists(), device.GetMemoryObjectsList());
+	}
+
+	void MainInternal::UpdateCurrentTime()
+	{
+		_lastCurrentTime = _currentTime;
+		_currentTime = std::chrono::high_resolution_clock::now();
 	}
 
 	Misc::Bool64 MainInternal::IsWindowClosed() const

@@ -23,6 +23,8 @@ namespace JJs2DEngine
 
 		void CreateDevice(const DeviceSettings& deviceSettings);
 
+		void UpdateCurrentTime();
+
 		Misc::Bool64 IsWindowClosed() const;
 
 		void HandleEvents();
