@@ -12,6 +12,7 @@
 
 #include "WindowDataInternal.h"
 #include "RenderDataInternal.h"
+#include "InputDataListInternal.h"
 
 #include <Miscellaneous/Bool64.h>
 
@@ -182,6 +183,8 @@ namespace JJs2DEngine
 
 		_windowData = std::make_unique<WindowDataInternal>(deviceSettings.windowData, windowRenderData, device.GetWindowList(), device.GetSynchronizationDataLists(),
 			device.GetImageDataLists(), device.GetMemoryObjectsList());
+
+		_inputDataList = std::make_unique<InputDataListInternal>(_currentTime, _VSMain->GetSdlEventHandler());
 	}
 
 	void MainInternal::UpdateCurrentTime()
