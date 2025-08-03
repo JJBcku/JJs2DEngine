@@ -4,6 +4,8 @@
 #include <Miscellaneous/Bool64.h>
 
 #include <Main.h>
+#include <InputDataList.h>
+#include <SpecialKeysDataList.h>
 
 #include "MainDataCollection.h"
 
@@ -17,10 +19,17 @@ void RunProgram()
 
 	auto& main = *data.main;
 
-	while (main.IsWindowClosed() != Misc::BOOL64_TRUE)
+	auto inputData = main.GetInputDataList();
+
+	bool quit = false;
+
+	while (main.IsWindowClosed() != Misc::BOOL64_TRUE && !quit)
 	{
 		main.UpdateCurrentTime();
 		main.HandleEvents();
+
+		const auto& keyList = inputData.GetSpecialKeyList();
+		quit = !keyList.ESCkey.GetKeyPressList().empty();
 	}
 
 	main.WaitForIdleDevice();

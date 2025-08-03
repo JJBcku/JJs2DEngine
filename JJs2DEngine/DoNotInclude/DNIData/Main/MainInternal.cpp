@@ -212,6 +212,16 @@ namespace JJs2DEngine
 		deviceCore.WaitIdle();
 	}
 
+	InputDataListInternal& MainInternal::GetInputDataList()
+	{
+		return *_inputDataList;
+	}
+
+	const InputDataListInternal& MainInternal::GetInputDataList() const
+	{
+		return *_inputDataList;
+	}
+
 	/*void MainInternal::RecreateDevice(const DeviceSettings& deviceSettings)
 	{
 		if (_currentDevicesSettings.has_value())

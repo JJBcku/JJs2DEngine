@@ -9,6 +9,7 @@ namespace JJs2DEngine
 {
 	struct MainInitializationData;
 	class MainInternal;
+	class InputDataList;
 
 	struct DeviceData;
 	struct DeviceSettings;
@@ -29,6 +30,9 @@ namespace JJs2DEngine
 
 		void HandleEvents();
 		void WaitForIdleDevice() const;
+
+		InputDataList GetInputDataList();
+		const InputDataList GetInputDataList() const;
 
 	private:
 		std::unique_ptr<MainInternal> _internal;

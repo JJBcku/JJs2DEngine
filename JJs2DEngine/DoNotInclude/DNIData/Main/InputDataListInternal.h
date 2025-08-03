@@ -1,5 +1,7 @@
 #pragma once
 
+#include "../../../Include/Main/SpecialKeysDataList.h"
+
 #include <VulkanSimplified/VSMain/EventHandler/SdlEventHandler.h>
 #include <CustomLists/IDObject.h>
 
@@ -16,6 +18,9 @@ namespace JJs2DEngine
 
 		void UpdateCurrentTime(std::chrono::high_resolution_clock::time_point currentTime);
 
+		SpecialKeysDataList& GetSpecialKeyList();
+		const SpecialKeysDataList& GetSpecialKeyList() const;
+
 	private:
 		VS::SdlEventHandler _eventHandler;
 
@@ -23,6 +28,8 @@ namespace JJs2DEngine
 
 		IDObject<std::pair<VS::WindowEventFunction, void*>> _windowEventHandlerID;
 		IDObject<std::pair<VS::KeyboardEventFunction, void*>> _keyboardEventHandlerID;
+
+		SpecialKeysDataList _specialKeys;
 
 		void RegisterWindowEventHandler();
 		void UnregisterWindowEventHandler();

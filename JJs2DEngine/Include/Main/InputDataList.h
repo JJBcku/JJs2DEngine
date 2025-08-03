@@ -4,6 +4,8 @@ namespace JJs2DEngine
 {
 	class InputDataListInternal;
 
+	struct SpecialKeysDataList;
+
 	class InputDataList
 	{
 	public:
@@ -11,6 +13,9 @@ namespace JJs2DEngine
 		~InputDataList();
 
 		InputDataList& operator=(const InputDataList& rhs) noexcept = delete;
+
+		SpecialKeysDataList& GetSpecialKeyList();
+		const SpecialKeysDataList& GetSpecialKeyList() const;
 
 	private:
 		InputDataListInternal& _internal;

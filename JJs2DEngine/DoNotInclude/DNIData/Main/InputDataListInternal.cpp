@@ -2,6 +2,7 @@
 #include "InputDataListInternal.h"
 
 #include <VulkanSimplified/VSMain/EventHandler/SdlWindowEventData.h>
+#include <VulkanSimplified/VSMain/EventHandler/SdlKeyboardEventsData.h>
 
 namespace JJs2DEngine
 {
@@ -23,6 +24,16 @@ namespace JJs2DEngine
 		_currentTime = currentTime;
 	}
 
+	SpecialKeysDataList& InputDataListInternal::GetSpecialKeyList()
+	{
+		return _specialKeys;
+	}
+
+	const SpecialKeysDataList& InputDataListInternal::GetSpecialKeyList() const
+	{
+		return _specialKeys;
+	}
+
 	void InputDataListInternal::RegisterWindowEventHandler()
 	{
 		_windowEventHandlerID = _eventHandler.RegisterWindowEventCallback(HandleWindowEventStatic, this, 0x10);
@@ -37,6 +48,7 @@ namespace JJs2DEngine
 	{
 		if (eventData.event == VS::SDL_DATA_WINDOWEVENT_FOCUS_LOST)
 		{
+			_specialKeys.OnFocusLost();
 			return false;
 		}
 
@@ -60,6 +72,55 @@ namespace JJs2DEngine
 
 	bool InputDataListInternal::HandleKeyboardEvent(const VS::SdlKeyboardEventData& eventData)
 	{
+		auto& key = eventData.keysym.sym;
+
+		KeyPressData* specialKey = nullptr;
+
+		switch (key)
+		{
+		case VS::SDLK_DATA_ESCAPE:
+			specialKey = &_specialKeys.ESCkey;
+			break;
+		case VS::SDLK_DATA_LCTRL:
+			specialKey = &_specialKeys.lCrtlkey;
+			break;
+		case VS::SDLK_DATA_LSHIFT:
+			specialKey = &_specialKeys.lShiftkey;
+			break;
+		case VS::SDLK_DATA_LALT:
+			specialKey = &_specialKeys.lAltkey;
+			break;
+		case VS::SDLK_DATA_LGUI:
+			specialKey = &_specialKeys.lGuikey;
+			break;
+		case VS::SDLK_DATA_RCTRL:
+			specialKey = &_specialKeys.rCrtlkey;
+			break;
+		case VS::SDLK_DATA_RSHIFT:
+			specialKey = &_specialKeys.rShiftkey;
+			break;
+		case VS::SDLK_DATA_RALT:
+			specialKey = &_specialKeys.rAltkey;
+			break;
+		case VS::SDLK_DATA_RGUI:
+			specialKey = &_specialKeys.rGuikey;
+			break;
+		default:
+			break;
+		}
+
+		if (specialKey != nullptr)
+		{
+			if (eventData.state > 0)
+			{
+				specialKey->PressKey(eventData.keysym.mod, _currentTime);
+			}
+			else
+			{
+				specialKey->ReleaseKey();
+			}
+		}
+
 		return true;
 	}
 

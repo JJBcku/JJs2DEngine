@@ -1,6 +1,8 @@
 #include "MainIpch.h"
 #include "../../../Include/Main/Main.h"
 
+#include "../../../Include/Main/InputDataList.h"
+
 #include "../../DNIData/Main/MainInternal.h"
 
 namespace JJs2DEngine
@@ -41,6 +43,16 @@ namespace JJs2DEngine
 	void Main::WaitForIdleDevice() const
 	{
 		_internal->WaitForIdleDevice();
+	}
+
+	InputDataList Main::GetInputDataList()
+	{
+		return _internal->GetInputDataList();
+	}
+
+	const InputDataList Main::GetInputDataList() const
+	{
+		return _internal->GetInputDataList();
 	}
 
 }

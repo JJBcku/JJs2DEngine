@@ -7,11 +7,20 @@ namespace JJs2DEngine
 	struct SpecialKeysDataList
 	{
 		KeyPressData ESCkey;
-		KeyPressData CTRLkey;
-		KeyPressData ALTLkey;
-		KeyPressData SHIFTLkey;
+
+		KeyPressData lAltkey;
+		KeyPressData lCrtlkey;
+		KeyPressData lGuikey;
+		KeyPressData lShiftkey;
+
+		KeyPressData rAltkey;
+		KeyPressData rCrtlkey;
+		KeyPressData rGuikey;
+		KeyPressData rShiftkey;
 
 		SpecialKeysDataList();
 		~SpecialKeysDataList();
+
+		void OnFocusLost();
 	};
 }

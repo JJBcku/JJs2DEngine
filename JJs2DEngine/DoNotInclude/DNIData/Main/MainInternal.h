@@ -51,6 +51,9 @@ namespace JJs2DEngine
 		void HandleEvents();
 		void WaitForIdleDevice() const;
 
+		InputDataListInternal& GetInputDataList();
+		const InputDataListInternal& GetInputDataList() const;
+
 	private:
 		std::unique_ptr<VS::Main> _VSMain;
 		VersionData _minVulkanVersion;

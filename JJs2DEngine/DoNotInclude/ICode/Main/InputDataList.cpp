@@ -13,4 +13,14 @@ namespace JJs2DEngine
 	{
 	}
 
+	SpecialKeysDataList& InputDataList::GetSpecialKeyList()
+	{
+		return _internal.GetSpecialKeyList();
+	}
+
+	const SpecialKeysDataList& InputDataList::GetSpecialKeyList() const
+	{
+		return _internal.GetSpecialKeyList();
+	}
+
 }
