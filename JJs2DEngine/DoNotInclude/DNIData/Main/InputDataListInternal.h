@@ -21,6 +21,8 @@ namespace JJs2DEngine
 		SpecialKeysDataList& GetSpecialKeyList();
 		const SpecialKeysDataList& GetSpecialKeyList() const;
 
+		void ResetKeyPresses();
+
 	private:
 		VS::SdlEventHandler _eventHandler;
 

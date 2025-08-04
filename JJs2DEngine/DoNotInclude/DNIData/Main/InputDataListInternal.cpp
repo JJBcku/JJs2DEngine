@@ -34,6 +34,21 @@ namespace JJs2DEngine
 		return _specialKeys;
 	}
 
+	void InputDataListInternal::ResetKeyPresses()
+	{
+		_specialKeys.ESCkey.ClearKeyPressList();
+
+		_specialKeys.lAltkey.ClearKeyPressList();
+		_specialKeys.lCrtlkey.ClearKeyPressList();
+		_specialKeys.lShiftkey.ClearKeyPressList();
+		_specialKeys.lGuikey.ClearKeyPressList();
+
+		_specialKeys.rAltkey.ClearKeyPressList();
+		_specialKeys.rCrtlkey.ClearKeyPressList();
+		_specialKeys.rShiftkey.ClearKeyPressList();
+		_specialKeys.rGuikey.ClearKeyPressList();
+	}
+
 	void InputDataListInternal::RegisterWindowEventHandler()
 	{
 		_windowEventHandlerID = _eventHandler.RegisterWindowEventCallback(HandleWindowEventStatic, this, 0x10);

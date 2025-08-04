@@ -17,6 +17,8 @@ namespace JJs2DEngine
 		SpecialKeysDataList& GetSpecialKeyList();
 		const SpecialKeysDataList& GetSpecialKeyList() const;
 
+		void ResetKeyPresses();
+
 	private:
 		InputDataListInternal& _internal;
 	};

@@ -20,6 +20,7 @@ void RunProgram()
 	auto& main = *data.main;
 
 	auto inputData = main.GetInputDataList();
+	const auto& keyList = inputData.GetSpecialKeyList();
 
 	bool quit = false;
 
@@ -28,8 +29,8 @@ void RunProgram()
 		main.UpdateCurrentTime();
 		main.HandleEvents();
 
-		const auto& keyList = inputData.GetSpecialKeyList();
 		quit = !keyList.ESCkey.GetKeyPressList().empty();
+		inputData.ResetKeyPresses();
 	}
 
 	main.WaitForIdleDevice();
