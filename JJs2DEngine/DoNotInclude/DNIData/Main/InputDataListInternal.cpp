@@ -29,7 +29,7 @@ namespace JJs2DEngine
 		return _specialKeys;
 	}
 
-	void InputDataListInternal::ResetKeyPresses()
+	void InputDataListInternal::ClearKeyPressesLists()
 	{
 		_specialKeys.ESCkey.ClearKeyPressList();
 
@@ -42,6 +42,21 @@ namespace JJs2DEngine
 		_specialKeys.rCrtlkey.ClearKeyPressList();
 		_specialKeys.rShiftkey.ClearKeyPressList();
 		_specialKeys.rGuikey.ClearKeyPressList();
+
+		_specialKeys.f1Key.ClearKeyPressList();
+		_specialKeys.f2Key.ClearKeyPressList();
+		_specialKeys.f3Key.ClearKeyPressList();
+		_specialKeys.f4Key.ClearKeyPressList();
+
+		_specialKeys.f5Key.ClearKeyPressList();
+		_specialKeys.f6Key.ClearKeyPressList();
+		_specialKeys.f7Key.ClearKeyPressList();
+		_specialKeys.f8Key.ClearKeyPressList();
+
+		_specialKeys.f9Key.ClearKeyPressList();
+		_specialKeys.f10Key.ClearKeyPressList();
+		_specialKeys.f11Key.ClearKeyPressList();
+		_specialKeys.f12Key.ClearKeyPressList();
 	}
 
 	void InputDataListInternal::RegisterWindowEventHandler()
@@ -90,6 +105,42 @@ namespace JJs2DEngine
 		{
 		case VS::SDLK_DATA_ESCAPE:
 			specialKey = &_specialKeys.ESCkey;
+			break;
+		case VS::SDLK_DATA_F1:
+			specialKey = &_specialKeys.f1Key;
+			break;
+		case VS::SDLK_DATA_F2:
+			specialKey = &_specialKeys.f2Key;
+			break;
+		case VS::SDLK_DATA_F3:
+			specialKey = &_specialKeys.f3Key;
+			break;
+		case VS::SDLK_DATA_F4:
+			specialKey = &_specialKeys.f4Key;
+			break;
+		case VS::SDLK_DATA_F5:
+			specialKey = &_specialKeys.f5Key;
+			break;
+		case VS::SDLK_DATA_F6:
+			specialKey = &_specialKeys.f6Key;
+			break;
+		case VS::SDLK_DATA_F7:
+			specialKey = &_specialKeys.f7Key;
+			break;
+		case VS::SDLK_DATA_F8:
+			specialKey = &_specialKeys.f8Key;
+			break;
+		case VS::SDLK_DATA_F9:
+			specialKey = &_specialKeys.f9Key;
+			break;
+		case VS::SDLK_DATA_F10:
+			specialKey = &_specialKeys.f10Key;
+			break;
+		case VS::SDLK_DATA_F11:
+			specialKey = &_specialKeys.f11Key;
+			break;
+		case VS::SDLK_DATA_F12:
+			specialKey = &_specialKeys.f12Key;
 			break;
 		case VS::SDLK_DATA_LCTRL:
 			specialKey = &_specialKeys.lCrtlkey;

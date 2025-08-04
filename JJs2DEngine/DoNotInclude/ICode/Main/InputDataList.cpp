@@ -18,9 +18,9 @@ namespace JJs2DEngine
 		return _internal.GetSpecialKeyList();
 	}
 
-	void InputDataList::ResetKeyPresses()
+	void InputDataList::ClearKeyPressesLists()
 	{
-		_internal.ResetKeyPresses();
+		_internal.ClearKeyPressesLists();
 	}
 
 }

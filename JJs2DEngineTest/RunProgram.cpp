@@ -30,7 +30,7 @@ void RunProgram()
 		main.HandleEvents();
 
 		quit = !keyList.ESCkey.GetKeyPressList().empty();
-		inputData.ResetKeyPresses();
+		inputData.ClearKeyPressesLists();
 	}
 
 	main.WaitForIdleDevice();

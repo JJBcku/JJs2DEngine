@@ -18,6 +18,21 @@ namespace JJs2DEngine
 		KeyPressData rGuikey;
 		KeyPressData rShiftkey;
 
+		KeyPressData f1Key;
+		KeyPressData f2Key;
+		KeyPressData f3Key;
+		KeyPressData f4Key;
+
+		KeyPressData f5Key;
+		KeyPressData f6Key;
+		KeyPressData f7Key;
+		KeyPressData f8Key;
+
+		KeyPressData f9Key;
+		KeyPressData f10Key;
+		KeyPressData f11Key;
+		KeyPressData f12Key;
+
 		SpecialKeysDataList();
 		~SpecialKeysDataList();
 
