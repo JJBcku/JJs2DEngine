@@ -1,5 +1,7 @@
 #pragma once
 
+#include <Miscellaneous/Bool64Def.h>
+
 #include <stdint.h>
 
 namespace VulkanSimplified
@@ -27,6 +29,8 @@ namespace VulkanSimplified
 
 		uint32_t GetWidth() const;
 		uint32_t GetHeight() const;
+
+		void SetFullscreen(Misc::Bool64Values newFullscreenValue);
 
 	private:
 		WindowInternal& _internal;
