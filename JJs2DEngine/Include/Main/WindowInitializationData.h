@@ -11,7 +11,7 @@ namespace JJs2DEngine
 		std::string windowTitle;
 		uint32_t windowWidth;
 		AspectRatio aspectRatio;
-		Misc::Bool64 fullscreenWindow;
+		Misc::Bool64Values fullscreenWindow;
 
 		WindowInitializationData();
 	};

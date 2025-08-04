@@ -212,6 +212,11 @@ namespace JJs2DEngine
 		deviceCore.WaitIdle();
 	}
 
+	void MainInternal::ChangeFullscreen(Misc::Bool64Values newFullscreen)
+	{
+		_windowData->ChangeFullscreen(newFullscreen);
+	}
+
 	InputDataListInternal& MainInternal::GetInputDataList()
 	{
 		return *_inputDataList;

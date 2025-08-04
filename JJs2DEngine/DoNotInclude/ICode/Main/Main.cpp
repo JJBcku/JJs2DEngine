@@ -55,4 +55,9 @@ namespace JJs2DEngine
 		return _internal->GetInputDataList();
 	}
 
+	void Main::ChangeFullscreen(Misc::Bool64Values newFullscreen)
+	{
+		_internal->ChangeFullscreen(newFullscreen);
+	}
+
 }

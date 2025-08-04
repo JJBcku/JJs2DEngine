@@ -51,6 +51,8 @@ namespace JJs2DEngine
 		void HandleEvents();
 		void WaitForIdleDevice() const;
 
+		void ChangeFullscreen(Misc::Bool64Values newFullscreen);
+
 		InputDataListInternal& GetInputDataList();
 		const InputDataListInternal& GetInputDataList() const;
 

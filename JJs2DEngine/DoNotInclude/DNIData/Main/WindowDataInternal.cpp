@@ -211,6 +211,16 @@ namespace JJs2DEngine
 		return _perFrameData[frameIndex];
 	}
 
+	void WindowDataInternal::ChangeFullscreen(Misc::Bool64Values newFullscreen)
+	{
+		if (_fullscreen == newFullscreen)
+			return;
+
+		auto window = _windowList.GetWindow(_windowID);
+		window.SetFullscreen(newFullscreen);
+		_fullscreen = newFullscreen;
+	}
+
 	void WindowDataInternal::RedoSwapchain(VS::DataFormatSetIndependentID colorFormat, uint32_t framesInFlight)
 	{
 		VS::SwapchainCreationData swapchainCreationData;

@@ -34,6 +34,8 @@ namespace JJs2DEngine
 		InputDataList GetInputDataList();
 		const InputDataList GetInputDataList() const;
 
+		void ChangeFullscreen(Misc::Bool64Values newFullscreen);
+
 	private:
 		std::unique_ptr<MainInternal> _internal;
 	};

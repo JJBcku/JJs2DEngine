@@ -64,6 +64,8 @@ namespace JJs2DEngine
 
 		const PerFrameData& GetFrameData(size_t frameIndex) const;
 
+		void ChangeFullscreen(Misc::Bool64Values newFullscreen);
+
 	private:
 		VS::WindowList _windowList;
 		VS::SynchronizationDataLists _synchroList;
@@ -74,7 +76,7 @@ namespace JJs2DEngine
 		uint32_t _windowWidth;
 		uint32_t _windowHeight;
 
-		Misc::Bool64 _fullscreen;
+		Misc::Bool64Values _fullscreen;
 
 		IDObject<VS::WindowPointer> _windowID;
 

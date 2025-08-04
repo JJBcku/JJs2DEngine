@@ -21,8 +21,11 @@ void RunProgram()
 
 	auto inputData = main.GetInputDataList();
 	const auto& keyList = inputData.GetSpecialKeyList();
+	const auto& fullscreenKey = keyList.f10Key.GetKeyPressList();
 
 	bool quit = false;
+
+	Misc::Bool64Values fullscreen = Misc::BOOL64_FALSE;
 
 	while (main.IsWindowClosed() != Misc::BOOL64_TRUE && !quit)
 	{
@@ -30,6 +33,17 @@ void RunProgram()
 		main.HandleEvents();
 
 		quit = !keyList.ESCkey.GetKeyPressList().empty();
+
+		if (!fullscreenKey.empty())
+		{
+			if (fullscreen == Misc::BOOL64_FALSE)
+				fullscreen = Misc::BOOL64_TRUE;
+			else
+				fullscreen = Misc::BOOL64_FALSE;
+
+			main.ChangeFullscreen(fullscreen);
+		}
+
 		inputData.ClearKeyPressesLists();
 	}
 
