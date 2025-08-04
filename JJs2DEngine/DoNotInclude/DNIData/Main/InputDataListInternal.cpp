@@ -24,11 +24,6 @@ namespace JJs2DEngine
 		_currentTime = currentTime;
 	}
 
-	SpecialKeysDataList& InputDataListInternal::GetSpecialKeyList()
-	{
-		return _specialKeys;
-	}
-
 	const SpecialKeysDataList& InputDataListInternal::GetSpecialKeyList() const
 	{
 		return _specialKeys;

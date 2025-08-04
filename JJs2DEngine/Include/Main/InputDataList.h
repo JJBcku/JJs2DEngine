@@ -14,7 +14,6 @@ namespace JJs2DEngine
 
 		InputDataList& operator=(const InputDataList& rhs) noexcept = delete;
 
-		SpecialKeysDataList& GetSpecialKeyList();
 		const SpecialKeysDataList& GetSpecialKeyList() const;
 
 		void ResetKeyPresses();

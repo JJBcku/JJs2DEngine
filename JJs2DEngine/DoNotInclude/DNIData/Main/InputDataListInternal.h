@@ -18,7 +18,6 @@ namespace JJs2DEngine
 
 		void UpdateCurrentTime(std::chrono::high_resolution_clock::time_point currentTime);
 
-		SpecialKeysDataList& GetSpecialKeyList();
 		const SpecialKeysDataList& GetSpecialKeyList() const;
 
 		void ResetKeyPresses();
