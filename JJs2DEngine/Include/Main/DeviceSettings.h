@@ -3,6 +3,7 @@
 #include <stdint.h>
 #include <vector>
 #include <string>
+#include <array>
 
 #include "AspectRatioDef.h"
 #include "WindowInitializationData.h"
@@ -57,6 +58,8 @@ namespace JJs2DEngine
 		uint32_t graphicsFramesInFlight;
 
 		TextureFormat textureFormat;
+		std::array<size_t, 10> preLoadedTexturesMaxAmounts;
+		std::array<size_t, 10> streamedTexturesMaxAmounts;
 
 		WindowInitializationData windowData;
 

@@ -22,6 +22,8 @@ namespace JJs2DEngine
 		graphicsFramesInFlight = 0;
 
 		textureFormat = TextureFormat::TEXTURE_FORMAT_UNSET;
+		std::memset(preLoadedTexturesMaxAmounts.data(), 0, sizeof(preLoadedTexturesMaxAmounts[0]) * preLoadedTexturesMaxAmounts.size());
+		std::memset(streamedTexturesMaxAmounts.data(), 0, sizeof(streamedTexturesMaxAmounts[0]) * streamedTexturesMaxAmounts.size());
 
 		currentPipelineSettings = std::numeric_limits<size_t>::max();
 	}
