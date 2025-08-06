@@ -168,22 +168,24 @@ namespace JJs2DEngine
 
 		auto device = instance.GetChoosenDevicesMainClass();
 
-		auto& currentPipeline = deviceSettings.preInitializedPipelineSettings[deviceSettings.currentPipelineSettings];
-
 		_renderDataList = std::make_unique<RenderDataInternal>(deviceSettings.currentPipelineSettings, deviceSettings.preInitializedPipelineSettings, _dataFolder,
 			device, _VSMain->GetSharedDataMainList());
 
-		RenderImagesData windowRenderData;
-		windowRenderData.framesInFlight = deviceSettings.graphicsFramesInFlight;
-		windowRenderData.colorFormat = TranslateToFormat(currentPipeline.swapchainFormat);
-		windowRenderData.depthFormat = TranslateToFormat(currentPipeline.depthFormat);
+		{
+			auto& currentPipeline = deviceSettings.preInitializedPipelineSettings[deviceSettings.currentPipelineSettings];
 
-		windowRenderData.renderImagesWidth = currentPipeline.renderWidth;
-		windowRenderData.renderImagesHeight = GetHeight(currentPipeline.renderWidth, currentPipeline.aspectRatio);
-		windowRenderData.renderPassID = _renderDataList->GetCurrentRenderPass();
+			RenderImagesData windowRenderData;
+			windowRenderData.framesInFlight = deviceSettings.graphicsFramesInFlight;
+			windowRenderData.colorFormat = TranslateToFormat(currentPipeline.swapchainFormat);
+			windowRenderData.depthFormat = TranslateToFormat(currentPipeline.depthFormat);
 
-		_windowData = std::make_unique<WindowDataInternal>(deviceSettings.windowData, windowRenderData, device.GetWindowList(), device.GetSynchronizationDataLists(),
-			device.GetImageDataLists(), device.GetMemoryObjectsList());
+			windowRenderData.renderImagesWidth = currentPipeline.renderWidth;
+			windowRenderData.renderImagesHeight = GetHeight(currentPipeline.renderWidth, currentPipeline.aspectRatio);
+			windowRenderData.renderPassID = _renderDataList->GetCurrentRenderPass();
+
+			_windowData = std::make_unique<WindowDataInternal>(deviceSettings.windowData, windowRenderData, device.GetWindowList(), device.GetSynchronizationDataLists(),
+				device.GetImageDataLists(), device.GetMemoryObjectsList());
+		}
 
 		_inputDataList = std::make_unique<InputDataListInternal>(_currentTime, _VSMain->GetSdlEventHandler());
 
