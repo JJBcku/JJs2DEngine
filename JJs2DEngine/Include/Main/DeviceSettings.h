@@ -5,6 +5,8 @@
 #include <string>
 #include <array>
 
+#include "../Common/TextureArraySize.h"
+
 #include "AspectRatioDef.h"
 #include "WindowInitializationData.h"
 
@@ -58,8 +60,8 @@ namespace JJs2DEngine
 		uint32_t graphicsFramesInFlight;
 
 		TextureFormat textureFormat;
-		std::array<size_t, 10> preLoadedTexturesMaxAmounts;
-		std::array<size_t, 10> streamedTexturesMaxAmounts;
+		std::array<size_t, imagesInTextureArray> preLoadedTexturesMaxAmounts;
+		std::array<size_t, imagesInTextureArray> streamedTexturesMaxAmounts;
 
 		WindowInitializationData windowData;
 

@@ -4,6 +4,8 @@
 #include "PipelineCacheHeaders.h"
 #include "DeviceSettingsInternal.h"
 
+#include "../../../Include/Common/TextureArraySize.h"
+
 #include <fstream>
 #include <filesystem>
 #include <array>
@@ -74,8 +76,6 @@ namespace JJs2DEngine
 
 	namespace fs = std::filesystem;
 
-	constexpr uint32_t imagesInTextureArray = 20;
-
 	RenderDataInternal::RenderDataInternal(size_t currentPipelineSettings, const std::vector<PipelineSettings>& preInitializedPipelineSettings, const std::string& dataFolder,
 		VS::DeviceMain device, VS::SharedDataMainList sharedData) : _device(device), _sharedData(sharedData), _currentPipelineSettings(currentPipelineSettings)
 	{
@@ -117,7 +117,7 @@ namespace JJs2DEngine
 		auto sampler = imageList.AddSampler(false, false, false, false, false, false, 0.0f, 0.0f, 0.0f, 0.0f);
 
 		auto sharedDescriptorData = _sharedData.GetSharedDescriptorDataList();
-		auto textureDescriptorBinding = sharedDescriptorData.AddUniqueDescriptorSetLayoutBindingsData(VS::DescriptorTypeFlagBits::COMBINED_IMAGE_SAMPLER, imagesInTextureArray,
+		auto textureDescriptorBinding = sharedDescriptorData.AddUniqueDescriptorSetLayoutBindingsData(VS::DescriptorTypeFlagBits::COMBINED_IMAGE_SAMPLER, imagesInAllTextureArrays,
 			VS::ShaderTypeFlagBit::SHADER_TYPE_FRAGMENT, 0x10);
 
 		auto deviceDescriptorList = _device.GetDescriptorDataLists();
@@ -139,7 +139,8 @@ namespace JJs2DEngine
 			auto uiLayerVertexShaderData = LoadShaderFile(dataFolder + uiLayerVertexShaderName + vertexShaderExtension);
 			_uiVertexShaderID = shaderList.CreateVertexShaderModule(*uiLayerVertexShaderData.data(), uiLayerVertexShaderData.size(), 0x10);
 
-			_uiDescriptorSetLayout = deviceDescriptorList.AddDescriptorSetLayout(0, { {textureDescriptorBinding, std::vector<decltype(sampler)>(imagesInTextureArray, sampler)} }, 0x10);
+			_uiDescriptorSetLayout = deviceDescriptorList.AddDescriptorSetLayout(0, { {textureDescriptorBinding,
+				std::vector<decltype(sampler)>(imagesInAllTextureArrays, sampler)} }, 0x10);
 
 			VS::PipelineLayoutCreationData uiPipelineLayoutCreationData;
 			uiPipelineLayoutCreationData._descriptorSets = { _uiDescriptorSetLayout };

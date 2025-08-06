@@ -144,6 +144,9 @@
     <ClInclude Include="DoNotInclude\DNIData\Main\TextureDataMainInternal.h">
       <Filter>Header Files\Do Not Include\Main</Filter>
     </ClInclude>
+    <ClInclude Include="Include\Common\TextureArraySize.h">
+      <Filter>Header Files\Include\Common</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DoNotInclude\DNIData\Common\CommonDNIpch.cpp">

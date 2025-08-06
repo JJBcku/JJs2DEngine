@@ -21,10 +21,10 @@
          %10 = OpTypeImage %float 2D 0 1 0 1 Unknown
          %11 = OpTypeSampledImage %10
        %uint = OpTypeInt 32 0
-    %uint_20 = OpConstant %uint 20
-%_arr_11_uint_20 = OpTypeArray %11 %uint_20
-%_ptr_UniformConstant__arr_11_uint_20 = OpTypePointer UniformConstant %_arr_11_uint_20
-         %16 = OpVariable %_ptr_UniformConstant__arr_11_uint_20 UniformConstant
+    %uint_28 = OpConstant %uint 28
+%_arr_11_uint_28 = OpTypeArray %11 %uint_28
+%_ptr_UniformConstant__arr_11_uint_28 = OpTypePointer UniformConstant %_arr_11_uint_28
+         %16 = OpVariable %_ptr_UniformConstant__arr_11_uint_28 UniformConstant
 %_ptr_Input_v4float = OpTypePointer Input %v4float
          %18 = OpVariable %_ptr_Input_v4float Input
      %uint_3 = OpConstant %uint 3

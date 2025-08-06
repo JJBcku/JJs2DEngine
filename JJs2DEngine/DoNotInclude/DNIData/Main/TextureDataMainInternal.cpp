@@ -3,8 +3,8 @@
 
 namespace JJs2DEngine
 {
-	TextureDataMainInternal::TextureDataMainInternal(uint64_t transferFramesInFlight, const std::array<size_t, 10>& preLoadedTexturesMaxAmounts,
-		const std::array<size_t, 10>& streamedTexturesMaxAmounts) : _transferFramesInFlight(transferFramesInFlight), _preLoadedTexturesMaxAmounts(preLoadedTexturesMaxAmounts),
+	TextureDataMainInternal::TextureDataMainInternal(uint64_t transferFramesInFlight, const std::array<size_t, 14>& preLoadedTexturesMaxAmounts,
+		const std::array<size_t, 14>& streamedTexturesMaxAmounts) : _transferFramesInFlight(transferFramesInFlight), _preLoadedTexturesMaxAmounts(preLoadedTexturesMaxAmounts),
 		_streamedTexturesMaxAmounts(streamedTexturesMaxAmounts)
 	{
 	}
