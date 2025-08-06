@@ -49,6 +49,7 @@
 #include <VulkanSimplified/VSCommon/VSSurfacePresentModes.h>
 #include <VulkanSimplified/VSCommon/VSSurfaceTransformFlags.h>
 #include <VulkanSimplified/VSCommon/VSImageUsageFlags.h>
+#include <VulkanSimplified/VSCommon/VSDataFormatFlags.h>
 
 namespace JJs2DEngine
 {
@@ -194,7 +195,7 @@ namespace JJs2DEngine
 			auto& streamedTexturesMaxAmounts = _currentDevicesSettings.value().streamedTexturesMaxAmounts;
 
 			_textureDataMain = std::make_unique<TextureDataMainInternal>(_currentDevicesSettings.value().transferFramesInFlight, preLoadedTexturesMaxAmounts,
-				streamedTexturesMaxAmounts);
+				streamedTexturesMaxAmounts, TranslateToFormat(_currentDevicesSettings.value().textureFormat));
 		}
 	}
 
