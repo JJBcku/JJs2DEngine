@@ -32,6 +32,7 @@ namespace JJs2DEngine
 	class WindowDataInternal;
 	class RenderDataInternal;
 	class InputDataListInternal;
+	class TextureDataMainInternal;
 
 	class MainInternal
 	{
@@ -76,6 +77,7 @@ namespace JJs2DEngine
 		std::unique_ptr<RenderDataInternal> _renderDataList;
 		std::unique_ptr<WindowDataInternal> _windowData;
 		std::unique_ptr<InputDataListInternal> _inputDataList;
+		std::unique_ptr<TextureDataMainInternal> _textureDataMain;
 
 		IDObject<std::pair<VS::QuitEventFunction, void*>> _quitRegistrationID;
 		Misc::Bool64 _windowClosed;

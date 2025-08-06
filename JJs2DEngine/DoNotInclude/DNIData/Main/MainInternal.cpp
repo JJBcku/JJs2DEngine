@@ -13,6 +13,7 @@
 #include "WindowDataInternal.h"
 #include "RenderDataInternal.h"
 #include "InputDataListInternal.h"
+#include "TextureDataMainInternal.h"
 
 #include <Miscellaneous/Bool64.h>
 
@@ -162,19 +163,6 @@ namespace JJs2DEngine
 
 		_currentDevicesSettings = deviceSettings;
 
-		auto& preLoadedTexturesMaxAmounts = _currentDevicesSettings.value().preLoadedTexturesMaxAmounts;
-		auto& streamedTexturesMaxAmounts = _currentDevicesSettings.value().streamedTexturesMaxAmounts;
-
-		for (size_t i = 0; i < preLoadedTexturesMaxAmounts.size(); ++i)
-		{
-			preLoadedTexturesMaxAmounts[i] = std::max(preLoadedTexturesMaxAmounts[i], 1ULL);
-		}
-
-		for (size_t i = 0; i < streamedTexturesMaxAmounts.size(); ++i)
-		{
-			streamedTexturesMaxAmounts[i] = std::max(streamedTexturesMaxAmounts[i], 1ULL);
-		}
-
 		_lastCurrentTime = _currentTime;
 		_currentTime = std::chrono::high_resolution_clock::now();
 
@@ -198,6 +186,24 @@ namespace JJs2DEngine
 			device.GetImageDataLists(), device.GetMemoryObjectsList());
 
 		_inputDataList = std::make_unique<InputDataListInternal>(_currentTime, _VSMain->GetSdlEventHandler());
+
+		{
+			auto& preLoadedTexturesMaxAmounts = _currentDevicesSettings.value().preLoadedTexturesMaxAmounts;
+			auto& streamedTexturesMaxAmounts = _currentDevicesSettings.value().streamedTexturesMaxAmounts;
+
+			for (size_t i = 0; i < preLoadedTexturesMaxAmounts.size(); ++i)
+			{
+				preLoadedTexturesMaxAmounts[i] = std::max(preLoadedTexturesMaxAmounts[i], 1ULL);
+			}
+
+			for (size_t i = 0; i < streamedTexturesMaxAmounts.size(); ++i)
+			{
+				streamedTexturesMaxAmounts[i] = std::max(streamedTexturesMaxAmounts[i], 1ULL);
+			}
+
+			_textureDataMain = std::make_unique<TextureDataMainInternal>(_currentDevicesSettings.value().transferFramesInFlight, preLoadedTexturesMaxAmounts,
+				streamedTexturesMaxAmounts);
+		}
 	}
 
 	void MainInternal::UpdateCurrentTime()

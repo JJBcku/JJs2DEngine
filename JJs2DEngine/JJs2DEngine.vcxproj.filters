@@ -138,6 +138,12 @@
     <ClInclude Include="Include\Main\SpecialKeysDataList.h">
       <Filter>Header Files\Include\Main</Filter>
     </ClInclude>
+    <ClInclude Include="DoNotInclude\ICode\Main\TextureDataMain.h">
+      <Filter>Header Files\Include\Main</Filter>
+    </ClInclude>
+    <ClInclude Include="DoNotInclude\DNIData\Main\TextureDataMainInternal.h">
+      <Filter>Header Files\Do Not Include\Main</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DoNotInclude\DNIData\Common\CommonDNIpch.cpp">
@@ -199,6 +205,12 @@
     </ClCompile>
     <ClCompile Include="DoNotInclude\ICode\Main\SpecialKeysDataList.cpp">
       <Filter>Source Files\Include\Main</Filter>
+    </ClCompile>
+    <ClCompile Include="DoNotInclude\DNIData\Main\TextureDataMainInternal.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DoNotInclude\ICode\Main\TextureDataMain.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
