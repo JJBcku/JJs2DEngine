@@ -7,7 +7,8 @@
 
 namespace JJs2DEngine
 {
-	TextureDataMainInternal::TextureDataMainInternal(uint64_t transferFramesInFlight, const std::array<size_t, imagesInTextureArray>& preLoadedTexturesMaxAmounts,
+	TextureDataMainInternal::TextureDataMainInternal(uint64_t transferFramesInFlight, uint64_t max2DImageSize, uint64_t maxImageArrayLayers,
+		const std::array<size_t, imagesInTextureArray>& preLoadedTexturesMaxAmounts,
 		const std::array<size_t, imagesInTextureArray>& streamedTexturesMaxAmounts, TextureFormat textureFormat)
 	{
 		std::array<size_t, imagesInTextureArray> _preLoadedTexturesMaxAmounts = preLoadedTexturesMaxAmounts;
@@ -23,7 +24,7 @@ namespace JJs2DEngine
 			_streamedTexturesMaxAmounts[i] += 1;
 		}
 
-		_preLoadedTexturesData = std::make_unique<TextureDataFrameInternal>(0, _preLoadedTexturesMaxAmounts);
+		_preLoadedTexturesData = std::make_unique<TextureDataFrameInternal>(0ULL, max2DImageSize, maxImageArrayLayers, _preLoadedTexturesMaxAmounts);
 
 	}
 

@@ -194,8 +194,11 @@ namespace JJs2DEngine
 			auto& preLoadedTexturesMaxAmounts = _currentDevicesSettings.value().preLoadedTexturesMaxAmounts;
 			auto& streamedTexturesMaxAmounts = _currentDevicesSettings.value().streamedTexturesMaxAmounts;
 
-			_textureDataMain = std::make_unique<TextureDataMainInternal>(_currentDevicesSettings.value().transferFramesInFlight, preLoadedTexturesMaxAmounts,
-				streamedTexturesMaxAmounts, _currentDevicesSettings.value().textureFormat);
+			auto physicalDevice = instance.GetPhysicalDeviceData(_deviceList[_currentDevicesSettings.value().deviceIndex].deviceIndex);
+			auto& imageLimits = physicalDevice.GetVulkan10Properties().limits.maxImageSizes;
+
+			_textureDataMain = std::make_unique<TextureDataMainInternal>(_currentDevicesSettings.value().transferFramesInFlight, imageLimits.maxImageDimension2D,
+				imageLimits.maxImageArrayLayers, preLoadedTexturesMaxAmounts, streamedTexturesMaxAmounts, _currentDevicesSettings.value().textureFormat);
 		}
 	}
 

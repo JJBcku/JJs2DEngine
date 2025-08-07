@@ -16,7 +16,8 @@ namespace JJs2DEngine
 	class TextureDataMainInternal
 	{
 	public:
-		TextureDataMainInternal(uint64_t transferFramesInFlight, const std::array<size_t, imagesInTextureArray>& preLoadedTexturesMaxAmounts,
+		TextureDataMainInternal(uint64_t transferFramesInFlight, uint64_t max2DImageSize, uint64_t maxImageArrayLayers,
+			const std::array<size_t, imagesInTextureArray>& preLoadedTexturesMaxAmounts,
 			const std::array<size_t, imagesInTextureArray>& streamedTexturesMaxAmounts, TextureFormat textureFormat);
 		~TextureDataMainInternal();
 
