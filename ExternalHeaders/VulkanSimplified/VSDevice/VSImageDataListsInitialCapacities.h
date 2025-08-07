@@ -9,6 +9,7 @@ namespace VulkanSimplified
 		size_t resolveRenderTargetsListInitialCapacity;
 
 		size_t twoDTexturesListInitialCapacity;
+		size_t twoDArrayTexturesListInitialCapacity;
 
 		size_t framebufferListInitialCapacity;
 		size_t samplerListInitialCapacity;

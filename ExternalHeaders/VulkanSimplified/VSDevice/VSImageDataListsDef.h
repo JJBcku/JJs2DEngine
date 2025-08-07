@@ -9,6 +9,7 @@ namespace VulkanSimplified
 	class AutoCleanupResolveRenderTargetImage;
 
 	class AutoCleanup2DTexture;
+	class AutoCleanup2DArrayTexture;
 
 	class AutoCleanupImageView;
 	class AutoCleanupFramebuffer;
