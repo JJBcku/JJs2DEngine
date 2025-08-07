@@ -18,7 +18,9 @@ namespace JJs2DEngine
 	}
 
 	TextureDataFrameInternal::TextureDataFrameInternal(uint64_t startingIndex, uint64_t max2DImageSize, uint64_t maxImageArrayLayers,
-		const std::array<size_t, imagesInTextureArray>& texturesMaxAmounts) : _startingIndex(startingIndex), _max2DImageSize(max2DImageSize), _maxImageArrayLayers(maxImageArrayLayers)
+		const std::array<size_t, imagesInTextureArray>& texturesMaxAmounts, VS::DataBufferLists dataBufferList, VS::ImageDataLists imageList, VS::MemoryObjectsList memoryList) :
+		_dataBufferList(dataBufferList), _imageList(imageList), _memoryList(memoryList), _startingIndex(startingIndex), _max2DImageSize(max2DImageSize),
+		_maxImageArrayLayers(maxImageArrayLayers)
 	{
 		for (size_t i = 0; i < _textureDataArray.size(); ++i)
 		{

@@ -2,6 +2,10 @@
 
 #include "../../../Include/Common/TextureArraySize.h"
 
+#include <VulkanSimplified/VSDevice/VSDataBufferLists.h>
+#include <VulkanSimplified/VSDevice/VSImageDataLists.h>
+#include <VulkanSimplified/VSDevice/VSMemoryObjectsList.h>
+
 #include <stdint.h>
 
 namespace JJs2DEngine
@@ -22,10 +26,15 @@ namespace JJs2DEngine
 	class TextureDataFrameInternal
 	{
 	public:
-		TextureDataFrameInternal(uint64_t startingIndex, uint64_t max2DImageSize, uint64_t maxImageArrayLayers, const std::array<size_t, imagesInTextureArray>& texturesMaxAmounts);
+		TextureDataFrameInternal(uint64_t startingIndex, uint64_t max2DImageSize, uint64_t maxImageArrayLayers, const std::array<size_t, imagesInTextureArray>& texturesMaxAmounts,
+			VS::DataBufferLists dataBufferList, VS::ImageDataLists imageList, VS::MemoryObjectsList memoryList);
 		~TextureDataFrameInternal();
 
 	private:
+		VS::DataBufferLists _dataBufferList;
+		VS::ImageDataLists _imageList;
+		VS::MemoryObjectsList _memoryList;
+
 		uint64_t _startingIndex;
 		uint64_t _max2DImageSize;
 		uint64_t _maxImageArrayLayers;
