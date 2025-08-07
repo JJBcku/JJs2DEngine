@@ -1,7 +1,7 @@
 ; SPIR-V
 ; Version: 1.0
 ; Generator: Google Shaderc over Glslang; 11
-; Bound: 103
+; Bound: 93
 ; Schema: 0
                OpCapability Shader
           %1 = OpExtInstImport "GLSL.std.450"
@@ -49,29 +49,25 @@
        %void = OpTypeVoid
           %3 = OpTypeFunction %void
       %float = OpTypeFloat 32
-    %v4float = OpTypeVector %float 4
+    %v2float = OpTypeVector %float 2
        %uint = OpTypeInt 32 0
      %uint_4 = OpConstant %uint 4
-%_arr_v4float_uint_4 = OpTypeArray %v4float %uint_4
-%_ptr_Private__arr_v4float_uint_4 = OpTypePointer Private %_arr_v4float_uint_4
- %vertexData = OpVariable %_ptr_Private__arr_v4float_uint_4 Private
-   %float_n1 = OpConstant %float -1
-    %float_0 = OpConstant %float 0
-    %float_1 = OpConstant %float 1
-         %16 = OpConstantComposite %v4float %float_n1 %float_n1 %float_0 %float_1
-         %17 = OpConstantComposite %v4float %float_n1 %float_1 %float_0 %float_1
-         %18 = OpConstantComposite %v4float %float_1 %float_n1 %float_0 %float_1
-         %19 = OpConstantComposite %v4float %float_1 %float_1 %float_0 %float_1
-         %20 = OpConstantComposite %_arr_v4float_uint_4 %16 %17 %18 %19
-    %v2float = OpTypeVector %float 2
 %_arr_v2float_uint_4 = OpTypeArray %v2float %uint_4
 %_ptr_Private__arr_v2float_uint_4 = OpTypePointer Private %_arr_v2float_uint_4
+ %vertexData = OpVariable %_ptr_Private__arr_v2float_uint_4 Private
+   %float_n1 = OpConstant %float -1
+         %14 = OpConstantComposite %v2float %float_n1 %float_n1
+    %float_1 = OpConstant %float 1
+         %16 = OpConstantComposite %v2float %float_n1 %float_1
+         %17 = OpConstantComposite %v2float %float_1 %float_n1
+         %18 = OpConstantComposite %v2float %float_1 %float_1
+         %19 = OpConstantComposite %_arr_v2float_uint_4 %14 %16 %17 %18
 %textureData = OpVariable %_ptr_Private__arr_v2float_uint_4 Private
-         %25 = OpConstantComposite %v2float %float_0 %float_0
-         %26 = OpConstantComposite %v2float %float_0 %float_1
-         %27 = OpConstantComposite %v2float %float_1 %float_0
-         %28 = OpConstantComposite %v2float %float_1 %float_1
-         %29 = OpConstantComposite %_arr_v2float_uint_4 %25 %26 %27 %28
+    %float_0 = OpConstant %float 0
+         %22 = OpConstantComposite %v2float %float_0 %float_0
+         %23 = OpConstantComposite %v2float %float_0 %float_1
+         %24 = OpConstantComposite %v2float %float_1 %float_0
+         %25 = OpConstantComposite %_arr_v2float_uint_4 %22 %23 %24 %18
      %uint_6 = OpConstant %uint 6
 %_arr_uint_uint_6 = OpTypeArray %uint %uint_6
 %_ptr_Private__arr_uint_uint_6 = OpTypePointer Private %_arr_uint_uint_6
@@ -80,25 +76,22 @@
      %uint_1 = OpConstant %uint 1
      %uint_2 = OpConstant %uint 2
      %uint_3 = OpConstant %uint 3
-         %38 = OpConstantComposite %_arr_uint_uint_6 %uint_0 %uint_1 %uint_2 %uint_2 %uint_1 %uint_3
-%_ptr_Function_v4float = OpTypePointer Function %v4float
+         %34 = OpConstantComposite %_arr_uint_uint_6 %uint_0 %uint_1 %uint_2 %uint_2 %uint_1 %uint_3
+%_ptr_Function_v2float = OpTypePointer Function %v2float
         %int = OpTypeInt 32 1
 %_ptr_Input_int = OpTypePointer Input %int
 %gl_VertexIndex = OpVariable %_ptr_Input_int Input
 %_ptr_Private_uint = OpTypePointer Private %uint
-%_ptr_Private_v4float = OpTypePointer Private %v4float
-%_ptr_Function_v2float = OpTypePointer Function %v2float
 %_ptr_Private_v2float = OpTypePointer Private %v2float
+    %v4float = OpTypeVector %float 4
 %_arr_float_uint_1 = OpTypeArray %float %uint_1
 %gl_PerVertex = OpTypeStruct %v4float %float %_arr_float_uint_1 %_arr_float_uint_1
 %_ptr_Output_gl_PerVertex = OpTypePointer Output %gl_PerVertex
           %_ = OpVariable %_ptr_Output_gl_PerVertex Output
       %int_0 = OpConstant %int 0
-    %v3float = OpTypeVector %float 3
-%_ptr_Input_v3float = OpTypePointer Input %v3float
-     %inSize = OpVariable %_ptr_Input_v3float Input
+%_ptr_Input_v4float = OpTypePointer Input %v4float
+     %inSize = OpVariable %_ptr_Input_v4float Input
 %_ptr_Input_float = OpTypePointer Input %float
-%_ptr_Function_float = OpTypePointer Function %float
 %_ptr_Output_v4float = OpTypePointer Output %v4float
 %_ptr_Input_v2float = OpTypePointer Input %v2float
  %inTexCoord = OpVariable %_ptr_Input_v2float Input
@@ -113,49 +106,46 @@
  %inTexIndex = OpVariable %_ptr_Input_uint Input
        %main = OpFunction %void None %3
           %5 = OpLabel
- %verticePos = OpVariable %_ptr_Function_v4float Function
+ %verticePos = OpVariable %_ptr_Function_v2float Function
      %texPos = OpVariable %_ptr_Function_v2float Function
    %texCoord = OpVariable %_ptr_Function_v2float Function
-               OpStore %vertexData %20
-               OpStore %textureData %29
-               OpStore %vertexIndexes %38
-         %44 = OpLoad %int %gl_VertexIndex
-         %46 = OpAccessChain %_ptr_Private_uint %vertexIndexes %44
-         %47 = OpLoad %uint %46
-         %49 = OpAccessChain %_ptr_Private_v4float %vertexData %47
-         %50 = OpLoad %v4float %49
-               OpStore %verticePos %50
-         %53 = OpLoad %int %gl_VertexIndex
-         %54 = OpAccessChain %_ptr_Private_uint %vertexIndexes %53
-         %55 = OpLoad %uint %54
-         %57 = OpAccessChain %_ptr_Private_v2float %textureData %55
-         %58 = OpLoad %v2float %57
-               OpStore %texPos %58
-         %64 = OpLoad %v4float %verticePos
-         %65 = OpVectorShuffle %v2float %64 %64 0 1
-         %69 = OpLoad %v3float %inSize
-         %70 = OpVectorShuffle %v2float %69 %69 0 1
-         %71 = OpFMul %v2float %65 %70
-         %73 = OpAccessChain %_ptr_Input_float %inSize %uint_2
-         %74 = OpLoad %float %73
-         %76 = OpAccessChain %_ptr_Function_float %verticePos %uint_3
-         %77 = OpLoad %float %76
-         %78 = OpCompositeExtract %float %71 0
-         %79 = OpCompositeExtract %float %71 1
-         %80 = OpCompositeConstruct %v4float %78 %79 %74 %77
-         %82 = OpAccessChain %_ptr_Output_v4float %_ %int_0
-               OpStore %82 %80
-         %86 = OpLoad %v2float %inTexCoord
-         %88 = OpLoad %v2float %inTexSize
-         %89 = OpLoad %v2float %texPos
-         %90 = OpFMul %v2float %88 %89
-         %91 = OpFAdd %v2float %86 %90
-               OpStore %texCoord %91
-         %94 = OpLoad %v2float %texCoord
-               OpStore %outTexCoord %94
-         %99 = OpLoad %uint %inTexLayer
-               OpStore %outTexLayer %99
-        %102 = OpLoad %uint %inTexIndex
-               OpStore %outTexIndex %102
+               OpStore %vertexData %19
+               OpStore %textureData %25
+               OpStore %vertexIndexes %34
+         %40 = OpLoad %int %gl_VertexIndex
+         %42 = OpAccessChain %_ptr_Private_uint %vertexIndexes %40
+         %43 = OpLoad %uint %42
+         %45 = OpAccessChain %_ptr_Private_v2float %vertexData %43
+         %46 = OpLoad %v2float %45
+               OpStore %verticePos %46
+         %48 = OpLoad %int %gl_VertexIndex
+         %49 = OpAccessChain %_ptr_Private_uint %vertexIndexes %48
+         %50 = OpLoad %uint %49
+         %51 = OpAccessChain %_ptr_Private_v2float %textureData %50
+         %52 = OpLoad %v2float %51
+               OpStore %texPos %52
+         %59 = OpLoad %v2float %verticePos
+         %62 = OpLoad %v4float %inSize
+         %63 = OpVectorShuffle %v2float %62 %62 0 1
+         %64 = OpFMul %v2float %59 %63
+         %66 = OpAccessChain %_ptr_Input_float %inSize %uint_2
+         %67 = OpLoad %float %66
+         %68 = OpCompositeExtract %float %64 0
+         %69 = OpCompositeExtract %float %64 1
+         %70 = OpCompositeConstruct %v4float %68 %69 %67 %float_1
+         %72 = OpAccessChain %_ptr_Output_v4float %_ %int_0
+               OpStore %72 %70
+         %76 = OpLoad %v2float %inTexCoord
+         %78 = OpLoad %v2float %inTexSize
+         %79 = OpLoad %v2float %texPos
+         %80 = OpFMul %v2float %78 %79
+         %81 = OpFAdd %v2float %76 %80
+               OpStore %texCoord %81
+         %84 = OpLoad %v2float %texCoord
+               OpStore %outTexCoord %84
+         %89 = OpLoad %uint %inTexLayer
+               OpStore %outTexLayer %89
+         %92 = OpLoad %uint %inTexIndex
+               OpStore %outTexIndex %92
                OpReturn
                OpFunctionEnd
