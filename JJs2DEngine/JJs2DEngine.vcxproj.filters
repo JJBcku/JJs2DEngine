@@ -209,11 +209,11 @@
     <ClCompile Include="DoNotInclude\ICode\Main\SpecialKeysDataList.cpp">
       <Filter>Source Files\Include\Main</Filter>
     </ClCompile>
-    <ClCompile Include="DoNotInclude\DNIData\Main\TextureDataMainInternal.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="DoNotInclude\ICode\Main\TextureDataMain.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Include\Main</Filter>
+    </ClCompile>
+    <ClCompile Include="DoNotInclude\DNIData\Main\TextureDataMainInternal.cpp">
+      <Filter>Source Files\Do Not Include\Main</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
