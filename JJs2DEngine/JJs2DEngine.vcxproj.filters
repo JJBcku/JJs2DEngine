@@ -150,6 +150,12 @@
     <ClInclude Include="Include\Common\TextureReferenceData.h">
       <Filter>Header Files\Include\Common</Filter>
     </ClInclude>
+    <ClInclude Include="Include\Common\TextureFormat.h">
+      <Filter>Header Files\Include\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Common\TextureFormatDef.h">
+      <Filter>Header Files\Include\Common</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DoNotInclude\DNIData\Common\CommonDNIpch.cpp">

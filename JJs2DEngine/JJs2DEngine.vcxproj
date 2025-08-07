@@ -115,6 +115,8 @@
     <ClInclude Include="DoNotInclude\DNIData\Common\CommonDNIframework.h" />
     <ClInclude Include="DoNotInclude\DNIData\Common\CommonDNIpch.h" />
     <ClInclude Include="DoNotInclude\DNIData\Main\InputDataListInternal.h" />
+    <ClInclude Include="Include\Common\TextureFormat.h" />
+    <ClInclude Include="Include\Common\TextureFormatDef.h" />
     <ClInclude Include="Include\Common\TextureArraySize.h" />
     <ClInclude Include="DoNotInclude\DNIData\Main\TextureDataMainInternal.h" />
     <ClInclude Include="DoNotInclude\DNIData\Main\WindowDataInternal.h" />

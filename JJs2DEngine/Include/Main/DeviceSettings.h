@@ -6,6 +6,7 @@
 #include <array>
 
 #include "../Common/TextureArraySize.h"
+#include "../Common/TextureFormat.h"
 
 #include "AspectRatioDef.h"
 #include "WindowInitializationData.h"
@@ -23,15 +24,6 @@ namespace JJs2DEngine
 		SWAPCHAIN_FORMAT_RGBA8 = 0x8,
 		SWAPCHAIN_FORMAT_BGRA8 = 0x10,
 		SWAPCHAIN_FORMAT_ABGR8 = 0x20,
-	};
-
-	enum class TextureFormat : uint64_t
-	{
-		TEXTURE_FORMAT_UNSET = 0,
-		TEXTURE_FORMAT_RGBA16 = 1,
-
-		TEXTURE_FORMAT_RGBA8 = 2,
-		TEXTURE_FORMAT_BGRA8 = 4,
 	};
 
 	enum class DepthFormat : uint64_t
