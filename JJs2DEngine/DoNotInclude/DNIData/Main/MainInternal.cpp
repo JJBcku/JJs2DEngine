@@ -680,7 +680,7 @@ namespace JJs2DEngine
 			maxTextures *= maxTextures;
 			maxTextures *= maxLayersInImageArray;
 
-			ret.maxTexturesInAtlases[i] = maxTextures;
+			ret.maxTexturesInAtlases[i] = maxTextures - 1;
 		}
 
 		return ret;
