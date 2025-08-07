@@ -98,7 +98,7 @@ JJ2DE::DeviceSettings CreateDeviceSettings(const JJ2DE::DeviceData& device, size
 			ret.textureFormat = JJ2DE::TextureFormat::TEXTURE_FORMAT_BGRA8;
 	}
 
-	ret.preLoadedTexturesMaxAmounts[5] = 1;
+	ret.preLoadedTexturesMaxAmounts[4] = 1;
 
 	ret.windowData.windowTitle = "JJ2DEngine Test Window";
 	ret.windowData.windowWidth = 1280;
