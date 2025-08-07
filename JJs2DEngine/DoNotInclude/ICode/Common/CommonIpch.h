@@ -6,5 +6,6 @@
 #include <compare>
 #include <optional>
 #include <limits>
+#include <array>
 
 #include "../../DNIData/Common/NamespaceAliasesInternal.h"

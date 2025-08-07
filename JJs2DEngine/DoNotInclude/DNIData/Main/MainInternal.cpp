@@ -55,7 +55,7 @@ namespace JJs2DEngine
 {
 	static bool CheckFormatSwapchainSupport(const VS::FormatsSupportedImageFeaturesList& supportedImageFormats,
 		const VS::SurfaceSupportedColorspaceFormatsLists& surfaceColorspace, const VS::DataFormatSetIndependentID& formatID);
-	static DeviceData CompileUsefullDeviceData(const VS::PhysicalDeviceData& deviceData, uint64_t deviceIndex);
+	static DeviceData CompileUsefullDeviceData(const VS::PhysicalDeviceData& deviceData, uint64_t deviceIndex, uint64_t max2DImagesDimensions, uint64_t maxLayersInImageArray);
 	static bool CheckDevicesUsefullness(const DeviceData& deviceData, VersionData minVulkanVersion);
 
 	MainInternal::MainInternal(const MainInitializationData& initData)
@@ -352,6 +352,12 @@ namespace JJs2DEngine
 
 			auto& surfaceSupport = physicalData.GetSurfaceSupport();
 
+			auto& properties = physicalData.GetVulkan10Properties();
+			auto& maxImageSizes = properties.limits.maxImageSizes;
+			
+			if (maxImageSizes.maxImageDimension2D < 8192)
+				continue;
+
 			if (!surfaceSupport.has_value())
 				continue;
 
@@ -367,7 +373,7 @@ namespace JJs2DEngine
 			if ((surfaceSupport.value().surfacePresentModes & VS::PRESENT_MODE_FIFO_STRICT) != VS::PRESENT_MODE_FIFO_STRICT)
 				continue;
 
-			auto deviceData = CompileUsefullDeviceData(physicalData, i);
+			auto deviceData = CompileUsefullDeviceData(physicalData, i, maxImageSizes.maxImageDimension2D, maxImageSizes.maxImageArrayLayers);
 
 			if (CheckDevicesUsefullness(deviceData, _minVulkanVersion))
 			{
@@ -482,7 +488,7 @@ namespace JJs2DEngine
 			VS::CheckFormatSupport(surfaceColorspace.srgbNonlinearColorspace, formatID);
 	}
 
-	static DeviceData CompileUsefullDeviceData(const VS::PhysicalDeviceData& deviceData, uint64_t deviceIndex)
+	static DeviceData CompileUsefullDeviceData(const VS::PhysicalDeviceData& deviceData, uint64_t deviceIndex, uint64_t max2DImagesDimensions, uint64_t maxLayersInImageArray)
 	{
 		DeviceData ret;
 		ret.deviceIndex = deviceIndex;
@@ -664,6 +670,17 @@ namespace JJs2DEngine
 		{
 			ret.depthStencilSupport.D32Float = VS::CheckFormatSupport(formatImageSupport.depthStencilAttachment, VS::DATA_FORMAT_D32_SFLOAT);
 			ret.depthStencilSupport.D32FloatS8Int = VS::CheckFormatSupport(formatImageSupport.depthStencilAttachment, VS::DATA_FORMAT_D32_SFLOAT_S8_UINT);
+		}
+
+		for (size_t i = 0; i < ret.maxTexturesInAtlases.size(); ++i)
+		{
+			size_t textureSize = 1ULL << i;
+
+			size_t maxTextures = max2DImagesDimensions / textureSize;
+			maxTextures *= maxTextures;
+			maxTextures *= maxLayersInImageArray;
+
+			ret.maxTexturesInAtlases[i] = maxTextures;
 		}
 
 		return ret;

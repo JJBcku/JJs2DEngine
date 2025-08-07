@@ -99,6 +99,8 @@ namespace JJs2DEngine
 		deviceLocalMemory = 0;
 		lazilyAllocatedMemory = 0;
 		sharedMemory = 0;
+
+		std::memset(maxTexturesInAtlases.data(), 0, sizeof(maxTexturesInAtlases[0]) * maxTexturesInAtlases.size());
 	}
 
 }

@@ -3,8 +3,11 @@
 #include <stdint.h>
 #include <compare>
 #include <optional>
+#include <array>
 
 #include "VersionData.h"
+
+#include "TextureArraySize.h"
 
 namespace JJs2DEngine
 {
@@ -107,6 +110,8 @@ namespace JJs2DEngine
 		DeviceSwapchainSupport swapchainSupport;
 		DeviceTextureSupport textureSupport;
 		DeviceDepthStencilSupport depthStencilSupport;
+
+		std::array<size_t, imagesInTextureArray> maxTexturesInAtlases;
 
 		DeviceData();
 
