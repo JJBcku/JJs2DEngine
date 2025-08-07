@@ -3,12 +3,28 @@
 
 #include "../../../Include/Common/TextureFormat.h"
 
+#include "TextureDataFrameInternal.h"
+
 namespace JJs2DEngine
 {
-	TextureDataMainInternal::TextureDataMainInternal(uint64_t transferFramesInFlight, const std::array<size_t, 14>& preLoadedTexturesMaxAmounts,
-		const std::array<size_t, 14>& streamedTexturesMaxAmounts, TextureFormat textureFormat) : _transferFramesInFlight(transferFramesInFlight),
-		_preLoadedTexturesMaxAmounts(preLoadedTexturesMaxAmounts), _streamedTexturesMaxAmounts(streamedTexturesMaxAmounts)
+	TextureDataMainInternal::TextureDataMainInternal(uint64_t transferFramesInFlight, const std::array<size_t, imagesInTextureArray>& preLoadedTexturesMaxAmounts,
+		const std::array<size_t, imagesInTextureArray>& streamedTexturesMaxAmounts, TextureFormat textureFormat)
 	{
+		std::array<size_t, imagesInTextureArray> _preLoadedTexturesMaxAmounts = preLoadedTexturesMaxAmounts;
+		std::array<size_t, imagesInTextureArray> _streamedTexturesMaxAmounts = streamedTexturesMaxAmounts;
+
+		for (size_t i = 0; i < _preLoadedTexturesMaxAmounts.size(); ++i)
+		{
+			_preLoadedTexturesMaxAmounts[i] += 1;
+		}
+
+		for (size_t i = 0; i < _streamedTexturesMaxAmounts.size(); ++i)
+		{
+			_streamedTexturesMaxAmounts[i] += 1;
+		}
+
+		_preLoadedTexturesData = std::make_unique<TextureDataFrameInternal>(0, _preLoadedTexturesMaxAmounts);
+
 	}
 
 	TextureDataMainInternal::~TextureDataMainInternal()

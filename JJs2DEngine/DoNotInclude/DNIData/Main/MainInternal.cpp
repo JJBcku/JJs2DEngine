@@ -195,7 +195,7 @@ namespace JJs2DEngine
 			auto& streamedTexturesMaxAmounts = _currentDevicesSettings.value().streamedTexturesMaxAmounts;
 
 			_textureDataMain = std::make_unique<TextureDataMainInternal>(_currentDevicesSettings.value().transferFramesInFlight, preLoadedTexturesMaxAmounts,
-				streamedTexturesMaxAmounts, TranslateToFormat(_currentDevicesSettings.value().textureFormat));
+				streamedTexturesMaxAmounts, _currentDevicesSettings.value().textureFormat);
 		}
 	}
 

@@ -7,9 +7,12 @@
 
 #include <stdint.h>
 #include <array>
+#include <memory>
 
 namespace JJs2DEngine
 {
+	class TextureDataFrameInternal;
+
 	class TextureDataMainInternal
 	{
 	public:
@@ -18,9 +21,7 @@ namespace JJs2DEngine
 		~TextureDataMainInternal();
 
 	private:
-		uint64_t _transferFramesInFlight;
-		std::array<size_t, imagesInTextureArray> _preLoadedTexturesMaxAmounts;
-		std::array<size_t, imagesInTextureArray> _streamedTexturesMaxAmounts;
+		std::unique_ptr<TextureDataFrameInternal> _preLoadedTexturesData;
 
 		bool Is16Bit(TextureFormat textureFormat) const;
 	};
