@@ -1,21 +1,26 @@
 ; SPIR-V
 ; Version: 1.0
 ; Generator: Google Shaderc over Glslang; 11
-; Bound: 101
+; Bound: 107
 ; Schema: 0
                OpCapability Shader
           %1 = OpExtInstImport "GLSL.std.450"
                OpMemoryModel Logical GLSL450
-               OpEntryPoint Vertex %4 "main" %gl_VertexIndex %62 %68 %83 %85
+               OpEntryPoint Vertex %4 "main" %gl_VertexIndex %62 %68 %85 %87 %93 %96 %98 %100 %101
                OpDecorate %gl_VertexIndex BuiltIn VertexIndex
                OpDecorate %_struct_60 Block
                OpMemberDecorate %_struct_60 0 BuiltIn Position
                OpMemberDecorate %_struct_60 1 BuiltIn PointSize
                OpMemberDecorate %_struct_60 2 BuiltIn ClipDistance
                OpMemberDecorate %_struct_60 3 BuiltIn CullDistance
-               OpDecorate %68 Location 1
-               OpDecorate %83 Location 0
+               OpDecorate %68 Location 4
                OpDecorate %85 Location 0
+               OpDecorate %87 Location 1
+               OpDecorate %93 Location 0
+               OpDecorate %96 Location 1
+               OpDecorate %98 Location 2
+               OpDecorate %100 Location 2
+               OpDecorate %101 Location 3
        %void = OpTypeVoid
           %3 = OpTypeFunction %void
       %float = OpTypeFloat 32
@@ -60,9 +65,17 @@
          %68 = OpVariable %_ptr_Input_v3float Input
 %_ptr_Input_float = OpTypePointer Input %float
 %_ptr_Output_v4float = OpTypePointer Output %v4float
-         %83 = OpVariable %_ptr_Output_v4float Output
-%_ptr_Input_v4float = OpTypePointer Input %v4float
-         %85 = OpVariable %_ptr_Input_v4float Input
+%_ptr_Input_v2float = OpTypePointer Input %v2float
+         %85 = OpVariable %_ptr_Input_v2float Input
+         %87 = OpVariable %_ptr_Input_v2float Input
+%_ptr_Output_v2float = OpTypePointer Output %v2float
+         %93 = OpVariable %_ptr_Output_v2float Output
+%_ptr_Output_uint = OpTypePointer Output %uint
+         %96 = OpVariable %_ptr_Output_uint Output
+%_ptr_Input_uint = OpTypePointer Input %uint
+         %98 = OpVariable %_ptr_Input_uint Input
+        %100 = OpVariable %_ptr_Output_uint Output
+        %101 = OpVariable %_ptr_Input_uint Input
 %_ptr_Function__arr_v4float_uint_4 = OpTypePointer Function %_arr_v4float_uint_4
 %_ptr_Function__arr_v2float_uint_4 = OpTypePointer Function %_arr_v2float_uint_4
 %_ptr_Function__arr_uint_uint_6 = OpTypePointer Function %_arr_uint_uint_6
@@ -95,14 +108,14 @@
          %80 = OpCompositeConstruct %v4float %78 %79 %74 %77
          %82 = OpAccessChain %_ptr_Output_v4float %62 %int_0
                OpStore %82 %80
-         %86 = OpLoad %v4float %85
-         %87 = OpVectorShuffle %v2float %86 %86 0 1
-         %89 = OpFMul %v2float %87 %58
-         %92 = OpCompositeExtract %float %89 0
-         %93 = OpCompositeExtract %float %89 1
-         %94 = OpCompositeExtract %float %86 2
-         %95 = OpCompositeExtract %float %86 3
-         %96 = OpCompositeConstruct %v4float %92 %93 %94 %95
-               OpStore %83 %96
+         %86 = OpLoad %v2float %85
+         %88 = OpLoad %v2float %87
+         %90 = OpFMul %v2float %88 %58
+         %91 = OpFAdd %v2float %86 %90
+               OpStore %93 %91
+         %99 = OpLoad %uint %98
+               OpStore %96 %99
+        %102 = OpLoad %uint %101
+               OpStore %100 %102
                OpReturn
                OpFunctionEnd

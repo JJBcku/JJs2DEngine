@@ -258,7 +258,10 @@ namespace JJs2DEngine
 				throw std::runtime_error("RenderDataInternal::LoadUIPipelineCacheFile Error: Program failed to read a pipeline cache's element header!");
 
 			if (elementHeader.deleted != Misc::BOOL64_FALSE)
+			{
+				uiPipelineCacheFile.seekg(elementHeader.elementSize, std::ios_base::cur);
 				continue;
+			}
 
 			uiPipelineCompatibleData.resize(elementHeader.elementSize);
 			uiPipelineCacheFile.read(reinterpret_cast<char*>(uiPipelineCompatibleData.data()), elementHeader.elementSize);
@@ -469,7 +472,10 @@ namespace JJs2DEngine
 				throw std::runtime_error("RenderDataInternal::LoadGammaCorrectionPipelineCacheFile Error: Program failed to read a pipeline cache's element header!");
 
 			if (elementHeader.deleted != Misc::BOOL64_FALSE)
+			{
+				gammaCorrectionCacheFile.seekg(elementHeader.elementSize, std::ios_base::cur);
 				continue;
+			}
 
 			uiPipelineCompatibleData.resize(elementHeader.elementSize);
 			gammaCorrectionCacheFile.read(reinterpret_cast<char*>(uiPipelineCompatibleData.data()), elementHeader.elementSize);
@@ -708,10 +714,14 @@ namespace JJs2DEngine
 		ret.shaderStages[1].shaderDeviceID.fragmentShader.type = VS::SHADER_TYPE_FRAGMENT;
 		ret.shaderStages[1].shaderDeviceID.fragmentShader.fragmentShaderID = _standardFragmentShaderID;
 
-		auto vertexInTexCoord = sharedPipelineList.AddUniqueVertexAttributeDescriptionData(0, VS::DATA_FORMAT_RGBA32_SFLOAT, 0x10);
-		auto vertexInSize = sharedPipelineList.AddUniqueVertexAttributeDescriptionData(16, VS::DATA_FORMAT_RGB32_SFLOAT, 0x10);
+		auto vertexInTexCoord = sharedPipelineList.AddUniqueVertexAttributeDescriptionData(0, VS::DATA_FORMAT_RG32_SFLOAT, 0x10);
+		auto vertexInTexSize = sharedPipelineList.AddUniqueVertexAttributeDescriptionData(8, VS::DATA_FORMAT_RG32_SFLOAT, 0x10);
+		auto vertexInTexLayer = sharedPipelineList.AddUniqueVertexAttributeDescriptionData(16, VS::DATA_FORMAT_R32_UINT, 0x10);
+		auto vertexInTexIndex = sharedPipelineList.AddUniqueVertexAttributeDescriptionData(20, VS::DATA_FORMAT_R32_UINT, 0x10);
+		auto vertexInSize = sharedPipelineList.AddUniqueVertexAttributeDescriptionData(24, VS::DATA_FORMAT_RGBA32_SFLOAT, 0x10);
 
-		auto vertexInstanceBinding = sharedPipelineList.AddUniqueVertexBindingData(24, VS::VertexBindingInputRate::INSTANCE, { vertexInTexCoord, vertexInSize }, 0x10);
+		auto vertexInstanceBinding = sharedPipelineList.AddUniqueVertexBindingData(40, VS::VertexBindingInputRate::INSTANCE,
+			{ vertexInTexCoord, vertexInTexSize, vertexInTexLayer,  vertexInTexIndex, vertexInSize}, 0x10);
 
 		ret.vertexInputData = sharedPipelineList.AddUniqueVertexInputSharedPipelineData({ vertexInstanceBinding }, 0x10);
 		ret.inputAssemblyData = sharedPipelineList.AddUniquePipelineInputAssemblyData(VS::PipelinePrimitiveTopology::TRIANGLE_LIST, false, 0x10);

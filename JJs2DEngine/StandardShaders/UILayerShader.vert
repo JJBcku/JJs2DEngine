@@ -1,9 +1,14 @@
 #version 450
 
-layout(location = 0) in vec4 inTexCoord;
-layout(location = 1) in vec3 inSize;
+layout(location = 0) in vec2 inTexCoord;
+layout(location = 1) in vec2 inTexSize;
+layout(location = 2) in uint inTexLayer;
+layout(location = 3) in uint inTexIndex;
+layout(location = 4) in vec4 inSize;
 
-layout(location = 0) out vec4 outTexCoord;
+layout(location = 0) out vec2 outTexCoord;
+layout(location = 1) out uint outTexLayer;
+layout(location = 2) out uint outTexIndex;
 
 vec4 vertexData[4] = vec4[](
 	vec4( -1.0, -1.0, 0.0, 1.0 ),
@@ -27,5 +32,10 @@ void main()
 	vec2 texPos = textureData[vertexIndexes[gl_VertexIndex]];
 
 	gl_Position = vec4(verticePos.xy * inSize.xy, inSize.z, verticePos.w);
-	outTexCoord = vec4(inTexCoord.xy * texPos, inTexCoord.zw);
+	
+	vec2 texCoord = inTexCoord + (inTexSize * texPos);
+	
+	outTexCoord = texCoord;
+	outTexLayer = inTexLayer;
+	outTexIndex = inTexIndex;
 }

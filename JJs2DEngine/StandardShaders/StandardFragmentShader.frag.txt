@@ -1,47 +1,54 @@
 ; SPIR-V
 ; Version: 1.0
 ; Generator: Google Shaderc over Glslang; 11
-; Bound: 32
+; Bound: 38
 ; Schema: 0
                OpCapability Shader
           %1 = OpExtInstImport "GLSL.std.450"
                OpMemoryModel Logical GLSL450
-               OpEntryPoint Fragment %4 "main" %9 %18
+               OpEntryPoint Fragment %4 "main" %12 %16 %24 %31
                OpExecutionMode %4 OriginUpperLeft
-               OpDecorate %9 Location 0
-               OpDecorate %16 Binding 0
-               OpDecorate %16 DescriptorSet 0
-               OpDecorate %18 Location 0
+               OpDecorate %12 Location 0
+               OpDecorate %16 Flat
+               OpDecorate %16 Location 1
+               OpDecorate %24 Location 0
+               OpDecorate %30 Binding 0
+               OpDecorate %30 DescriptorSet 0
+               OpDecorate %31 Flat
+               OpDecorate %31 Location 2
        %void = OpTypeVoid
           %3 = OpTypeFunction %void
       %float = OpTypeFloat 32
+    %v3float = OpTypeVector %float 3
+    %v2float = OpTypeVector %float 2
+%_ptr_Input_v2float = OpTypePointer Input %v2float
+         %12 = OpVariable %_ptr_Input_v2float Input
+       %uint = OpTypeInt 32 0
+%_ptr_Input_uint = OpTypePointer Input %uint
+         %16 = OpVariable %_ptr_Input_uint Input
     %v4float = OpTypeVector %float 4
 %_ptr_Output_v4float = OpTypePointer Output %v4float
-          %9 = OpVariable %_ptr_Output_v4float Output
-         %10 = OpTypeImage %float 2D 0 1 0 1 Unknown
-         %11 = OpTypeSampledImage %10
-       %uint = OpTypeInt 32 0
+         %24 = OpVariable %_ptr_Output_v4float Output
+         %25 = OpTypeImage %float 2D 0 1 0 1 Unknown
+         %26 = OpTypeSampledImage %25
     %uint_28 = OpConstant %uint 28
-%_arr_11_uint_28 = OpTypeArray %11 %uint_28
-%_ptr_UniformConstant__arr_11_uint_28 = OpTypePointer UniformConstant %_arr_11_uint_28
-         %16 = OpVariable %_ptr_UniformConstant__arr_11_uint_28 UniformConstant
-%_ptr_Input_v4float = OpTypePointer Input %v4float
-         %18 = OpVariable %_ptr_Input_v4float Input
-     %uint_3 = OpConstant %uint 3
-%_ptr_Input_float = OpTypePointer Input %float
-%_ptr_UniformConstant_11 = OpTypePointer UniformConstant %11
-    %v3float = OpTypeVector %float 3
+%_arr_26_uint_28 = OpTypeArray %26 %uint_28
+%_ptr_UniformConstant__arr_26_uint_28 = OpTypePointer UniformConstant %_arr_26_uint_28
+         %30 = OpVariable %_ptr_UniformConstant__arr_26_uint_28 UniformConstant
+         %31 = OpVariable %_ptr_Input_uint Input
+%_ptr_UniformConstant_26 = OpTypePointer UniformConstant %26
           %4 = OpFunction %void None %3
           %5 = OpLabel
-         %21 = OpAccessChain %_ptr_Input_float %18 %uint_3
-         %22 = OpLoad %float %21
-         %23 = OpExtInst %float %1 Floor %22
-         %24 = OpConvertFToU %uint %23
-         %26 = OpAccessChain %_ptr_UniformConstant_11 %16 %24
-         %27 = OpLoad %11 %26
-         %29 = OpLoad %v4float %18
-         %30 = OpVectorShuffle %v3float %29 %29 0 1 2
-         %31 = OpImageSampleImplicitLod %v4float %27 %30
-               OpStore %9 %31
+         %13 = OpLoad %v2float %12
+         %17 = OpLoad %uint %16
+         %18 = OpConvertUToF %float %17
+         %19 = OpCompositeExtract %float %13 0
+         %20 = OpCompositeExtract %float %13 1
+         %21 = OpCompositeConstruct %v3float %19 %20 %18
+         %32 = OpLoad %uint %31
+         %34 = OpAccessChain %_ptr_UniformConstant_26 %30 %32
+         %35 = OpLoad %26 %34
+         %37 = OpImageSampleImplicitLod %v4float %35 %21
+               OpStore %24 %37
                OpReturn
                OpFunctionEnd

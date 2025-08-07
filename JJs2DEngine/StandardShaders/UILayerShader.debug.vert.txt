@@ -1,12 +1,12 @@
 ; SPIR-V
 ; Version: 1.0
 ; Generator: Google Shaderc over Glslang; 11
-; Bound: 97
+; Bound: 103
 ; Schema: 0
                OpCapability Shader
           %1 = OpExtInstImport "GLSL.std.450"
                OpMemoryModel Logical GLSL450
-               OpEntryPoint Vertex %main "main" %gl_VertexIndex %_ %inSize %outTexCoord %inTexCoord
+               OpEntryPoint Vertex %main "main" %gl_VertexIndex %_ %inSize %inTexCoord %inTexSize %outTexCoord %outTexLayer %inTexLayer %outTexIndex %inTexIndex
                OpSource GLSL 450
                OpSourceExtension "GL_GOOGLE_cpp_style_line_directive"
                OpSourceExtension "GL_GOOGLE_include_directive"
@@ -24,17 +24,28 @@
                OpMemberName %gl_PerVertex 3 "gl_CullDistance"
                OpName %_ ""
                OpName %inSize "inSize"
-               OpName %outTexCoord "outTexCoord"
+               OpName %texCoord "texCoord"
                OpName %inTexCoord "inTexCoord"
+               OpName %inTexSize "inTexSize"
+               OpName %outTexCoord "outTexCoord"
+               OpName %outTexLayer "outTexLayer"
+               OpName %inTexLayer "inTexLayer"
+               OpName %outTexIndex "outTexIndex"
+               OpName %inTexIndex "inTexIndex"
                OpDecorate %gl_VertexIndex BuiltIn VertexIndex
                OpDecorate %gl_PerVertex Block
                OpMemberDecorate %gl_PerVertex 0 BuiltIn Position
                OpMemberDecorate %gl_PerVertex 1 BuiltIn PointSize
                OpMemberDecorate %gl_PerVertex 2 BuiltIn ClipDistance
                OpMemberDecorate %gl_PerVertex 3 BuiltIn CullDistance
-               OpDecorate %inSize Location 1
-               OpDecorate %outTexCoord Location 0
+               OpDecorate %inSize Location 4
                OpDecorate %inTexCoord Location 0
+               OpDecorate %inTexSize Location 1
+               OpDecorate %outTexCoord Location 0
+               OpDecorate %outTexLayer Location 1
+               OpDecorate %inTexLayer Location 2
+               OpDecorate %outTexIndex Location 2
+               OpDecorate %inTexIndex Location 3
        %void = OpTypeVoid
           %3 = OpTypeFunction %void
       %float = OpTypeFloat 32
@@ -89,13 +100,22 @@
 %_ptr_Input_float = OpTypePointer Input %float
 %_ptr_Function_float = OpTypePointer Function %float
 %_ptr_Output_v4float = OpTypePointer Output %v4float
-%outTexCoord = OpVariable %_ptr_Output_v4float Output
-%_ptr_Input_v4float = OpTypePointer Input %v4float
- %inTexCoord = OpVariable %_ptr_Input_v4float Input
+%_ptr_Input_v2float = OpTypePointer Input %v2float
+ %inTexCoord = OpVariable %_ptr_Input_v2float Input
+  %inTexSize = OpVariable %_ptr_Input_v2float Input
+%_ptr_Output_v2float = OpTypePointer Output %v2float
+%outTexCoord = OpVariable %_ptr_Output_v2float Output
+%_ptr_Output_uint = OpTypePointer Output %uint
+%outTexLayer = OpVariable %_ptr_Output_uint Output
+%_ptr_Input_uint = OpTypePointer Input %uint
+ %inTexLayer = OpVariable %_ptr_Input_uint Input
+%outTexIndex = OpVariable %_ptr_Output_uint Output
+ %inTexIndex = OpVariable %_ptr_Input_uint Input
        %main = OpFunction %void None %3
           %5 = OpLabel
  %verticePos = OpVariable %_ptr_Function_v4float Function
      %texPos = OpVariable %_ptr_Function_v2float Function
+   %texCoord = OpVariable %_ptr_Function_v2float Function
                OpStore %vertexData %20
                OpStore %textureData %29
                OpStore %vertexIndexes %38
@@ -125,17 +145,17 @@
          %80 = OpCompositeConstruct %v4float %78 %79 %74 %77
          %82 = OpAccessChain %_ptr_Output_v4float %_ %int_0
                OpStore %82 %80
-         %86 = OpLoad %v4float %inTexCoord
-         %87 = OpVectorShuffle %v2float %86 %86 0 1
-         %88 = OpLoad %v2float %texPos
-         %89 = OpFMul %v2float %87 %88
-         %90 = OpLoad %v4float %inTexCoord
-         %91 = OpVectorShuffle %v2float %90 %90 2 3
-         %92 = OpCompositeExtract %float %89 0
-         %93 = OpCompositeExtract %float %89 1
-         %94 = OpCompositeExtract %float %91 0
-         %95 = OpCompositeExtract %float %91 1
-         %96 = OpCompositeConstruct %v4float %92 %93 %94 %95
-               OpStore %outTexCoord %96
+         %86 = OpLoad %v2float %inTexCoord
+         %88 = OpLoad %v2float %inTexSize
+         %89 = OpLoad %v2float %texPos
+         %90 = OpFMul %v2float %88 %89
+         %91 = OpFAdd %v2float %86 %90
+               OpStore %texCoord %91
+         %94 = OpLoad %v2float %texCoord
+               OpStore %outTexCoord %94
+         %99 = OpLoad %uint %inTexLayer
+               OpStore %outTexLayer %99
+        %102 = OpLoad %uint %inTexIndex
+               OpStore %outTexIndex %102
                OpReturn
                OpFunctionEnd
