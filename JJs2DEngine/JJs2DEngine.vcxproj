@@ -119,6 +119,7 @@
     <ClInclude Include="DoNotInclude\DNIData\Main\TextureDataMainInternal.h" />
     <ClInclude Include="DoNotInclude\DNIData\Main\WindowDataInternal.h" />
     <ClInclude Include="DoNotInclude\ICode\Main\TextureDataMain.h" />
+    <ClInclude Include="Include\Common\TextureReferenceData.h" />
     <ClInclude Include="Include\Main\AspectRatio.h" />
     <ClInclude Include="Include\Main\AspectRatioDef.h" />
     <ClInclude Include="DoNotInclude\DNIData\Main\DeviceSettingsInternal.h" />
@@ -213,6 +214,12 @@
       <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)CommonIpch.pch</PrecompiledHeaderOutputFile>
     </ClCompile>
     <ClCompile Include="DoNotInclude\ICode\Common\DeviceData.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">CommonIpch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)CommonIpch.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">CommonIpch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)CommonIpch.pch</PrecompiledHeaderOutputFile>
+    </ClCompile>
+    <ClCompile Include="DoNotInclude\ICode\Common\TextureReferenceData.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">CommonIpch.h</PrecompiledHeaderFile>
       <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)CommonIpch.pch</PrecompiledHeaderOutputFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">CommonIpch.h</PrecompiledHeaderFile>

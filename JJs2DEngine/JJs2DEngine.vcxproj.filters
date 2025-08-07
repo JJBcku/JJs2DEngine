@@ -147,6 +147,9 @@
     <ClInclude Include="Include\Common\TextureArraySize.h">
       <Filter>Header Files\Include\Common</Filter>
     </ClInclude>
+    <ClInclude Include="Include\Common\TextureReferenceData.h">
+      <Filter>Header Files\Include\Common</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DoNotInclude\DNIData\Common\CommonDNIpch.cpp">
@@ -214,6 +217,9 @@
     </ClCompile>
     <ClCompile Include="DoNotInclude\DNIData\Main\TextureDataMainInternal.cpp">
       <Filter>Source Files\Do Not Include\Main</Filter>
+    </ClCompile>
+    <ClCompile Include="DoNotInclude\ICode\Common\TextureReferenceData.cpp">
+      <Filter>Source Files\Include\Common</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
