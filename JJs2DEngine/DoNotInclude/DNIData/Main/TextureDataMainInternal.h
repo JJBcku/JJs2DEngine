@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../../../Include/Common/TextureArraySize.h"
+#include "../../../Include/Common/TextureFormatDef.h"
 
 #include <VulkanSimplified/VSCommon/VSDataFormatFlags.h>
 
@@ -13,13 +14,14 @@ namespace JJs2DEngine
 	{
 	public:
 		TextureDataMainInternal(uint64_t transferFramesInFlight, const std::array<size_t, imagesInTextureArray>& preLoadedTexturesMaxAmounts,
-			const std::array<size_t, imagesInTextureArray>& streamedTexturesMaxAmounts, VS::DataFormatSetIndependentID textureFormat);
+			const std::array<size_t, imagesInTextureArray>& streamedTexturesMaxAmounts, TextureFormat textureFormat);
 		~TextureDataMainInternal();
 
 	private:
 		uint64_t _transferFramesInFlight;
 		std::array<size_t, imagesInTextureArray> _preLoadedTexturesMaxAmounts;
 		std::array<size_t, imagesInTextureArray> _streamedTexturesMaxAmounts;
-		VS::DataFormatSetIndependentID _textureFormat;
+
+		bool Is16Bit(TextureFormat textureFormat) const;
 	};
 }
