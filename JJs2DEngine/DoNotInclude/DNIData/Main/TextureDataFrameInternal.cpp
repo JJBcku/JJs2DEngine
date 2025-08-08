@@ -1,6 +1,8 @@
 #include "MainDNIpch.h"
 #include "TextureDataFrameInternal.h"
 
+#include <VulkanSimplified/VSCommon/VSMemoryTypeProperties.h>
+
 #include <limits>
 
 namespace JJs2DEngine
@@ -40,6 +42,18 @@ namespace JJs2DEngine
 			memoryTypeMask = memoryTypeMask & _imageList.Get2DArrayTextureImagesMemoryTypeMask(textureData.imageID);
 			totalSize += _imageList.Get2DArrayTextureImagesSize(textureData.imageID);
 		}
+
+		std::vector<VS::MemoryTypeProperties> acceptableMemoryTypes;
+		acceptableMemoryTypes.reserve(7);
+		acceptableMemoryTypes.push_back(VS::DEVICE_LOCAL);
+		acceptableMemoryTypes.push_back(VS::DEVICE_LOCAL | VS::HOST_VISIBLE | VS::HOST_CACHED);
+		acceptableMemoryTypes.push_back(VS::DEVICE_LOCAL | VS::HOST_COHERENT | VS::HOST_VISIBLE | VS::HOST_CACHED);
+		acceptableMemoryTypes.push_back(VS::DEVICE_LOCAL | VS::HOST_COHERENT | VS::HOST_VISIBLE);
+		acceptableMemoryTypes.push_back(VS::HOST_VISIBLE | VS::HOST_CACHED);
+		acceptableMemoryTypes.push_back(VS::HOST_COHERENT | VS::HOST_VISIBLE | VS::HOST_CACHED);
+		acceptableMemoryTypes.push_back(VS::HOST_COHERENT | VS::HOST_VISIBLE);
+
+		_textureMemoryID = _memoryList.AllocateMemory(totalSize, _textureDataArray.size(), acceptableMemoryTypes, memoryTypeMask, 0x10);
 	}
 
 	TextureDataFrameInternal::~TextureDataFrameInternal()

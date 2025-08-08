@@ -47,6 +47,7 @@ namespace JJs2DEngine
 		uint64_t _maxImageArrayLayers;
 
 		std::array<TextureFrameImageData, imagesInTextureArray> _textureDataArray;
+		VS::MemoryAllocationFullID _textureMemoryID;
 
 		TextureFrameImageData CompileTextureFrameSizeData(size_t tileSize, size_t texturesMaxAmount, uint64_t max2DImageSize, uint64_t maxImageArrayLayers) const;
 	};
