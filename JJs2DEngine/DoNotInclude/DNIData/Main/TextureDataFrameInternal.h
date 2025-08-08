@@ -2,9 +2,14 @@
 
 #include "../../../Include/Common/TextureArraySize.h"
 
+#include <VulkanSimplified/VSCommon/VSDataFormatFlags.h>
+#include <VulkanSimplified/VSCommon/VSMemoryAllocationFullID.h>
+
 #include <VulkanSimplified/VSDevice/VSDataBufferLists.h>
 #include <VulkanSimplified/VSDevice/VSImageDataLists.h>
 #include <VulkanSimplified/VSDevice/VSMemoryObjectsList.h>
+
+#include <CustomLists/IDObject.h>
 
 #include <stdint.h>
 
@@ -19,6 +24,8 @@ namespace JJs2DEngine
 		size_t heightInPixels;
 		size_t layers;
 
+		IDObject<VS::AutoCleanup2DArrayTexture> imageID;
+
 		TextureFrameImageData();
 		~TextureFrameImageData();
 	};
@@ -27,7 +34,7 @@ namespace JJs2DEngine
 	{
 	public:
 		TextureDataFrameInternal(uint64_t startingIndex, uint64_t max2DImageSize, uint64_t maxImageArrayLayers, const std::array<size_t, imagesInTextureArray>& texturesMaxAmounts,
-			VS::DataBufferLists dataBufferList, VS::ImageDataLists imageList, VS::MemoryObjectsList memoryList);
+			VS::DataFormatSetIndependentID textureFormat, VS::DataBufferLists dataBufferList, VS::ImageDataLists imageList, VS::MemoryObjectsList memoryList);
 		~TextureDataFrameInternal();
 
 	private:

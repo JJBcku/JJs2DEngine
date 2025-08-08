@@ -3,8 +3,6 @@
 #include "../../../Include/Common/TextureArraySize.h"
 #include "../../../Include/Common/TextureFormatDef.h"
 
-#include <VulkanSimplified/VSCommon/VSDataFormatFlags.h>
-
 #include <VulkanSimplified/VSDevice/VSDataBufferLists.h>
 #include <VulkanSimplified/VSDevice/VSImageDataLists.h>
 #include <VulkanSimplified/VSDevice/VSMemoryObjectsList.h>

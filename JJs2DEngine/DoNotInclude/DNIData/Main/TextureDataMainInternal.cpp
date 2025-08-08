@@ -4,6 +4,9 @@
 #include "../../../Include/Common/TextureFormat.h"
 
 #include "TextureDataFrameInternal.h"
+#include "DeviceSettingsInternal.h"
+
+#include <VulkanSimplified/VSCommon/VSDataFormatFlags.h>
 
 namespace JJs2DEngine
 {
@@ -25,7 +28,9 @@ namespace JJs2DEngine
 			_streamedTexturesMaxAmounts[i] += 1;
 		}
 
-		_preLoadedTexturesData = std::make_unique<TextureDataFrameInternal>(0ULL, max2DImageSize, maxImageArrayLayers, _preLoadedTexturesMaxAmounts,
+		VS::DataFormatSetIndependentID format = TranslateToFormat(textureFormat);
+
+		_preLoadedTexturesData = std::make_unique<TextureDataFrameInternal>(0ULL, max2DImageSize, maxImageArrayLayers, _preLoadedTexturesMaxAmounts, format,
 			_dataBufferList, _imageList, _memoryList);
 
 	}

@@ -1,6 +1,8 @@
 #include "MainDNIpch.h"
 #include "TextureDataFrameInternal.h"
 
+#include <limits>
+
 namespace JJs2DEngine
 {
 	JJs2DEngine::TextureFrameImageData::TextureFrameImageData()
@@ -18,16 +20,25 @@ namespace JJs2DEngine
 	}
 
 	TextureDataFrameInternal::TextureDataFrameInternal(uint64_t startingIndex, uint64_t max2DImageSize, uint64_t maxImageArrayLayers,
-		const std::array<size_t, imagesInTextureArray>& texturesMaxAmounts, VS::DataBufferLists dataBufferList, VS::ImageDataLists imageList, VS::MemoryObjectsList memoryList) :
+		const std::array<size_t, imagesInTextureArray>& texturesMaxAmounts, VS::DataFormatSetIndependentID textureFormat,
+		VS::DataBufferLists dataBufferList, VS::ImageDataLists imageList, VS::MemoryObjectsList memoryList) :
 		_dataBufferList(dataBufferList), _imageList(imageList), _memoryList(memoryList), _startingIndex(startingIndex), _max2DImageSize(max2DImageSize),
 		_maxImageArrayLayers(maxImageArrayLayers)
 	{
+		uint32_t memoryTypeMask = std::numeric_limits<uint32_t>::max();
+		size_t totalSize = 0;
+
 		for (size_t i = 0; i < _textureDataArray.size(); ++i)
 		{
 			auto& textureData = _textureDataArray[i];
 
 			size_t tileSize = 1ULL << (skippedSizeLevels + i);
 			textureData = CompileTextureFrameSizeData(tileSize, texturesMaxAmounts[i], max2DImageSize, maxImageArrayLayers);
+
+			textureData.imageID = _imageList.Add2DArrayTextureImage(static_cast<uint32_t>(textureData.widthInPixels), static_cast<uint32_t>(textureData.heightInPixels),
+				static_cast<uint32_t>(textureData.layers), 1, textureFormat, {}, false, 1);
+			memoryTypeMask = memoryTypeMask & _imageList.Get2DArrayTextureImagesMemoryTypeMask(textureData.imageID);
+			totalSize += _imageList.Get2DArrayTextureImagesSize(textureData.imageID);
 		}
 	}
 
