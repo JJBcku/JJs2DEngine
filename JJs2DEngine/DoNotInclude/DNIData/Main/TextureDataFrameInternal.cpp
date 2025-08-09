@@ -54,6 +54,11 @@ namespace JJs2DEngine
 		acceptableMemoryTypes.push_back(VS::HOST_COHERENT | VS::HOST_VISIBLE);
 
 		_textureMemoryID = _memoryList.AllocateMemory(totalSize, _textureDataArray.size(), acceptableMemoryTypes, memoryTypeMask, 0x10);
+		for (size_t i = 0; i < _textureDataArray.size(); ++i)
+		{
+			auto& textureData = _textureDataArray[i];
+			_imageList.Bind2DArrayTextureImage(textureData.imageID, _textureMemoryID, _textureDataArray.size());
+		}
 	}
 
 	TextureDataFrameInternal::~TextureDataFrameInternal()
