@@ -25,6 +25,7 @@ namespace JJs2DEngine
 		size_t layers;
 
 		IDObject<VS::AutoCleanup2DArrayTexture> imageID;
+		IDObject<VS::AutoCleanupImageView> imageViewID;
 
 		TextureFrameImageData();
 		~TextureFrameImageData();

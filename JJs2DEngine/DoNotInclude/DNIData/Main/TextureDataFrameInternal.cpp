@@ -58,6 +58,7 @@ namespace JJs2DEngine
 		{
 			auto& textureData = _textureDataArray[i];
 			_imageList.Bind2DArrayTextureImage(textureData.imageID, _textureMemoryID, _textureDataArray.size());
+			textureData.imageViewID = _imageList.Add2DArrayTextureImageFullView(textureData.imageID, _textureDataArray.size());
 		}
 	}
 
