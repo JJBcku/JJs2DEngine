@@ -2,9 +2,9 @@
 
 #include <stdint.h>
 
-#if defined(JJ2DENGINE_8K_TEXTURES_ENABLED)
+#if defined(JJ2DENGINE_8K_TEXTURES_ENABLED_WITH_SIZE_SHIFT)
 constexpr uint32_t skippedSizeLevels = 6;
-#elseif defined(JJ2DENGINE_4K_TEXTURES_ENABLED)
+#elseif defined(JJ2DENGINE_4K_TEXTURES_ENABLED_WITH_SIZE_SHIFT)
 constexpr uint32_t skippedSizeLevels = 5;
 #else
 constexpr uint32_t skippedSizeLevels = 4;
