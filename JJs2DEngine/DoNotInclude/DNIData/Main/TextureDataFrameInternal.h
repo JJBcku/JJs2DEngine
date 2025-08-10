@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../../../Include/Common/TextureArraySize.h"
+#include "../../../Include/Common/TextureReferenceData.h"
 
 #include <VulkanSimplified/VSCommon/VSDataFormatFlags.h>
 #include <VulkanSimplified/VSCommon/VSMemoryAllocationFullID.h>
@@ -12,6 +13,10 @@
 #include <CustomLists/IDObject.h>
 
 #include <stdint.h>
+#include <vector>
+#include <array>
+#include <memory>
+#include <compare>
 
 namespace JJs2DEngine
 {
@@ -27,8 +32,19 @@ namespace JJs2DEngine
 		IDObject<VS::AutoCleanup2DArrayTexture> imageID;
 		IDObject<VS::AutoCleanupImageView> imageViewID;
 
+		std::vector<std::shared_ptr<TextureReferenceData>> textureReferencesList;
+
 		TextureFrameImageData();
 		~TextureFrameImageData();
+
+		TextureFrameImageData(const TextureFrameImageData& rhs) noexcept = default;
+		TextureFrameImageData(TextureFrameImageData&& rhs) noexcept = default;
+
+		TextureFrameImageData& operator=(const TextureFrameImageData& rhs) noexcept = default;
+		TextureFrameImageData& operator=(TextureFrameImageData&& rhs) noexcept = default;
+
+		std::strong_ordering operator<=>(const TextureFrameImageData& rhs) const noexcept = default;
+		bool operator==(const TextureFrameImageData& rhs) const noexcept = default;
 	};
 
 	class TextureDataFrameInternal

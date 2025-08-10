@@ -1,6 +1,7 @@
 #include "MainDNIpch.h"
 #include "TextureDataFrameInternal.h"
 
+#include <glm/vec2.hpp>
 #include <VulkanSimplified/VSCommon/VSMemoryTypeProperties.h>
 
 #include <limits>
@@ -59,6 +60,23 @@ namespace JJs2DEngine
 			auto& textureData = _textureDataArray[i];
 			_imageList.Bind2DArrayTextureImage(textureData.imageID, _textureMemoryID, _textureDataArray.size());
 			textureData.imageViewID = _imageList.Add2DArrayTextureImageFullView(textureData.imageID, _textureDataArray.size());
+		}
+
+		for (size_t i = 0; i < _textureDataArray.size(); ++i)
+		{
+			auto& textureData = _textureDataArray[i];
+			textureData.textureReferencesList.resize(texturesMaxAmounts[i]);
+
+			TextureReferenceData defaultReference;
+			defaultReference.textureCoords = glm::vec2(0.0f);
+			defaultReference.textureSize = glm::vec2(1.0f);
+			defaultReference.textureLayer = 0;
+			defaultReference.textureIndex = static_cast<uint32_t>(_startingIndex + i);
+
+			for (size_t j = 0; j < textureData.textureReferencesList.size(); ++j)
+			{
+				textureData.textureReferencesList[j] = std::make_shared<TextureReferenceData>(defaultReference);
+			}
 		}
 	}
 
