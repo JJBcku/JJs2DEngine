@@ -23,43 +23,64 @@ namespace JJs2DEngine
 	}
 
 	TextureDataFrameInternal::TextureDataFrameInternal(uint64_t startingIndex, uint64_t max2DImageSize, uint64_t maxImageArrayLayers,
-		const std::array<size_t, imagesInTextureArray>& texturesMaxAmounts, VS::DataFormatSetIndependentID textureFormat,
+		const std::array<size_t, imagesInTextureArray>& texturesMaxAmounts, size_t stagingBufferSize, VS::DataFormatSetIndependentID textureFormat,
 		VS::DataBufferLists dataBufferList, VS::ImageDataLists imageList, VS::MemoryObjectsList memoryList) :
 		_dataBufferList(dataBufferList), _imageList(imageList), _memoryList(memoryList), _startingIndex(startingIndex), _max2DImageSize(max2DImageSize),
 		_maxImageArrayLayers(maxImageArrayLayers)
 	{
-		uint32_t memoryTypeMask = std::numeric_limits<uint32_t>::max();
-		size_t totalSize = 0;
+		std::vector<VS::MemoryTypeProperties> acceptableMemoryTypes;
 
-		for (size_t i = 0; i < _textureDataArray.size(); ++i)
 		{
-			auto& textureData = _textureDataArray[i];
+			uint32_t memoryTypeMask = std::numeric_limits<uint32_t>::max();
+			size_t totalSize = 0;
 
-			size_t tileSize = 1ULL << (skippedSizeLevels + i);
-			textureData = CompileTextureFrameSizeData(tileSize, texturesMaxAmounts[i], max2DImageSize, maxImageArrayLayers);
+			for (size_t i = 0; i < _textureDataArray.size(); ++i)
+			{
+				auto& textureData = _textureDataArray[i];
 
-			textureData.imageID = _imageList.Add2DArrayTextureImage(static_cast<uint32_t>(textureData.widthInPixels), static_cast<uint32_t>(textureData.heightInPixels),
-				static_cast<uint32_t>(textureData.layers), 1, textureFormat, {}, false, 1);
-			memoryTypeMask = memoryTypeMask & _imageList.Get2DArrayTextureImagesMemoryTypeMask(textureData.imageID);
-			totalSize += _imageList.Get2DArrayTextureImagesSize(textureData.imageID);
+				size_t tileSize = 1ULL << (skippedSizeLevels + i);
+				textureData = CompileTextureFrameSizeData(tileSize, texturesMaxAmounts[i], max2DImageSize, maxImageArrayLayers);
+
+				textureData.imageID = _imageList.Add2DArrayTextureImage(static_cast<uint32_t>(textureData.widthInPixels), static_cast<uint32_t>(textureData.heightInPixels),
+					static_cast<uint32_t>(textureData.layers), 1, textureFormat, {}, false, 1);
+				memoryTypeMask = memoryTypeMask & _imageList.Get2DArrayTextureImagesMemoryTypeMask(textureData.imageID);
+				totalSize += _imageList.Get2DArrayTextureImagesSize(textureData.imageID);
+			}
+
+			acceptableMemoryTypes.reserve(7);
+			acceptableMemoryTypes.push_back(VS::DEVICE_LOCAL);
+			acceptableMemoryTypes.push_back(VS::DEVICE_LOCAL | VS::HOST_VISIBLE | VS::HOST_CACHED);
+			acceptableMemoryTypes.push_back(VS::DEVICE_LOCAL | VS::HOST_COHERENT | VS::HOST_VISIBLE | VS::HOST_CACHED);
+			acceptableMemoryTypes.push_back(VS::DEVICE_LOCAL | VS::HOST_COHERENT | VS::HOST_VISIBLE);
+			acceptableMemoryTypes.push_back(VS::HOST_VISIBLE | VS::HOST_CACHED);
+			acceptableMemoryTypes.push_back(VS::HOST_COHERENT | VS::HOST_VISIBLE | VS::HOST_CACHED);
+			acceptableMemoryTypes.push_back(VS::HOST_COHERENT | VS::HOST_VISIBLE);
+
+			_textureMemoryID = _memoryList.AllocateMemory(totalSize, _textureDataArray.size(), acceptableMemoryTypes, memoryTypeMask, 0x10);
+			for (size_t i = 0; i < _textureDataArray.size(); ++i)
+			{
+				auto& textureData = _textureDataArray[i];
+				_imageList.Bind2DArrayTextureImage(textureData.imageID, _textureMemoryID, _textureDataArray.size());
+				textureData.imageViewID = _imageList.Add2DArrayTextureImageFullView(textureData.imageID, _textureDataArray.size());
+			}
 		}
 
-		std::vector<VS::MemoryTypeProperties> acceptableMemoryTypes;
-		acceptableMemoryTypes.reserve(7);
-		acceptableMemoryTypes.push_back(VS::DEVICE_LOCAL);
-		acceptableMemoryTypes.push_back(VS::DEVICE_LOCAL | VS::HOST_VISIBLE | VS::HOST_CACHED);
-		acceptableMemoryTypes.push_back(VS::DEVICE_LOCAL | VS::HOST_COHERENT | VS::HOST_VISIBLE | VS::HOST_CACHED);
-		acceptableMemoryTypes.push_back(VS::DEVICE_LOCAL | VS::HOST_COHERENT | VS::HOST_VISIBLE);
-		acceptableMemoryTypes.push_back(VS::HOST_VISIBLE | VS::HOST_CACHED);
-		acceptableMemoryTypes.push_back(VS::HOST_COHERENT | VS::HOST_VISIBLE | VS::HOST_CACHED);
-		acceptableMemoryTypes.push_back(VS::HOST_COHERENT | VS::HOST_VISIBLE);
-
-		_textureMemoryID = _memoryList.AllocateMemory(totalSize, _textureDataArray.size(), acceptableMemoryTypes, memoryTypeMask, 0x10);
-		for (size_t i = 0; i < _textureDataArray.size(); ++i)
 		{
-			auto& textureData = _textureDataArray[i];
-			_imageList.Bind2DArrayTextureImage(textureData.imageID, _textureMemoryID, _textureDataArray.size());
-			textureData.imageViewID = _imageList.Add2DArrayTextureImageFullView(textureData.imageID, _textureDataArray.size());
+			_texturesStagingBufferID = _dataBufferList.AddStagingBuffer(stagingBufferSize, {}, 0x10);
+
+			acceptableMemoryTypes.clear();
+			acceptableMemoryTypes.push_back(VS::HOST_VISIBLE | VS::HOST_CACHED);
+			acceptableMemoryTypes.push_back(VS::HOST_COHERENT | VS::HOST_VISIBLE | VS::HOST_CACHED);
+			acceptableMemoryTypes.push_back(VS::HOST_COHERENT | VS::HOST_VISIBLE);
+			acceptableMemoryTypes.push_back(VS::DEVICE_LOCAL | VS::HOST_VISIBLE | VS::HOST_CACHED);
+			acceptableMemoryTypes.push_back(VS::DEVICE_LOCAL | VS::HOST_COHERENT | VS::HOST_VISIBLE | VS::HOST_CACHED);
+			acceptableMemoryTypes.push_back(VS::DEVICE_LOCAL | VS::HOST_COHERENT | VS::HOST_VISIBLE);
+
+			size_t requiredSize = _dataBufferList.GetStagingBuffersSize(_texturesStagingBufferID);
+			uint32_t memoryMask = _dataBufferList.GetStagingBuffersMemoryTypeMask(_texturesStagingBufferID);
+
+			_stagingBufferMemoryID = _memoryList.AllocateMemory(requiredSize, 1, acceptableMemoryTypes, memoryMask, 0x10);
+			_dataBufferList.BindStagingBuffer(_texturesStagingBufferID, _stagingBufferMemoryID, 0x10);
 		}
 
 		for (size_t i = 0; i < _textureDataArray.size(); ++i)

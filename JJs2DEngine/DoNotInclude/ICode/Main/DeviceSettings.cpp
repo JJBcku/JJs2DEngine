@@ -25,6 +25,9 @@ namespace JJs2DEngine
 		std::memset(preLoadedTexturesMaxAmounts.data(), 0, sizeof(preLoadedTexturesMaxAmounts[0]) * preLoadedTexturesMaxAmounts.size());
 		std::memset(streamedTexturesMaxAmounts.data(), 0, sizeof(streamedTexturesMaxAmounts[0]) * streamedTexturesMaxAmounts.size());
 
+		preLoadedTexturesStagingBuffersPageCount = 0;
+		streamedTexturesStagingBuffersPageCount = 0;
+
 		currentPipelineSettings = std::numeric_limits<size_t>::max();
 	}
 

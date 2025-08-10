@@ -51,7 +51,7 @@ namespace JJs2DEngine
 	{
 	public:
 		TextureDataFrameInternal(uint64_t startingIndex, uint64_t max2DImageSize, uint64_t maxImageArrayLayers, const std::array<size_t, imagesInTextureArray>& texturesMaxAmounts,
-			VS::DataFormatSetIndependentID textureFormat, VS::DataBufferLists dataBufferList, VS::ImageDataLists imageList, VS::MemoryObjectsList memoryList);
+			size_t stagingBufferSize, VS::DataFormatSetIndependentID textureFormat, VS::DataBufferLists dataBufferList, VS::ImageDataLists imageList, VS::MemoryObjectsList memoryList);
 		~TextureDataFrameInternal();
 
 	private:
@@ -65,6 +65,9 @@ namespace JJs2DEngine
 
 		std::array<TextureFrameImageData, imagesInTextureArray> _textureDataArray;
 		VS::MemoryAllocationFullID _textureMemoryID;
+
+		IDObject<VS::AutoCleanupStagingBuffer> _texturesStagingBufferID;
+		VS::MemoryAllocationFullID _stagingBufferMemoryID;
 
 		TextureFrameImageData CompileTextureFrameSizeData(size_t tileSize, size_t texturesMaxAmount, uint64_t max2DImageSize, uint64_t maxImageArrayLayers) const;
 	};

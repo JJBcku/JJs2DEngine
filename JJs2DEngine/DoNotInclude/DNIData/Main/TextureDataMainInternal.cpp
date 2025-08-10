@@ -15,7 +15,8 @@ namespace JJs2DEngine
 {
 	TextureDataMainInternal::TextureDataMainInternal(uint64_t transferFramesInFlight, uint64_t max2DImageSize, uint64_t maxImageArrayLayers, std::string dataFolder,
 		const std::array<size_t, imagesInTextureArray>& preLoadedTexturesMaxAmounts, const std::array<size_t, imagesInTextureArray>& streamedTexturesMaxAmounts,
-		TextureFormat textureFormat, VS::DataBufferLists dataBufferList, VS::ImageDataLists imageList, VS::MemoryObjectsList memoryList) :
+		size_t preLoadedTexturesStagingBufferPageCount, size_t streamedTexturesStagingBufferPageCount, TextureFormat textureFormat,
+		VS::DataBufferLists dataBufferList, VS::ImageDataLists imageList, VS::MemoryObjectsList memoryList) :
 		_dataBufferList(dataBufferList), _imageList(imageList), _memoryList(memoryList)
 	{
 		std::array<size_t, imagesInTextureArray> _preLoadedTexturesMaxAmounts = preLoadedTexturesMaxAmounts;
@@ -33,11 +34,18 @@ namespace JJs2DEngine
 
 		VS::DataFormatSetIndependentID format = TranslateToFormat(textureFormat);
 
-		_preLoadedTexturesData = std::make_unique<TextureDataFrameInternal>(0ULL, max2DImageSize, maxImageArrayLayers, _preLoadedTexturesMaxAmounts, format,
-			_dataBufferList, _imageList, _memoryList);
-
 		bool is16Bit = Is16Bit(textureFormat);
 		bool isRBReversed = IsRBReversed(textureFormat);
+
+		size_t preLoadedTexturesStagingBuferSize = biggestLevelTilePixelCount * preLoadedTexturesStagingBufferPageCount;
+
+		if (is16Bit)
+			preLoadedTexturesStagingBuferSize *= 8;
+		else
+			preLoadedTexturesStagingBuferSize *= 4;
+
+			_preLoadedTexturesData = std::make_unique<TextureDataFrameInternal>(0ULL, max2DImageSize, maxImageArrayLayers, _preLoadedTexturesMaxAmounts,
+				preLoadedTexturesStagingBuferSize, format, _dataBufferList, _imageList, _memoryList);
 
 		std::array<std::vector<unsigned char>, imagesInTextureArray> _defaultTextureDataList;
 

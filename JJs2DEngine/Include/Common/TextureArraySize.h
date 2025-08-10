@@ -20,3 +20,6 @@ constexpr uint32_t imagesInTextureArray = 8;
 
 constexpr uint32_t textureArraysAmount = 2;
 constexpr uint32_t imagesInAllTextureArrays = imagesInTextureArray * textureArraysAmount;
+
+constexpr uint32_t biggestLevelTileSize = 1U << (skippedSizeLevels + imagesInTextureArray - 1);
+constexpr uint32_t biggestLevelTilePixelCount = biggestLevelTileSize * biggestLevelTileSize;

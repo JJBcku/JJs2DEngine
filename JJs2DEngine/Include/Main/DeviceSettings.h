@@ -55,6 +55,9 @@ namespace JJs2DEngine
 		std::array<size_t, imagesInTextureArray> preLoadedTexturesMaxAmounts;
 		std::array<size_t, imagesInTextureArray> streamedTexturesMaxAmounts;
 
+		size_t preLoadedTexturesStagingBuffersPageCount;
+		size_t streamedTexturesStagingBuffersPageCount;
+
 		WindowInitializationData windowData;
 
 		size_t currentPipelineSettings;

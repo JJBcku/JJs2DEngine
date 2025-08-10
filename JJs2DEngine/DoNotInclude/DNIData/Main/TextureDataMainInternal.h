@@ -21,7 +21,8 @@ namespace JJs2DEngine
 	public:
 		TextureDataMainInternal(uint64_t transferFramesInFlight, uint64_t max2DImageSize, uint64_t maxImageArrayLayers, std::string dataFolder,
 			const std::array<size_t, imagesInTextureArray>& preLoadedTexturesMaxAmounts, const std::array<size_t, imagesInTextureArray>& streamedTexturesMaxAmounts,
-			TextureFormat textureFormat, VS::DataBufferLists dataBufferList, VS::ImageDataLists imageList, VS::MemoryObjectsList memoryList);
+			size_t preLoadedTexturesStagingBufferPageCount, size_t streamedTexturesStagingBufferPageCount, TextureFormat textureFormat,
+			VS::DataBufferLists dataBufferList, VS::ImageDataLists imageList, VS::MemoryObjectsList memoryList);
 		~TextureDataMainInternal();
 
 	private:
