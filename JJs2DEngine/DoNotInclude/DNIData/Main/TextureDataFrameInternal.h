@@ -20,6 +20,19 @@
 
 namespace JJs2DEngine
 {
+	struct TextureFrameInitData
+	{
+		uint64_t startingIndex;
+		uint64_t max2DImageSize;
+		uint64_t maxImageArrayLayers;
+		std::array<size_t, imagesInTextureArray> texturesMaxAmounts;
+
+		size_t stagingBufferSize;
+		VS::DataFormatSetIndependentID textureFormat;
+
+		TextureFrameInitData();
+	};
+
 	struct TextureFrameImageData
 	{
 		size_t tileSize;
@@ -50,8 +63,7 @@ namespace JJs2DEngine
 	class TextureDataFrameInternal
 	{
 	public:
-		TextureDataFrameInternal(uint64_t startingIndex, uint64_t max2DImageSize, uint64_t maxImageArrayLayers, const std::array<size_t, imagesInTextureArray>& texturesMaxAmounts,
-			size_t stagingBufferSize, VS::DataFormatSetIndependentID textureFormat, VS::DataBufferLists dataBufferList, VS::ImageDataLists imageList, VS::MemoryObjectsList memoryList);
+		TextureDataFrameInternal(const TextureFrameInitData& initData, VS::DataBufferLists dataBufferList, VS::ImageDataLists imageList, VS::MemoryObjectsList memoryList);
 		~TextureDataFrameInternal();
 
 	private:

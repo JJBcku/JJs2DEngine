@@ -124,6 +124,12 @@ namespace JJs2DEngine
 			if (!CheckDepthFormatAvailability(setting.depthFormat, deviceData.depthStencilSupport))
 				throw std::runtime_error("MainInternal::CreateDevice Error: One of preinitialized pipelines has a depth format unsupported by the device!");
 		}
+		
+		if (deviceSettings.preLoadedTexturesStagingBuffersPageCount == 0)
+			throw std::runtime_error("MainInternal::CreateDevice Error: Value for preloaded textures staging buffer page count cannot be zero!");
+
+		if (deviceSettings.streamedTexturesStagingBuffersPageCount == 0 && deviceSettings.transferFramesInFlight > 0)
+			throw std::runtime_error("MainInternal::CreateDevice Error: Value for streamed textures staging buffer page count cannot be zero!");
 
 		VS::LogicalDeviceCreationData creationData;
 		creationData.physicalGPUIndex = deviceData.deviceIndex;
@@ -197,10 +203,18 @@ namespace JJs2DEngine
 			auto physicalDevice = instance.GetPhysicalDeviceData(_deviceList[_currentDevicesSettings.value().deviceIndex].deviceIndex);
 			auto& imageLimits = physicalDevice.GetVulkan10Properties().limits.maxImageSizes;
 
-			_textureDataMain = std::make_unique<TextureDataMainInternal>(_currentDevicesSettings.value().transferFramesInFlight, imageLimits.maxImageDimension2D,
-				imageLimits.maxImageArrayLayers, _dataFolder, preLoadedTexturesMaxAmounts, streamedTexturesMaxAmounts,
-				_currentDevicesSettings.value().preLoadedTexturesStagingBuffersPageCount, _currentDevicesSettings.value().streamedTexturesStagingBuffersPageCount,
-				_currentDevicesSettings.value().textureFormat, device.GetDataBufferLists(), device.GetImageDataLists(), device.GetMemoryObjectsList());
+			TextureDataMainInitData textureInitData;
+			textureInitData.transferFramesInFlight = _currentDevicesSettings.value().transferFramesInFlight;
+			textureInitData.max2DImageSize = imageLimits.maxImageDimension2D;
+			textureInitData.maxImageArrayLayers = imageLimits.maxImageArrayLayers;
+			textureInitData.dataFolder = _dataFolder;
+			textureInitData.preLoadedTexturesMaxAmounts = preLoadedTexturesMaxAmounts;
+			textureInitData.streamedTexturesMaxAmounts = streamedTexturesMaxAmounts;
+			textureInitData.preLoadedTexturesStagingBufferPageCount = _currentDevicesSettings.value().preLoadedTexturesStagingBuffersPageCount;
+			textureInitData.streamedTexturesStagingBufferPageCount = _currentDevicesSettings.value().streamedTexturesStagingBuffersPageCount;
+			textureInitData.textureFormat = _currentDevicesSettings.value().textureFormat;
+
+			_textureDataMain = std::make_unique<TextureDataMainInternal>(textureInitData, device.GetDataBufferLists(), device.GetImageDataLists(), device.GetMemoryObjectsList());
 		}
 	}
 

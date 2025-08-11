@@ -13,14 +13,22 @@
 
 namespace JJs2DEngine
 {
-	TextureDataMainInternal::TextureDataMainInternal(uint64_t transferFramesInFlight, uint64_t max2DImageSize, uint64_t maxImageArrayLayers, std::string dataFolder,
-		const std::array<size_t, imagesInTextureArray>& preLoadedTexturesMaxAmounts, const std::array<size_t, imagesInTextureArray>& streamedTexturesMaxAmounts,
-		size_t preLoadedTexturesStagingBufferPageCount, size_t streamedTexturesStagingBufferPageCount, TextureFormat textureFormat,
-		VS::DataBufferLists dataBufferList, VS::ImageDataLists imageList, VS::MemoryObjectsList memoryList) :
-		_dataBufferList(dataBufferList), _imageList(imageList), _memoryList(memoryList)
+	TextureDataMainInitData::TextureDataMainInitData() : preLoadedTexturesMaxAmounts(), streamedTexturesMaxAmounts()
 	{
-		std::array<size_t, imagesInTextureArray> _preLoadedTexturesMaxAmounts = preLoadedTexturesMaxAmounts;
-		std::array<size_t, imagesInTextureArray> _streamedTexturesMaxAmounts = streamedTexturesMaxAmounts;
+		transferFramesInFlight = 0;
+		max2DImageSize = 0;
+		maxImageArrayLayers = 0;
+
+		preLoadedTexturesStagingBufferPageCount = 0;
+		streamedTexturesStagingBufferPageCount = 0;
+		textureFormat = TextureFormat::TEXTURE_FORMAT_UNSET;
+	}
+
+	TextureDataMainInternal::TextureDataMainInternal(const TextureDataMainInitData& initData, VS::DataBufferLists dataBufferList, VS::ImageDataLists imageList,
+		VS::MemoryObjectsList memoryList) : _dataBufferList(dataBufferList), _imageList(imageList), _memoryList(memoryList)
+	{
+		std::array<size_t, imagesInTextureArray> _preLoadedTexturesMaxAmounts = initData.preLoadedTexturesMaxAmounts;
+		std::array<size_t, imagesInTextureArray> _streamedTexturesMaxAmounts = initData.streamedTexturesMaxAmounts;
 
 		for (size_t i = 0; i < _preLoadedTexturesMaxAmounts.size(); ++i)
 		{
@@ -32,32 +40,39 @@ namespace JJs2DEngine
 			_streamedTexturesMaxAmounts[i] += 1;
 		}
 
-		VS::DataFormatSetIndependentID format = TranslateToFormat(textureFormat);
+		VS::DataFormatSetIndependentID format = TranslateToFormat(initData.textureFormat);
 
-		bool is16Bit = Is16Bit(textureFormat);
-		bool isRBReversed = IsRBReversed(textureFormat);
+		bool is16Bit = Is16Bit(initData.textureFormat);
+		bool isRBReversed = IsRBReversed(initData.textureFormat);
 
-		size_t preLoadedTexturesStagingBuferSize = biggestLevelTilePixelCount * preLoadedTexturesStagingBufferPageCount;
+		size_t preLoadedTexturesStagingBuferSize = biggestLevelTilePixelCount * initData.preLoadedTexturesStagingBufferPageCount;
 
 		if (is16Bit)
 			preLoadedTexturesStagingBuferSize *= 8;
 		else
 			preLoadedTexturesStagingBuferSize *= 4;
 
-			_preLoadedTexturesData = std::make_unique<TextureDataFrameInternal>(0ULL, max2DImageSize, maxImageArrayLayers, _preLoadedTexturesMaxAmounts,
-				preLoadedTexturesStagingBuferSize, format, _dataBufferList, _imageList, _memoryList);
+		TextureFrameInitData frameInitData;
+		frameInitData.startingIndex = 0ULL;
+		frameInitData.max2DImageSize = initData.max2DImageSize;
+		frameInitData.maxImageArrayLayers = initData.maxImageArrayLayers;
+		frameInitData.texturesMaxAmounts = _preLoadedTexturesMaxAmounts;
+		frameInitData.stagingBufferSize = preLoadedTexturesStagingBuferSize;
+		frameInitData.textureFormat = format;
+
+		_preLoadedTexturesData = std::make_unique<TextureDataFrameInternal>(frameInitData, _dataBufferList, _imageList, _memoryList);
 
 		std::array<std::vector<unsigned char>, imagesInTextureArray> _defaultTextureDataList;
 
 		if (is16Bit)
 			for (size_t i = 0; i < _defaultTextureDataList.size(); ++i)
 			{
-				_defaultTextureDataList[i] = LoadDefautTexture16Bit(dataFolder, 1U << (skippedSizeLevels + i), isRBReversed);
+				_defaultTextureDataList[i] = LoadDefautTexture16Bit(initData.dataFolder, 1U << (skippedSizeLevels + i), isRBReversed);
 			}
 		else
 			for (size_t i = 0; i < _defaultTextureDataList.size(); ++i)
 			{
-				_defaultTextureDataList[i] = LoadDefautTexture8Bit(dataFolder, 1U << (skippedSizeLevels + i), isRBReversed);
+				_defaultTextureDataList[i] = LoadDefautTexture8Bit(initData.dataFolder, 1U << (skippedSizeLevels + i), isRBReversed);
 			}
 	}
 

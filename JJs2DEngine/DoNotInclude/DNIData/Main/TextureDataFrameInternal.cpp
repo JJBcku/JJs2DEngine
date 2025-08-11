@@ -8,6 +8,15 @@
 
 namespace JJs2DEngine
 {
+	JJs2DEngine::TextureFrameInitData::TextureFrameInitData() : texturesMaxAmounts(), textureFormat()
+	{
+		startingIndex = 0;
+		max2DImageSize = 0;
+		maxImageArrayLayers = 0;
+
+		stagingBufferSize = 0;
+	}
+
 	JJs2DEngine::TextureFrameImageData::TextureFrameImageData()
 	{
 		tileSize = 0;
@@ -22,11 +31,10 @@ namespace JJs2DEngine
 	{
 	}
 
-	TextureDataFrameInternal::TextureDataFrameInternal(uint64_t startingIndex, uint64_t max2DImageSize, uint64_t maxImageArrayLayers,
-		const std::array<size_t, imagesInTextureArray>& texturesMaxAmounts, size_t stagingBufferSize, VS::DataFormatSetIndependentID textureFormat,
-		VS::DataBufferLists dataBufferList, VS::ImageDataLists imageList, VS::MemoryObjectsList memoryList) :
-		_dataBufferList(dataBufferList), _imageList(imageList), _memoryList(memoryList), _startingIndex(startingIndex), _max2DImageSize(max2DImageSize),
-		_maxImageArrayLayers(maxImageArrayLayers)
+	TextureDataFrameInternal::TextureDataFrameInternal(const TextureFrameInitData& initData, VS::DataBufferLists dataBufferList, VS::ImageDataLists imageList,
+		VS::MemoryObjectsList memoryList) :
+		_dataBufferList(dataBufferList), _imageList(imageList), _memoryList(memoryList), _startingIndex(initData.startingIndex), _max2DImageSize(initData.max2DImageSize),
+		_maxImageArrayLayers(initData.maxImageArrayLayers)
 	{
 		std::vector<VS::MemoryTypeProperties> acceptableMemoryTypes;
 
@@ -39,10 +47,10 @@ namespace JJs2DEngine
 				auto& textureData = _textureDataArray[i];
 
 				size_t tileSize = 1ULL << (skippedSizeLevels + i);
-				textureData = CompileTextureFrameSizeData(tileSize, texturesMaxAmounts[i], max2DImageSize, maxImageArrayLayers);
+				textureData = CompileTextureFrameSizeData(tileSize, initData.texturesMaxAmounts[i], initData.max2DImageSize, initData.maxImageArrayLayers);
 
 				textureData.imageID = _imageList.Add2DArrayTextureImage(static_cast<uint32_t>(textureData.widthInPixels), static_cast<uint32_t>(textureData.heightInPixels),
-					static_cast<uint32_t>(textureData.layers), 1, textureFormat, {}, false, 1);
+					static_cast<uint32_t>(textureData.layers), 1, initData.textureFormat, {}, false, 1);
 				memoryTypeMask = memoryTypeMask & _imageList.Get2DArrayTextureImagesMemoryTypeMask(textureData.imageID);
 				totalSize += _imageList.Get2DArrayTextureImagesSize(textureData.imageID);
 			}
@@ -66,7 +74,7 @@ namespace JJs2DEngine
 		}
 
 		{
-			_texturesStagingBufferID = _dataBufferList.AddStagingBuffer(stagingBufferSize, {}, 0x10);
+			_texturesStagingBufferID = _dataBufferList.AddStagingBuffer(initData.stagingBufferSize, {}, 0x10);
 
 			acceptableMemoryTypes.clear();
 			acceptableMemoryTypes.push_back(VS::HOST_VISIBLE | VS::HOST_CACHED);
@@ -86,7 +94,7 @@ namespace JJs2DEngine
 		for (size_t i = 0; i < _textureDataArray.size(); ++i)
 		{
 			auto& textureData = _textureDataArray[i];
-			textureData.textureReferencesList.resize(texturesMaxAmounts[i]);
+			textureData.textureReferencesList.resize(initData.texturesMaxAmounts[i]);
 
 			TextureReferenceData defaultReference;
 			defaultReference.textureCoords = glm::vec2(0.0f);
