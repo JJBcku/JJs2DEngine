@@ -3,6 +3,7 @@
 #include <CustomLists/IDObjectDef.h>
 
 #include "VSPipelineDataListsDef.h"
+#include "VSRenderPassDataListDef.h"
 #include "VSSynchronizationDataListsDef.h"
 #include "VSWindowListDef.h"
 #include "VSDataBufferListsDef.h"
@@ -43,7 +44,6 @@ namespace VulkanSimplified
 
 		CommandBufferBase& operator=(const CommandBufferBase& rhs) noexcept = delete;
 
-		void BeginRecording(CommandBufferUsage usage);
 		void EndRecording();
 
 		void BindGraphicsPipeline(IDObject<AutoCleanupGraphicsPipeline> pipelineID);

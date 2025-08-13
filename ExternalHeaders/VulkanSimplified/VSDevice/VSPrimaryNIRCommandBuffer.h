@@ -26,6 +26,8 @@ namespace VulkanSimplified
 
 		PrimaryNIRCommandBuffer& operator=(const PrimaryNIRCommandBuffer&) noexcept = delete;
 
+		void BeginRecording(CommandBufferUsage usage);
+
 		void BeginRenderPass(IDObject<AutoCleanupRenderPass> renderPassID, IDObject<AutoCleanupFramebuffer> framebufferID,
 			uint32_t startX, uint32_t startY, uint32_t width, uint32_t height, const std::vector<std::optional<RenderPassClearValueID>>& clearValues, bool usesSecondaryBuffers = false);
 		void EndRenderPass();
