@@ -234,6 +234,7 @@ namespace JJs2DEngine
 
 			TextureDataMainInitData textureInitData;
 			textureInitData.transferQueueID = transferQueue;
+			textureInitData.graphicsQueueID = _graphicsQueueIndex;
 			textureInitData.transferFramesInFlight = _currentDevicesSettings.value().transferFramesInFlight;
 			textureInitData.max2DImageSize = imageLimits.maxImageDimension2D;
 			textureInitData.maxImageArrayLayers = imageLimits.maxImageArrayLayers;

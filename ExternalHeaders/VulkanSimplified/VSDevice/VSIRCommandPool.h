@@ -40,6 +40,8 @@ namespace VulkanSimplified
 		bool PresentSwapchainToQueue(IDObject<WindowPointer> windowID, const std::vector<IDObject<AutoCleanupSemaphore>>& waitSemaphoreIDs,
 			uint32_t imageIndex);
 
+		void RecordExecuteSecondaryBufferCommand(IDObject<PrimaryIRPointer> primaryBufferID, const std::vector<IDObject<SecondaryIRPointer>>& secondaryBufferIDs);
+
 	private:
 		IRCommandPoolInternal& _internal;
 	};
