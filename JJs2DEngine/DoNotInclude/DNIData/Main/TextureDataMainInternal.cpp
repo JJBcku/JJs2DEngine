@@ -61,7 +61,7 @@ namespace JJs2DEngine
 		bool is16Bit = Is16Bit(initData.textureFormat);
 		bool isRBReversed = IsRBReversed(initData.textureFormat);
 
-		size_t preLoadedTexturesStagingBuferSize = biggestLevelTilePixelCount * initData.preLoadedTexturesStagingBufferPageCount;
+		size_t preLoadedTexturesStagingBuferSize = biggestLevelTilePixelCount * 2 * initData.preLoadedTexturesStagingBufferPageCount;
 
 		if (is16Bit)
 			preLoadedTexturesStagingBuferSize *= 8;
@@ -91,6 +91,8 @@ namespace JJs2DEngine
 			{
 				_defaultTextureDataList[i] = LoadDefautTexture8Bit(initData.dataFolder, 1U << (skippedSizeLevels + i), isRBReversed);
 			}
+
+		_preLoadedTexturesData->LoadDefaultTextures(_defaultTextureDataList);
 	}
 
 	TextureDataMainInternal::~TextureDataMainInternal()
