@@ -16,6 +16,8 @@
 
 #include <VulkanSimplified/VSInstance/VSInstance.h>
 
+#include <VulkanSimplified/VSDevice/VSCommandPoolMainListDef.h>
+
 #include "../../../Include/Common/VersionData.h"
 
 #include "../../../Include/Main/DeviceSettings.h"
@@ -74,13 +76,16 @@ namespace JJs2DEngine
 		std::optional<std::chrono::high_resolution_clock::time_point> _lastCurrentTime;
 		std::chrono::high_resolution_clock::time_point _currentTime;
 
+		IDObject<std::pair<VS::QuitEventFunction, void*>> _quitRegistrationID;
+		Misc::Bool64 _windowClosed;
+
+		IDObject<VS::CommandPoolQFGroupPointer> _transferQFGroup;
+		IDObject<VS::CommandPoolQFGroupPointer> _graphicQFGroup;
+
 		std::unique_ptr<RenderDataInternal> _renderDataList;
 		std::unique_ptr<WindowDataInternal> _windowData;
 		std::unique_ptr<InputDataListInternal> _inputDataList;
 		std::unique_ptr<TextureDataMainInternal> _textureDataMain;
-
-		IDObject<std::pair<VS::QuitEventFunction, void*>> _quitRegistrationID;
-		Misc::Bool64 _windowClosed;
 
 		void CreateInstance(const MainInitializationData& initData);
 		void EnumerateDevices();

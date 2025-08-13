@@ -7,14 +7,20 @@
 #include "DeviceSettingsInternal.h"
 
 #include <VulkanSimplified/VSCommon/VSDataFormatFlags.h>
+#include <VulkanSimplified/VSDevice/VSNIRCommandPool.h>
+#include <VulkanSimplified/VSDevice/VSPrimaryIRCommandBuffer.h>
 
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb/stb_image.h>
+
+#include <limits>
 
 namespace JJs2DEngine
 {
 	TextureDataMainInitData::TextureDataMainInitData() : preLoadedTexturesMaxAmounts(), streamedTexturesMaxAmounts()
 	{
+		transferQueueID = std::numeric_limits<uint64_t>::max();
+
 		transferFramesInFlight = 0;
 		max2DImageSize = 0;
 		maxImageArrayLayers = 0;
@@ -25,7 +31,8 @@ namespace JJs2DEngine
 	}
 
 	TextureDataMainInternal::TextureDataMainInternal(const TextureDataMainInitData& initData, VS::DataBufferLists dataBufferList, VS::ImageDataLists imageList,
-		VS::MemoryObjectsList memoryList) : _dataBufferList(dataBufferList), _imageList(imageList), _memoryList(memoryList)
+		VS::MemoryObjectsList memoryList, VS::CommandPoolQFGroupList transferQFGroup) : _dataBufferList(dataBufferList), _imageList(imageList), _memoryList(memoryList),
+		_transferQFGroup(transferQFGroup)
 	{
 		std::array<size_t, imagesInTextureArray> _preLoadedTexturesMaxAmounts = initData.preLoadedTexturesMaxAmounts;
 		std::array<size_t, imagesInTextureArray> _streamedTexturesMaxAmounts = initData.streamedTexturesMaxAmounts;
@@ -39,6 +46,15 @@ namespace JJs2DEngine
 		{
 			_streamedTexturesMaxAmounts[i] += 1;
 		}
+
+		_textureCommandPoolID = _transferQFGroup.AddCommandPoolWithoutIndividualReset(true, initData.transferQueueID, 1, 1 + initData.transferFramesInFlight, 0x10);
+		auto textureCommandPool = _transferQFGroup.GetCommandPoolWithoutIndividualReset(_textureCommandPoolID);
+
+		auto primaryCommandBuffer = textureCommandPool.AllocatePrimaryCommandBuffers(1, 0x10);
+		_primaryCommandBufferID = primaryCommandBuffer.back();
+
+		auto preloadedCommandBuffer = textureCommandPool.AllocateSecondaryCommandBuffers(1, 0x10);
+		_preLoadedCommandBufferID = preloadedCommandBuffer.back();
 
 		VS::DataFormatSetIndependentID format = TranslateToFormat(initData.textureFormat);
 
@@ -60,7 +76,8 @@ namespace JJs2DEngine
 		frameInitData.stagingBufferSize = preLoadedTexturesStagingBuferSize;
 		frameInitData.textureFormat = format;
 
-		_preLoadedTexturesData = std::make_unique<TextureDataFrameInternal>(frameInitData, _dataBufferList, _imageList, _memoryList);
+		_preLoadedTexturesData = std::make_unique<TextureDataFrameInternal>(frameInitData, _dataBufferList, _imageList, _memoryList,
+			textureCommandPool.GetSecondaryCommandBuffer(_preLoadedCommandBufferID));
 
 		std::array<std::vector<unsigned char>, imagesInTextureArray> _defaultTextureDataList;
 

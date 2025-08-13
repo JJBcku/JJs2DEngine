@@ -32,9 +32,9 @@ namespace JJs2DEngine
 	}
 
 	TextureDataFrameInternal::TextureDataFrameInternal(const TextureFrameInitData& initData, VS::DataBufferLists dataBufferList, VS::ImageDataLists imageList,
-		VS::MemoryObjectsList memoryList) :
-		_dataBufferList(dataBufferList), _imageList(imageList), _memoryList(memoryList), _startingIndex(initData.startingIndex), _max2DImageSize(initData.max2DImageSize),
-		_maxImageArrayLayers(initData.maxImageArrayLayers)
+		VS::MemoryObjectsList memoryList, VS::SecondaryNIRCommandBuffer commandBuffer) :
+		_dataBufferList(dataBufferList), _imageList(imageList), _memoryList(memoryList), _commandBuffer(commandBuffer),
+		_startingIndex(initData.startingIndex), _max2DImageSize(initData.max2DImageSize), _maxImageArrayLayers(initData.maxImageArrayLayers)
 	{
 		std::vector<VS::MemoryTypeProperties> acceptableMemoryTypes;
 

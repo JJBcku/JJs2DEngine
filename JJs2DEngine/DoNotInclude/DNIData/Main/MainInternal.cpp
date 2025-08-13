@@ -40,6 +40,10 @@
 #include <VulkanSimplified/VSDevice/VSDeviceCore.h>
 #include <VulkanSimplified/VSDevice/VSSynchronizationDataLists.h>
 #include <VulkanSimplified/VSDevice/VSWindowList.h>
+#include <VulkanSimplified/VSDevice/VSCommandPoolMainList.h>
+#include <VulkanSimplified/VSDevice/VSCommandPoolQFGroupList.h>
+#include <VulkanSimplified/VSDevice/VSCommandPoolQFGroupListsInitialCapacities.h>
+#include <VulkanSimplified/VSDevice/VSNIRCommandPool.h>
 
 #include <VulkanSimplified/VSCommon/VSMemoryDataList.h>
 #include <VulkanSimplified/VSCommon/VSMemoryHeapProperties.h>
@@ -162,6 +166,10 @@ namespace JJs2DEngine
 			creationData.queuesCreationInfo.push_back(queueData);
 			_transferOnlyQueueIndex = 1;
 		}
+		else
+		{
+			_transferOnlyQueueIndex = 1;
+		}
 
 		creationData.requestedExtensionPacks.swapchainBase = true;
 
@@ -174,6 +182,21 @@ namespace JJs2DEngine
 		_currentTime = std::chrono::high_resolution_clock::now();
 
 		auto device = instance.GetChoosenDevicesMainClass();
+		auto commandPoolMain = device.GetCommandPoolMainList();
+
+		VS::CommandPoolQFGroupListsInitialCapacities qfGroupInitialCapacities;
+		qfGroupInitialCapacities.noIndividualResetCommandPoolListInitialReservation = static_cast<size_t>(_currentDevicesSettings.value().graphicsFramesInFlight);
+		qfGroupInitialCapacities.individualResetCommandPoolListInitialReservation = static_cast<size_t>(_currentDevicesSettings.value().graphicsFramesInFlight);
+
+		_graphicQFGroup = commandPoolMain.AddQueueFamiliesPoolGroup(static_cast<uint32_t>(_graphicsQueueIndex), qfGroupInitialCapacities, 0x10);
+
+		if (_transferOnlyQueueIndex.has_value())
+			_transferQFGroup = commandPoolMain.AddQueueFamiliesPoolGroup(static_cast<uint32_t>(_transferOnlyQueueIndex.value()), qfGroupInitialCapacities, 0x10);
+		else
+			_transferQFGroup = _graphicQFGroup;
+
+		auto graphicQFGroup = commandPoolMain.GetQueueFamiliesPoolGroup(_graphicQFGroup);
+		auto transferQFGroup = commandPoolMain.GetQueueFamiliesPoolGroup(_transferQFGroup);
 
 		_renderDataList = std::make_unique<RenderDataInternal>(deviceSettings.currentPipelineSettings, deviceSettings.preInitializedPipelineSettings, _dataFolder,
 			device, _VSMain->GetSharedDataMainList());
@@ -203,7 +226,14 @@ namespace JJs2DEngine
 			auto physicalDevice = instance.GetPhysicalDeviceData(_deviceList[_currentDevicesSettings.value().deviceIndex].deviceIndex);
 			auto& imageLimits = physicalDevice.GetVulkan10Properties().limits.maxImageSizes;
 
+			uint64_t transferQueue = _graphicsQueueIndex;
+			if (_transferOnlyQueueIndex.has_value())
+			{
+				transferQueue = _transferOnlyQueueIndex.value();
+			}
+
 			TextureDataMainInitData textureInitData;
+			textureInitData.transferQueueID = transferQueue;
 			textureInitData.transferFramesInFlight = _currentDevicesSettings.value().transferFramesInFlight;
 			textureInitData.max2DImageSize = imageLimits.maxImageDimension2D;
 			textureInitData.maxImageArrayLayers = imageLimits.maxImageArrayLayers;
@@ -214,7 +244,8 @@ namespace JJs2DEngine
 			textureInitData.streamedTexturesStagingBufferPageCount = _currentDevicesSettings.value().streamedTexturesStagingBuffersPageCount;
 			textureInitData.textureFormat = _currentDevicesSettings.value().textureFormat;
 
-			_textureDataMain = std::make_unique<TextureDataMainInternal>(textureInitData, device.GetDataBufferLists(), device.GetImageDataLists(), device.GetMemoryObjectsList());
+			_textureDataMain = std::make_unique<TextureDataMainInternal>(textureInitData, device.GetDataBufferLists(), device.GetImageDataLists(), device.GetMemoryObjectsList(),
+				transferQFGroup);
 		}
 	}
 

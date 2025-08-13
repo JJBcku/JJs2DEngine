@@ -9,6 +9,7 @@
 #include <VulkanSimplified/VSDevice/VSDataBufferLists.h>
 #include <VulkanSimplified/VSDevice/VSImageDataLists.h>
 #include <VulkanSimplified/VSDevice/VSMemoryObjectsList.h>
+#include <VulkanSimplified/VSDevice/VSSecondaryNIRCommandBuffer.h>
 
 #include <CustomLists/IDObject.h>
 
@@ -63,13 +64,15 @@ namespace JJs2DEngine
 	class TextureDataFrameInternal
 	{
 	public:
-		TextureDataFrameInternal(const TextureFrameInitData& initData, VS::DataBufferLists dataBufferList, VS::ImageDataLists imageList, VS::MemoryObjectsList memoryList);
+		TextureDataFrameInternal(const TextureFrameInitData& initData, VS::DataBufferLists dataBufferList, VS::ImageDataLists imageList, VS::MemoryObjectsList memoryList,
+			VS::SecondaryNIRCommandBuffer commandBuffer);
 		~TextureDataFrameInternal();
 
 	private:
 		VS::DataBufferLists _dataBufferList;
 		VS::ImageDataLists _imageList;
 		VS::MemoryObjectsList _memoryList;
+		VS::SecondaryNIRCommandBuffer _commandBuffer;
 
 		uint64_t _startingIndex;
 		uint64_t _max2DImageSize;

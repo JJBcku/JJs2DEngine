@@ -6,6 +6,12 @@
 #include <VulkanSimplified/VSDevice/VSDataBufferLists.h>
 #include <VulkanSimplified/VSDevice/VSImageDataLists.h>
 #include <VulkanSimplified/VSDevice/VSMemoryObjectsList.h>
+#include <VulkanSimplified/VSDevice/VSCommandPoolQFGroupList.h>
+#include <VulkanSimplified/VSDevice/VSNIRCommandPoolDef.h>
+#include <VulkanSimplified/VSDevice/VSPrimaryNIRCommandBufferDef.h>
+#include <VulkanSimplified/VSDevice/VSSecondaryNIRCommandBufferDef.h>
+
+#include <CustomLists/IDObject.h>
 
 #include <stdint.h>
 #include <array>
@@ -18,6 +24,8 @@ namespace JJs2DEngine
 
 	struct TextureDataMainInitData
 	{
+		uint64_t transferQueueID;
+
 		uint64_t transferFramesInFlight;
 		uint64_t max2DImageSize;
 		uint64_t maxImageArrayLayers;
@@ -36,13 +44,20 @@ namespace JJs2DEngine
 	class TextureDataMainInternal
 	{
 	public:
-		TextureDataMainInternal(const TextureDataMainInitData& initData, VS::DataBufferLists dataBufferList, VS::ImageDataLists imageList, VS::MemoryObjectsList memoryList);
+		TextureDataMainInternal(const TextureDataMainInitData& initData, VS::DataBufferLists dataBufferList, VS::ImageDataLists imageList, VS::MemoryObjectsList memoryList,
+			VS::CommandPoolQFGroupList transferQFGroup);
 		~TextureDataMainInternal();
 
 	private:
 		VS::DataBufferLists _dataBufferList;
 		VS::ImageDataLists _imageList;
 		VS::MemoryObjectsList _memoryList;
+		VS::CommandPoolQFGroupList _transferQFGroup;
+
+		IDObject<VS::NIRPoolPointer> _textureCommandPoolID;
+		IDObject<VS::PrimaryNIRPointer> _primaryCommandBufferID;
+
+		IDObject<VS::SecondaryNIRPointer> _preLoadedCommandBufferID;
 
 		std::unique_ptr<TextureDataFrameInternal> _preLoadedTexturesData;
 
