@@ -59,6 +59,11 @@ namespace JJs2DEngine
 		auto preloadedCommandBuffers = textureCommandPool.AllocateSecondaryCommandBuffers(1, 0x10);
 		_preLoadedCommandBufferID = preloadedCommandBuffers.back();
 
+		if (initData.transferFramesInFlight > 0)
+		{
+			_streamedCommandBufferIDs = textureCommandPool.AllocateSecondaryCommandBuffers(static_cast<uint32_t>(initData.transferFramesInFlight));
+		}
+
 		VS::DataFormatSetIndependentID format = TranslateToFormat(initData.textureFormat);
 
 		bool is16Bit = Is16Bit(initData.textureFormat);
@@ -100,6 +105,27 @@ namespace JJs2DEngine
 		_fenceList.reserve(fenceListSize);
 		_transferSemaphoresList.reserve(initData.transferFramesInFlight);
 
+		size_t streamedTexturesStagingBuferSize = static_cast<size_t>(biggestLevelTilePixelCount) * 2 * initData.streamedTexturesStagingBufferPageCount;
+
+		if (is16Bit)
+			streamedTexturesStagingBuferSize *= 8;
+		else
+			streamedTexturesStagingBuferSize *= 4;
+
+		frameInitData.startingIndex = imagesInTextureArray;
+		frameInitData.texturesMaxAmounts = _preLoadedTexturesMaxAmounts;
+		frameInitData.stagingBufferSize = streamedTexturesStagingBuferSize;
+
+		if (initData.transferFramesInFlight > 0)
+		{
+			_streamedTexturesData.reserve(initData.transferFramesInFlight);
+			for (size_t i = 0; i < initData.transferFramesInFlight; ++i)
+			{
+				_streamedTexturesData.push_back(std::make_unique<TextureDataFrameInternal>(frameInitData, _dataBufferList, _imageList, _memoryList,
+					textureCommandPool.GetSecondaryCommandBuffer(_streamedCommandBufferIDs[i])));
+			}
+		}
+
 		for (size_t i = 0; i < fenceListSize; ++i)
 		{
 			_fenceList.push_back(_synchroList.AddFence(true));
@@ -110,11 +136,17 @@ namespace JJs2DEngine
 
 		_preLoadedTexturesData->LoadDefaultTextures(_defaultTextureDataList, initData.transferQueueID, initData.graphicsQueueID);
 
+		for (size_t i = 0; i < _streamedTexturesData.size(); ++i)
+		{
+			_streamedTexturesData[i]->LoadDefaultTextures(_defaultTextureDataList, initData.transferQueueID, initData.graphicsQueueID);
+		}
+
 		auto primaryCommandBuffer = textureCommandPool.GetPrimaryCommandBuffer(_primaryCommandBufferID);
 
 		primaryCommandBuffer.BeginRecording(VS::CommandBufferUsage::ONE_USE);
 
 		textureCommandPool.RecordExecuteSecondaryBufferCommand(_primaryCommandBufferID, { _preLoadedCommandBufferID });
+		textureCommandPool.RecordExecuteSecondaryBufferCommand(_primaryCommandBufferID, _streamedCommandBufferIDs);
 
 		primaryCommandBuffer.EndRecording();
 

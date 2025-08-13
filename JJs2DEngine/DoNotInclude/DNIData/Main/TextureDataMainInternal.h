@@ -61,10 +61,13 @@ namespace JJs2DEngine
 		IDObject<VS::PrimaryNIRPointer> _primaryCommandBufferID;
 
 		IDObject<VS::SecondaryNIRPointer> _preLoadedCommandBufferID;
+		std::vector<IDObject<VS::SecondaryNIRPointer>> _streamedCommandBufferIDs;
 
-		std::unique_ptr<TextureDataFrameInternal> _preLoadedTexturesData;
 		std::vector<IDObject<VS::AutoCleanupFence>> _fenceList;
 		std::vector<IDObject<VS::AutoCleanupSemaphore>> _transferSemaphoresList;
+
+		std::unique_ptr<TextureDataFrameInternal> _preLoadedTexturesData;
+		std::vector<std::unique_ptr<TextureDataFrameInternal>> _streamedTexturesData;
 
 		bool Is16Bit(TextureFormat textureFormat) const;
 		bool IsRBReversed(TextureFormat textureFormat) const;
