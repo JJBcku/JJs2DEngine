@@ -14,6 +14,7 @@ namespace VulkanSimplified
 		UNKNOWN = 0,
 		COLOR_RENDER_TARGET = 1,
 		TEXTURE_2D = 2,
+		TEXTURE_2D_ARRAY = 4,
 	};
 
 	union ImagesGenericID
@@ -24,7 +25,7 @@ namespace VulkanSimplified
 		{
 			ImagesIDType type;
 			IDObject<AutoCleanupColorRenderTargetImage> ID;
-		} colorRenderTargetID;
+		} colorRenderTarget;
 
 		struct
 		{
@@ -33,10 +34,23 @@ namespace VulkanSimplified
 
 			uint32_t baseMipLevel;
 			std::optional<uint32_t> mipLevelCount;
-		} texture2DID;
+		} texture2D;
+
+		struct
+		{
+			ImagesIDType type;
+			IDObject<AutoCleanup2DArrayTexture> ID;
+
+			uint32_t baseMipLevel;
+			std::optional<uint32_t> mipLevelCount;
+
+			uint32_t baseArrayLayer;
+			std::optional<uint32_t> arrayLayersCount;
+		} textureArray2D;
 
 		ImagesGenericID();
 		ImagesGenericID(IDObject<AutoCleanupColorRenderTargetImage> ID);
 		ImagesGenericID(IDObject<AutoCleanup2DTexture> ID);
+		ImagesGenericID(IDObject<AutoCleanup2DArrayTexture> ID);
 	};
 }
