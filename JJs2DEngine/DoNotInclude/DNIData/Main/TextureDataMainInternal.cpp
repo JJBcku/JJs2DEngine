@@ -34,8 +34,8 @@ namespace JJs2DEngine
 	}
 
 	TextureDataMainInternal::TextureDataMainInternal(const TextureDataMainInitData& initData, VS::DataBufferLists dataBufferList, VS::ImageDataLists imageList,
-		VS::MemoryObjectsList memoryList, VS::CommandPoolQFGroupList transferQFGroup) : _dataBufferList(dataBufferList), _imageList(imageList), _memoryList(memoryList),
-		_transferQFGroup(transferQFGroup)
+		VS::MemoryObjectsList memoryList, VS::SynchronizationDataLists synchroList, VS::CommandPoolQFGroupList transferQFGroup) :
+		_dataBufferList(dataBufferList), _imageList(imageList), _memoryList(memoryList), _synchroList(synchroList), _transferQFGroup(transferQFGroup)
 	{
 		std::array<size_t, imagesInTextureArray> _preLoadedTexturesMaxAmounts = initData.preLoadedTexturesMaxAmounts;
 		std::array<size_t, imagesInTextureArray> _streamedTexturesMaxAmounts = initData.streamedTexturesMaxAmounts;
@@ -64,7 +64,7 @@ namespace JJs2DEngine
 		bool is16Bit = Is16Bit(initData.textureFormat);
 		bool isRBReversed = IsRBReversed(initData.textureFormat);
 
-		size_t preLoadedTexturesStagingBuferSize = biggestLevelTilePixelCount * 2 * initData.preLoadedTexturesStagingBufferPageCount;
+		size_t preLoadedTexturesStagingBuferSize = static_cast<size_t>(biggestLevelTilePixelCount) * 2 * initData.preLoadedTexturesStagingBufferPageCount;
 
 		if (is16Bit)
 			preLoadedTexturesStagingBuferSize *= 8;
@@ -95,6 +95,19 @@ namespace JJs2DEngine
 				_defaultTextureDataList[i] = LoadDefautTexture8Bit(initData.dataFolder, 1U << (skippedSizeLevels + i), isRBReversed);
 			}
 
+		size_t fenceListSize = std::max(initData.transferFramesInFlight, 1ULL);
+
+		_fenceList.reserve(fenceListSize);
+		_transferSemaphoresList.reserve(initData.transferFramesInFlight);
+
+		for (size_t i = 0; i < fenceListSize; ++i)
+		{
+			_fenceList.push_back(_synchroList.AddFence(true));
+			_transferSemaphoresList.push_back(_synchroList.AddSemaphore());
+		}
+
+		_synchroList.ResetFences({ _fenceList[0] });
+
 		_preLoadedTexturesData->LoadDefaultTextures(_defaultTextureDataList, initData.transferQueueID, initData.graphicsQueueID);
 
 		auto primaryCommandBuffer = textureCommandPool.GetPrimaryCommandBuffer(_primaryCommandBufferID);
@@ -113,7 +126,9 @@ namespace JJs2DEngine
 		submissionData[0].commandBufferIDs[0].NIRPrimaryID.commandPoolID = _textureCommandPoolID;
 		submissionData[0].commandBufferIDs[0].NIRPrimaryID.commandBufferID = _primaryCommandBufferID;
 
-		_transferQFGroup.SubmitBuffers(initData.transferQueueID, submissionData, {});
+		_transferQFGroup.SubmitBuffers(initData.transferQueueID, submissionData, { _fenceList[0] });
+
+		_synchroList.WaitOnFences({ _fenceList[0] }, true);
 	}
 
 	TextureDataMainInternal::~TextureDataMainInternal()

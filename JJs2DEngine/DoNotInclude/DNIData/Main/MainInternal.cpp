@@ -246,7 +246,7 @@ namespace JJs2DEngine
 			textureInitData.textureFormat = _currentDevicesSettings.value().textureFormat;
 
 			_textureDataMain = std::make_unique<TextureDataMainInternal>(textureInitData, device.GetDataBufferLists(), device.GetImageDataLists(), device.GetMemoryObjectsList(),
-				transferQFGroup);
+				device.GetSynchronizationDataLists(), transferQFGroup);
 		}
 	}
 

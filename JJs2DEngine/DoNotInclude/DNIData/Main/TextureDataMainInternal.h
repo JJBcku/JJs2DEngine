@@ -6,6 +6,7 @@
 #include <VulkanSimplified/VSDevice/VSDataBufferLists.h>
 #include <VulkanSimplified/VSDevice/VSImageDataLists.h>
 #include <VulkanSimplified/VSDevice/VSMemoryObjectsList.h>
+#include <VulkanSimplified/VSDevice/VSSynchronizationDataLists.h>
 #include <VulkanSimplified/VSDevice/VSCommandPoolQFGroupList.h>
 #include <VulkanSimplified/VSDevice/VSNIRCommandPoolDef.h>
 #include <VulkanSimplified/VSDevice/VSPrimaryNIRCommandBufferDef.h>
@@ -46,13 +47,14 @@ namespace JJs2DEngine
 	{
 	public:
 		TextureDataMainInternal(const TextureDataMainInitData& initData, VS::DataBufferLists dataBufferList, VS::ImageDataLists imageList, VS::MemoryObjectsList memoryList,
-			VS::CommandPoolQFGroupList transferQFGroup);
+			VS::SynchronizationDataLists synchroList, VS::CommandPoolQFGroupList transferQFGroup);
 		~TextureDataMainInternal();
 
 	private:
 		VS::DataBufferLists _dataBufferList;
 		VS::ImageDataLists _imageList;
 		VS::MemoryObjectsList _memoryList;
+		VS::SynchronizationDataLists _synchroList;
 		VS::CommandPoolQFGroupList _transferQFGroup;
 
 		IDObject<VS::NIRPoolPointer> _textureCommandPoolID;
@@ -61,6 +63,8 @@ namespace JJs2DEngine
 		IDObject<VS::SecondaryNIRPointer> _preLoadedCommandBufferID;
 
 		std::unique_ptr<TextureDataFrameInternal> _preLoadedTexturesData;
+		std::vector<IDObject<VS::AutoCleanupFence>> _fenceList;
+		std::vector<IDObject<VS::AutoCleanupSemaphore>> _transferSemaphoresList;
 
 		bool Is16Bit(TextureFormat textureFormat) const;
 		bool IsRBReversed(TextureFormat textureFormat) const;
