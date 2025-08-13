@@ -25,6 +25,7 @@ namespace JJs2DEngine
 	struct TextureDataMainInitData
 	{
 		uint64_t transferQueueID;
+		uint64_t graphicsQueueID;
 
 		uint64_t transferFramesInFlight;
 		uint64_t max2DImageSize;

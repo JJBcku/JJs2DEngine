@@ -9,6 +9,8 @@
 #include <VulkanSimplified/VSCommon/VSDataFormatFlags.h>
 #include <VulkanSimplified/VSDevice/VSNIRCommandPool.h>
 #include <VulkanSimplified/VSDevice/VSPrimaryIRCommandBuffer.h>
+#include <VulkanSimplified/VSDevice/VSCommandBufferSubmissionData.h>
+#include <VulkanSimplified/VSDevice/VSCommandBufferGenericID.h>
 
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb/stb_image.h>
@@ -20,6 +22,7 @@ namespace JJs2DEngine
 	TextureDataMainInitData::TextureDataMainInitData() : preLoadedTexturesMaxAmounts(), streamedTexturesMaxAmounts()
 	{
 		transferQueueID = std::numeric_limits<uint64_t>::max();
+		graphicsQueueID = std::numeric_limits<uint64_t>::max();
 
 		transferFramesInFlight = 0;
 		max2DImageSize = 0;
@@ -50,11 +53,11 @@ namespace JJs2DEngine
 		_textureCommandPoolID = _transferQFGroup.AddCommandPoolWithoutIndividualReset(true, initData.transferQueueID, 1, 1 + initData.transferFramesInFlight, 0x10);
 		auto textureCommandPool = _transferQFGroup.GetCommandPoolWithoutIndividualReset(_textureCommandPoolID);
 
-		auto primaryCommandBuffer = textureCommandPool.AllocatePrimaryCommandBuffers(1, 0x10);
-		_primaryCommandBufferID = primaryCommandBuffer.back();
+		auto primaryCommandBuffers = textureCommandPool.AllocatePrimaryCommandBuffers(1, 0x10);
+		_primaryCommandBufferID = primaryCommandBuffers.back();
 
-		auto preloadedCommandBuffer = textureCommandPool.AllocateSecondaryCommandBuffers(1, 0x10);
-		_preLoadedCommandBufferID = preloadedCommandBuffer.back();
+		auto preloadedCommandBuffers = textureCommandPool.AllocateSecondaryCommandBuffers(1, 0x10);
+		_preLoadedCommandBufferID = preloadedCommandBuffers.back();
 
 		VS::DataFormatSetIndependentID format = TranslateToFormat(initData.textureFormat);
 
@@ -92,7 +95,25 @@ namespace JJs2DEngine
 				_defaultTextureDataList[i] = LoadDefautTexture8Bit(initData.dataFolder, 1U << (skippedSizeLevels + i), isRBReversed);
 			}
 
-		_preLoadedTexturesData->LoadDefaultTextures(_defaultTextureDataList);
+		_preLoadedTexturesData->LoadDefaultTextures(_defaultTextureDataList, initData.transferQueueID, initData.graphicsQueueID);
+
+		auto primaryCommandBuffer = textureCommandPool.GetPrimaryCommandBuffer(_primaryCommandBufferID);
+
+		primaryCommandBuffer.BeginRecording(VS::CommandBufferUsage::ONE_USE);
+
+		textureCommandPool.RecordExecuteSecondaryBufferCommand(_primaryCommandBufferID, { _preLoadedCommandBufferID });
+
+		primaryCommandBuffer.EndRecording();
+
+		std::vector<VS::CommandBufferSubmissionData> submissionData;
+
+		submissionData.resize(1);
+		submissionData[0].commandBufferIDs.resize(1);
+		submissionData[0].commandBufferIDs[0].NIRPrimaryID.type = VS::CommandBufferIDType::NIR_PRIMARY;
+		submissionData[0].commandBufferIDs[0].NIRPrimaryID.commandPoolID = _textureCommandPoolID;
+		submissionData[0].commandBufferIDs[0].NIRPrimaryID.commandBufferID = _primaryCommandBufferID;
+
+		_transferQFGroup.SubmitBuffers(initData.transferQueueID, submissionData, {});
 	}
 
 	TextureDataMainInternal::~TextureDataMainInternal()

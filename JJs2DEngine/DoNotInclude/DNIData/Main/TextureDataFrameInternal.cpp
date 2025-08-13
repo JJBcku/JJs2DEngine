@@ -2,7 +2,15 @@
 #include "TextureDataFrameInternal.h"
 
 #include <glm/vec2.hpp>
+
 #include <VulkanSimplified/VSCommon/VSMemoryTypeProperties.h>
+#include <VulkanSimplified/VSCommon/VSImageLayoutFlags.h>
+#include <VulkanSimplified/VSCommon/VSAccessFlags.h>
+#include <VulkanSimplified/VSCommon/VSPipelineStageFlags.h>
+
+#include <VulkanSimplified/VSDevice/VSDataBuffersMemoryBarrierData.h>
+#include <VulkanSimplified/VSDevice/VSGlobalMemoryBarrierData.h>
+#include <VulkanSimplified/VSDevice/VSImagesMemoryBarrierData.h>
 
 #include <limits>
 
@@ -111,6 +119,59 @@ namespace JJs2DEngine
 
 	TextureDataFrameInternal::~TextureDataFrameInternal()
 	{
+	}
+
+	void TextureDataFrameInternal::LoadDefaultTextures(std::array<std::vector<unsigned char>, imagesInTextureArray> defaultTexturesData, uint64_t transferQueue, uint64_t graphicsQueue)
+	{
+		size_t offset = 0;
+
+		for (size_t i = 0; i < defaultTexturesData.size(); ++i)
+		{
+			_dataBufferList.WriteToStagingBuffer(_texturesStagingBufferID, offset, *defaultTexturesData[i].data(), defaultTexturesData[i].size());
+
+			offset += defaultTexturesData[i].size();
+		}
+
+		VS::ImagesMemoryBarrierData toTransfer, fromTransfer;
+
+		toTransfer.srcAccess = VS::AccessFlagBits::ACCESS_NONE;
+		toTransfer.dstAccess = VS::AccessFlagBits::ACCESS_TRANSFER_WRITE;
+		toTransfer.oldLayout = VS::ImageLayoutFlags::UNDEFINED;
+		toTransfer.newLayout = VS::ImageLayoutFlags::TRANSFER_DESTINATION;
+
+		fromTransfer.srcAccess = VS::AccessFlagBits::ACCESS_TRANSFER_WRITE;
+		fromTransfer.dstAccess = VS::AccessFlagBits::ACCESS_TRANSFER_READ;
+		fromTransfer.oldLayout = VS::ImageLayoutFlags::TRANSFER_DESTINATION;
+		fromTransfer.newLayout = VS::ImageLayoutFlags::SHADER_READ_ONLY;
+
+		if (transferQueue != graphicsQueue)
+		{
+			fromTransfer.queueData.emplace();
+			fromTransfer.queueData->srcQueueIndex = transferQueue;
+			fromTransfer.queueData->dstQueueIndex = graphicsQueue;
+		}
+
+		offset = 0;
+
+		_commandBuffer.BeginRecording(VS::CommandBufferUsage::ONE_USE, {}, {}, false);
+
+		for (size_t i = 0; i < defaultTexturesData.size(); ++i)
+		{
+			auto& textureData = _textureDataArray[i];
+
+			toTransfer.imageID = VS::ImagesGenericID(textureData.imageID);
+			_commandBuffer.CreatePipelineBarrier(VS::PipelineStageFlagBits::PIPELINE_STAGE_TOP_OF_PIPE, VS::PipelineStageFlagBits::PIPELINE_STAGE_TRANSFER, {}, {}, { toTransfer });
+
+			_commandBuffer.TransferDataTo2dArrayTextureSingleLayer(_texturesStagingBufferID, offset, defaultTexturesData[i].size(), textureData.imageID,
+				0, 0, static_cast<uint32_t>(textureData.tileSize), static_cast<uint32_t>(textureData.tileSize), 0, 0);
+
+			offset += defaultTexturesData[i].size();
+
+			fromTransfer.imageID = VS::ImagesGenericID(textureData.imageID);
+			_commandBuffer.CreatePipelineBarrier(VS::PipelineStageFlagBits::PIPELINE_STAGE_TRANSFER, VS::PipelineStageFlagBits::PIPELINE_STAGE_BOTTOM_OF_PIPE, {}, {}, { fromTransfer });
+		}
+
+		_commandBuffer.EndRecording();
 	}
 
 	TextureFrameImageData TextureDataFrameInternal::CompileTextureFrameSizeData(size_t tileSize, size_t texturesMaxAmount, uint64_t max2DImageSize, uint64_t maxImageArrayLayers) const

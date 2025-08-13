@@ -68,6 +68,8 @@ namespace JJs2DEngine
 			VS::SecondaryNIRCommandBuffer commandBuffer);
 		~TextureDataFrameInternal();
 
+		void LoadDefaultTextures(std::array<std::vector<unsigned char>, imagesInTextureArray> defaultTexturesData, uint64_t transferQueue, uint64_t graphicsQueue);
+
 	private:
 		VS::DataBufferLists _dataBufferList;
 		VS::ImageDataLists _imageList;
