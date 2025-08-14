@@ -1,8 +1,12 @@
 #pragma once
 
+#include "VSSynchronizationDataListsDef.h"
+
 #include <Miscellaneous/Bool64Def.h>
+#include <CustomLists/IDObjectDef.h>
 
 #include <stdint.h>
+#include <optional>
 
 namespace VulkanSimplified
 {
@@ -20,6 +24,9 @@ namespace VulkanSimplified
 		~Window();
 
 		void CreateSwapchain(const SwapchainCreationData& creationData, bool throwOnSwapchainExist);
+
+		bool AcquireNextImage(uint64_t timeout, std::optional<IDObject<AutoCleanupSemaphore>> semaphoreID, std::optional<IDObject<AutoCleanupFence>> fenceID,
+			uint32_t& returnIndex);
 
 		size_t GetSwapchainImageAmount() const;
 

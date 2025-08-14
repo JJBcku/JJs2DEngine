@@ -51,9 +51,6 @@ namespace VulkanSimplified
 		void Draw(uint32_t vertexCount, uint32_t instanceCount, uint32_t firstVertex, uint32_t firstInstance);
 		void DrawIndexed(uint32_t indexCount, uint32_t instanceCount, uint32_t firstIndex, int32_t firstVertexOffset, uint32_t firstInstance);
 
-		bool AcquireNextImage(uint64_t timeout, std::optional<IDObject<AutoCleanupSemaphore>> semaphoreID,
-			std::optional<IDObject<AutoCleanupFence>> fenceID, uint32_t& returnIndex, IDObject<WindowPointer> windowID);
-
 		void TransferDataToVertexBuffer(IDObject<AutoCleanupStagingBuffer> srcBufferID, IDObject<AutoCleanupVertexBuffer> dstBufferID,
 			const DataBuffersCopyRegionData& copyRegion);
 		void TransferDataListToVertexBuffer(IDObject<AutoCleanupStagingBuffer> srcBufferID,
