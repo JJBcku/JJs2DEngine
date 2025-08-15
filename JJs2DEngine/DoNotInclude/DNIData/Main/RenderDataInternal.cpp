@@ -139,11 +139,11 @@ namespace JJs2DEngine
 			auto uiLayerVertexShaderData = LoadShaderFile(dataFolder + uiLayerVertexShaderName + vertexShaderExtension);
 			_uiVertexShaderID = shaderList.CreateVertexShaderModule(*uiLayerVertexShaderData.data(), uiLayerVertexShaderData.size(), 0x10);
 
-			_uiDescriptorSetLayout = deviceDescriptorList.AddDescriptorSetLayout(0, { {textureDescriptorBinding,
+			_textureDescriptorSetLayout = deviceDescriptorList.AddDescriptorSetLayout(0, { {textureDescriptorBinding,
 				std::vector<decltype(sampler)>(imagesInAllTextureArrays, sampler)} }, 0x10);
 
 			VS::PipelineLayoutCreationData uiPipelineLayoutCreationData;
-			uiPipelineLayoutCreationData._descriptorSets = { _uiDescriptorSetLayout };
+			uiPipelineLayoutCreationData._descriptorSets = { _textureDescriptorSetLayout };
 
 			_uiPipelineLayout = devicePipelineList.AddPipelineLayout(uiPipelineLayoutCreationData, 0x10);
 
@@ -196,6 +196,11 @@ namespace JJs2DEngine
 	IDObject<VS::AutoCleanupRenderPass> RenderDataInternal::GetCurrentRenderPass() const
 	{
 		return _renderPassList[_currentPipelineSettings];
+	}
+
+	IDObject<VS::AutoCleanupDescriptorSetLayout> RenderDataInternal::GetTextureDescriptorSetLayout() const
+	{
+		return _textureDescriptorSetLayout;
 	}
 
 	void RenderDataInternal::CreateUIPipelineCacheFile(const std::string& dataFolder)

@@ -244,9 +244,10 @@ namespace JJs2DEngine
 			textureInitData.preLoadedTexturesStagingBufferPageCount = _currentDevicesSettings.value().preLoadedTexturesStagingBuffersPageCount;
 			textureInitData.streamedTexturesStagingBufferPageCount = _currentDevicesSettings.value().streamedTexturesStagingBuffersPageCount;
 			textureInitData.textureFormat = _currentDevicesSettings.value().textureFormat;
+			textureInitData.textureDescriptorSetLayout = _renderDataList->GetTextureDescriptorSetLayout();
 
 			_textureDataMain = std::make_unique<TextureDataMainInternal>(textureInitData, device.GetDataBufferLists(), device.GetImageDataLists(), device.GetMemoryObjectsList(),
-				device.GetSynchronizationDataLists(), transferQFGroup);
+				device.GetSynchronizationDataLists(), transferQFGroup, device.GetDescriptorDataLists());
 		}
 	}
 

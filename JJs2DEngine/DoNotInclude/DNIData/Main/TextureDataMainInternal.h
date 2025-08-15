@@ -8,6 +8,7 @@
 #include <VulkanSimplified/VSDevice/VSMemoryObjectsList.h>
 #include <VulkanSimplified/VSDevice/VSSynchronizationDataLists.h>
 #include <VulkanSimplified/VSDevice/VSCommandPoolQFGroupList.h>
+#include <VulkanSimplified/VSDevice/VSDescriptorDataLists.h>
 #include <VulkanSimplified/VSDevice/VSNIRCommandPoolDef.h>
 #include <VulkanSimplified/VSDevice/VSPrimaryNIRCommandBufferDef.h>
 #include <VulkanSimplified/VSDevice/VSSecondaryNIRCommandBufferDef.h>
@@ -40,6 +41,8 @@ namespace JJs2DEngine
 		size_t streamedTexturesStagingBufferPageCount;
 		TextureFormat textureFormat;
 
+		IDObject<VS::AutoCleanupDescriptorSetLayout> textureDescriptorSetLayout;
+
 		TextureDataMainInitData();
 	};
 
@@ -47,7 +50,7 @@ namespace JJs2DEngine
 	{
 	public:
 		TextureDataMainInternal(const TextureDataMainInitData& initData, VS::DataBufferLists dataBufferList, VS::ImageDataLists imageList, VS::MemoryObjectsList memoryList,
-			VS::SynchronizationDataLists synchroList, VS::CommandPoolQFGroupList transferQFGroup);
+			VS::SynchronizationDataLists synchroList, VS::CommandPoolQFGroupList transferQFGroup, VS::DescriptorDataLists descriptorDataList);
 		~TextureDataMainInternal();
 
 	private:
@@ -56,6 +59,7 @@ namespace JJs2DEngine
 		VS::MemoryObjectsList _memoryList;
 		VS::SynchronizationDataLists _synchroList;
 		VS::CommandPoolQFGroupList _transferQFGroup;
+		VS::DescriptorDataLists _descriptorDataList;
 
 		IDObject<VS::NIRPoolPointer> _textureCommandPoolID;
 		IDObject<VS::PrimaryNIRPointer> _primaryCommandBufferID;
@@ -68,6 +72,9 @@ namespace JJs2DEngine
 
 		std::unique_ptr<TextureDataFrameInternal> _preLoadedTexturesData;
 		std::vector<std::unique_ptr<TextureDataFrameInternal>> _streamedTexturesData;
+
+		IDObject<VS::AutoCleanupNIFDescriptorPool> _transferDescriptorPool;
+		std::vector<IDObject<VS::AutoCleanupDescriptorSet>> _textureDescriptorSets;
 
 		bool Is16Bit(TextureFormat textureFormat) const;
 		bool IsRBReversed(TextureFormat textureFormat) const;

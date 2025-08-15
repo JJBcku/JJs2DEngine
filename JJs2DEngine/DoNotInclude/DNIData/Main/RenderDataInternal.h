@@ -27,6 +27,7 @@ namespace JJs2DEngine
 		~RenderDataInternal();
 
 		IDObject<VS::AutoCleanupRenderPass> GetCurrentRenderPass() const;
+		IDObject<VS::AutoCleanupDescriptorSetLayout> GetTextureDescriptorSetLayout() const;
 
 	private:
 		VS::DeviceMain _device;
@@ -48,7 +49,7 @@ namespace JJs2DEngine
 		IDObject<VS::AutoCleanupPipelineCache> _gammaCorrectionPipelineCache;
 
 		IDObject<VS::AutoCleanupVertexShaderModule> _uiVertexShaderID;
-		IDObject<VS::AutoCleanupDescriptorSetLayout> _uiDescriptorSetLayout;
+		IDObject<VS::AutoCleanupDescriptorSetLayout> _textureDescriptorSetLayout;
 		IDObject<VS::AutoCleanupPipelineLayout> _uiPipelineLayout;
 
 		std::vector<IDObject<VS::AutoCleanupGraphicsPipeline>> _uiPipelineList;

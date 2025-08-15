@@ -6,11 +6,14 @@
 #include "TextureDataFrameInternal.h"
 #include "DeviceSettingsInternal.h"
 
+#include <VulkanSimplified/VSCommon/VSDescriptorTypeFlags.h>
+
 #include <VulkanSimplified/VSCommon/VSDataFormatFlags.h>
 #include <VulkanSimplified/VSDevice/VSNIRCommandPool.h>
 #include <VulkanSimplified/VSDevice/VSPrimaryIRCommandBuffer.h>
 #include <VulkanSimplified/VSDevice/VSCommandBufferSubmissionData.h>
 #include <VulkanSimplified/VSDevice/VSCommandBufferGenericID.h>
+#include <VulkanSimplified/VSDevice/VSDescriptorPoolGenericID.h>
 
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb/stb_image.h>
@@ -34,8 +37,9 @@ namespace JJs2DEngine
 	}
 
 	TextureDataMainInternal::TextureDataMainInternal(const TextureDataMainInitData& initData, VS::DataBufferLists dataBufferList, VS::ImageDataLists imageList,
-		VS::MemoryObjectsList memoryList, VS::SynchronizationDataLists synchroList, VS::CommandPoolQFGroupList transferQFGroup) :
-		_dataBufferList(dataBufferList), _imageList(imageList), _memoryList(memoryList), _synchroList(synchroList), _transferQFGroup(transferQFGroup)
+		VS::MemoryObjectsList memoryList, VS::SynchronizationDataLists synchroList, VS::CommandPoolQFGroupList transferQFGroup, VS::DescriptorDataLists descriptorDataList) :
+		_dataBufferList(dataBufferList), _imageList(imageList), _memoryList(memoryList), _synchroList(synchroList), _transferQFGroup(transferQFGroup),
+		_descriptorDataList(descriptorDataList)
 	{
 		std::array<size_t, imagesInTextureArray> _preLoadedTexturesMaxAmounts = initData.preLoadedTexturesMaxAmounts;
 		std::array<size_t, imagesInTextureArray> _streamedTexturesMaxAmounts = initData.streamedTexturesMaxAmounts;
@@ -100,9 +104,9 @@ namespace JJs2DEngine
 				_defaultTextureDataList[i] = LoadDefautTexture8Bit(initData.dataFolder, 1U << (skippedSizeLevels + i), isRBReversed);
 			}
 
-		size_t fenceListSize = std::max(initData.transferFramesInFlight, 1ULL);
+		size_t adjustedTransferFramesInFlight = std::max(initData.transferFramesInFlight, 1ULL);
 
-		_fenceList.reserve(fenceListSize);
+		_fenceList.reserve(adjustedTransferFramesInFlight);
 		_transferSemaphoresList.reserve(initData.transferFramesInFlight);
 
 		size_t streamedTexturesStagingBuferSize = static_cast<size_t>(biggestLevelTilePixelCount) * 2 * initData.streamedTexturesStagingBufferPageCount;
@@ -126,7 +130,7 @@ namespace JJs2DEngine
 			}
 		}
 
-		for (size_t i = 0; i < fenceListSize; ++i)
+		for (size_t i = 0; i < adjustedTransferFramesInFlight; ++i)
 		{
 			_fenceList.push_back(_synchroList.AddFence(true));
 			_transferSemaphoresList.push_back(_synchroList.AddSemaphore());
@@ -161,6 +165,18 @@ namespace JJs2DEngine
 		_transferQFGroup.SubmitBuffers(initData.transferQueueID, submissionData, { _fenceList[0] });
 
 		_synchroList.WaitOnFences({ _fenceList[0] }, true);
+
+		{
+			size_t totalDescriptorSets = adjustedTransferFramesInFlight * imagesInAllTextureArrays;
+
+			_transferDescriptorPool = _descriptorDataList.AddNoIndividualFreeingDescriptorPool(static_cast<uint32_t>(totalDescriptorSets),
+				{ {VS::DescriptorTypeFlagBits::COMBINED_IMAGE_SAMPLER, static_cast<uint32_t>(totalDescriptorSets)} });
+
+			std::vector<IDObject<VS::AutoCleanupDescriptorSetLayout>> textureLayouts;
+			textureLayouts.resize(adjustedTransferFramesInFlight, initData.textureDescriptorSetLayout);
+
+			_textureDescriptorSets = descriptorDataList.AllocateNIFDescriptorSets(_transferDescriptorPool, textureLayouts);
+		}
 	}
 
 	TextureDataMainInternal::~TextureDataMainInternal()
