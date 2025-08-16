@@ -4,6 +4,7 @@
 
 #include "VSDescriptorDataListsDef.h"
 #include "VSImageDataListsDef.h"
+#include "VSOptionalSamplerDef.h"
 
 #include "../VSCommon/VSImageLayoutFlags.h"
 
@@ -14,7 +15,6 @@
 namespace VulkanSimplified
 {
 	typedef std::optional<std::pair<IDObject<AutoCleanup2DTexture>, IDObject<AutoCleanupImageView>>> Optional2DTextureView;
-	typedef std::optional<IDObject<AutoCleanupSampler>> OptionalSampler;
 	typedef std::pair<Optional2DTextureView, OptionalSampler> Combined2DTextureSamplerIDs;
 
 	struct DescriptorSetCombined2DTextureSamplerWriteData

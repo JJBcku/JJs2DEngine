@@ -17,6 +17,7 @@ namespace VulkanSimplified
 {
 	struct DescriptorSetUniformBufferBindingWriteData;
 	struct DescriptorSetCombined2DTextureSamplerWriteData;
+	struct DescriptorSetCombined2DArrayTextureSamplerWriteData;
 
 	class DescriptorDataLists
 	{
@@ -38,6 +39,12 @@ namespace VulkanSimplified
 			const std::vector<DescriptorSetUniformBufferBindingWriteData>& writeDataList);
 		void WriteNIFDescriptorSetCombined2DTextureSamplerBindings(IDObject<AutoCleanupNIFDescriptorPool> descriptorPoolID,
 			const std::vector<DescriptorSetCombined2DTextureSamplerWriteData>& writeDataList);
+		void WriteNIFDescriptorSetCombined2DArrayTextureSamplerBindings(IDObject<AutoCleanupNIFDescriptorPool> descriptorPoolID,
+			const std::vector<DescriptorSetCombined2DArrayTextureSamplerWriteData>& writeDataList);
+
+		void ResetNIFDescriptorPool(IDObject<AutoCleanupNIFDescriptorPool> descriptorPoolID);
+
+		bool DeleteNIFDescriptorPool(IDObject<AutoCleanupNIFDescriptorPool> descriptorPoolID, bool throwOnIDNotFound);
 
 		IDObject<AutoCleanupIFDescriptorPool> AddIndividualFreeingDescriptorPool(uint32_t maxTotalSetCount,
 			const std::vector<std::pair<DescriptorTypeFlagBits, uint32_t>>& maxTypeCountsList, size_t addOnReserving = 0);
@@ -50,6 +57,13 @@ namespace VulkanSimplified
 			const std::vector<DescriptorSetUniformBufferBindingWriteData>& writeDataList);
 		void WriteIFDescriptorSetCombined2DTextureSamplerBindings(IDObject<AutoCleanupIFDescriptorPool> descriptorPoolID,
 			const std::vector<DescriptorSetCombined2DTextureSamplerWriteData>& writeDataList);
+		void WriteIFDescriptorSetCombined2DArrayTextureSamplerBindings(IDObject<AutoCleanupIFDescriptorPool> descriptorPoolID,
+			const std::vector<DescriptorSetCombined2DArrayTextureSamplerWriteData>& writeDataList);
+
+		std::vector<bool> FreeDescriptorSets(IDObject<AutoCleanupIFDescriptorPool> descriptorPoolID, const std::vector<IDObject<AutoCleanupDescriptorSet>>& descriptorSetsIDs, bool throwOnIDNotFound);
+		void ResetIFDescriptorPool(IDObject<AutoCleanupIFDescriptorPool> descriptorPoolID);
+
+		bool DeleteIFDescriptorPool(IDObject<AutoCleanupIFDescriptorPool> descriptorPoolID, bool throwOnIDNotFound);
 
 	private:
 		DescriptorDataListsInternal& _internal;
