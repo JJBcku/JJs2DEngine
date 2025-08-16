@@ -14,6 +14,7 @@
 #include <VulkanSimplified/VSDevice/VSCommandBufferSubmissionData.h>
 #include <VulkanSimplified/VSDevice/VSCommandBufferGenericID.h>
 #include <VulkanSimplified/VSDevice/VSDescriptorPoolGenericID.h>
+#include <VulkanSimplified/VSDevice/VSDescriptorSetCombined2DArrayTextureSamplerWriteData.h>
 
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb/stb_image.h>
@@ -176,6 +177,59 @@ namespace JJs2DEngine
 			textureLayouts.resize(adjustedTransferFramesInFlight, initData.textureDescriptorSetLayout);
 
 			_textureDescriptorSets = descriptorDataList.AllocateNIFDescriptorSets(_transferDescriptorPool, textureLayouts);
+
+			std::vector<VS::DescriptorSetCombined2DArrayTextureSamplerWriteData> textureWriteDataList;
+			textureWriteDataList.resize(adjustedTransferFramesInFlight);
+
+			auto preloadedTexturesImages = _preLoadedTexturesData->GetImageIDs();
+			auto preloadedTexturesImageViews = _preLoadedTexturesData->GetImageViewIDs();
+
+			for (size_t i = 0; i < textureWriteDataList.size(); ++i)
+			{
+				auto& textureWriteData = textureWriteDataList[i];
+
+				textureWriteData.descriptorSetID = _textureDescriptorSets[i];
+				textureWriteData.binding = 0;
+				textureWriteData.startArrayIndex = 0;
+				textureWriteData.imageDataList.resize(imagesInAllTextureArrays);
+
+				for (size_t j = 0; j < imagesInTextureArray; ++j)
+				{
+					auto& imageData = textureWriteData.imageDataList[j];
+
+					VS::Optional2DArrayTextureView texViewID = { {preloadedTexturesImages[j], preloadedTexturesImageViews[j]}};
+					VS::Combined2DArrayTextureSamplerIDs combinedIDs = { texViewID, {} };
+
+					imageData.first = combinedIDs;
+					imageData.second = VS::ImageLayoutFlags::SHADER_READ_ONLY;
+				}
+
+				if (_streamedTexturesData.empty())
+				{
+					for (size_t j = 0; j < imagesInTextureArray; ++j)
+					{
+						auto& imageData = textureWriteData.imageDataList[j + imagesInTextureArray];
+
+						imageData.first = { {{preloadedTexturesImages[j], preloadedTexturesImageViews[j]}}, {} };
+						imageData.second = VS::ImageLayoutFlags::SHADER_READ_ONLY;
+					}
+				}
+				else
+				{
+					auto streamedTexturesImages = _streamedTexturesData[i]->GetImageIDs();
+					auto streamedTexturesImageViews = _streamedTexturesData[i]->GetImageViewIDs();
+
+					for (size_t j = 0; j < imagesInTextureArray; ++j)
+					{
+						auto& imageData = textureWriteData.imageDataList[j + imagesInTextureArray];
+
+						imageData.first = { {{streamedTexturesImages[j], streamedTexturesImageViews[j]}}, {} };
+						imageData.second = VS::ImageLayoutFlags::SHADER_READ_ONLY;
+					}
+				}
+			}
+
+			_descriptorDataList.WriteNIFDescriptorSetCombined2DArrayTextureSamplerBindings(_transferDescriptorPool, textureWriteDataList);
 		}
 	}
 

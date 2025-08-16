@@ -174,6 +174,30 @@ namespace JJs2DEngine
 		_commandBuffer.EndRecording();
 	}
 
+	std::array<IDObject<VS::AutoCleanup2DArrayTexture>, imagesInTextureArray> TextureDataFrameInternal::GetImageIDs() const
+	{
+		std::array<IDObject<VS::AutoCleanup2DArrayTexture>, imagesInTextureArray> ret;
+
+		for (size_t i = 0; i < ret.size(); ++i)
+		{
+			ret[i] = _textureDataArray[i].imageID;
+		}
+
+		return ret;
+	}
+
+	std::array<IDObject<VS::AutoCleanupImageView>, imagesInTextureArray> TextureDataFrameInternal::GetImageViewIDs() const
+	{
+		std::array<IDObject<VS::AutoCleanupImageView>, imagesInTextureArray> ret;
+
+		for (size_t i = 0; i < ret.size(); ++i)
+		{
+			ret[i] = _textureDataArray[i].imageViewID;
+		}
+
+		return ret;
+	}
+
 	TextureFrameImageData TextureDataFrameInternal::CompileTextureFrameSizeData(size_t tileSize, size_t texturesMaxAmount, uint64_t max2DImageSize, uint64_t maxImageArrayLayers) const
 	{
 		TextureFrameImageData ret;
