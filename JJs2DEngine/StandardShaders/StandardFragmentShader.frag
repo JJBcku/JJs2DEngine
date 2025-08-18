@@ -11,5 +11,10 @@ layout(set = 0, binding = 0) uniform sampler2DArray texSampler[16];
 void main()
 {
 	vec3 texCoords = vec3(inTexCoord, inTexLayer);
-	outColor = texture(texSampler[inTexIndex], texCoords);
+	
+	vec4 color = texture(texSampler[inTexIndex], texCoords);
+	if (color.a < 1.0)
+		discard;
+	
+	outColor = color;
 }

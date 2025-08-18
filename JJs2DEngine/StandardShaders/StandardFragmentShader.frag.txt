@@ -1,21 +1,21 @@
 ; SPIR-V
 ; Version: 1.0
 ; Generator: Google Shaderc over Glslang; 11
-; Bound: 38
+; Bound: 50
 ; Schema: 0
                OpCapability Shader
           %1 = OpExtInstImport "GLSL.std.450"
                OpMemoryModel Logical GLSL450
-               OpEntryPoint Fragment %4 "main" %12 %16 %24 %31
+               OpEntryPoint Fragment %4 "main" %12 %16 %31 %49
                OpExecutionMode %4 OriginUpperLeft
                OpDecorate %12 Location 0
                OpDecorate %16 Flat
                OpDecorate %16 Location 1
-               OpDecorate %24 Location 0
                OpDecorate %30 Binding 0
                OpDecorate %30 DescriptorSet 0
                OpDecorate %31 Flat
                OpDecorate %31 Location 2
+               OpDecorate %49 Location 0
        %void = OpTypeVoid
           %3 = OpTypeFunction %void
       %float = OpTypeFloat 32
@@ -27,8 +27,6 @@
 %_ptr_Input_uint = OpTypePointer Input %uint
          %16 = OpVariable %_ptr_Input_uint Input
     %v4float = OpTypeVector %float 4
-%_ptr_Output_v4float = OpTypePointer Output %v4float
-         %24 = OpVariable %_ptr_Output_v4float Output
          %25 = OpTypeImage %float 2D 0 1 0 1 Unknown
          %26 = OpTypeSampledImage %25
     %uint_16 = OpConstant %uint 16
@@ -37,6 +35,10 @@
          %30 = OpVariable %_ptr_UniformConstant__arr_26_uint_16 UniformConstant
          %31 = OpVariable %_ptr_Input_uint Input
 %_ptr_UniformConstant_26 = OpTypePointer UniformConstant %26
+    %float_1 = OpConstant %float 1
+       %bool = OpTypeBool
+%_ptr_Output_v4float = OpTypePointer Output %v4float
+         %49 = OpVariable %_ptr_Output_v4float Output
           %4 = OpFunction %void None %3
           %5 = OpLabel
          %13 = OpLoad %v2float %12
@@ -49,6 +51,13 @@
          %34 = OpAccessChain %_ptr_UniformConstant_26 %30 %32
          %35 = OpLoad %26 %34
          %37 = OpImageSampleImplicitLod %v4float %35 %21
-               OpStore %24 %37
+         %41 = OpCompositeExtract %float %37 3
+         %44 = OpFOrdLessThan %bool %41 %float_1
+               OpSelectionMerge %46 None
+               OpBranchConditional %44 %45 %46
+         %45 = OpLabel
+               OpKill
+         %46 = OpLabel
+               OpStore %49 %37
                OpReturn
                OpFunctionEnd
