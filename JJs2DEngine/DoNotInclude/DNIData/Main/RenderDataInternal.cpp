@@ -554,9 +554,9 @@ namespace JJs2DEngine
 		if (!gammaCorrectionPipelineCacheInFile.is_open())
 			throw std::runtime_error("RenderDataInternal::SaveGammaCorrectionPipelineCacheFile: Program failed to open the pipeline cache in file!");
 
-		if (_uiPipelineCompatibleSavedPos.has_value())
+		if (_gammaCorrectionPipelineCompatibleSavedPos.has_value())
 		{
-			gammaCorrectionPipelineCacheInFile.seekg(_uiPipelineCompatibleSavedPos.value());
+			gammaCorrectionPipelineCacheInFile.seekg(_gammaCorrectionPipelineCompatibleSavedPos.value());
 			if (!gammaCorrectionPipelineCacheInFile.good())
 				throw std::runtime_error("RenderDataInternal::SaveGammaCorrectionPipelineCacheFile: Program failed to move reading position to the old header!");
 
@@ -585,9 +585,9 @@ namespace JJs2DEngine
 		if (!gammaCorrectionPipelineCacheOutFile.is_open())
 			throw std::runtime_error("RenderDataInternal::SaveGammaCorrectionPipelineCacheFile: Program failed to open the pipeline cache out file!");
 
-		if (_uiPipelineCompatibleSavedPos.has_value())
+		if (_gammaCorrectionPipelineCompatibleSavedPos.has_value())
 		{
-			gammaCorrectionPipelineCacheOutFile.seekp(_uiPipelineCompatibleSavedPos.value());
+			gammaCorrectionPipelineCacheOutFile.seekp(_gammaCorrectionPipelineCompatibleSavedPos.value());
 			if (!gammaCorrectionPipelineCacheOutFile.good())
 				throw std::runtime_error("RenderDataInternal::SaveGammaCorrectionPipelineCacheFile: Program failed to move writing position to the old header!");
 
