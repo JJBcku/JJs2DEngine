@@ -121,7 +121,7 @@ namespace JJs2DEngine
 	{
 	}
 
-	void TextureDataFrameInternal::LoadDefaultTextures(std::array<std::vector<unsigned char>, imagesInTextureArray> defaultTexturesData, uint64_t transferQueue, uint64_t graphicsQueue)
+	void TextureDataFrameInternal::LoadDefaultTextures(const std::array<std::vector<unsigned char>, imagesInTextureArray>& defaultTexturesData, uint64_t transferQueue, uint64_t graphicsQueue)
 	{
 		size_t offset = 0;
 

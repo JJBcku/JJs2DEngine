@@ -68,7 +68,7 @@ namespace JJs2DEngine
 			VS::SecondaryNIRCommandBuffer commandBuffer);
 		~TextureDataFrameInternal();
 
-		void LoadDefaultTextures(std::array<std::vector<unsigned char>, imagesInTextureArray> defaultTexturesData, uint64_t transferQueue, uint64_t graphicsQueue);
+		void LoadDefaultTextures(const std::array<std::vector<unsigned char>, imagesInTextureArray>& defaultTexturesData, uint64_t transferQueue, uint64_t graphicsQueue);
 
 		std::array<IDObject<VS::AutoCleanup2DArrayTexture>, imagesInTextureArray> GetImageIDs() const;
 		std::array<IDObject<VS::AutoCleanupImageView>, imagesInTextureArray> GetImageViewIDs() const;
