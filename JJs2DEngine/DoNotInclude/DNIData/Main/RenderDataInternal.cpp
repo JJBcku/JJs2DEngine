@@ -690,7 +690,7 @@ namespace JJs2DEngine
 			VS::PipelineStageFlagBits::PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT, 0, VS::AccessFlagBits::ACCESS_COLOR_ATTACHMENT_WRITE, 0x10);
 
 		auto gammaCorrectionSubpassDependency = sharedRenderPassData.AddUniqueSubpassDependency(0, 1, VS::PipelineStageFlagBits::PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT,
-			VS::PipelineStageFlagBits::PIPELINE_STAGE_FRAGMENT_SHADER, VS::ACCESS_COLOR_ATTACHMENT_WRITE, VS::ACCESS_COLOR_ATTACHMENT_READ, 0x10);
+			VS::PipelineStageFlagBits::PIPELINE_STAGE_FRAGMENT_SHADER, VS::ACCESS_COLOR_ATTACHMENT_WRITE, VS::ACCESS_INPUT_ATTACHMENT_READ, 0x10);
 
 		VS::SubpassCreationDataWithoutResolving colorSubpass;
 		colorSubpass.colorAttachments = { colorAttachmentReference };
