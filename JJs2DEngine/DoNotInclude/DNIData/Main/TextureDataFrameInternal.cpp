@@ -140,7 +140,7 @@ namespace JJs2DEngine
 		toTransfer.newLayout = VS::ImageLayoutFlags::TRANSFER_DESTINATION;
 
 		fromTransfer.srcAccess = VS::AccessFlagBits::ACCESS_TRANSFER_WRITE;
-		fromTransfer.dstAccess = VS::AccessFlagBits::ACCESS_TRANSFER_READ;
+		fromTransfer.dstAccess = VS::AccessFlagBits::ACCESS_SHADER_READ;
 		fromTransfer.oldLayout = VS::ImageLayoutFlags::TRANSFER_DESTINATION;
 		fromTransfer.newLayout = VS::ImageLayoutFlags::SHADER_READ_ONLY;
 
