@@ -212,9 +212,10 @@ namespace JJs2DEngine
 			windowRenderData.renderImagesWidth = currentPipeline.renderWidth;
 			windowRenderData.renderImagesHeight = GetHeight(currentPipeline.renderWidth, currentPipeline.aspectRatio);
 			windowRenderData.renderPassID = _renderDataList->GetCurrentRenderPass();
+			windowRenderData.descriptorLayoutID = _renderDataList->GetGammaCorrectionDescriptorSetLayout();
 
 			_windowData = std::make_unique<WindowDataInternal>(deviceSettings.windowData, windowRenderData, device.GetWindowList(), device.GetSynchronizationDataLists(),
-				device.GetImageDataLists(), device.GetMemoryObjectsList());
+				device.GetImageDataLists(), device.GetMemoryObjectsList(), device.GetDescriptorDataLists());
 		}
 
 		_inputDataList = std::make_unique<InputDataListInternal>(_currentTime, _VSMain->GetSdlEventHandler());

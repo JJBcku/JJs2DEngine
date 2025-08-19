@@ -11,6 +11,7 @@
 #include <VulkanSimplified/VSDevice/VSMemoryObjectsList.h>
 #include <VulkanSimplified/VSDevice/VSSynchronizationDataLists.h>
 #include <VulkanSimplified/VSDevice/VSWindowList.h>
+#include <VulkanSimplified/VSDevice/VSDescriptorDataLists.h>
 
 #include <vector>
 #include <string>
@@ -33,6 +34,8 @@ namespace JJs2DEngine
 		IDObject<VS::AutoCleanupColorRenderTargetImage> colorImage;
 		IDObject<VS::AutoCleanupImageView> colorImageView;
 
+		IDObject<VS::AutoCleanupDescriptorSet> gammaCorrectionDescriptorSet;
+
 		PerFrameData();
 	};
 
@@ -46,6 +49,7 @@ namespace JJs2DEngine
 		uint32_t renderImagesHeight;
 
 		IDObject<VS::AutoCleanupRenderPass> renderPassID;
+		IDObject<VS::AutoCleanupDescriptorSetLayout> descriptorLayoutID;
 
 		RenderImagesData();
 
@@ -57,7 +61,7 @@ namespace JJs2DEngine
 	{
 	public:
 		WindowDataInternal(const WindowInitializationData& initData, RenderImagesData swapchainData,
-			VS::WindowList windowList, VS::SynchronizationDataLists synchroList, VS::ImageDataLists imageList, VS::MemoryObjectsList memoryList);
+			VS::WindowList windowList, VS::SynchronizationDataLists synchroList, VS::ImageDataLists imageList, VS::MemoryObjectsList memoryList, VS::DescriptorDataLists descriptorList);
 		~WindowDataInternal();
 
 		void ChangeSwapchainData(RenderImagesData newSwapchainData);
@@ -71,6 +75,7 @@ namespace JJs2DEngine
 		VS::SynchronizationDataLists _synchroList;
 		VS::ImageDataLists _imageList;
 		VS::MemoryObjectsList _memoryList;
+		VS::DescriptorDataLists _descriptorList;
 
 		std::string _windowTitle;
 		uint32_t _windowWidth;
@@ -92,6 +97,8 @@ namespace JJs2DEngine
 
 		VS::MemoryAllocationFullID _colorImageMemory;
 		VS::MemoryAllocationFullID _depthImageMemory;
+
+		IDObject<VS::AutoCleanupNIFDescriptorPool> _gammaCorrectionDescriptorPool;
 
 		void RedoSwapchain(VS::DataFormatSetIndependentID colorFormat, uint32_t framesInFlight);
 		void RedoPerFrameData(VS::DataFormatSetIndependentID colorFormat, uint32_t framesInFlight, uint32_t width, uint32_t height);

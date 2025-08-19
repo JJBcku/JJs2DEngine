@@ -28,6 +28,7 @@ namespace JJs2DEngine
 
 		IDObject<VS::AutoCleanupRenderPass> GetCurrentRenderPass() const;
 		IDObject<VS::AutoCleanupDescriptorSetLayout> GetTextureDescriptorSetLayout() const;
+		IDObject<VS::AutoCleanupDescriptorSetLayout> GetGammaCorrectionDescriptorSetLayout() const;
 
 	private:
 		VS::DeviceMain _device;

@@ -9,6 +9,7 @@
 
 #include <VulkanSimplified/VSCommon/VSImageSampleFlags.h>
 #include <VulkanSimplified/VSCommon/VSDataFormatFlags.h>
+#include <VulkanSimplified/VSCommon/VSDescriptorTypeFlags.h>
 
 #include <VulkanSimplified/VSDevice/VSWindow.h>
 #include <VulkanSimplified/VSDevice/VSMultitypeImagesID.h>
@@ -31,7 +32,8 @@ namespace JJs2DEngine
 	}
 
 	WindowDataInternal::WindowDataInternal(const WindowInitializationData& initData, RenderImagesData swapchainData, VS::WindowList windowList, VS::SynchronizationDataLists synchroList,
-		VS::ImageDataLists imageList, VS::MemoryObjectsList memoryList) : _windowList(windowList), _synchroList(synchroList), _imageList(imageList), _memoryList(memoryList)
+		VS::ImageDataLists imageList, VS::MemoryObjectsList memoryList, VS::DescriptorDataLists descriptorList) : _windowList(windowList), _synchroList(synchroList), _imageList(imageList),
+		_memoryList(memoryList), _descriptorList(descriptorList)
 	{
 		_windowTitle = initData.windowTitle;
 
@@ -140,6 +142,20 @@ namespace JJs2DEngine
 
 			_framebuffers.push_back(_imageList.AddFramebuffer(swapchainData.renderPassID, attachments, swapchainData.renderImagesWidth, swapchainData.renderImagesHeight,
 				1, _framebuffers.capacity()));
+		}
+
+		{
+			_gammaCorrectionDescriptorPool = _descriptorList.AddNoIndividualFreeingDescriptorPool(static_cast<uint32_t>(_perFrameData.size()),
+				{ {VS::DescriptorTypeFlagBits::INPUT_ATTACHMENT, static_cast<uint32_t>(_perFrameData.size())} });
+
+			std::vector<IDObject<VS::AutoCleanupDescriptorSetLayout>> descriptorLayoutList;
+			descriptorLayoutList.resize(_perFrameData.size(), swapchainData.descriptorLayoutID);
+			auto descriptorSets = _descriptorList.AllocateNIFDescriptorSets(_gammaCorrectionDescriptorPool, descriptorLayoutList);
+
+			for (size_t i = 0; i < _perFrameData.size(); ++i)
+			{
+				_perFrameData[i].gammaCorrectionDescriptorSet = descriptorSets[i];
+			}
 		}
 	}
 
@@ -260,11 +276,21 @@ namespace JJs2DEngine
 		if (redoSynchro)
 			_perFrameData.resize(framesInFlight);
 
+		_descriptorList.DeleteNIFDescriptorPool(_gammaCorrectionDescriptorPool, true);
+		_gammaCorrectionDescriptorPool = _descriptorList.AddNoIndividualFreeingDescriptorPool(framesInFlight,
+			{ {VS::DescriptorTypeFlagBits::INPUT_ATTACHMENT, framesInFlight} });
+
+		std::vector<IDObject<VS::AutoCleanupDescriptorSetLayout>> descriptorLayoutList;
+		descriptorLayoutList.resize(framesInFlight, _swapchainData.descriptorLayoutID);
+		auto descriptorSets = _descriptorList.AllocateNIFDescriptorSets(_gammaCorrectionDescriptorPool, descriptorLayoutList);
+
 		for (size_t i = 0; i < _perFrameData.size(); ++i)
 		{
 			auto& frameData = _perFrameData[i];
 			frameData.colorImage = _imageList.AddColorRenderTargetImage(width, height, colorFormat,
 				VS::SAMPLE_1, {}, false, false, 1, static_cast<size_t>(framesInFlight) + 1);
+
+			frameData.gammaCorrectionDescriptorSet = descriptorSets[i];
 
 			if (redoSynchro)
 			{

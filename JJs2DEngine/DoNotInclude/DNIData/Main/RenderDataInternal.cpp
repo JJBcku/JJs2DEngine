@@ -203,6 +203,11 @@ namespace JJs2DEngine
 		return _textureDescriptorSetLayout;
 	}
 
+	IDObject<VS::AutoCleanupDescriptorSetLayout> RenderDataInternal::GetGammaCorrectionDescriptorSetLayout() const
+	{
+		return _gammaCorrectionDescriptorSetLayout;
+	}
+
 	void RenderDataInternal::CreateUIPipelineCacheFile(const std::string& dataFolder)
 	{
 		auto pipelineDataList = _device.GetPipelineDataLists();
