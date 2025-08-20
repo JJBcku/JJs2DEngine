@@ -19,6 +19,8 @@ namespace VulkanSimplified
 	struct DescriptorSetCombined2DTextureSamplerWriteData;
 	struct DescriptorSetCombined2DArrayTextureSamplerWriteData;
 
+	struct DescriptorSetInputAttachmentWriteData;
+
 	class DescriptorDataLists
 	{
 	public:
@@ -42,6 +44,9 @@ namespace VulkanSimplified
 		void WriteNIFDescriptorSetCombined2DArrayTextureSamplerBindings(IDObject<AutoCleanupNIFDescriptorPool> descriptorPoolID,
 			const std::vector<DescriptorSetCombined2DArrayTextureSamplerWriteData>& writeDataList);
 
+		void WriteNIFDescriptorSetInputAttachmentBindings(IDObject<AutoCleanupNIFDescriptorPool> descriptorPoolID,
+			const std::vector<DescriptorSetInputAttachmentWriteData>& writeDataList);
+
 		void ResetNIFDescriptorPool(IDObject<AutoCleanupNIFDescriptorPool> descriptorPoolID);
 
 		bool DeleteNIFDescriptorPool(IDObject<AutoCleanupNIFDescriptorPool> descriptorPoolID, bool throwOnIDNotFound);
@@ -60,7 +65,11 @@ namespace VulkanSimplified
 		void WriteIFDescriptorSetCombined2DArrayTextureSamplerBindings(IDObject<AutoCleanupIFDescriptorPool> descriptorPoolID,
 			const std::vector<DescriptorSetCombined2DArrayTextureSamplerWriteData>& writeDataList);
 
-		std::vector<bool> FreeDescriptorSets(IDObject<AutoCleanupIFDescriptorPool> descriptorPoolID, const std::vector<IDObject<AutoCleanupDescriptorSet>>& descriptorSetsIDs, bool throwOnIDNotFound);
+		void WriteIFDescriptorSetInputAttachmentBindings(IDObject<AutoCleanupNIFDescriptorPool> descriptorPoolID,
+			const std::vector<DescriptorSetInputAttachmentWriteData>& writeDataList);
+
+		std::vector<bool> FreeDescriptorSets(IDObject<AutoCleanupIFDescriptorPool> descriptorPoolID, const std::vector<IDObject<AutoCleanupDescriptorSet>>& descriptorSetsIDs,
+			bool throwOnIDNotFound);
 		void ResetIFDescriptorPool(IDObject<AutoCleanupIFDescriptorPool> descriptorPoolID);
 
 		bool DeleteIFDescriptorPool(IDObject<AutoCleanupIFDescriptorPool> descriptorPoolID, bool throwOnIDNotFound);
