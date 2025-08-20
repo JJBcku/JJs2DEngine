@@ -10,12 +10,14 @@
 #include <VulkanSimplified/VSCommon/VSImageSampleFlags.h>
 #include <VulkanSimplified/VSCommon/VSDataFormatFlags.h>
 #include <VulkanSimplified/VSCommon/VSDescriptorTypeFlags.h>
+#include <VulkanSimplified/VSCommon/VSImageLayoutFlags.h>
 
 #include <VulkanSimplified/VSDevice/VSWindow.h>
 #include <VulkanSimplified/VSDevice/VSMultitypeImagesID.h>
 
 #include <VulkanSimplified/VSDevice/VSWindowCreationData.h>
 #include <VulkanSimplified/VSDevice/VSSwapchainCreationData.h>
+#include <VulkanSimplified/VSDevice/VSDescriptorSetInputAttachmentWriteData.h>
 
 namespace JJs2DEngine
 {
@@ -152,10 +154,24 @@ namespace JJs2DEngine
 			descriptorLayoutList.resize(_perFrameData.size(), swapchainData.descriptorLayoutID);
 			auto descriptorSets = _descriptorList.AllocateNIFDescriptorSets(_gammaCorrectionDescriptorPool, descriptorLayoutList);
 
+			std::vector<VS::DescriptorSetInputAttachmentWriteData> inputAttachmentWritingLists;
+			inputAttachmentWritingLists.resize(_perFrameData.size());
+
 			for (size_t i = 0; i < _perFrameData.size(); ++i)
 			{
-				_perFrameData[i].gammaCorrectionDescriptorSet = descriptorSets[i];
+				auto& frameData = _perFrameData[i];
+				frameData.gammaCorrectionDescriptorSet = descriptorSets[i];
+
+				inputAttachmentWritingLists[i].descriptorSetID = descriptorSets[i];
+				inputAttachmentWritingLists[i].binding = 0;
+				inputAttachmentWritingLists[i].startArrayIndex = 0;
+				inputAttachmentWritingLists[i].imageDataList.resize(1);
+
+				inputAttachmentWritingLists[i].imageDataList[0].first.emplace(frameData.colorImage, frameData.colorImageView);
+				inputAttachmentWritingLists[i].imageDataList[0].second = VS::ImageLayoutFlags::GENERAL;
 			}
+
+			_descriptorList.WriteNIFDescriptorSetInputAttachmentBindings(_gammaCorrectionDescriptorPool, inputAttachmentWritingLists);
 		}
 	}
 
@@ -306,11 +322,26 @@ namespace JJs2DEngine
 		_colorImageMemory = _memoryList.AllocateMemory(_imageList.GetColorRenderTargetImagesSize(_perFrameData.back().colorImage) * _perFrameData.size(), _perFrameData.size(),
 			_colorMemoryProperties, _imageList.GetColorRenderTargetImagesMemoryTypeMask(_perFrameData.back().colorImage), 0x10);
 
+		std::vector<VS::DescriptorSetInputAttachmentWriteData> inputAttachmentWritingLists;
+		inputAttachmentWritingLists.resize(_perFrameData.size());
+
 		for (size_t i = 0; i < _perFrameData.size(); ++i)
 		{
-			_imageList.BindColorRenderTargetImage(_perFrameData[i].colorImage, _colorImageMemory, static_cast<size_t>(framesInFlight) + 1);
-			_perFrameData[i].colorImageView = _imageList.AddColorRenderTargetImageView(_perFrameData[i].colorImage);
+			auto& frameData = _perFrameData[i];
+
+			_imageList.BindColorRenderTargetImage(frameData.colorImage, _colorImageMemory, static_cast<size_t>(framesInFlight) + 1);
+			frameData.colorImageView = _imageList.AddColorRenderTargetImageView(frameData.colorImage);
+
+			inputAttachmentWritingLists[i].descriptorSetID = descriptorSets[i];
+			inputAttachmentWritingLists[i].binding = 0;
+			inputAttachmentWritingLists[i].startArrayIndex = 0;
+			inputAttachmentWritingLists[i].imageDataList.resize(1);
+
+			inputAttachmentWritingLists[i].imageDataList[0].first.emplace(frameData.colorImage, frameData.colorImageView);
+			inputAttachmentWritingLists[i].imageDataList[0].second = VS::ImageLayoutFlags::GENERAL;
 		}
+
+		_descriptorList.WriteNIFDescriptorSetInputAttachmentBindings(_gammaCorrectionDescriptorPool, inputAttachmentWritingLists);
 	}
 
 	void WindowDataInternal::RedoDepthImage(VS::DataFormatSetIndependentID depthFormat, uint32_t width, uint32_t height)
