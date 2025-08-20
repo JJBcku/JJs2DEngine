@@ -6,7 +6,7 @@
 
 #include <VulkanSimplified/VSDevice/VSDeviceMain.h>
 #include <VulkanSimplified/VSDevice/VSPipelineDataListsDef.h>
-#include <VulkanSimplified/VSDevice/VSDescriptorDataListDef.h>
+#include <VulkanSimplified/VSDevice/VSDescriptorDataListsDef.h>
 #include <VulkanSimplified/VSDevice/VSRenderPassDataListDef.h>
 
 #include <VulkanSimplified/VSSharedData/VSSharedDataMainList.h>
