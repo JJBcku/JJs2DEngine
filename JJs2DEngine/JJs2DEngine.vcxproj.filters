@@ -138,7 +138,7 @@
     <ClInclude Include="Include\Main\SpecialKeysDataList.h">
       <Filter>Header Files\Include\Main</Filter>
     </ClInclude>
-    <ClInclude Include="DoNotInclude\ICode\Main\TextureDataMain.h">
+    <ClInclude Include="Include\Main\TextureDataMain.h">
       <Filter>Header Files\Include\Main</Filter>
     </ClInclude>
     <ClInclude Include="DoNotInclude\DNIData\Main\TextureDataMainInternal.h">
@@ -158,6 +158,12 @@
     </ClInclude>
     <ClInclude Include="DoNotInclude\DNIData\Main\TextureDataFrameInternal.h">
       <Filter>Header Files\Do Not Include\Main</Filter>
+    </ClInclude>
+    <ClInclude Include="DoNotInclude\DNIData\Main\VertexDataMainInternal.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Main\VertexDataMain.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -232,6 +238,12 @@
     </ClCompile>
     <ClCompile Include="DoNotInclude\DNIData\Main\TextureDataFrameInternal.cpp">
       <Filter>Source Files\Do Not Include\Main</Filter>
+    </ClCompile>
+    <ClCompile Include="DoNotInclude\DNIData\Main\VertexDataMainInternal.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DoNotInclude\ICode\Main\VertexDataMain.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

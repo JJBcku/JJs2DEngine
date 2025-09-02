@@ -35,6 +35,7 @@ namespace JJs2DEngine
 	class RenderDataInternal;
 	class InputDataListInternal;
 	class TextureDataMainInternal;
+	class VertexDataMainInternal;
 
 	class MainInternal
 	{
@@ -58,6 +59,9 @@ namespace JJs2DEngine
 
 		InputDataListInternal& GetInputDataList();
 		const InputDataListInternal& GetInputDataList() const;
+
+		VertexDataMainInternal& GetVertexDataMainList();
+		const VertexDataMainInternal& GetVertexDataMainList() const;
 
 	private:
 		std::unique_ptr<VS::Main> _VSMain;
@@ -86,6 +90,7 @@ namespace JJs2DEngine
 		std::unique_ptr<WindowDataInternal> _windowData;
 		std::unique_ptr<InputDataListInternal> _inputDataList;
 		std::unique_ptr<TextureDataMainInternal> _textureDataMain;
+		std::unique_ptr<VertexDataMainInternal> _vertexDataMain;
 
 		void CreateInstance(const MainInitializationData& initData);
 		void EnumerateDevices();

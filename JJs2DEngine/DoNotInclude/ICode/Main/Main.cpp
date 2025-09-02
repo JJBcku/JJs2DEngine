@@ -2,6 +2,7 @@
 #include "../../../Include/Main/Main.h"
 
 #include "../../../Include/Main/InputDataList.h"
+#include "../../../Include/Main/VertexDataMain.h"
 
 #include "../../DNIData/Main/MainInternal.h"
 
@@ -53,6 +54,16 @@ namespace JJs2DEngine
 	const InputDataList Main::GetInputDataList() const
 	{
 		return _internal->GetInputDataList();
+	}
+
+	VertexDataMain Main::GetVertexDataMainList()
+	{
+		return _internal->GetVertexDataMainList();
+	}
+
+	const VertexDataMain Main::GetVertexDataMainList() const
+	{
+		return _internal->GetVertexDataMainList();
 	}
 
 	void Main::ChangeFullscreen(Misc::Bool64Values newFullscreen)

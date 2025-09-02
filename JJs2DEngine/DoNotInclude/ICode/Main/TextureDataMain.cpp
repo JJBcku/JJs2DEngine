@@ -1,5 +1,5 @@
 #include "MainIpch.h"
-#include "TextureDataMain.h"
+#include "../../../Include/Main/TextureDataMain.h"
 
 #include "../../../DoNotInclude/DNIData/Main/TextureDataMainInternal.h"
 

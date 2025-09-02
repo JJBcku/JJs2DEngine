@@ -10,6 +10,7 @@ namespace JJs2DEngine
 	struct MainInitializationData;
 	class MainInternal;
 	class InputDataList;
+	class VertexDataMain;
 
 	struct DeviceData;
 	struct DeviceSettings;
@@ -33,6 +34,9 @@ namespace JJs2DEngine
 
 		InputDataList GetInputDataList();
 		const InputDataList GetInputDataList() const;
+
+		VertexDataMain GetVertexDataMainList();
+		const VertexDataMain GetVertexDataMainList() const;
 
 		void ChangeFullscreen(Misc::Bool64Values newFullscreen);
 

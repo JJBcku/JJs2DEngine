@@ -14,6 +14,7 @@
 #include "RenderDataInternal.h"
 #include "InputDataListInternal.h"
 #include "TextureDataMainInternal.h"
+#include "VertexDataMainInternal.h"
 
 #include <Miscellaneous/Bool64.h>
 
@@ -249,6 +250,8 @@ namespace JJs2DEngine
 
 			_textureDataMain = std::make_unique<TextureDataMainInternal>(textureInitData, device.GetDataBufferLists(), device.GetImageDataLists(), device.GetMemoryObjectsList(),
 				device.GetSynchronizationDataLists(), transferQFGroup, device.GetDescriptorDataLists());
+
+			_vertexDataMain = std::make_unique<VertexDataMainInternal>(0x11);
 		}
 	}
 
@@ -290,6 +293,16 @@ namespace JJs2DEngine
 	const InputDataListInternal& MainInternal::GetInputDataList() const
 	{
 		return *_inputDataList;
+	}
+
+	VertexDataMainInternal& MainInternal::GetVertexDataMainList()
+	{
+		return *_vertexDataMain;
+	}
+
+	const VertexDataMainInternal& MainInternal::GetVertexDataMainList() const
+	{
+		return *_vertexDataMain;
 	}
 
 	/*void MainInternal::RecreateDevice(const DeviceSettings& deviceSettings)
