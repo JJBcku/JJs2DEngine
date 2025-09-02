@@ -159,11 +159,11 @@
     <ClInclude Include="DoNotInclude\DNIData\Main\TextureDataFrameInternal.h">
       <Filter>Header Files\Do Not Include\Main</Filter>
     </ClInclude>
-    <ClInclude Include="DoNotInclude\DNIData\Main\VertexDataMainInternal.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Include\Main\VertexDataMain.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Include\Main</Filter>
+    </ClInclude>
+    <ClInclude Include="DoNotInclude\DNIData\Main\VertexDataMainInternal.h">
+      <Filter>Header Files\Do Not Include\Main</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -239,11 +239,11 @@
     <ClCompile Include="DoNotInclude\DNIData\Main\TextureDataFrameInternal.cpp">
       <Filter>Source Files\Do Not Include\Main</Filter>
     </ClCompile>
-    <ClCompile Include="DoNotInclude\DNIData\Main\VertexDataMainInternal.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="DoNotInclude\ICode\Main\VertexDataMain.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Include\Main</Filter>
+    </ClCompile>
+    <ClCompile Include="DoNotInclude\DNIData\Main\VertexDataMainInternal.cpp">
+      <Filter>Source Files\Do Not Include\Main</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
