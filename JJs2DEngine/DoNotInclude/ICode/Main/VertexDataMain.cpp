@@ -13,4 +13,9 @@ namespace JJs2DEngine
 	{
 	}
 
+	IDObject<UiVertexDataLayerVersionListInternal> VertexDataMain::AddUiLayerVersionList(size_t initialVersionCapacity, size_t addOnReserving)
+	{
+		return _internal.AddUiLayerVersionList(initialVersionCapacity, addOnReserving);
+	}
+
 }

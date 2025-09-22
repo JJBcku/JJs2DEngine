@@ -165,6 +165,15 @@
     <ClInclude Include="DoNotInclude\DNIData\Main\VertexDataMainInternal.h">
       <Filter>Header Files\Do Not Include\Main</Filter>
     </ClInclude>
+    <ClInclude Include="Include\Main\VertexLayerOrderID.h">
+      <Filter>Header Files\Include\Main</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Main\VertexDataMainDef.h">
+      <Filter>Header Files\Include\Main</Filter>
+    </ClInclude>
+    <ClInclude Include="DoNotInclude\DNIData\Main\UiVertexDataLayerVersionListInternal.h">
+      <Filter>Header Files\Do Not Include\Main</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DoNotInclude\DNIData\Common\CommonDNIpch.cpp">
@@ -243,6 +252,12 @@
       <Filter>Source Files\Include\Main</Filter>
     </ClCompile>
     <ClCompile Include="DoNotInclude\DNIData\Main\VertexDataMainInternal.cpp">
+      <Filter>Source Files\Do Not Include\Main</Filter>
+    </ClCompile>
+    <ClCompile Include="DoNotInclude\ICode\Main\VertexLayerOrderID.cpp">
+      <Filter>Source Files\Include\Main</Filter>
+    </ClCompile>
+    <ClCompile Include="DoNotInclude\DNIData\Main\UiVertexDataLayerVersionListInternal.cpp">
       <Filter>Source Files\Do Not Include\Main</Filter>
     </ClCompile>
   </ItemGroup>

@@ -251,7 +251,7 @@ namespace JJs2DEngine
 			_textureDataMain = std::make_unique<TextureDataMainInternal>(textureInitData, device.GetDataBufferLists(), device.GetImageDataLists(), device.GetMemoryObjectsList(),
 				device.GetSynchronizationDataLists(), transferQFGroup, device.GetDescriptorDataLists());
 
-			_vertexDataMain = std::make_unique<VertexDataMainInternal>(0x11);
+			_vertexDataMain = std::make_unique<VertexDataMainInternal>();
 		}
 	}
 

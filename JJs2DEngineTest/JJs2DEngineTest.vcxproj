@@ -92,6 +92,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="CreateLayers.cpp" />
     <ClCompile Include="CreateMainClass.cpp" />
     <ClCompile Include="JJs2DEngineTest.cpp" />
     <ClCompile Include="MainDataCollection.cpp" />
@@ -102,6 +103,7 @@
     <ClCompile Include="RunProgram.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CreateLayers.h" />
     <ClInclude Include="CreateMainClass.h" />
     <ClInclude Include="MainDataCollection.h" />
     <ClInclude Include="NamespaceAliases.h" />

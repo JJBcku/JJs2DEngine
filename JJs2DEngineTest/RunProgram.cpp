@@ -10,12 +10,14 @@
 #include "MainDataCollection.h"
 
 #include "CreateMainClass.h"
+#include "CreateLayers.h"
 
 void RunProgram()
 {
 	MainDataCollection data;
 
 	CreateMainClass(data);
+	CreateLayers(data);
 
 	auto& main = *data.main;
 

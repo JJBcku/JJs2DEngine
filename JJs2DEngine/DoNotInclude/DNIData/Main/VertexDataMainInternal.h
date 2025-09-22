@@ -1,16 +1,27 @@
 #pragma once
 
 #include <stdint.h>
+#include <vector>
+
+#include <CustomLists/UnsortedIDVector.h>
+
+#include "../../../Include/Main/VertexDataMainDef.h"
 
 namespace JJs2DEngine
 {
+	union VertexLayerOrderID;
+
 	class VertexDataMainInternal
 	{
 	public:
-		VertexDataMainInternal(uint64_t stub);
+		VertexDataMainInternal();
 		~VertexDataMainInternal();
 
+		IDObject<UiVertexDataLayerVersionListInternal> AddUiLayerVersionList(size_t initialVersionCapacity, size_t addOnReserving);
+
 	private:
-		uint64_t _stub;
+		UnsortedIDVector<UiVertexDataLayerVersionListInternal> _uiLayersList;
+
+		std::vector<VertexLayerOrderID> _layerOrderList;
 	};
 }
