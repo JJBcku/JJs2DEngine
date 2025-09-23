@@ -38,14 +38,14 @@
                OpMemberDecorate %gl_PerVertex 1 BuiltIn PointSize
                OpMemberDecorate %gl_PerVertex 2 BuiltIn ClipDistance
                OpMemberDecorate %gl_PerVertex 3 BuiltIn CullDistance
-               OpDecorate %inSize Location 4
+               OpDecorate %inSize Location 2
                OpDecorate %inTexCoord Location 0
                OpDecorate %inTexSize Location 1
                OpDecorate %outTexCoord Location 0
                OpDecorate %outTexLayer Location 1
-               OpDecorate %inTexLayer Location 2
+               OpDecorate %inTexLayer Location 3
                OpDecorate %outTexIndex Location 2
-               OpDecorate %inTexIndex Location 3
+               OpDecorate %inTexIndex Location 4
        %void = OpTypeVoid
           %3 = OpTypeFunction %void
       %float = OpTypeFloat 32

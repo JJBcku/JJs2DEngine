@@ -13,14 +13,14 @@
                OpMemberDecorate %_struct_55 1 BuiltIn PointSize
                OpMemberDecorate %_struct_55 2 BuiltIn ClipDistance
                OpMemberDecorate %_struct_55 3 BuiltIn CullDistance
-               OpDecorate %61 Location 4
+               OpDecorate %61 Location 2
                OpDecorate %75 Location 0
                OpDecorate %77 Location 1
                OpDecorate %83 Location 0
                OpDecorate %86 Location 1
-               OpDecorate %88 Location 2
+               OpDecorate %88 Location 3
                OpDecorate %90 Location 2
-               OpDecorate %91 Location 3
+               OpDecorate %91 Location 4
        %void = OpTypeVoid
           %3 = OpTypeFunction %void
       %float = OpTypeFloat 32
