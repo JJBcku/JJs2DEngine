@@ -116,8 +116,11 @@
     <ClInclude Include="DoNotInclude\DNIData\Common\CommonDNIpch.h" />
     <ClInclude Include="DoNotInclude\DNIData\Main\InputDataListInternal.h" />
     <ClInclude Include="DoNotInclude\DNIData\Main\TextureDataFrameInternal.h" />
+    <ClInclude Include="DoNotInclude\DNIData\Main\UiVertexDataLayerVersionInternal.h" />
     <ClInclude Include="DoNotInclude\DNIData\Main\UiVertexDataLayerVersionListInternal.h" />
     <ClInclude Include="DoNotInclude\DNIData\Main\VertexDataMainInternal.h" />
+    <ClInclude Include="Include\Main\UiVertexDataLayerVersionList.h" />
+    <ClInclude Include="Include\Main\UiVertexDataLayerVersionListDef.h" />
     <ClInclude Include="Include\Main\VertexDataMain.h" />
     <ClInclude Include="Include\Common\TextureFormat.h" />
     <ClInclude Include="Include\Common\TextureFormatDef.h" />
@@ -208,6 +211,12 @@
       <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)MainDNIpch.pch</PrecompiledHeaderOutputFile>
     </ClCompile>
     <ClCompile Include="DoNotInclude\DNIData\Main\TextureDataMainInternal.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">MainDNIpch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)MainDNIpch.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">MainDNIpch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)MainDNIpch.pch</PrecompiledHeaderOutputFile>
+    </ClCompile>
+    <ClCompile Include="DoNotInclude\DNIData\Main\UiVertexDataLayerVersionInternal.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">MainDNIpch.h</PrecompiledHeaderFile>
       <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)MainDNIpch.pch</PrecompiledHeaderOutputFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">MainDNIpch.h</PrecompiledHeaderFile>
@@ -310,6 +319,12 @@
       <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)MainIpch.pch</PrecompiledHeaderOutputFile>
     </ClCompile>
     <ClCompile Include="DoNotInclude\ICode\Main\TextureDataMain.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">MainIpch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)MainIpch.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">MainIpch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)MainIpch.pch</PrecompiledHeaderOutputFile>
+    </ClCompile>
+    <ClCompile Include="DoNotInclude\ICode\Main\UiVertexDataLayerVersionList.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">MainIpch.h</PrecompiledHeaderFile>
       <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)MainIpch.pch</PrecompiledHeaderOutputFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">MainIpch.h</PrecompiledHeaderFile>

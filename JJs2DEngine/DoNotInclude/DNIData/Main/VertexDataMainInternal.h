@@ -17,10 +17,14 @@ namespace JJs2DEngine
 		VertexDataMainInternal();
 		~VertexDataMainInternal();
 
-		IDObject<UiVertexDataLayerVersionListInternal> AddUiLayerVersionList(size_t initialVersionCapacity, size_t addOnReserving);
+		IDObject<UiVertexDataLayerVersionListPointer> AddUiLayerVersionList(const std::vector<uint64_t>& versionsMaxVerticesList, size_t addOnReserving);
+
+		UiVertexDataLayerVersionListInternal& GetUiVertexDataLayerVersionList(IDObject<UiVertexDataLayerVersionListPointer> ID);
+
+		const UiVertexDataLayerVersionListInternal& GetUiVertexDataLayerVersionList(IDObject<UiVertexDataLayerVersionListPointer> ID) const;
 
 	private:
-		UnsortedIDVector<UiVertexDataLayerVersionListInternal> _uiLayersList;
+		UnsortedIDVector<UiVertexDataLayerVersionListPointer> _uiLayersList;
 
 		std::vector<VertexLayerOrderID> _layerOrderList;
 	};

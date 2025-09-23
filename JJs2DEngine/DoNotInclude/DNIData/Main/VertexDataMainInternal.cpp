@@ -17,16 +17,29 @@ namespace JJs2DEngine
 	{
 	}
 
-	IDObject<UiVertexDataLayerVersionListInternal> VertexDataMainInternal::AddUiLayerVersionList(size_t initialVersionCapacity, size_t addOnReserving)
+	IDObject<UiVertexDataLayerVersionListPointer> VertexDataMainInternal::AddUiLayerVersionList(const std::vector<uint64_t>& versionsMaxVerticesList, size_t addOnReserving)
 	{
 		if (_layerOrderList.size() == _layerOrderList.capacity())
 			throw std::runtime_error("VertexDataMainInternal::AddUiLayerVersionList Error: Program tried to add more layers than the program supports!");
 
-		auto ret = _uiLayersList.AddObject(UiVertexDataLayerVersionListInternal(initialVersionCapacity), addOnReserving);
+		if (versionsMaxVerticesList.empty())
+			throw std::runtime_error("VertexDataMainInternal::AddUiLayerVersionList Error: Program tried to create an empty version list!");
+
+		auto ret = _uiLayersList.AddObject(std::make_unique<UiVertexDataLayerVersionListInternal>(versionsMaxVerticesList), addOnReserving);
 
 		_layerOrderList.emplace_back(ret);
 
 		return ret;
+	}
+
+	UiVertexDataLayerVersionListInternal& VertexDataMainInternal::GetUiVertexDataLayerVersionList(IDObject<UiVertexDataLayerVersionListPointer> ID)
+	{
+		return *_uiLayersList.GetObject(ID);
+	}
+
+	const UiVertexDataLayerVersionListInternal& VertexDataMainInternal::GetUiVertexDataLayerVersionList(IDObject<UiVertexDataLayerVersionListPointer> ID) const
+	{
+		return *_uiLayersList.GetConstObject(ID);
 	}
 
 }

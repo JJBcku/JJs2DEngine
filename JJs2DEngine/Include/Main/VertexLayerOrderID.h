@@ -2,10 +2,10 @@
 
 #include <CustomLists/IDObject.h>
 
+#include "VertexDataMainDef.h"
+
 namespace JJs2DEngine
 {
-	class UiVertexDataLayerVersionListInternal;
-
 	enum class VertexLayerOrderIDType : uint64_t
 	{
 		UNSET = 0,
@@ -18,10 +18,10 @@ namespace JJs2DEngine
 		struct
 		{
 			VertexLayerOrderIDType type;
-			IDObject<UiVertexDataLayerVersionListInternal> ID;
+			IDObject<UiVertexDataLayerVersionListPointer> ID;
 		} UiLayerID;
 
 		VertexLayerOrderID();
-		VertexLayerOrderID(IDObject<UiVertexDataLayerVersionListInternal> ID);
+		VertexLayerOrderID(IDObject<UiVertexDataLayerVersionListPointer> ID);
 	};
 }

@@ -9,7 +9,7 @@ struct MainDataCollection
 {
 	std::unique_ptr<JJ2DE::Main> main;
 
-	IDObject<JJ2DE::UiVertexDataLayerVersionListInternal> layerID;
+	IDObject<JJ2DE::UiVertexDataLayerVersionListPointer> layerID;
 
 	MainDataCollection();
 	~MainDataCollection();

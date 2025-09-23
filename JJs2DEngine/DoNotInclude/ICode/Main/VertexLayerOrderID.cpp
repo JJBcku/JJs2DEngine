@@ -8,7 +8,7 @@ namespace JJs2DEngine
 		type = VertexLayerOrderIDType::UNSET;
 	}
 
-	VertexLayerOrderID::VertexLayerOrderID(IDObject<UiVertexDataLayerVersionListInternal> ID)
+	VertexLayerOrderID::VertexLayerOrderID(IDObject<UiVertexDataLayerVersionListPointer> ID)
 	{
 		UiLayerID.type = VertexLayerOrderIDType::UI_LAYER;
 		UiLayerID.ID = ID;
