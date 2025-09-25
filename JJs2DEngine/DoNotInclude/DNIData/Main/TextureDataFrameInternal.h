@@ -23,6 +23,7 @@ namespace JJs2DEngine
 {
 	struct TextureFrameInitData
 	{
+		uint64_t frameAmount;
 		uint64_t startingIndex;
 		uint64_t max2DImageSize;
 		uint64_t maxImageArrayLayers;
@@ -43,8 +44,8 @@ namespace JJs2DEngine
 		size_t heightInPixels;
 		size_t layers;
 
-		IDObject<VS::AutoCleanup2DArrayTexture> imageID;
-		IDObject<VS::AutoCleanupImageView> imageViewID;
+		std::vector<IDObject<VS::AutoCleanup2DArrayTexture>> imageIDs;
+		std::vector<IDObject<VS::AutoCleanupImageView>> imageViewIDs;
 
 		std::vector<std::shared_ptr<TextureReferenceData>> textureReferencesList;
 
@@ -70,8 +71,8 @@ namespace JJs2DEngine
 
 		void LoadDefaultTextures(const std::array<std::vector<unsigned char>, imagesInTextureArray>& defaultTexturesData, uint64_t transferQueue, uint64_t graphicsQueue);
 
-		std::array<IDObject<VS::AutoCleanup2DArrayTexture>, imagesInTextureArray> GetImageIDs() const;
-		std::array<IDObject<VS::AutoCleanupImageView>, imagesInTextureArray> GetImageViewIDs() const;
+		std::array<IDObject<VS::AutoCleanup2DArrayTexture>, imagesInTextureArray> GetImageIDs(size_t frameInFlightIndice) const;
+		std::array<IDObject<VS::AutoCleanupImageView>, imagesInTextureArray> GetImageViewIDs(size_t frameInFlightIndice) const;
 
 	private:
 		VS::DataBufferLists _dataBufferList;
@@ -86,7 +87,7 @@ namespace JJs2DEngine
 		std::array<TextureFrameImageData, imagesInTextureArray> _textureDataArray;
 		VS::MemoryAllocationFullID _textureMemoryID;
 
-		IDObject<VS::AutoCleanupStagingBuffer> _texturesStagingBufferID;
+		std::vector<IDObject<VS::AutoCleanupStagingBuffer>> _texturesStagingBufferIDs;
 		VS::MemoryAllocationFullID _stagingBufferMemoryID;
 
 		TextureFrameImageData CompileTextureFrameSizeData(size_t tileSize, size_t texturesMaxAmount, uint64_t max2DImageSize, uint64_t maxImageArrayLayers) const;

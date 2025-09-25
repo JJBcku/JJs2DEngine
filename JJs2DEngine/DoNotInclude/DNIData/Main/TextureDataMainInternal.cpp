@@ -66,7 +66,7 @@ namespace JJs2DEngine
 
 		if (initData.transferFramesInFlight > 0)
 		{
-			_streamedCommandBufferIDs = textureCommandPool.AllocateSecondaryCommandBuffers(static_cast<uint32_t>(initData.transferFramesInFlight));
+			_streamedCommandBufferID = textureCommandPool.AllocateSecondaryCommandBuffers(1U)[0];
 		}
 
 		VS::DataFormatSetIndependentID format = TranslateToFormat(initData.textureFormat);
@@ -82,6 +82,7 @@ namespace JJs2DEngine
 			preLoadedTexturesStagingBuferSize *= 4;
 
 		TextureFrameInitData frameInitData;
+		frameInitData.frameAmount = 1;
 		frameInitData.startingIndex = 0ULL;
 		frameInitData.max2DImageSize = initData.max2DImageSize;
 		frameInitData.maxImageArrayLayers = initData.maxImageArrayLayers;
@@ -117,18 +118,15 @@ namespace JJs2DEngine
 		else
 			streamedTexturesStagingBuferSize *= 4;
 
+		frameInitData.frameAmount = initData.transferFramesInFlight;
 		frameInitData.startingIndex = imagesInTextureArray;
 		frameInitData.texturesMaxAmounts = _preLoadedTexturesMaxAmounts;
 		frameInitData.stagingBufferSize = streamedTexturesStagingBuferSize;
 
 		if (initData.transferFramesInFlight > 0)
 		{
-			_streamedTexturesData.reserve(initData.transferFramesInFlight);
-			for (size_t i = 0; i < initData.transferFramesInFlight; ++i)
-			{
-				_streamedTexturesData.push_back(std::make_unique<TextureDataFrameInternal>(frameInitData, _dataBufferList, _imageList, _memoryList,
-					textureCommandPool.GetSecondaryCommandBuffer(_streamedCommandBufferIDs[i])));
-			}
+			_streamedTexturesData = std::make_unique<TextureDataFrameInternal>(frameInitData, _dataBufferList, _imageList, _memoryList,
+				textureCommandPool.GetSecondaryCommandBuffer(_streamedCommandBufferID));
 		}
 
 		for (size_t i = 0; i < adjustedTransferFramesInFlight; ++i)
@@ -141,17 +139,16 @@ namespace JJs2DEngine
 
 		_preLoadedTexturesData->LoadDefaultTextures(_defaultTextureDataList, initData.transferQueueID, initData.graphicsQueueID);
 
-		for (size_t i = 0; i < _streamedTexturesData.size(); ++i)
-		{
-			_streamedTexturesData[i]->LoadDefaultTextures(_defaultTextureDataList, initData.transferQueueID, initData.graphicsQueueID);
-		}
+		if (initData.transferFramesInFlight > 0)
+			_streamedTexturesData->LoadDefaultTextures(_defaultTextureDataList, initData.transferQueueID, initData.graphicsQueueID);
 
 		auto primaryCommandBuffer = textureCommandPool.GetPrimaryCommandBuffer(_primaryCommandBufferID);
 
 		primaryCommandBuffer.BeginRecording(VS::CommandBufferUsage::ONE_USE);
 
 		textureCommandPool.RecordExecuteSecondaryBufferCommand(_primaryCommandBufferID, { _preLoadedCommandBufferID });
-		textureCommandPool.RecordExecuteSecondaryBufferCommand(_primaryCommandBufferID, _streamedCommandBufferIDs);
+		if (initData.transferFramesInFlight > 0)
+			textureCommandPool.RecordExecuteSecondaryBufferCommand(_primaryCommandBufferID, { _streamedCommandBufferID });
 
 		primaryCommandBuffer.EndRecording();
 
@@ -181,8 +178,8 @@ namespace JJs2DEngine
 			std::vector<VS::DescriptorSetCombined2DArrayTextureSamplerWriteData> textureWriteDataList;
 			textureWriteDataList.resize(adjustedTransferFramesInFlight);
 
-			auto preloadedTexturesImages = _preLoadedTexturesData->GetImageIDs();
-			auto preloadedTexturesImageViews = _preLoadedTexturesData->GetImageViewIDs();
+			auto preloadedTexturesImages = _preLoadedTexturesData->GetImageIDs(0);
+			auto preloadedTexturesImageViews = _preLoadedTexturesData->GetImageViewIDs(0);
 
 			for (size_t i = 0; i < textureWriteDataList.size(); ++i)
 			{
@@ -204,7 +201,7 @@ namespace JJs2DEngine
 					imageData.second = VS::ImageLayoutFlags::SHADER_READ_ONLY;
 				}
 
-				if (_streamedTexturesData.empty())
+				if (!(_streamedTexturesData))
 				{
 					for (size_t j = 0; j < imagesInTextureArray; ++j)
 					{
@@ -216,8 +213,8 @@ namespace JJs2DEngine
 				}
 				else
 				{
-					auto streamedTexturesImages = _streamedTexturesData[i]->GetImageIDs();
-					auto streamedTexturesImageViews = _streamedTexturesData[i]->GetImageViewIDs();
+					auto streamedTexturesImages = _streamedTexturesData->GetImageIDs(i);
+					auto streamedTexturesImageViews = _streamedTexturesData->GetImageViewIDs(i);
 
 					for (size_t j = 0; j < imagesInTextureArray; ++j)
 					{

@@ -65,13 +65,13 @@ namespace JJs2DEngine
 		IDObject<VS::PrimaryNIRPointer> _primaryCommandBufferID;
 
 		IDObject<VS::SecondaryNIRPointer> _preLoadedCommandBufferID;
-		std::vector<IDObject<VS::SecondaryNIRPointer>> _streamedCommandBufferIDs;
+		IDObject<VS::SecondaryNIRPointer> _streamedCommandBufferID;
 
 		std::vector<IDObject<VS::AutoCleanupFence>> _fenceList;
 		std::vector<IDObject<VS::AutoCleanupSemaphore>> _transferSemaphoresList;
 
 		std::unique_ptr<TextureDataFrameInternal> _preLoadedTexturesData;
-		std::vector<std::unique_ptr<TextureDataFrameInternal>> _streamedTexturesData;
+		std::unique_ptr<TextureDataFrameInternal> _streamedTexturesData;
 
 		IDObject<VS::AutoCleanupNIFDescriptorPool> _transferDescriptorPool;
 		std::vector<IDObject<VS::AutoCleanupDescriptorSet>> _textureDescriptorSets;

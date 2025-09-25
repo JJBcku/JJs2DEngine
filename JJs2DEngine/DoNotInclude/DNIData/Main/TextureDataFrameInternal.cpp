@@ -18,6 +18,7 @@ namespace JJs2DEngine
 {
 	JJs2DEngine::TextureFrameInitData::TextureFrameInitData() : texturesMaxAmounts(), textureFormat()
 	{
+		frameAmount = 0;
 		startingIndex = 0;
 		max2DImageSize = 0;
 		maxImageArrayLayers = 0;
@@ -57,10 +58,15 @@ namespace JJs2DEngine
 				size_t tileSize = 1ULL << (skippedSizeLevels + i);
 				textureData = CompileTextureFrameSizeData(tileSize, initData.texturesMaxAmounts[i], initData.max2DImageSize, initData.maxImageArrayLayers);
 
-				textureData.imageID = _imageList.Add2DArrayTextureImage(static_cast<uint32_t>(textureData.widthInPixels), static_cast<uint32_t>(textureData.heightInPixels),
-					static_cast<uint32_t>(textureData.layers), 1, initData.textureFormat, {}, false, 1);
-				memoryTypeMask = memoryTypeMask & _imageList.Get2DArrayTextureImagesMemoryTypeMask(textureData.imageID);
-				totalSize += _imageList.Get2DArrayTextureImagesSize(textureData.imageID);
+				textureData.imageIDs.reserve(initData.frameAmount);
+				for (uint64_t j = 0; j < initData.frameAmount; ++j)
+				{
+					textureData.imageIDs.push_back(_imageList.Add2DArrayTextureImage(static_cast<uint32_t>(textureData.widthInPixels), static_cast<uint32_t>(textureData.heightInPixels),
+						static_cast<uint32_t>(textureData.layers), 1, initData.textureFormat, {}, false, 1));
+				}
+				
+				memoryTypeMask = memoryTypeMask & _imageList.Get2DArrayTextureImagesMemoryTypeMask(textureData.imageIDs[0]);
+				totalSize += _imageList.Get2DArrayTextureImagesSize(textureData.imageIDs[0]) * textureData.imageIDs.size();
 			}
 
 			acceptableMemoryTypes.reserve(7);
@@ -76,13 +82,21 @@ namespace JJs2DEngine
 			for (size_t i = 0; i < _textureDataArray.size(); ++i)
 			{
 				auto& textureData = _textureDataArray[i];
-				_imageList.Bind2DArrayTextureImage(textureData.imageID, _textureMemoryID, _textureDataArray.size());
-				textureData.imageViewID = _imageList.Add2DArrayTextureImageFullView(textureData.imageID, _textureDataArray.size());
+				textureData.imageViewIDs.reserve(textureData.imageIDs.size());
+				for (uint64_t j = 0; j < textureData.imageIDs.size(); ++j)
+				{
+					_imageList.Bind2DArrayTextureImage(textureData.imageIDs[j], _textureMemoryID, _textureDataArray.size());
+					textureData.imageViewIDs.push_back(_imageList.Add2DArrayTextureImageFullView(textureData.imageIDs[j], _textureDataArray.size()));
+				}
 			}
 		}
 
 		{
-			_texturesStagingBufferID = _dataBufferList.AddStagingBuffer(initData.stagingBufferSize, {}, 0x10);
+			_texturesStagingBufferIDs.reserve(initData.frameAmount);
+			for (uint64_t i = 0; i < initData.frameAmount; ++i)
+			{
+				_texturesStagingBufferIDs.push_back(_dataBufferList.AddStagingBuffer(initData.stagingBufferSize, {}, 0x10));
+			}
 
 			acceptableMemoryTypes.clear();
 			acceptableMemoryTypes.push_back(VS::HOST_VISIBLE | VS::HOST_CACHED);
@@ -92,11 +106,14 @@ namespace JJs2DEngine
 			acceptableMemoryTypes.push_back(VS::DEVICE_LOCAL | VS::HOST_COHERENT | VS::HOST_VISIBLE | VS::HOST_CACHED);
 			acceptableMemoryTypes.push_back(VS::DEVICE_LOCAL | VS::HOST_COHERENT | VS::HOST_VISIBLE);
 
-			size_t requiredSize = _dataBufferList.GetStagingBuffersSize(_texturesStagingBufferID);
-			uint32_t memoryMask = _dataBufferList.GetStagingBuffersMemoryTypeMask(_texturesStagingBufferID);
+			size_t requiredSize = _dataBufferList.GetStagingBuffersSize(_texturesStagingBufferIDs[0]) * _texturesStagingBufferIDs.size();
+			uint32_t memoryMask = _dataBufferList.GetStagingBuffersMemoryTypeMask(_texturesStagingBufferIDs[0]);
 
 			_stagingBufferMemoryID = _memoryList.AllocateMemory(requiredSize, 1, acceptableMemoryTypes, memoryMask, 0x10);
-			_dataBufferList.BindStagingBuffer(_texturesStagingBufferID, _stagingBufferMemoryID, 0x10);
+			for (uint64_t i = 0; i < _texturesStagingBufferIDs.size(); ++i)
+			{
+				_dataBufferList.BindStagingBuffer(_texturesStagingBufferIDs[i], _stagingBufferMemoryID, 0x10);
+			}
 		}
 
 		for (size_t i = 0; i < _textureDataArray.size(); ++i)
@@ -127,28 +144,39 @@ namespace JJs2DEngine
 
 		for (size_t i = 0; i < defaultTexturesData.size(); ++i)
 		{
-			_dataBufferList.WriteToStagingBuffer(_texturesStagingBufferID, offset, *defaultTexturesData[i].data(), defaultTexturesData[i].size());
+			for (size_t j = 0; j < _texturesStagingBufferIDs.size(); ++j)
+			{
+				_dataBufferList.WriteToStagingBuffer(_texturesStagingBufferIDs[j], offset, *defaultTexturesData[i].data(), defaultTexturesData[i].size());
+			}
 
 			offset += defaultTexturesData[i].size();
 		}
 
-		VS::ImagesMemoryBarrierData toTransfer, fromTransfer;
+		std::vector<VS::ImagesMemoryBarrierData> toTransfer, fromTransfer;
 
-		toTransfer.srcAccess = VS::AccessFlagBits::ACCESS_NONE;
-		toTransfer.dstAccess = VS::AccessFlagBits::ACCESS_TRANSFER_WRITE;
-		toTransfer.oldLayout = VS::ImageLayoutFlags::UNDEFINED;
-		toTransfer.newLayout = VS::ImageLayoutFlags::TRANSFER_DESTINATION;
-
-		fromTransfer.srcAccess = VS::AccessFlagBits::ACCESS_TRANSFER_WRITE;
-		fromTransfer.dstAccess = VS::AccessFlagBits::ACCESS_SHADER_READ;
-		fromTransfer.oldLayout = VS::ImageLayoutFlags::TRANSFER_DESTINATION;
-		fromTransfer.newLayout = VS::ImageLayoutFlags::SHADER_READ_ONLY;
-
-		if (transferQueue != graphicsQueue)
+		toTransfer.resize(_texturesStagingBufferIDs.size());
+		for (size_t i = 0; i < toTransfer.size(); ++i)
 		{
-			fromTransfer.queueData.emplace();
-			fromTransfer.queueData->srcQueueIndex = transferQueue;
-			fromTransfer.queueData->dstQueueIndex = graphicsQueue;
+			toTransfer[i].srcAccess = VS::AccessFlagBits::ACCESS_NONE;
+			toTransfer[i].dstAccess = VS::AccessFlagBits::ACCESS_TRANSFER_WRITE;
+			toTransfer[i].oldLayout = VS::ImageLayoutFlags::UNDEFINED;
+			toTransfer[i].newLayout = VS::ImageLayoutFlags::TRANSFER_DESTINATION;
+		}
+
+		fromTransfer.resize(_texturesStagingBufferIDs.size());
+		for (size_t i = 0; i < toTransfer.size(); ++i)
+		{
+			fromTransfer[i].srcAccess = VS::AccessFlagBits::ACCESS_TRANSFER_WRITE;
+			fromTransfer[i].dstAccess = VS::AccessFlagBits::ACCESS_SHADER_READ;
+			fromTransfer[i].oldLayout = VS::ImageLayoutFlags::TRANSFER_DESTINATION;
+			fromTransfer[i].newLayout = VS::ImageLayoutFlags::SHADER_READ_ONLY;
+
+			if (transferQueue != graphicsQueue)
+			{
+				fromTransfer[i].queueData.emplace();
+				fromTransfer[i].queueData->srcQueueIndex = transferQueue;
+				fromTransfer[i].queueData->dstQueueIndex = graphicsQueue;
+			}
 		}
 
 		offset = 0;
@@ -159,40 +187,49 @@ namespace JJs2DEngine
 		{
 			auto& textureData = _textureDataArray[i];
 
-			toTransfer.imageID = VS::ImagesGenericID(textureData.imageID);
-			_commandBuffer.CreatePipelineBarrier(VS::PipelineStageFlagBits::PIPELINE_STAGE_TOP_OF_PIPE, VS::PipelineStageFlagBits::PIPELINE_STAGE_TRANSFER, {}, {}, { toTransfer });
+			for (size_t j = 0; j < toTransfer.size(); ++j)
+			{
+				toTransfer[j].imageID = VS::ImagesGenericID(textureData.imageIDs[j]);
+			}
+			_commandBuffer.CreatePipelineBarrier(VS::PipelineStageFlagBits::PIPELINE_STAGE_TOP_OF_PIPE, VS::PipelineStageFlagBits::PIPELINE_STAGE_TRANSFER, {}, {}, toTransfer);
 
-			_commandBuffer.TransferDataTo2dArrayTextureSingleLayer(_texturesStagingBufferID, offset, defaultTexturesData[i].size(), textureData.imageID,
-				0, 0, static_cast<uint32_t>(textureData.tileSize), static_cast<uint32_t>(textureData.tileSize), 0, 0);
+			for (size_t j = 0; j < toTransfer.size(); ++j)
+			{
+				_commandBuffer.TransferDataTo2dArrayTextureSingleLayer(_texturesStagingBufferIDs[j], offset, defaultTexturesData[i].size(), textureData.imageIDs[j],
+					0, 0, static_cast<uint32_t>(textureData.tileSize), static_cast<uint32_t>(textureData.tileSize), 0, 0);
+			}
 
 			offset += defaultTexturesData[i].size();
 
-			fromTransfer.imageID = VS::ImagesGenericID(textureData.imageID);
-			_commandBuffer.CreatePipelineBarrier(VS::PipelineStageFlagBits::PIPELINE_STAGE_TRANSFER, VS::PipelineStageFlagBits::PIPELINE_STAGE_BOTTOM_OF_PIPE, {}, {}, { fromTransfer });
+			for (size_t j = 0; j < toTransfer.size(); ++j)
+			{
+				fromTransfer[j].imageID = VS::ImagesGenericID(textureData.imageIDs[j]);
+			}
+			_commandBuffer.CreatePipelineBarrier(VS::PipelineStageFlagBits::PIPELINE_STAGE_TRANSFER, VS::PipelineStageFlagBits::PIPELINE_STAGE_BOTTOM_OF_PIPE, {}, {}, fromTransfer);
 		}
 
 		_commandBuffer.EndRecording();
 	}
 
-	std::array<IDObject<VS::AutoCleanup2DArrayTexture>, imagesInTextureArray> TextureDataFrameInternal::GetImageIDs() const
+	std::array<IDObject<VS::AutoCleanup2DArrayTexture>, imagesInTextureArray> TextureDataFrameInternal::GetImageIDs(size_t frameInFlightIndice) const
 	{
 		std::array<IDObject<VS::AutoCleanup2DArrayTexture>, imagesInTextureArray> ret;
 
 		for (size_t i = 0; i < ret.size(); ++i)
 		{
-			ret[i] = _textureDataArray[i].imageID;
+			ret[i] = _textureDataArray[i].imageIDs[frameInFlightIndice];
 		}
 
 		return ret;
 	}
 
-	std::array<IDObject<VS::AutoCleanupImageView>, imagesInTextureArray> TextureDataFrameInternal::GetImageViewIDs() const
+	std::array<IDObject<VS::AutoCleanupImageView>, imagesInTextureArray> TextureDataFrameInternal::GetImageViewIDs(size_t frameInFlightIndice) const
 	{
 		std::array<IDObject<VS::AutoCleanupImageView>, imagesInTextureArray> ret;
 
 		for (size_t i = 0; i < ret.size(); ++i)
 		{
-			ret[i] = _textureDataArray[i].imageViewID;
+			ret[i] = _textureDataArray[i].imageViewIDs[frameInFlightIndice];
 		}
 
 		return ret;
