@@ -29,10 +29,10 @@ uint vertexIndexes[6] = uint[]( 0, 1, 2, 2, 1, 3);
 
 void main()
 {
-	vec2 verticeOffset = vertexData[vertexIndexes[gl_VertexIndex]] * (inSize / vec2(2.0f));
+	vec2 verticeOffset = vertexData[vertexIndexes[gl_VertexIndex]] * inSize;
 	vec2 texPos = textureData[vertexIndexes[gl_VertexIndex]];
 
-	gl_Position = vec4(verticeOffset * inPos.xy, inPos.z, 1.0);
+	gl_Position = vec4(verticeOffset + inPos.xy, inPos.z, 1.0);
 	
 	vec2 texCoord = inTexCoord + (inTexSize * texPos);
 	

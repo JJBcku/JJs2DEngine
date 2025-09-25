@@ -1,7 +1,7 @@
 ; SPIR-V
 ; Version: 1.0
 ; Generator: Google Shaderc over Glslang; 11
-; Bound: 99
+; Bound: 96
 ; Schema: 0
                OpCapability Shader
           %1 = OpExtInstImport "GLSL.std.450"
@@ -87,8 +87,6 @@
 %_ptr_Private_v2float = OpTypePointer Private %v2float
 %_ptr_Input_v2float = OpTypePointer Input %v2float
      %inSize = OpVariable %_ptr_Input_v2float Input
-    %float_2 = OpConstant %float 2
-         %51 = OpConstantComposite %v2float %float_2 %float_2
     %v4float = OpTypeVector %float 4
 %_arr_float_uint_1 = OpTypeArray %float %uint_1
 %gl_PerVertex = OpTypeStruct %v4float %float %_arr_float_uint_1 %_arr_float_uint_1
@@ -123,37 +121,36 @@
          %45 = OpAccessChain %_ptr_Private_v2float %vertexData %43
          %46 = OpLoad %v2float %45
          %49 = OpLoad %v2float %inSize
-         %52 = OpFDiv %v2float %49 %51
-         %53 = OpFMul %v2float %46 %52
-               OpStore %verticeOffset %53
-         %55 = OpLoad %int %gl_VertexIndex
-         %56 = OpAccessChain %_ptr_Private_uint %vertexIndexes %55
-         %57 = OpLoad %uint %56
-         %58 = OpAccessChain %_ptr_Private_v2float %textureData %57
-         %59 = OpLoad %v2float %58
-               OpStore %texPos %59
-         %66 = OpLoad %v2float %verticeOffset
-         %69 = OpLoad %v4float %inPos
-         %70 = OpVectorShuffle %v2float %69 %69 0 1
-         %71 = OpFMul %v2float %66 %70
-         %73 = OpAccessChain %_ptr_Input_float %inPos %uint_2
-         %74 = OpLoad %float %73
-         %75 = OpCompositeExtract %float %71 0
-         %76 = OpCompositeExtract %float %71 1
-         %77 = OpCompositeConstruct %v4float %75 %76 %74 %float_1
-         %79 = OpAccessChain %_ptr_Output_v4float %_ %int_0
-               OpStore %79 %77
-         %82 = OpLoad %v2float %inTexCoord
-         %84 = OpLoad %v2float %inTexSize
-         %85 = OpLoad %v2float %texPos
-         %86 = OpFMul %v2float %84 %85
-         %87 = OpFAdd %v2float %82 %86
-               OpStore %texCoord %87
-         %90 = OpLoad %v2float %texCoord
-               OpStore %outTexCoord %90
-         %95 = OpLoad %uint %inTexLayer
-               OpStore %outTexLayer %95
-         %98 = OpLoad %uint %inTexIndex
-               OpStore %outTexIndex %98
+         %50 = OpFMul %v2float %46 %49
+               OpStore %verticeOffset %50
+         %52 = OpLoad %int %gl_VertexIndex
+         %53 = OpAccessChain %_ptr_Private_uint %vertexIndexes %52
+         %54 = OpLoad %uint %53
+         %55 = OpAccessChain %_ptr_Private_v2float %textureData %54
+         %56 = OpLoad %v2float %55
+               OpStore %texPos %56
+         %63 = OpLoad %v2float %verticeOffset
+         %66 = OpLoad %v4float %inPos
+         %67 = OpVectorShuffle %v2float %66 %66 0 1
+         %68 = OpFAdd %v2float %63 %67
+         %70 = OpAccessChain %_ptr_Input_float %inPos %uint_2
+         %71 = OpLoad %float %70
+         %72 = OpCompositeExtract %float %68 0
+         %73 = OpCompositeExtract %float %68 1
+         %74 = OpCompositeConstruct %v4float %72 %73 %71 %float_1
+         %76 = OpAccessChain %_ptr_Output_v4float %_ %int_0
+               OpStore %76 %74
+         %79 = OpLoad %v2float %inTexCoord
+         %81 = OpLoad %v2float %inTexSize
+         %82 = OpLoad %v2float %texPos
+         %83 = OpFMul %v2float %81 %82
+         %84 = OpFAdd %v2float %79 %83
+               OpStore %texCoord %84
+         %87 = OpLoad %v2float %texCoord
+               OpStore %outTexCoord %87
+         %92 = OpLoad %uint %inTexLayer
+               OpStore %outTexLayer %92
+         %95 = OpLoad %uint %inTexIndex
+               OpStore %outTexIndex %95
                OpReturn
                OpFunctionEnd
