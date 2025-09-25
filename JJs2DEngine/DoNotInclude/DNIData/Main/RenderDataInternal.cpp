@@ -726,12 +726,13 @@ namespace JJs2DEngine
 
 		auto vertexInTexCoord = sharedPipelineList.AddUniqueVertexAttributeDescriptionData(0, VS::DATA_FORMAT_RG32_SFLOAT, 0x10);
 		auto vertexInTexSize = sharedPipelineList.AddUniqueVertexAttributeDescriptionData(8, VS::DATA_FORMAT_RG32_SFLOAT, 0x10);
-		auto vertexInSize = sharedPipelineList.AddUniqueVertexAttributeDescriptionData(16, VS::DATA_FORMAT_RGBA32_SFLOAT, 0x10);
-		auto vertexInTexLayer = sharedPipelineList.AddUniqueVertexAttributeDescriptionData(32, VS::DATA_FORMAT_R32_UINT, 0x10);
-		auto vertexInTexIndex = sharedPipelineList.AddUniqueVertexAttributeDescriptionData(36, VS::DATA_FORMAT_R32_UINT, 0x10);
+		auto vertexInPos = sharedPipelineList.AddUniqueVertexAttributeDescriptionData(16, VS::DATA_FORMAT_RGBA32_SFLOAT, 0x10);
+		auto vertexInSize = sharedPipelineList.AddUniqueVertexAttributeDescriptionData(32, VS::DATA_FORMAT_RG32_SFLOAT, 0x10);
+		auto vertexInTexLayer = sharedPipelineList.AddUniqueVertexAttributeDescriptionData(40, VS::DATA_FORMAT_R32_UINT, 0x10);
+		auto vertexInTexIndex = sharedPipelineList.AddUniqueVertexAttributeDescriptionData(44, VS::DATA_FORMAT_R32_UINT, 0x10);
 
-		auto vertexInstanceBinding = sharedPipelineList.AddUniqueVertexBindingData(40, VS::VertexBindingInputRate::INSTANCE,
-			{ vertexInTexCoord, vertexInTexSize, vertexInSize, vertexInTexLayer,  vertexInTexIndex}, 0x10);
+		auto vertexInstanceBinding = sharedPipelineList.AddUniqueVertexBindingData(48, VS::VertexBindingInputRate::INSTANCE,
+			{ vertexInTexCoord, vertexInTexSize, vertexInPos, vertexInSize, vertexInTexLayer,  vertexInTexIndex}, 0x10);
 
 		ret.vertexInputData = sharedPipelineList.AddUniqueVertexInputSharedPipelineData({ vertexInstanceBinding }, 0x10);
 		ret.inputAssemblyData = sharedPipelineList.AddUniquePipelineInputAssemblyData(VS::PipelinePrimitiveTopology::TRIANGLE_LIST, false, 0x10);

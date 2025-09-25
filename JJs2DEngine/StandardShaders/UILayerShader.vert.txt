@@ -1,26 +1,27 @@
 ; SPIR-V
 ; Version: 1.0
 ; Generator: Google Shaderc over Glslang; 11
-; Bound: 96
+; Bound: 104
 ; Schema: 0
                OpCapability Shader
           %1 = OpExtInstImport "GLSL.std.450"
                OpMemoryModel Logical GLSL450
-               OpEntryPoint Vertex %4 "main" %gl_VertexIndex %57 %61 %75 %77 %83 %86 %88 %90 %91
+               OpEntryPoint Vertex %4 "main" %gl_VertexIndex %48 %64 %68 %81 %83 %89 %92 %94 %96 %97
                OpDecorate %gl_VertexIndex BuiltIn VertexIndex
-               OpDecorate %_struct_55 Block
-               OpMemberDecorate %_struct_55 0 BuiltIn Position
-               OpMemberDecorate %_struct_55 1 BuiltIn PointSize
-               OpMemberDecorate %_struct_55 2 BuiltIn ClipDistance
-               OpMemberDecorate %_struct_55 3 BuiltIn CullDistance
-               OpDecorate %61 Location 2
-               OpDecorate %75 Location 0
-               OpDecorate %77 Location 1
-               OpDecorate %83 Location 0
-               OpDecorate %86 Location 1
-               OpDecorate %88 Location 3
-               OpDecorate %90 Location 2
-               OpDecorate %91 Location 4
+               OpDecorate %48 Location 3
+               OpDecorate %_struct_62 Block
+               OpMemberDecorate %_struct_62 0 BuiltIn Position
+               OpMemberDecorate %_struct_62 1 BuiltIn PointSize
+               OpMemberDecorate %_struct_62 2 BuiltIn ClipDistance
+               OpMemberDecorate %_struct_62 3 BuiltIn CullDistance
+               OpDecorate %68 Location 2
+               OpDecorate %81 Location 0
+               OpDecorate %83 Location 1
+               OpDecorate %89 Location 0
+               OpDecorate %92 Location 1
+               OpDecorate %94 Location 4
+               OpDecorate %96 Location 2
+               OpDecorate %97 Location 5
        %void = OpTypeVoid
           %3 = OpTypeFunction %void
       %float = OpTypeFloat 32
@@ -51,30 +52,33 @@
         %int = OpTypeInt 32 1
 %_ptr_Input_int = OpTypePointer Input %int
 %gl_VertexIndex = OpVariable %_ptr_Input_int Input
+%_ptr_Input_v2float = OpTypePointer Input %v2float
+         %48 = OpVariable %_ptr_Input_v2float Input
     %v4float = OpTypeVector %float 4
 %_arr_float_uint_1 = OpTypeArray %float %uint_1
- %_struct_55 = OpTypeStruct %v4float %float %_arr_float_uint_1 %_arr_float_uint_1
-%_ptr_Output__struct_55 = OpTypePointer Output %_struct_55
-         %57 = OpVariable %_ptr_Output__struct_55 Output
+ %_struct_62 = OpTypeStruct %v4float %float %_arr_float_uint_1 %_arr_float_uint_1
+%_ptr_Output__struct_62 = OpTypePointer Output %_struct_62
+         %64 = OpVariable %_ptr_Output__struct_62 Output
       %int_0 = OpConstant %int 0
 %_ptr_Input_v4float = OpTypePointer Input %v4float
-         %61 = OpVariable %_ptr_Input_v4float Input
+         %68 = OpVariable %_ptr_Input_v4float Input
 %_ptr_Input_float = OpTypePointer Input %float
 %_ptr_Output_v4float = OpTypePointer Output %v4float
-%_ptr_Input_v2float = OpTypePointer Input %v2float
-         %75 = OpVariable %_ptr_Input_v2float Input
-         %77 = OpVariable %_ptr_Input_v2float Input
+         %81 = OpVariable %_ptr_Input_v2float Input
+         %83 = OpVariable %_ptr_Input_v2float Input
 %_ptr_Output_v2float = OpTypePointer Output %v2float
-         %83 = OpVariable %_ptr_Output_v2float Output
+         %89 = OpVariable %_ptr_Output_v2float Output
 %_ptr_Output_uint = OpTypePointer Output %uint
-         %86 = OpVariable %_ptr_Output_uint Output
+         %92 = OpVariable %_ptr_Output_uint Output
 %_ptr_Input_uint = OpTypePointer Input %uint
-         %88 = OpVariable %_ptr_Input_uint Input
-         %90 = OpVariable %_ptr_Output_uint Output
-         %91 = OpVariable %_ptr_Input_uint Input
+         %94 = OpVariable %_ptr_Input_uint Input
+         %96 = OpVariable %_ptr_Output_uint Output
+         %97 = OpVariable %_ptr_Input_uint Input
 %_ptr_Function__arr_v2float_uint_4 = OpTypePointer Function %_arr_v2float_uint_4
 %_ptr_Function__arr_uint_uint_6 = OpTypePointer Function %_arr_uint_uint_6
 %_ptr_Function_uint = OpTypePointer Function %uint
+  %float_0_5 = OpConstant %float 0.5
+        %103 = OpConstantComposite %v2float %float_0_5 %float_0_5
           %4 = OpFunction %void None %3
           %5 = OpLabel
          %29 = OpVariable %_ptr_Function__arr_uint_uint_6 Function
@@ -88,27 +92,30 @@
          %43 = OpLoad %uint %42
          %45 = OpAccessChain %_ptr_Function_v2float %12 %43
          %46 = OpLoad %v2float %45
-         %50 = OpLoad %uint %42
-         %51 = OpAccessChain %_ptr_Function_v2float %20 %50
-         %52 = OpLoad %v2float %51
-         %62 = OpLoad %v4float %61
-         %63 = OpVectorShuffle %v2float %62 %62 0 1
-         %64 = OpFMul %v2float %46 %63
-         %66 = OpAccessChain %_ptr_Input_float %61 %uint_2
-         %67 = OpLoad %float %66
-         %68 = OpCompositeExtract %float %64 0
-         %69 = OpCompositeExtract %float %64 1
-         %70 = OpCompositeConstruct %v4float %68 %69 %67 %float_1
-         %72 = OpAccessChain %_ptr_Output_v4float %57 %int_0
-               OpStore %72 %70
-         %76 = OpLoad %v2float %75
-         %78 = OpLoad %v2float %77
-         %80 = OpFMul %v2float %78 %52
-         %81 = OpFAdd %v2float %76 %80
-               OpStore %83 %81
-         %89 = OpLoad %uint %88
-               OpStore %86 %89
-         %92 = OpLoad %uint %91
-               OpStore %90 %92
+         %49 = OpLoad %v2float %48
+         %52 = OpFMul %v2float %49 %103
+         %53 = OpFMul %v2float %46 %52
+         %57 = OpLoad %uint %42
+         %58 = OpAccessChain %_ptr_Function_v2float %20 %57
+         %59 = OpLoad %v2float %58
+         %69 = OpLoad %v4float %68
+         %70 = OpVectorShuffle %v2float %69 %69 0 1
+         %71 = OpFMul %v2float %53 %70
+         %73 = OpAccessChain %_ptr_Input_float %68 %uint_2
+         %74 = OpLoad %float %73
+         %75 = OpCompositeExtract %float %71 0
+         %76 = OpCompositeExtract %float %71 1
+         %77 = OpCompositeConstruct %v4float %75 %76 %74 %float_1
+         %79 = OpAccessChain %_ptr_Output_v4float %64 %int_0
+               OpStore %79 %77
+         %82 = OpLoad %v2float %81
+         %84 = OpLoad %v2float %83
+         %86 = OpFMul %v2float %84 %59
+         %87 = OpFAdd %v2float %82 %86
+               OpStore %89 %87
+         %95 = OpLoad %uint %94
+               OpStore %92 %95
+         %98 = OpLoad %uint %97
+               OpStore %96 %98
                OpReturn
                OpFunctionEnd
