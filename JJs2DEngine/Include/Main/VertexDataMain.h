@@ -1,6 +1,5 @@
 #pragma once
 
-#include <stdint.h>
 #include <vector>
 
 #include <CustomLists/IDObjectDef.h>
@@ -17,7 +16,7 @@ namespace JJs2DEngine
 		VertexDataMain(VertexDataMainInternal& ref);
 		~VertexDataMain();
 
-		IDObject<UiVertexDataLayerVersionListPointer> AddUiLayerVersionList(const std::vector<uint64_t>& versionsMaxVerticesList, size_t addOnReserving);
+		IDObject<UiVertexDataLayerVersionListPointer> AddUiLayerVersionList(const std::vector<size_t>& versionsMaxVerticesList, size_t addOnReserving);
 
 		UiVertexDataLayerVersionList GetUiVertexDataLayerVersionList(IDObject<UiVertexDataLayerVersionListPointer> ID);
 

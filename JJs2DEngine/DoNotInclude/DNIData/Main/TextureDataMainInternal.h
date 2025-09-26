@@ -24,6 +24,8 @@ namespace JJs2DEngine
 {
 	class TextureDataFrameInternal;
 
+	struct TextureReferenceData;
+
 	struct TextureDataMainInitData
 	{
 		uint64_t transferQueueID;
@@ -52,6 +54,8 @@ namespace JJs2DEngine
 		TextureDataMainInternal(const TextureDataMainInitData& initData, VS::DataBufferLists dataBufferList, VS::ImageDataLists imageList, VS::MemoryObjectsList memoryList,
 			VS::SynchronizationDataLists synchroList, VS::CommandPoolQFGroupList transferQFGroup, VS::DescriptorDataLists descriptorDataList);
 		~TextureDataMainInternal();
+
+		std::shared_ptr<TextureReferenceData> GetTextureReference(bool inPreloadedTexturesList, size_t tileImageIndex, size_t referenceIndex);
 
 	private:
 		VS::DataBufferLists _dataBufferList;

@@ -235,6 +235,18 @@ namespace JJs2DEngine
 		return ret;
 	}
 
+	std::shared_ptr<TextureReferenceData> TextureDataFrameInternal::GetTextureReference(size_t tileImageIndex, size_t referenceIndex)
+	{
+		if (tileImageIndex >= _textureDataArray.size())
+			throw std::runtime_error("TextureDataFrameInternal::GetTextureReference Error: Program tried to get reference from a non-existent tile image!");
+
+		auto& imageData = _textureDataArray[tileImageIndex];
+		if (referenceIndex >= imageData.textureReferencesList.size())
+			throw std::runtime_error("TextureDataFrameInternal::GetTextureReference Error: Program tried to get a non-existent reference!");
+
+		return imageData.textureReferencesList[referenceIndex];
+	}
+
 	TextureFrameImageData TextureDataFrameInternal::CompileTextureFrameSizeData(size_t tileSize, size_t texturesMaxAmount, uint64_t max2DImageSize, uint64_t maxImageArrayLayers) const
 	{
 		TextureFrameImageData ret;

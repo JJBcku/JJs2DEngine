@@ -4,6 +4,6 @@
 
 namespace JJs2DEngine
 {
-	class UiVertexDataLayerVersionInternal;
 	class UiVertexDataLayerVersionListInternal;
+	class UiVertexDataLayerVersionList;
 }

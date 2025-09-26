@@ -234,6 +234,15 @@ namespace JJs2DEngine
 	{
 	}
 
+	std::shared_ptr<TextureReferenceData> TextureDataMainInternal::GetTextureReference(bool inPreloadedTexturesList, size_t tileImageIndex, size_t referenceIndex)
+	{
+		if (inPreloadedTexturesList)
+			return _preLoadedTexturesData->GetTextureReference(tileImageIndex, referenceIndex);
+		else
+
+			return _streamedTexturesData->GetTextureReference(tileImageIndex, referenceIndex);
+	}
+
 	bool TextureDataMainInternal::Is16Bit(TextureFormat textureFormat) const
 	{
 		if (textureFormat == TextureFormat::TEXTURE_FORMAT_RGBA16)

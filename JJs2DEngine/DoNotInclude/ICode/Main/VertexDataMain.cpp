@@ -15,7 +15,7 @@ namespace JJs2DEngine
 	{
 	}
 
-	IDObject<UiVertexDataLayerVersionListPointer> VertexDataMain::AddUiLayerVersionList(const std::vector<uint64_t>& versionsMaxVerticesList, size_t addOnReserving)
+	IDObject<UiVertexDataLayerVersionListPointer> VertexDataMain::AddUiLayerVersionList(const std::vector<size_t>& versionsMaxVerticesList, size_t addOnReserving)
 	{
 		return _internal.AddUiLayerVersionList(versionsMaxVerticesList, addOnReserving);
 	}

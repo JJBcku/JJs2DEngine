@@ -74,6 +74,8 @@ namespace JJs2DEngine
 		std::array<IDObject<VS::AutoCleanup2DArrayTexture>, imagesInTextureArray> GetImageIDs(size_t frameInFlightIndice) const;
 		std::array<IDObject<VS::AutoCleanupImageView>, imagesInTextureArray> GetImageViewIDs(size_t frameInFlightIndice) const;
 
+		std::shared_ptr<TextureReferenceData> GetTextureReference(size_t tileImageIndex, size_t referenceIndex);
+
 	private:
 		VS::DataBufferLists _dataBufferList;
 		VS::ImageDataLists _imageList;
