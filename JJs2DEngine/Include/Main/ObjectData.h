@@ -6,6 +6,8 @@
 namespace JJs2DEngine
 {
 	constexpr uint32_t onePointZeroUNORMValue = 0x1000000;
+	constexpr uint32_t onePointZeroSNORMValue = 0x1000000;
+	constexpr int32_t minusOnePointZeroSNORMValue = 0xFF000000;
 
 	struct ObjectData
 	{
@@ -15,8 +17,8 @@ namespace JJs2DEngine
 		uint32_t screenWidthUNORM;
 		uint32_t screenHeightUNORM;
 
-		uint32_t screenPositionXUNORM;
-		uint32_t screenPositionYUNORM;
+		int32_t screenPositionXSNORM;
+		int32_t screenPositionYSNORM;
 
 		std::pair<size_t, size_t> textureIndex;
 		bool inPreloadedTexturesList;

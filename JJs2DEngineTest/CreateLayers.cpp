@@ -22,8 +22,8 @@ void CreateLayers(MainDataCollection& data)
 	JJ2DE::ObjectData object;
 	object.screenWidthUNORM = JJ2DE::onePointZeroUNORMValue / 2;
 	object.screenHeightUNORM = JJ2DE::onePointZeroUNORMValue / 2;
-	object.screenPositionXUNORM = JJ2DE::onePointZeroUNORMValue / 2;
-	object.screenPositionYUNORM = JJ2DE::onePointZeroUNORMValue / 2;
+	object.screenPositionXSNORM = 0;
+	object.screenPositionYSNORM = 0;
 	object.textureWidthUNORM = JJ2DE::onePointZeroUNORMValue;
 	object.textureHeightUNORM = JJ2DE::onePointZeroUNORMValue;
 

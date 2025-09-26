@@ -58,10 +58,10 @@ namespace JJs2DEngine
 		screenHeight /= static_cast<float>(onePointZeroUNORMValue);
 		added.objectsSizeOnScreen = glm::vec2(screenWidth, screenHeight);
 
-		float screenX = static_cast<float>(newObjectData.screenPositionXUNORM) - static_cast<float>(onePointZeroUNORMValue / 2);
-		screenX /= static_cast<float>(onePointZeroUNORMValue / 2);
-		float screenY = static_cast<float>(newObjectData.screenPositionYUNORM) - static_cast<float>(onePointZeroUNORMValue / 2);
-		screenY /= static_cast<float>(onePointZeroUNORMValue / 2);
+		float screenX = static_cast<float>(newObjectData.screenPositionXSNORM);
+		screenX /= static_cast<float>(onePointZeroSNORMValue);
+		float screenY = static_cast<float>(newObjectData.screenPositionYSNORM);
+		screenY /= static_cast<float>(onePointZeroSNORMValue);
 		added.objectsPositionOnScreen = glm::vec2(screenX, screenY);
 
 		added.depthUNORM = _nextDepthValueUNORM;

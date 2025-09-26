@@ -11,8 +11,8 @@ namespace JJs2DEngine
 		screenWidthUNORM = 0;
 		screenHeightUNORM = 0;
 
-		screenPositionXUNORM = 0;
-		screenPositionYUNORM = 0;
+		screenPositionXSNORM = 0;
+		screenPositionYSNORM = 0;
 
 		textureIndex = { 0, 0 };
 		inPreloadedTexturesList = false;
