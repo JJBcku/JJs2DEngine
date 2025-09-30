@@ -8,7 +8,8 @@ namespace JJs2DEngine
 {
 	constexpr size_t maxActiveLayersCount = 126;
 
-	VertexDataMainInternal::VertexDataMainInternal(TextureDataMainInternal& textureDataList) : _textureDataList(textureDataList), _uiLayersList(maxActiveLayersCount)
+	VertexDataMainInternal::VertexDataMainInternal(TextureDataMainInternal& textureDataList, VS::DataBufferLists dataBufferList, VS::MemoryObjectsList memoryObjectsList) :
+		_textureDataList(textureDataList), _dataBufferList(dataBufferList), _memoryObjectsList(memoryObjectsList), _uiLayersList(maxActiveLayersCount)
 	{
 		_layerOrderList.reserve(maxActiveLayersCount);
 	}
@@ -25,7 +26,8 @@ namespace JJs2DEngine
 		if (versionsMaxVerticesList.empty())
 			throw std::runtime_error("VertexDataMainInternal::AddUiLayerVersionList Error: Program tried to create an empty version list!");
 
-		auto ret = _uiLayersList.AddObject(std::make_unique<UiVertexDataLayerVersionListInternal>(_textureDataList, versionsMaxVerticesList, _layerOrderList.size()), addOnReserving);
+		auto ret = _uiLayersList.AddObject(std::make_unique<UiVertexDataLayerVersionListInternal>(_textureDataList, _dataBufferList, _memoryObjectsList,
+			versionsMaxVerticesList, _layerOrderList.size()), addOnReserving);
 
 		_layerOrderList.emplace_back(ret);
 

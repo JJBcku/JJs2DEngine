@@ -183,17 +183,20 @@
     <ClInclude Include="Include\Main\UiVertexDataLayerVersionList.h">
       <Filter>Header Files\Include\Main</Filter>
     </ClInclude>
-    <ClInclude Include="DoNotInclude\DNIData\Main\ObjectDataInternal.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="DoNotInclude\DNIData\Main\ObjectBufferData.h">
+      <Filter>Header Files\Do Not Include\Main</Filter>
     </ClInclude>
-    <ClInclude Include="Include\Main\UiVertexDataLayerVersion.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="DoNotInclude\DNIData\Main\ObjectDataInternal.h">
+      <Filter>Header Files\Do Not Include\Main</Filter>
     </ClInclude>
     <ClInclude Include="DoNotInclude\DNIData\Common\MaxDepthValue.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Do Not Include\Main</Filter>
     </ClInclude>
     <ClInclude Include="Include\Main\ObjectData.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Include\Main</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Main\UiVertexDataLayerVersion.h">
+      <Filter>Header Files\Include\Main</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -287,14 +290,17 @@
     <ClCompile Include="DoNotInclude\ICode\Main\UiVertexDataLayerVersionList.cpp">
       <Filter>Source Files\Include\Main</Filter>
     </ClCompile>
-    <ClCompile Include="DoNotInclude\DNIData\Main\ObjectDataInternal.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="DoNotInclude\ICode\Main\ObjectData.cpp">
+      <Filter>Source Files\Include\Main</Filter>
     </ClCompile>
     <ClCompile Include="DoNotInclude\ICode\Main\UiVertexDataLayerVersion.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Include\Main</Filter>
     </ClCompile>
-    <ClCompile Include="DoNotInclude\ICode\Main\ObjectData.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="DoNotInclude\DNIData\Main\ObjectBufferData.cpp">
+      <Filter>Source Files\Do Not Include\Main</Filter>
+    </ClCompile>
+    <ClCompile Include="DoNotInclude\DNIData\Main\ObjectDataInternal.cpp">
+      <Filter>Source Files\Do Not Include\Main</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

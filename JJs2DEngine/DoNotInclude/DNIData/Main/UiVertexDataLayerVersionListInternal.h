@@ -6,6 +6,11 @@
 
 #include "../../../Include/Main/UiVertexDataLayerVersionListDef.h"
 
+#include <VulkanSimplified/VSDevice/VSDataBufferLists.h>
+#include <VulkanSimplified/VSDevice/VSMemoryObjectsList.h>
+
+#include <CustomLists/IDObject.h>
+
 namespace JJs2DEngine
 {
 	class UiVertexDataLayerVersionInternal;
@@ -14,7 +19,8 @@ namespace JJs2DEngine
 	class UiVertexDataLayerVersionListInternal
 	{
 	public:
-		UiVertexDataLayerVersionListInternal(TextureDataMainInternal& textureDataList, const std::vector<size_t>& versionsMaxVerticesList, size_t layersDepth);
+		UiVertexDataLayerVersionListInternal(TextureDataMainInternal& textureDataList, VS::DataBufferLists& dataBufferList, VS::MemoryObjectsList& memoryObjectsList,
+			const std::vector<size_t>& versionsMaxVerticesList, size_t layersDepth);
 		~UiVertexDataLayerVersionListInternal();
 
 		UiVertexDataLayerVersionListInternal(const UiVertexDataLayerVersionListInternal& rhs) noexcept = delete;
@@ -28,7 +34,12 @@ namespace JJs2DEngine
 		const UiVertexDataLayerVersionInternal& GetLayersVersion(size_t versionIndex) const;
 
 	private:
+		VS::DataBufferLists _dataBufferList;
+		VS::MemoryObjectsList _memoryObjectsList;
+
 		std::vector<std::unique_ptr<UiVertexDataLayerVersionInternal>> _versionList;
 		size_t _activeLayer;
+
+		VS::MemoryAllocationFullID _vertexMemoryID;
 	};
 }

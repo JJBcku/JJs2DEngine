@@ -1,16 +1,53 @@
 #include "MainDNIpch.h"
 #include "UiVertexDataLayerVersionListInternal.h"
 
+#include <VulkanSimplified/VSCommon/VSMemoryTypeProperties.h>
+
+#include <limits>
+
 #include "UiVertexDataLayerVersionInternal.h"
 
 namespace JJs2DEngine
 {
-	UiVertexDataLayerVersionListInternal::UiVertexDataLayerVersionListInternal(TextureDataMainInternal& textureDataList, const std::vector<size_t>& versionsMaxVerticesList, size_t layersDepth)
+	UiVertexDataLayerVersionListInternal::UiVertexDataLayerVersionListInternal(TextureDataMainInternal& textureDataList, VS::DataBufferLists& dataBufferList,
+		VS::MemoryObjectsList& memoryObjectsList, const std::vector<size_t>& versionsMaxVerticesList, size_t layersDepth) : _dataBufferList(dataBufferList),
+		_memoryObjectsList(memoryObjectsList)
 	{
+		uint32_t allBuffersMask = std::numeric_limits<uint32_t>::max();
+		uint64_t allBuffersSize = 0;
+
 		_versionList.reserve(versionsMaxVerticesList.size());
 		for (uint64_t i = 0; i < versionsMaxVerticesList.size(); ++i)
 		{
-			_versionList.push_back(std::make_unique<UiVertexDataLayerVersionInternal>(textureDataList, versionsMaxVerticesList[i], layersDepth));
+			_versionList.push_back(std::make_unique<UiVertexDataLayerVersionInternal>(textureDataList, dataBufferList, versionsMaxVerticesList[i], layersDepth));
+
+			uint32_t buffersMask = _versionList.back()->GetBuffersMask();
+			uint64_t buffersSize = _versionList.back()->GetMemorySize();
+			uint64_t buffersAligment = _versionList.back()->GetMemoryAligment();
+
+			allBuffersMask = allBuffersMask & buffersMask;
+
+			uint64_t aligmentsMod = allBuffersSize % buffersAligment;
+			if (aligmentsMod != 0)
+			{
+				allBuffersSize += buffersAligment - aligmentsMod;
+			}
+			allBuffersSize += buffersSize;
+		}
+
+		std::vector<VS::MemoryTypeProperties> acceptableTypes;
+		acceptableTypes.reserve(3);
+		acceptableTypes.push_back(VS::DEVICE_LOCAL);
+		acceptableTypes.push_back(VS::HOST_VISIBLE | VS::HOST_COHERENT);
+		acceptableTypes.push_back(VS::DEVICE_LOCAL | VS::HOST_VISIBLE | VS::HOST_COHERENT);
+
+		_vertexMemoryID = _memoryObjectsList.AllocateMemory(allBuffersSize, _versionList.size(), acceptableTypes, allBuffersMask, 0x10);
+
+		for (uint64_t i = 0; i < _versionList.size(); ++i)
+		{
+			auto bufferID = _versionList[i]->GetVertexBufferID();
+
+			_dataBufferList.BindVertexBuffer(bufferID, _vertexMemoryID, 0x10);
 		}
 
 		_activeLayer = 0;
@@ -18,6 +55,8 @@ namespace JJs2DEngine
 
 	UiVertexDataLayerVersionListInternal::~UiVertexDataLayerVersionListInternal()
 	{
+		_versionList.clear();
+		_memoryObjectsList.FreeMemory(_vertexMemoryID, false, false);
 	}
 
 	UiVertexDataLayerVersionInternal& UiVertexDataLayerVersionListInternal::GetLayersVersion(size_t versionIndex)

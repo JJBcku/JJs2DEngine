@@ -8,14 +8,15 @@
 #include "../../../Include/Main/ObjectData.h"
 
 #include "TextureDataMainInternal.h"
+#include "ObjectBufferData.h"
 
 #include <assert.h>
 #include <limits>
 
 namespace JJs2DEngine
 {
-	UiVertexDataLayerVersionInternal::UiVertexDataLayerVersionInternal(TextureDataMainInternal& textureDataList, size_t maxVertexAmount, size_t layersDepth) :
-		_textureDataList(textureDataList), _objectList(maxVertexAmount)
+	UiVertexDataLayerVersionInternal::UiVertexDataLayerVersionInternal(TextureDataMainInternal& textureDataList, VS::DataBufferLists& dataBufferList,
+		size_t maxVertexAmount, size_t layersDepth) : _textureDataList(textureDataList), _dataBufferList(dataBufferList), _objectList(maxVertexAmount)
 	{
 		_usedVertexAmount = 0;
 		_nextDepthValueUNORM = 0;
@@ -26,10 +27,17 @@ namespace JJs2DEngine
 		{
 			_unusedIndexes.push_back(maxVertexAmount - (i + 1));
 		}
+
+		_vertexBuffer = _dataBufferList.AddVertexBuffer(sizeof(ObjectBufferData) * _objectList.size(), {}, 0x10);
+
+		_buffersMemoryMask = _dataBufferList.GetVertexBuffersMemoryTypeMask(_vertexBuffer);;
+		_buffersMemorySize = _dataBufferList.GetVertexBuffersSize(_vertexBuffer);
+		_buffersMemoryAligment = _dataBufferList.GetVertexBuffersRequiredAligment(_vertexBuffer);
 	}
 
 	UiVertexDataLayerVersionInternal::~UiVertexDataLayerVersionInternal()
 	{
+		_dataBufferList.RemoveVertexBuffer(_vertexBuffer, false);
 	}
 
 	std::optional<size_t> UiVertexDataLayerVersionInternal::AddObject(const ObjectData& newObjectData)
@@ -77,6 +85,26 @@ namespace JJs2DEngine
 		_usedVertexAmount++;
 
 		return ret;
+	}
+
+	uint32_t UiVertexDataLayerVersionInternal::GetBuffersMask() const
+	{
+		return static_cast<uint32_t>(_buffersMemoryMask);
+	}
+
+	uint64_t UiVertexDataLayerVersionInternal::GetMemorySize() const
+	{
+		return _buffersMemorySize;
+	}
+
+	uint64_t UiVertexDataLayerVersionInternal::GetMemoryAligment() const
+	{
+		return _buffersMemoryAligment;
+	}
+
+	IDObject<VS::AutoCleanupVertexBuffer> UiVertexDataLayerVersionInternal::GetVertexBufferID()
+	{
+		return _vertexBuffer;
 	}
 
 }
