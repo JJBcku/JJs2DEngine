@@ -4,6 +4,7 @@
 #include <optional>
 #include <stdint.h>
 
+#include <Miscellaneous/Bool64Def.h>
 #include <VulkanSimplified/VSDevice/VSDataBufferLists.h>
 
 #include <CustomLists/IDObject.h>
@@ -43,6 +44,8 @@ namespace JJs2DEngine
 		uint64_t _buffersMemoryMask;
 		uint64_t _buffersMemorySize;
 		uint64_t _buffersMemoryAligment;
+
+		Misc::Bool64 _changed;
 
 		IDObject<VS::AutoCleanupVertexBuffer> _vertexBuffer;
 	};

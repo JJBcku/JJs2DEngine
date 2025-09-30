@@ -10,6 +10,8 @@
 #include "TextureDataMainInternal.h"
 #include "UiObjectBufferData.h"
 
+#include <Miscellaneous/Bool64.h>
+
 #include <assert.h>
 #include <limits>
 
@@ -33,6 +35,8 @@ namespace JJs2DEngine
 		_buffersMemoryMask = _dataBufferList.GetVertexBuffersMemoryTypeMask(_vertexBuffer);;
 		_buffersMemorySize = _dataBufferList.GetVertexBuffersSize(_vertexBuffer);
 		_buffersMemoryAligment = _dataBufferList.GetVertexBuffersRequiredAligment(_vertexBuffer);
+
+		_changed = Misc::Bool64Values::BOOL64_FALSE;
 	}
 
 	UiVertexDataLayerVersionInternal::~UiVertexDataLayerVersionInternal()
@@ -83,6 +87,8 @@ namespace JJs2DEngine
 		_unusedIndexes.pop_back();
 		_nextDepthValueUNORM++;
 		_usedVertexAmount++;
+
+		_changed = Misc::Bool64Values::BOOL64_TRUE;
 
 		return ret;
 	}
