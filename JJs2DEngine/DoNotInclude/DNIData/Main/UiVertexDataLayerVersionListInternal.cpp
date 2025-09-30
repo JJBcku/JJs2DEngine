@@ -16,6 +16,8 @@ namespace JJs2DEngine
 		uint32_t allBuffersMask = std::numeric_limits<uint32_t>::max();
 		uint64_t allBuffersSize = 0;
 
+		uint64_t biggestBufferSize = 0;
+
 		_versionList.reserve(versionsMaxVerticesList.size());
 		for (uint64_t i = 0; i < versionsMaxVerticesList.size(); ++i)
 		{
@@ -33,6 +35,9 @@ namespace JJs2DEngine
 				allBuffersSize += buffersAligment - aligmentsMod;
 			}
 			allBuffersSize += buffersSize;
+
+			if (buffersSize > biggestBufferSize)
+				biggestBufferSize = buffersSize;
 		}
 
 		std::vector<VS::MemoryTypeProperties> acceptableTypes;
@@ -48,6 +53,22 @@ namespace JJs2DEngine
 			auto bufferID = _versionList[i]->GetVertexBufferID();
 
 			_dataBufferList.BindVertexBuffer(bufferID, _vertexMemoryID, 0x10);
+		}
+
+		if (!_memoryObjectsList.IsMemoryMapped(_vertexMemoryID))
+		{
+			_stagingBufferID = _dataBufferList.AddStagingBuffer(biggestBufferSize, {});
+			uint32_t stagingBuffersMemoryMask = _dataBufferList.GetStagingBuffersMemoryTypeMask(_stagingBufferID.value());
+			uint64_t stagingBuffersMemorySize = _dataBufferList.GetStagingBuffersSize(_stagingBufferID.value());
+			
+			std::vector<VS::MemoryTypeProperties> acceptableStagingTypes;
+			acceptableStagingTypes.reserve(2);
+			acceptableStagingTypes.push_back(VS::HOST_VISIBLE | VS::HOST_COHERENT);
+			acceptableStagingTypes.push_back(VS::DEVICE_LOCAL | VS::HOST_VISIBLE | VS::HOST_COHERENT);
+
+			_stagingMemoryID = _memoryObjectsList.AllocateMemory(stagingBuffersMemorySize, 1, acceptableStagingTypes, stagingBuffersMemoryMask);
+
+			_dataBufferList.BindStagingBuffer(_stagingBufferID.value(), _stagingMemoryID.value());
 		}
 
 		_activeLayer = 0;

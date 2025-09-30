@@ -3,6 +3,7 @@
 #include <stdint.h>
 #include <vector>
 #include <memory>
+#include <optional>
 
 #include "../../../Include/Main/UiVertexDataLayerVersionListDef.h"
 
@@ -41,5 +42,8 @@ namespace JJs2DEngine
 		size_t _activeLayer;
 
 		VS::MemoryAllocationFullID _vertexMemoryID;
+
+		std::optional<IDObject<VS::AutoCleanupStagingBuffer>> _stagingBufferID;
+		std::optional<VS::MemoryAllocationFullID> _stagingMemoryID;
 	};
 }
