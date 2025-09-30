@@ -38,8 +38,8 @@ namespace JJs2DEngine
 		std::vector<VS::MemoryTypeProperties> acceptableTypes;
 		acceptableTypes.reserve(3);
 		acceptableTypes.push_back(VS::DEVICE_LOCAL);
-		acceptableTypes.push_back(VS::HOST_VISIBLE | VS::HOST_COHERENT);
 		acceptableTypes.push_back(VS::DEVICE_LOCAL | VS::HOST_VISIBLE | VS::HOST_COHERENT);
+		acceptableTypes.push_back(VS::HOST_VISIBLE | VS::HOST_COHERENT);
 
 		_vertexMemoryID = _memoryObjectsList.AllocateMemory(allBuffersSize, _versionList.size(), acceptableTypes, allBuffersMask, 0x10);
 
