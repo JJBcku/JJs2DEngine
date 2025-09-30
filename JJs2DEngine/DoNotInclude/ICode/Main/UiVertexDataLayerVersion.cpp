@@ -13,7 +13,7 @@ namespace JJs2DEngine
 	{
 	}
 
-	std::optional<size_t> UiVertexDataLayerVersion::AddObject(const ObjectData& newObjectData)
+	std::optional<size_t> UiVertexDataLayerVersion::AddObject(const UiObjectData& newObjectData)
 	{
 		return _internal.AddObject(newObjectData);
 	}

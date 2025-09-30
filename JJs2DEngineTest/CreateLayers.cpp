@@ -7,7 +7,7 @@
 #include <VertexDataMain.h>
 #include <UiVertexDataLayerVersionList.h>
 #include <UiVertexDataLayerVersion.h>
-#include <ObjectData.h>
+#include <UiObjectData.h>
 
 void CreateLayers(MainDataCollection& data)
 {
@@ -19,7 +19,7 @@ void CreateLayers(MainDataCollection& data)
 
 	auto uiVertexLayer = uiVertexLayerVersionList.GetLayersVersion(0);
 
-	JJ2DE::ObjectData object;
+	JJ2DE::UiObjectData object;
 	object.screenWidthUNORM = JJ2DE::onePointZeroUNORMValue / 2;
 	object.screenHeightUNORM = JJ2DE::onePointZeroUNORMValue / 2;
 	object.screenPositionXSNORM = 0;

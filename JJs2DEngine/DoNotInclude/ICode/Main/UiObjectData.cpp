@@ -1,9 +1,9 @@
 #include "MainIpch.h"
-#include "../../../Include/Main/ObjectData.h"
+#include "../../../Include/Main/UiObjectData.h"
 
 namespace JJs2DEngine
 {
-	ObjectData::ObjectData()
+	UiObjectData::UiObjectData()
 	{
 		textureWidthUNORM = 0;
 		textureHeightUNORM = 0;
@@ -18,7 +18,7 @@ namespace JJs2DEngine
 		inPreloadedTexturesList = false;
 	}
 
-	ObjectData::~ObjectData()
+	UiObjectData::~UiObjectData()
 	{
 	}
 

@@ -8,7 +8,7 @@ namespace JJs2DEngine
 {
 	struct TextureReferenceData;
 
-	struct ObjectDataInternal
+	struct UiObjectDataInternal
 	{
 		glm::vec2 texturesSizeInTile;
 		glm::vec2 objectsSizeOnScreen;
@@ -16,7 +16,7 @@ namespace JJs2DEngine
 		size_t depthUNORM;
 		std::shared_ptr<TextureReferenceData> textureDataPointer;
 
-		ObjectDataInternal();
-		~ObjectDataInternal();
+		UiObjectDataInternal();
+		~UiObjectDataInternal();
 	};
 }

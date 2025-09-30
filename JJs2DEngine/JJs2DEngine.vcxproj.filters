@@ -183,16 +183,16 @@
     <ClInclude Include="Include\Main\UiVertexDataLayerVersionList.h">
       <Filter>Header Files\Include\Main</Filter>
     </ClInclude>
-    <ClInclude Include="DoNotInclude\DNIData\Main\ObjectBufferData.h">
+    <ClInclude Include="DoNotInclude\DNIData\Main\UiObjectBufferData.h">
       <Filter>Header Files\Do Not Include\Main</Filter>
     </ClInclude>
-    <ClInclude Include="DoNotInclude\DNIData\Main\ObjectDataInternal.h">
+    <ClInclude Include="DoNotInclude\DNIData\Main\UiObjectDataInternal.h">
       <Filter>Header Files\Do Not Include\Main</Filter>
     </ClInclude>
     <ClInclude Include="DoNotInclude\DNIData\Common\MaxDepthValue.h">
       <Filter>Header Files\Do Not Include\Main</Filter>
     </ClInclude>
-    <ClInclude Include="Include\Main\ObjectData.h">
+    <ClInclude Include="Include\Main\UiObjectData.h">
       <Filter>Header Files\Include\Main</Filter>
     </ClInclude>
     <ClInclude Include="Include\Main\UiVertexDataLayerVersion.h">
@@ -290,16 +290,16 @@
     <ClCompile Include="DoNotInclude\ICode\Main\UiVertexDataLayerVersionList.cpp">
       <Filter>Source Files\Include\Main</Filter>
     </ClCompile>
-    <ClCompile Include="DoNotInclude\ICode\Main\ObjectData.cpp">
+    <ClCompile Include="DoNotInclude\ICode\Main\UiObjectData.cpp">
       <Filter>Source Files\Include\Main</Filter>
     </ClCompile>
     <ClCompile Include="DoNotInclude\ICode\Main\UiVertexDataLayerVersion.cpp">
       <Filter>Source Files\Include\Main</Filter>
     </ClCompile>
-    <ClCompile Include="DoNotInclude\DNIData\Main\ObjectBufferData.cpp">
+    <ClCompile Include="DoNotInclude\DNIData\Main\UiObjectBufferData.cpp">
       <Filter>Source Files\Do Not Include\Main</Filter>
     </ClCompile>
-    <ClCompile Include="DoNotInclude\DNIData\Main\ObjectDataInternal.cpp">
+    <ClCompile Include="DoNotInclude\DNIData\Main\UiObjectDataInternal.cpp">
       <Filter>Source Files\Do Not Include\Main</Filter>
     </ClCompile>
   </ItemGroup>

@@ -1,14 +1,14 @@
 #include "MainDNIpch.h"
 #include "UiVertexDataLayerVersionInternal.h"
 
-#include "ObjectDataInternal.h"
+#include "UiObjectDataInternal.h"
 
 #include "../Common/MaxDepthValue.h"
 
-#include "../../../Include/Main/ObjectData.h"
+#include "../../../Include/Main/UiObjectData.h"
 
 #include "TextureDataMainInternal.h"
-#include "ObjectBufferData.h"
+#include "UiObjectBufferData.h"
 
 #include <assert.h>
 #include <limits>
@@ -28,7 +28,7 @@ namespace JJs2DEngine
 			_unusedIndexes.push_back(maxVertexAmount - (i + 1));
 		}
 
-		_vertexBuffer = _dataBufferList.AddVertexBuffer(sizeof(ObjectBufferData) * _objectList.size(), {}, 0x10);
+		_vertexBuffer = _dataBufferList.AddVertexBuffer(sizeof(UiObjectBufferData) * _objectList.size(), {}, 0x10);
 
 		_buffersMemoryMask = _dataBufferList.GetVertexBuffersMemoryTypeMask(_vertexBuffer);;
 		_buffersMemorySize = _dataBufferList.GetVertexBuffersSize(_vertexBuffer);
@@ -40,7 +40,7 @@ namespace JJs2DEngine
 		_dataBufferList.RemoveVertexBuffer(_vertexBuffer, false);
 	}
 
-	std::optional<size_t> UiVertexDataLayerVersionInternal::AddObject(const ObjectData& newObjectData)
+	std::optional<size_t> UiVertexDataLayerVersionInternal::AddObject(const UiObjectData& newObjectData)
 	{
 		std::optional<size_t> ret;
 
@@ -52,7 +52,7 @@ namespace JJs2DEngine
 		if (_nextDepthValueUNORM > maxDepthValue)
 			return ret;
 
-		ObjectDataInternal added;
+		UiObjectDataInternal added;
 
 		float textureWidth = static_cast<float>(newObjectData.textureWidthUNORM);
 		textureWidth /= static_cast<float>(onePointZeroUNORMValue);

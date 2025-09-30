@@ -7,7 +7,7 @@
 
 namespace JJs2DEngine
 {
-	struct ObjectBufferData
+	struct UiObjectBufferData
 	{
 		glm::vec2 texCoords;
 		glm::vec2 texSize;
@@ -16,7 +16,7 @@ namespace JJs2DEngine
 		uint32_t texLayer;
 		uint32_t texIndex;
 
-		ObjectBufferData();
-		~ObjectBufferData();
+		UiObjectBufferData();
+		~UiObjectBufferData();
 	};
 }

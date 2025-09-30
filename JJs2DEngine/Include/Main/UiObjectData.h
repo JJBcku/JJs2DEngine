@@ -9,7 +9,7 @@ namespace JJs2DEngine
 	constexpr uint32_t onePointZeroSNORMValue = 0x1000000;
 	constexpr int32_t minusOnePointZeroSNORMValue = 0xFF000000;
 
-	struct ObjectData
+	struct UiObjectData
 	{
 		uint32_t textureWidthUNORM;
 		uint32_t textureHeightUNORM;
@@ -23,7 +23,7 @@ namespace JJs2DEngine
 		std::pair<size_t, size_t> textureIndex;
 		bool inPreloadedTexturesList;
 
-		ObjectData();
-		~ObjectData();
+		UiObjectData();
+		~UiObjectData();
 	};
 }

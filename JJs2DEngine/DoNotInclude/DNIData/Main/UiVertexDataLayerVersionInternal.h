@@ -10,9 +10,9 @@
 
 namespace JJs2DEngine
 {
-	struct ObjectData;
-	struct ObjectDataInternal;
-	typedef std::optional<ObjectDataInternal> ObjectDataOptional;
+	struct UiObjectData;
+	struct UiObjectDataInternal;
+	typedef std::optional<UiObjectDataInternal> ObjectDataOptional;
 
 	class TextureDataMainInternal;
 
@@ -22,7 +22,7 @@ namespace JJs2DEngine
 		UiVertexDataLayerVersionInternal(TextureDataMainInternal& textureDataList, VS::DataBufferLists& dataBufferList, size_t maxVertexAmount, size_t layersDepth);
 		~UiVertexDataLayerVersionInternal();
 
-		std::optional<size_t> AddObject(const ObjectData& newObjectData);
+		std::optional<size_t> AddObject(const UiObjectData& newObjectData);
 
 		uint32_t GetBuffersMask() const;
 		uint64_t GetMemorySize() const;

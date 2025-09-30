@@ -6,7 +6,7 @@ namespace JJs2DEngine
 {
 	class UiVertexDataLayerVersionInternal;
 
-	struct ObjectData;
+	struct UiObjectData;
 
 	class UiVertexDataLayerVersion
 	{
@@ -14,7 +14,7 @@ namespace JJs2DEngine
 		UiVertexDataLayerVersion(UiVertexDataLayerVersionInternal& ref);
 		~UiVertexDataLayerVersion();
 
-		std::optional<size_t> AddObject(const ObjectData& newObjectData);
+		std::optional<size_t> AddObject(const UiObjectData& newObjectData);
 
 	private:
 		UiVertexDataLayerVersionInternal& _internal;
