@@ -1,14 +1,15 @@
 #include "MainDNIpch.h"
 #include "UiVertexDataLayerVersionInternal.h"
 
+#include "TextureDataMainInternal.h"
+#include "UiObjectBufferData.h"
 #include "UiObjectDataInternal.h"
 
 #include "../Common/MaxDepthValue.h"
 
 #include "../../../Include/Main/UiObjectData.h"
 
-#include "TextureDataMainInternal.h"
-#include "UiObjectBufferData.h"
+#include "../../../Include/Common/TextureReferenceData.h"
 
 #include <Miscellaneous/Bool64.h>
 
@@ -117,6 +118,73 @@ namespace JJs2DEngine
 	IDObject<VS::AutoCleanupVertexBuffer> UiVertexDataLayerVersionInternal::GetVertexBufferID()
 	{
 		return _vertexBuffer;
+	}
+
+	size_t UiVertexDataLayerVersionInternal::WriteDataToBuffer(std::optional<IDObject<VS::AutoCleanupStagingBuffer>> stagingBufferID)
+	{
+		assert(_changed == Misc::BOOL64_TRUE || _changed == Misc::BOOL64_FALSE);
+
+		if (_changed != Misc::BOOL64_TRUE)
+			return 0;
+
+		size_t writtenSize = 0;
+
+		std::vector<UiObjectBufferData> dataToWrite;
+		dataToWrite.resize(_usedVertexAmount);
+
+		size_t foundVertexes = 0;
+		size_t currentListIndex = 0;
+		while (foundVertexes < _usedVertexAmount)
+		{
+			if (currentListIndex >= _objectList.size())
+				throw std::runtime_error("UiVertexDataLayerVersionInternal::WriteDataToBuffer Error: Program failed to find all objects in a layer!");
+
+			if (_objectList[currentListIndex].has_value())
+			{
+				auto& objectToWrite = dataToWrite[foundVertexes];
+				auto& inputObject = _objectList[currentListIndex].value();
+
+				objectToWrite.texCoords = inputObject.textureDataPointer->textureCoords;
+				objectToWrite.texSize = inputObject.textureDataPointer->textureSize * inputObject.texturesSizeInTile;
+
+				float depthMantissa = static_cast<float>(inputObject.depthUNORM) / static_cast<float>(maxVertexMaximumValue);
+
+				float depthExponent = 0.5f;
+				size_t layerDepthRemaining = _layersDepth;
+				while (layerDepthRemaining > 0)
+				{
+					size_t shiftSize = 24;
+					if (layerDepthRemaining < shiftSize)
+						shiftSize = layerDepthRemaining;
+
+					depthExponent /= static_cast<float>(1 << shiftSize);
+					layerDepthRemaining -= shiftSize;
+				}
+
+				objectToWrite.pos = glm::vec4(inputObject.objectsPositionOnScreen, glm::vec2(depthMantissa * depthExponent, 1.0f));
+				objectToWrite.size = inputObject.objectsSizeOnScreen;
+
+				objectToWrite.texLayer = inputObject.textureDataPointer->textureLayer;
+				objectToWrite.texIndex = inputObject.textureDataPointer->textureIndex;
+
+				foundVertexes++;
+			}
+
+			currentListIndex++;
+		}
+
+		writtenSize = sizeof(dataToWrite[0]) * dataToWrite.size();
+
+		if (stagingBufferID.has_value())
+		{
+			_dataBufferList.WriteToStagingBuffer(stagingBufferID.value(), 0, *reinterpret_cast<const unsigned char*>(dataToWrite.data()), writtenSize);
+		}
+		else
+		{
+			_dataBufferList.WriteToVertexBuffer(_vertexBuffer, 0, *reinterpret_cast<const unsigned char*>(dataToWrite.data()), writtenSize);
+		}
+
+		return writtenSize;
 	}
 
 }

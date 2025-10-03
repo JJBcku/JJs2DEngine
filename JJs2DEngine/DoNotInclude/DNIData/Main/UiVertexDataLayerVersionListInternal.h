@@ -30,6 +30,8 @@ namespace JJs2DEngine
 		UiVertexDataLayerVersionListInternal& operator=(const UiVertexDataLayerVersionListInternal& rhs) noexcept = delete;
 		UiVertexDataLayerVersionListInternal& operator=(UiVertexDataLayerVersionListInternal&& rhs) noexcept = delete;
 
+		void WriteDataToBuffer();
+
 		UiVertexDataLayerVersionInternal& GetLayersVersion(size_t versionIndex);
 
 		const UiVertexDataLayerVersionInternal& GetLayersVersion(size_t versionIndex) const;

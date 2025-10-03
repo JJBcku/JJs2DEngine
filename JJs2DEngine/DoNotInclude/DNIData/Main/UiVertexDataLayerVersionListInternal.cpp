@@ -80,6 +80,15 @@ namespace JJs2DEngine
 		_memoryObjectsList.FreeMemory(_vertexMemoryID, false, false);
 	}
 
+	void UiVertexDataLayerVersionListInternal::WriteDataToBuffer()
+	{
+		if (_activeLayer >= _versionList.size())
+			throw std::runtime_error("UiVertexDataLayerVersionListInternal::WriteDataToBuffer Error: Program tried to access a non-existent layer version!");
+
+		auto& layer = _versionList[_activeLayer];
+		layer->WriteDataToBuffer(_stagingBufferID);
+	}
+
 	UiVertexDataLayerVersionInternal& UiVertexDataLayerVersionListInternal::GetLayersVersion(size_t versionIndex)
 	{
 		if (versionIndex >= _versionList.size())

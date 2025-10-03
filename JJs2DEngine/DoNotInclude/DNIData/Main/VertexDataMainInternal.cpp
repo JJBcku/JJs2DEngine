@@ -37,6 +37,19 @@ namespace JJs2DEngine
 		return ret;
 	}
 
+	void VertexDataMainInternal::TransferVertexData()
+	{
+		for (size_t i = 0; i < _layerOrderList.size(); ++i)
+		{
+			if (_layerOrderList[i].type != VertexLayerOrderIDType::UI_LAYER)
+				continue;
+
+			auto& layer = _uiLayersList.GetObject(_layerOrderList[i].UiLayerID.ID);
+
+			layer->WriteDataToBuffer();
+		}
+	}
+
 	UiVertexDataLayerVersionListInternal& VertexDataMainInternal::GetUiVertexDataLayerVersionList(IDObject<UiVertexDataLayerVersionListPointer> ID)
 	{
 		return *_uiLayersList.GetObject(ID);

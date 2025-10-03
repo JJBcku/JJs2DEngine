@@ -287,6 +287,7 @@ namespace JJs2DEngine
 
 	void MainInternal::RenderSingleFrame()
 	{
+		_vertexDataMain->TransferVertexData();
 	}
 
 	bool MainInternal::RenderingShouldBePaused() const

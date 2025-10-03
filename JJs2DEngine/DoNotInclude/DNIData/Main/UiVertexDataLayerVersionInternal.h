@@ -31,6 +31,8 @@ namespace JJs2DEngine
 
 		IDObject<VS::AutoCleanupVertexBuffer> GetVertexBufferID();
 
+		size_t WriteDataToBuffer(std::optional<IDObject<VS::AutoCleanupStagingBuffer>> stagingBufferID);
+
 	private:
 		TextureDataMainInternal& _textureDataList;
 		VS::DataBufferLists _dataBufferList;
