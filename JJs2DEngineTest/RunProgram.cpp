@@ -45,7 +45,7 @@ void RunProgram()
 		}
 		else
 		{
-			main.RunSingleFrame();
+			main.RenderSingleFrame();
 		}
 
 		if (!fullscreenKey.empty())

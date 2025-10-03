@@ -46,9 +46,9 @@ namespace JJs2DEngine
 		_internal->WaitForIdleDevice();
 	}
 
-	void Main::RunSingleFrame()
+	void Main::RenderSingleFrame()
 	{
-		_internal->RunSingleFrame();
+		_internal->RenderSingleFrame();
 	}
 
 	bool Main::RenderingShouldBePaused() const

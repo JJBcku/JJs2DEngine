@@ -32,7 +32,7 @@ namespace JJs2DEngine
 		void HandleEvents();
 		void WaitForIdleDevice() const;
 
-		void RunSingleFrame();
+		void RenderSingleFrame();
 		bool RenderingShouldBePaused() const;
 
 		InputDataList GetInputDataList();

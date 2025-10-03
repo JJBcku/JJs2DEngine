@@ -285,7 +285,7 @@ namespace JJs2DEngine
 		_windowData->ChangeFullscreen(newFullscreen);
 	}
 
-	void MainInternal::RunSingleFrame()
+	void MainInternal::RenderSingleFrame()
 	{
 	}
 
