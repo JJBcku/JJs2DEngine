@@ -2,11 +2,14 @@
 #include "VertexDataMainInternal.h"
 
 #include "UiVertexDataLayerVersionListInternal.h"
+
+#include "../Common/MaxDepthValue.h"
+
 #include "../../../Include/Main/VertexLayerOrderID.h"
 
 namespace JJs2DEngine
 {
-	constexpr size_t maxActiveLayersCount = 126;
+	constexpr size_t maxActiveLayersCount = maxLayerDepth + 1;
 
 	VertexDataMainInternal::VertexDataMainInternal(TextureDataMainInternal& textureDataList, VS::DataBufferLists dataBufferList, VS::MemoryObjectsList memoryObjectsList) :
 		_textureDataList(textureDataList), _dataBufferList(dataBufferList), _memoryObjectsList(memoryObjectsList), _uiLayersList(maxActiveLayersCount)
