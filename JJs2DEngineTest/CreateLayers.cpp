@@ -20,12 +20,12 @@ void CreateLayers(MainDataCollection& data)
 	auto uiVertexLayer = uiVertexLayerVersionList.GetLayersVersion(0);
 
 	JJ2DE::UiObjectData object;
-	object.screenWidthUNORM = JJ2DE::onePointZeroUNORMValue / 2;
-	object.screenHeightUNORM = JJ2DE::onePointZeroUNORMValue / 2;
-	object.screenPositionXSNORM = 0;
-	object.screenPositionYSNORM = 0;
-	object.textureWidthUNORM = JJ2DE::onePointZeroUNORMValue;
-	object.textureHeightUNORM = JJ2DE::onePointZeroUNORMValue;
+	object.screenWidth_UNORM = JJ2DE::onePointZeroUNORMValue / 2;
+	object.screenHeight_UNORM = JJ2DE::onePointZeroUNORMValue / 2;
+	object.screenPositionX_SNORM = 0;
+	object.screenPositionY_SNORM = 0;
+	object.textureWidth_UNORM = JJ2DE::onePointZeroUNORMValue;
+	object.textureHeight_UNORM = JJ2DE::onePointZeroUNORMValue;
 
 	auto optionalObjectID = uiVertexLayer.AddObject(object);
 

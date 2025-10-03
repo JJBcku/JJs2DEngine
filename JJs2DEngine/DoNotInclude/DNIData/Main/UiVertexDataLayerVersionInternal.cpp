@@ -24,6 +24,12 @@ namespace JJs2DEngine
 		_nextDepthValueUNORM = 0;
 		_layersDepth = layersDepth;
 
+		if (maxVertexAmount > maxVertexMaximumValue)
+			throw std::runtime_error("UiVertexDataLayerVersionInternal::UiVertexDataLayerVersionInternal Error: Layer was given too big max vertex value!");
+
+		if (layersDepth > maxLayerDepth)
+			throw std::runtime_error("UiVertexDataLayerVersionInternal::UiVertexDataLayerVersionInternal Error: Layer was given too big layers depth value!");
+
 		_unusedIndexes.reserve(maxVertexAmount);
 		for (size_t i = 0; i < maxVertexAmount; ++i)
 		{
@@ -58,21 +64,21 @@ namespace JJs2DEngine
 
 		UiObjectDataInternal added;
 
-		float textureWidth = static_cast<float>(newObjectData.textureWidthUNORM);
+		float textureWidth = static_cast<float>(newObjectData.textureWidth_UNORM);
 		textureWidth /= static_cast<float>(onePointZeroUNORMValue);
-		float textureHeight = static_cast<float>(newObjectData.textureHeightUNORM);
+		float textureHeight = static_cast<float>(newObjectData.textureHeight_UNORM);
 		textureHeight /= static_cast<float>(onePointZeroUNORMValue);
 		added.texturesSizeInTile = glm::vec2(textureWidth, textureHeight);
 
-		float screenWidth = static_cast<float>(newObjectData.screenWidthUNORM);
+		float screenWidth = static_cast<float>(newObjectData.screenWidth_UNORM);
 		screenWidth /= static_cast<float>(onePointZeroUNORMValue);
-		float screenHeight = static_cast<float>(newObjectData.screenHeightUNORM);
+		float screenHeight = static_cast<float>(newObjectData.screenHeight_UNORM);
 		screenHeight /= static_cast<float>(onePointZeroUNORMValue);
 		added.objectsSizeOnScreen = glm::vec2(screenWidth, screenHeight);
 
-		float screenX = static_cast<float>(newObjectData.screenPositionXSNORM);
+		float screenX = static_cast<float>(newObjectData.screenPositionX_SNORM);
 		screenX /= static_cast<float>(onePointZeroSNORMValue);
-		float screenY = static_cast<float>(newObjectData.screenPositionYSNORM);
+		float screenY = static_cast<float>(newObjectData.screenPositionY_SNORM);
 		screenY /= static_cast<float>(onePointZeroSNORMValue);
 		added.objectsPositionOnScreen = glm::vec2(screenX, screenY);
 

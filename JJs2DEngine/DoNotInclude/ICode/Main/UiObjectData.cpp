@@ -5,14 +5,14 @@ namespace JJs2DEngine
 {
 	UiObjectData::UiObjectData()
 	{
-		textureWidthUNORM = 0;
-		textureHeightUNORM = 0;
+		textureWidth_UNORM = 0;
+		textureHeight_UNORM = 0;
 
-		screenWidthUNORM = 0;
-		screenHeightUNORM = 0;
+		screenWidth_UNORM = 0;
+		screenHeight_UNORM = 0;
 
-		screenPositionXSNORM = 0;
-		screenPositionYSNORM = 0;
+		screenPositionX_SNORM = 0;
+		screenPositionY_SNORM = 0;
 
 		textureIndex = { 0, 0 };
 		inPreloadedTexturesList = false;

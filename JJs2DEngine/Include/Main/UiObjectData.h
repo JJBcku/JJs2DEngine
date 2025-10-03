@@ -11,14 +11,14 @@ namespace JJs2DEngine
 
 	struct UiObjectData
 	{
-		uint32_t textureWidthUNORM;
-		uint32_t textureHeightUNORM;
+		uint32_t textureWidth_UNORM;
+		uint32_t textureHeight_UNORM;
 
-		uint32_t screenWidthUNORM;
-		uint32_t screenHeightUNORM;
+		uint32_t screenWidth_UNORM;
+		uint32_t screenHeight_UNORM;
 
-		int32_t screenPositionXSNORM;
-		int32_t screenPositionYSNORM;
+		int32_t screenPositionX_SNORM;
+		int32_t screenPositionY_SNORM;
 
 		std::pair<size_t, size_t> textureIndex;
 		bool inPreloadedTexturesList;
