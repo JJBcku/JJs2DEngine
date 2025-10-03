@@ -305,63 +305,6 @@ namespace JJs2DEngine
 		return *_vertexDataMain;
 	}
 
-	/*void MainInternal::RecreateDevice(const DeviceSettings& deviceSettings)
-	{
-		if (_currentDevicesSettings.has_value())
-		{
-			_currentDevicesSettings.reset();
-			_pipelineList.reset();
-		}
-
-		if (deviceSettings.deviceIndex >= _deviceList.size())
-			throw std::runtime_error("MainInternal::RecreateDevice Error: Function was given an erroneous device index value!");
-
-		const auto& deviceData = _deviceList[deviceSettings.deviceIndex];
-
-		VS::LogicalDeviceCreationData creationData;
-		creationData.physicalGPUIndex = deviceData.deviceIndex;
-		creationData.queuesCreationInfo.reserve(2);
-
-		VS::QueueCreationData queueData;
-		queueData.queuesPriorities.push_back(std::numeric_limits<uint16_t>::max());
-		_graphicsQueueIndex = 0;
-
-		_transferOnlyQueueIndex.reset();
-
-		if (deviceData.queueSupport.noVideoCodingGraphicQueueFamily.has_value())
-		{
-			queueData.queuesFamily = deviceData.queueSupport.noVideoCodingGraphicQueueFamily.value();
-			_transferOnlyQueueIndex = 1;
-		}
-		else
-		{
-			queueData.queuesFamily = deviceData.queueSupport.videoCodingGraphicQueueFamily.value();
-			_transferOnlyQueueIndex = 1;
-		}
-
-		creationData.queuesCreationInfo.push_back(queueData);
-
-		if (deviceData.queueSupport.transferQueueFamily.has_value())
-		{
-			queueData.queuesFamily = deviceData.queueSupport.transferQueueFamily.value();
-			creationData.queuesCreationInfo.push_back(queueData);
-		}
-		else if (deviceData.queueSupport.computeQueueFamily.has_value())
-		{
-			queueData.queuesFamily = deviceData.queueSupport.computeQueueFamily.value();
-			creationData.queuesCreationInfo.push_back(queueData);
-		}
-
-		creationData.requestedExtensionPacks.swapchainBase = true;
-
-		auto instance = _VSMain->GetInstance();
-		instance.CreateLogicalDevice(creationData, {});
-
-		_currentDevicesSettings = deviceSettings;
-		_pipelineList = std::make_unique<RenderDataInternal>(deviceSettings.currentPipelineSettings, deviceSettings.preInitializedPipelineSettings,
-			instance.GetChoosenDevicesMainClass(), _VSMain->GetSharedDataMainList());
-	}*/
-
 	void MainInternal::CreateInstance(const MainInitializationData& initData)
 	{
 		auto availableExtensionPacks = _VSMain->GetAvailableInstanceExtensionPacks();

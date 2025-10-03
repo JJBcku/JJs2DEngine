@@ -46,7 +46,6 @@ namespace JJs2DEngine
 		const std::vector<DeviceData>& GetDeviceList() const;
 
 		void CreateDevice(const DeviceSettings& deviceSettings);
-		//void RecreateDevice(const DeviceSettings& deviceSettings);
 
 		void UpdateCurrentTime();
 
