@@ -285,6 +285,10 @@ namespace JJs2DEngine
 		_windowData->ChangeFullscreen(newFullscreen);
 	}
 
+	void MainInternal::RunSingleFrame()
+	{
+	}
+
 	InputDataListInternal& MainInternal::GetInputDataList()
 	{
 		return *_inputDataList;

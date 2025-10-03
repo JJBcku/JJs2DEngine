@@ -36,6 +36,8 @@ void RunProgram()
 
 		quit = !keyList.ESCkey.GetKeyPressList().empty();
 
+		main.RunSingleFrame();
+
 		if (!fullscreenKey.empty())
 		{
 			if (fullscreen == Misc::BOOL64_FALSE)

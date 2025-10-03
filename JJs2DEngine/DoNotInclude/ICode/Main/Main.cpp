@@ -46,6 +46,11 @@ namespace JJs2DEngine
 		_internal->WaitForIdleDevice();
 	}
 
+	void Main::RunSingleFrame()
+	{
+		_internal->RunSingleFrame();
+	}
+
 	InputDataList Main::GetInputDataList()
 	{
 		return _internal->GetInputDataList();

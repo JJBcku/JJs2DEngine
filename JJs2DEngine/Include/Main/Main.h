@@ -32,6 +32,8 @@ namespace JJs2DEngine
 		void HandleEvents();
 		void WaitForIdleDevice() const;
 
+		void RunSingleFrame();
+
 		InputDataList GetInputDataList();
 		const InputDataList GetInputDataList() const;
 
