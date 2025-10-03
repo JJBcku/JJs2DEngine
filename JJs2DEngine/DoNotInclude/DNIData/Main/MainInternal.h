@@ -57,6 +57,7 @@ namespace JJs2DEngine
 		void ChangeFullscreen(Misc::Bool64Values newFullscreen);
 
 		void RunSingleFrame();
+		bool RenderingShouldBePaused() const;
 
 		InputDataListInternal& GetInputDataList();
 		const InputDataListInternal& GetInputDataList() const;

@@ -1,16 +1,19 @@
 #include "pch.h"
 #include "RunProgram.h"
 
-#include <Miscellaneous/Bool64.h>
+#include "MainDataCollection.h"
+
+#include "CreateMainClass.h"
+#include "CreateLayers.h"
 
 #include <Main.h>
 #include <InputDataList.h>
 #include <SpecialKeysDataList.h>
 
-#include "MainDataCollection.h"
+#include <Miscellaneous/Bool64.h>
 
-#include "CreateMainClass.h"
-#include "CreateLayers.h"
+#include <chrono>
+#include <thread>
 
 void RunProgram()
 {
@@ -36,7 +39,14 @@ void RunProgram()
 
 		quit = !keyList.ESCkey.GetKeyPressList().empty();
 
-		main.RunSingleFrame();
+		if (main.RenderingShouldBePaused())
+		{
+			std::this_thread::sleep_for(std::chrono::milliseconds(10));
+		}
+		else
+		{
+			main.RunSingleFrame();
+		}
 
 		if (!fullscreenKey.empty())
 		{

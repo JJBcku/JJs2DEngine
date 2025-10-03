@@ -62,7 +62,7 @@ namespace JJs2DEngine
 
 		_windowID = _windowList.CreateWindow(windowCreationData);
 
-		auto window = _windowList.GetWindow(_windowID);
+		_window.emplace(std::move(_windowList.GetWindow(_windowID)));
 
 		VS::SwapchainCreationData swapchainCreationData;
 
@@ -73,7 +73,7 @@ namespace JJs2DEngine
 
 		swapchainCreationData.imageAmount = static_cast<uint32_t>(swapchainData.framesInFlight);
 
-		window.CreateSwapchain(swapchainCreationData, true);
+		_window->CreateSwapchain(swapchainCreationData, true);
 
 		_colorMemoryProperties.reserve(7);
 		_colorMemoryProperties.push_back(VS::DEVICE_LOCAL);
@@ -248,9 +248,13 @@ namespace JJs2DEngine
 		if (_fullscreen == newFullscreen)
 			return;
 
-		auto window = _windowList.GetWindow(_windowID);
-		window.SetFullscreen(newFullscreen);
+		_window->SetFullscreen(newFullscreen);
 		_fullscreen = newFullscreen;
+	}
+
+	bool WindowDataInternal::RenderingShouldBePaused() const
+	{
+		return _window->IsMinimized() || _window->IsHidden();
 	}
 
 	void WindowDataInternal::RedoSwapchain(VS::DataFormatSetIndependentID colorFormat, uint32_t framesInFlight)
@@ -264,8 +268,7 @@ namespace JJs2DEngine
 
 		swapchainCreationData.imageAmount = framesInFlight;
 
-		auto window = _windowList.GetWindow(_windowID);
-		window.CreateSwapchain(swapchainCreationData, false);
+		_window->CreateSwapchain(swapchainCreationData, false);
 	}
 
 	void WindowDataInternal::RedoPerFrameData(VS::DataFormatSetIndependentID colorFormat, uint32_t framesInFlight, uint32_t width, uint32_t height)

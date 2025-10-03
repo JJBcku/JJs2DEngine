@@ -51,6 +51,11 @@ namespace JJs2DEngine
 		_internal->RunSingleFrame();
 	}
 
+	bool Main::RenderingShouldBePaused() const
+	{
+		return _internal->RenderingShouldBePaused();
+	}
+
 	InputDataList Main::GetInputDataList()
 	{
 		return _internal->GetInputDataList();

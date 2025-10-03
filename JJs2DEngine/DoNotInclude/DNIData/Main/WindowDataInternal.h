@@ -11,12 +11,14 @@
 #include <VulkanSimplified/VSDevice/VSMemoryObjectsList.h>
 #include <VulkanSimplified/VSDevice/VSSynchronizationDataLists.h>
 #include <VulkanSimplified/VSDevice/VSWindowList.h>
+#include <VulkanSimplified/VSDevice/VSWindow.h>
 #include <VulkanSimplified/VSDevice/VSDescriptorDataLists.h>
 
 #include <vector>
 #include <string>
 #include <stdint.h>
 #include <compare>
+#include <optional>
 
 namespace JJs2DEngine
 {
@@ -70,12 +72,16 @@ namespace JJs2DEngine
 
 		void ChangeFullscreen(Misc::Bool64Values newFullscreen);
 
+		bool RenderingShouldBePaused() const;
+
 	private:
 		VS::WindowList _windowList;
 		VS::SynchronizationDataLists _synchroList;
 		VS::ImageDataLists _imageList;
 		VS::MemoryObjectsList _memoryList;
 		VS::DescriptorDataLists _descriptorList;
+
+		std::optional<VS::Window> _window;
 
 		std::string _windowTitle;
 		uint32_t _windowWidth;
