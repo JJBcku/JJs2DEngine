@@ -17,21 +17,31 @@ namespace JJs2DEngine
 
 	class TextureDataMainInternal;
 
+	struct TransferFrameData
+	{
+		Misc::Bool64 changed;
+		IDObject<VS::AutoCleanupVertexBuffer> vertexBuffer;
+
+		TransferFrameData();
+		~TransferFrameData();
+	};
+
 	class UiVertexDataLayerVersionInternal
 	{
 	public:
-		UiVertexDataLayerVersionInternal(TextureDataMainInternal& textureDataList, VS::DataBufferLists& dataBufferList, size_t maxVertexAmount, size_t layersDepth);
+		UiVertexDataLayerVersionInternal(TextureDataMainInternal& textureDataList, VS::DataBufferLists& dataBufferList, size_t maxVertexAmount, size_t layersDepth, size_t transferFrameAmount);
 		~UiVertexDataLayerVersionInternal();
 
 		std::optional<size_t> AddObject(const UiObjectData& newObjectData);
 
 		uint32_t GetBuffersMask() const;
-		uint64_t GetMemorySize() const;
+		uint64_t GetSingleBuffersMemorySize() const;
+		uint64_t GetTotalBuffersMemorySize() const;
 		uint64_t GetMemoryAligment() const;
 
-		IDObject<VS::AutoCleanupVertexBuffer> GetVertexBufferID();
+		IDObject<VS::AutoCleanupVertexBuffer> GetVertexBufferID(size_t transferFrameIndice);
 
-		size_t WriteDataToBuffer(std::optional<IDObject<VS::AutoCleanupStagingBuffer>> stagingBufferID);
+		size_t WriteDataToBuffer(std::optional<IDObject<VS::AutoCleanupStagingBuffer>> stagingBufferID, size_t transferFrameIndice);
 
 	private:
 		TextureDataMainInternal& _textureDataList;
@@ -44,11 +54,11 @@ namespace JJs2DEngine
 		size_t _layersDepth;
 
 		uint64_t _buffersMemoryMask;
-		uint64_t _buffersMemorySize;
+		uint64_t _singleBuffersMemorySize;
 		uint64_t _buffersMemoryAligment;
 
-		Misc::Bool64 _changed;
+		uint64_t _totalBuffersMemorySize;
 
-		IDObject<VS::AutoCleanupVertexBuffer> _vertexBuffer;
+		std::vector<TransferFrameData> _frameData;
 	};
 }

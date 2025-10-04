@@ -18,7 +18,7 @@ namespace JJs2DEngine
 	class VertexDataMainInternal
 	{
 	public:
-		VertexDataMainInternal(TextureDataMainInternal& textureDataList, VS::DataBufferLists dataBufferList, VS::MemoryObjectsList memoryObjectsList);
+		VertexDataMainInternal(TextureDataMainInternal& textureDataList, VS::DataBufferLists dataBufferList, VS::MemoryObjectsList memoryObjectsList, size_t transferFrameAmount);
 		~VertexDataMainInternal();
 
 		IDObject<UiVertexDataLayerVersionListPointer> AddUiLayerVersionList(const std::vector<size_t>& versionsMaxVerticesList, size_t addOnReserving);
@@ -35,6 +35,8 @@ namespace JJs2DEngine
 		VS::MemoryObjectsList _memoryObjectsList;
 
 		UnsortedIDVector<UiVertexDataLayerVersionListPointer> _uiLayersList;
+		size_t _transferFrameAmount;
+		size_t _currentTranferFrame;
 
 		std::vector<VertexLayerOrderID> _layerOrderList;
 	};

@@ -18,8 +18,17 @@
 
 namespace JJs2DEngine
 {
+	TransferFrameData::TransferFrameData()
+	{
+		changed = Misc::BOOL64_FALSE;
+	}
+
+	JJs2DEngine::TransferFrameData::~TransferFrameData()
+	{
+	}
+
 	UiVertexDataLayerVersionInternal::UiVertexDataLayerVersionInternal(TextureDataMainInternal& textureDataList, VS::DataBufferLists& dataBufferList,
-		size_t maxVertexAmount, size_t layersDepth) : _textureDataList(textureDataList), _dataBufferList(dataBufferList), _objectList(maxVertexAmount)
+		size_t maxVertexAmount, size_t layersDepth, size_t transferFrameAmount) : _textureDataList(textureDataList), _dataBufferList(dataBufferList), _objectList(maxVertexAmount)
 	{
 		_usedVertexAmount = 0;
 		_nextDepthValueUNORM = 0;
@@ -37,18 +46,31 @@ namespace JJs2DEngine
 			_unusedIndexes.push_back(maxVertexAmount - (i + 1));
 		}
 
-		_vertexBuffer = _dataBufferList.AddVertexBuffer(sizeof(UiObjectBufferData) * _objectList.size(), {}, 0x10);
+		_frameData.resize(transferFrameAmount);
+		for (size_t i = 0; i < _frameData.size(); ++i)
+		{
+			_frameData[i].vertexBuffer = _dataBufferList.AddVertexBuffer(sizeof(UiObjectBufferData) * _objectList.size(), {}, 0x10);
+		}
 
-		_buffersMemoryMask = _dataBufferList.GetVertexBuffersMemoryTypeMask(_vertexBuffer);;
-		_buffersMemorySize = _dataBufferList.GetVertexBuffersSize(_vertexBuffer);
-		_buffersMemoryAligment = _dataBufferList.GetVertexBuffersRequiredAligment(_vertexBuffer);
+		_buffersMemoryMask = _dataBufferList.GetVertexBuffersMemoryTypeMask(_frameData[0].vertexBuffer);
+		_singleBuffersMemorySize = _dataBufferList.GetVertexBuffersSize(_frameData[0].vertexBuffer);
+		_buffersMemoryAligment = _dataBufferList.GetVertexBuffersRequiredAligment(_frameData[0].vertexBuffer);
 
-		_changed = Misc::Bool64Values::BOOL64_FALSE;
+		_totalBuffersMemorySize = _singleBuffersMemorySize;
+		uint64_t totalBuffersMemorySizeMod = _totalBuffersMemorySize % _buffersMemoryAligment;
+		if (totalBuffersMemorySizeMod != 0)
+		{
+			_totalBuffersMemorySize += _buffersMemoryAligment - totalBuffersMemorySizeMod;
+		}
+		_totalBuffersMemorySize *= _frameData.size();
 	}
 
 	UiVertexDataLayerVersionInternal::~UiVertexDataLayerVersionInternal()
 	{
-		_dataBufferList.RemoveVertexBuffer(_vertexBuffer, false);
+		for (size_t i = 0; i < _frameData.size(); ++i)
+		{
+			_dataBufferList.RemoveVertexBuffer(_frameData[i].vertexBuffer, false);
+		}
 	}
 
 	std::optional<size_t> UiVertexDataLayerVersionInternal::AddObject(const UiObjectData& newObjectData)
@@ -95,7 +117,10 @@ namespace JJs2DEngine
 		_nextDepthValueUNORM++;
 		_usedVertexAmount++;
 
-		_changed = Misc::Bool64Values::BOOL64_TRUE;
+		for (size_t i = 0; i < _frameData.size(); ++i)
+		{
+			_frameData[i].changed = Misc::Bool64Values::BOOL64_TRUE;
+		}
 
 		return ret;
 	}
@@ -105,9 +130,14 @@ namespace JJs2DEngine
 		return static_cast<uint32_t>(_buffersMemoryMask);
 	}
 
-	uint64_t UiVertexDataLayerVersionInternal::GetMemorySize() const
+	uint64_t UiVertexDataLayerVersionInternal::GetSingleBuffersMemorySize() const
 	{
-		return _buffersMemorySize;
+		return _singleBuffersMemorySize;
+	}
+
+	uint64_t UiVertexDataLayerVersionInternal::GetTotalBuffersMemorySize() const
+	{
+		return _totalBuffersMemorySize;
 	}
 
 	uint64_t UiVertexDataLayerVersionInternal::GetMemoryAligment() const
@@ -115,16 +145,22 @@ namespace JJs2DEngine
 		return _buffersMemoryAligment;
 	}
 
-	IDObject<VS::AutoCleanupVertexBuffer> UiVertexDataLayerVersionInternal::GetVertexBufferID()
+	IDObject<VS::AutoCleanupVertexBuffer> UiVertexDataLayerVersionInternal::GetVertexBufferID(size_t transferFrameIndice)
 	{
-		return _vertexBuffer;
+		if (transferFrameIndice >= _frameData.size())
+			throw std::runtime_error("UiVertexDataLayerVersionInternal::GetVertexBufferID Error: Program tried to access an non-existent frame's data!");
+
+		return _frameData[transferFrameIndice].vertexBuffer;
 	}
 
-	size_t UiVertexDataLayerVersionInternal::WriteDataToBuffer(std::optional<IDObject<VS::AutoCleanupStagingBuffer>> stagingBufferID)
+	size_t UiVertexDataLayerVersionInternal::WriteDataToBuffer(std::optional<IDObject<VS::AutoCleanupStagingBuffer>> stagingBufferID, size_t transferFrameIndice)
 	{
-		assert(_changed == Misc::BOOL64_TRUE || _changed == Misc::BOOL64_FALSE);
+		if (transferFrameIndice >= _frameData.size())
+			throw std::runtime_error("UiVertexDataLayerVersionInternal::WriteDataToBuffer Error: Program tried to access an non-existent frame's data!");
 
-		if (_changed != Misc::BOOL64_TRUE)
+		assert(_frameData[transferFrameIndice].changed == Misc::BOOL64_TRUE || _frameData[transferFrameIndice].changed == Misc::BOOL64_FALSE);
+
+		if (_frameData[transferFrameIndice].changed != Misc::BOOL64_TRUE)
 			return 0;
 
 		size_t writtenSize = 0;
@@ -181,8 +217,10 @@ namespace JJs2DEngine
 		}
 		else
 		{
-			_dataBufferList.WriteToVertexBuffer(_vertexBuffer, 0, *reinterpret_cast<const unsigned char*>(dataToWrite.data()), writtenSize);
+			_dataBufferList.WriteToVertexBuffer(_frameData[transferFrameIndice].vertexBuffer, 0, *reinterpret_cast<const unsigned char*>(dataToWrite.data()), writtenSize);
 		}
+
+		_frameData[transferFrameIndice].changed = Misc::BOOL64_FALSE;
 
 		return writtenSize;
 	}

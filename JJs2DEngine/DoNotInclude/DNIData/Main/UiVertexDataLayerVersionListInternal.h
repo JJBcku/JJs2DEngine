@@ -21,7 +21,7 @@ namespace JJs2DEngine
 	{
 	public:
 		UiVertexDataLayerVersionListInternal(TextureDataMainInternal& textureDataList, VS::DataBufferLists& dataBufferList, VS::MemoryObjectsList& memoryObjectsList,
-			const std::vector<size_t>& versionsMaxVerticesList, size_t layersDepth);
+			const std::vector<size_t>& versionsMaxVerticesList, size_t layersDepth, size_t transferFrameAmount);
 		~UiVertexDataLayerVersionListInternal();
 
 		UiVertexDataLayerVersionListInternal(const UiVertexDataLayerVersionListInternal& rhs) noexcept = delete;
@@ -30,7 +30,7 @@ namespace JJs2DEngine
 		UiVertexDataLayerVersionListInternal& operator=(const UiVertexDataLayerVersionListInternal& rhs) noexcept = delete;
 		UiVertexDataLayerVersionListInternal& operator=(UiVertexDataLayerVersionListInternal&& rhs) noexcept = delete;
 
-		void WriteDataToBuffer();
+		void WriteDataToBuffer(size_t transferFrameIndice);
 
 		UiVertexDataLayerVersionInternal& GetLayersVersion(size_t versionIndex);
 
@@ -45,7 +45,7 @@ namespace JJs2DEngine
 
 		VS::MemoryAllocationFullID _vertexMemoryID;
 
-		std::optional<IDObject<VS::AutoCleanupStagingBuffer>> _stagingBufferID;
+		std::optional<std::vector<IDObject<VS::AutoCleanupStagingBuffer>>> _stagingBufferIDs;
 		std::optional<VS::MemoryAllocationFullID> _stagingMemoryID;
 	};
 }

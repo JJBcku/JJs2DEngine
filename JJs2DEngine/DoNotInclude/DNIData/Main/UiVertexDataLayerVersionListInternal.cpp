@@ -10,7 +10,7 @@
 namespace JJs2DEngine
 {
 	UiVertexDataLayerVersionListInternal::UiVertexDataLayerVersionListInternal(TextureDataMainInternal& textureDataList, VS::DataBufferLists& dataBufferList,
-		VS::MemoryObjectsList& memoryObjectsList, const std::vector<size_t>& versionsMaxVerticesList, size_t layersDepth) : _dataBufferList(dataBufferList),
+		VS::MemoryObjectsList& memoryObjectsList, const std::vector<size_t>& versionsMaxVerticesList, size_t layersDepth, size_t transferFrameAmount) : _dataBufferList(dataBufferList),
 		_memoryObjectsList(memoryObjectsList)
 	{
 		uint32_t allBuffersMask = std::numeric_limits<uint32_t>::max();
@@ -21,10 +21,10 @@ namespace JJs2DEngine
 		_versionList.reserve(versionsMaxVerticesList.size());
 		for (uint64_t i = 0; i < versionsMaxVerticesList.size(); ++i)
 		{
-			_versionList.push_back(std::make_unique<UiVertexDataLayerVersionInternal>(textureDataList, dataBufferList, versionsMaxVerticesList[i], layersDepth));
+			_versionList.push_back(std::make_unique<UiVertexDataLayerVersionInternal>(textureDataList, dataBufferList, versionsMaxVerticesList[i], layersDepth, transferFrameAmount));
 
 			uint32_t buffersMask = _versionList.back()->GetBuffersMask();
-			uint64_t buffersSize = _versionList.back()->GetMemorySize();
+			uint64_t buffersTotalSize = _versionList.back()->GetTotalBuffersMemorySize();
 			uint64_t buffersAligment = _versionList.back()->GetMemoryAligment();
 
 			allBuffersMask = allBuffersMask & buffersMask;
@@ -34,10 +34,11 @@ namespace JJs2DEngine
 			{
 				allBuffersSize += buffersAligment - aligmentsMod;
 			}
-			allBuffersSize += buffersSize;
+			allBuffersSize += buffersTotalSize;
 
-			if (buffersSize > biggestBufferSize)
-				biggestBufferSize = buffersSize;
+			uint64_t singleBuffersSize = _versionList.back()->GetSingleBuffersMemorySize();
+			if (singleBuffersSize > biggestBufferSize)
+				biggestBufferSize = singleBuffersSize;
 		}
 
 		std::vector<VS::MemoryTypeProperties> acceptableTypes;
@@ -46,29 +47,47 @@ namespace JJs2DEngine
 		acceptableTypes.push_back(VS::DEVICE_LOCAL | VS::HOST_VISIBLE | VS::HOST_COHERENT);
 		acceptableTypes.push_back(VS::HOST_VISIBLE | VS::HOST_COHERENT);
 
-		_vertexMemoryID = _memoryObjectsList.AllocateMemory(allBuffersSize, _versionList.size(), acceptableTypes, allBuffersMask, 0x10);
+		_vertexMemoryID = _memoryObjectsList.AllocateMemory(allBuffersSize, _versionList.size() * transferFrameAmount, acceptableTypes, allBuffersMask);
 
 		for (uint64_t i = 0; i < _versionList.size(); ++i)
 		{
-			auto bufferID = _versionList[i]->GetVertexBufferID();
+			for (size_t j = 0; j < transferFrameAmount; ++j)
+			{
+				auto bufferID = _versionList[i]->GetVertexBufferID(j);
 
-			_dataBufferList.BindVertexBuffer(bufferID, _vertexMemoryID, 0x10);
+				_dataBufferList.BindVertexBuffer(bufferID, _vertexMemoryID);
+			}
 		}
 
 		if (!_memoryObjectsList.IsMemoryMapped(_vertexMemoryID))
 		{
-			_stagingBufferID = _dataBufferList.AddStagingBuffer(biggestBufferSize, {});
-			uint32_t stagingBuffersMemoryMask = _dataBufferList.GetStagingBuffersMemoryTypeMask(_stagingBufferID.value());
-			uint64_t stagingBuffersMemorySize = _dataBufferList.GetStagingBuffersSize(_stagingBufferID.value());
+			_stagingBufferIDs.emplace();
+			_stagingBufferIDs->reserve(transferFrameAmount);
+
+			for (size_t i = 0; i < transferFrameAmount; ++i)
+			{
+				_stagingBufferIDs->push_back(_dataBufferList.AddStagingBuffer(biggestBufferSize, {}));
+			}
+			
+			uint32_t stagingBuffersMemoryMask = _dataBufferList.GetStagingBuffersMemoryTypeMask(_stagingBufferIDs.value()[0]);
+			uint64_t stagingBuffersMemorySize = _dataBufferList.GetStagingBuffersSize(_stagingBufferIDs.value()[0]);
+			uint64_t stagingBuffersMemoryAligment = _dataBufferList.GetStagingBuffersRequiredAligment(_stagingBufferIDs.value()[0]);
+			uint64_t stagingBuffersMemorySizeMod = stagingBuffersMemorySize % stagingBuffersMemoryAligment;
+			if (stagingBuffersMemorySizeMod != 0)
+				stagingBuffersMemorySize += stagingBuffersMemoryAligment - stagingBuffersMemorySizeMod;
+			stagingBuffersMemorySize *= _stagingBufferIDs->size();
 			
 			std::vector<VS::MemoryTypeProperties> acceptableStagingTypes;
 			acceptableStagingTypes.reserve(2);
 			acceptableStagingTypes.push_back(VS::HOST_VISIBLE | VS::HOST_COHERENT);
 			acceptableStagingTypes.push_back(VS::DEVICE_LOCAL | VS::HOST_VISIBLE | VS::HOST_COHERENT);
 
-			_stagingMemoryID = _memoryObjectsList.AllocateMemory(stagingBuffersMemorySize, 1, acceptableStagingTypes, stagingBuffersMemoryMask);
+			_stagingMemoryID = _memoryObjectsList.AllocateMemory(stagingBuffersMemorySize, transferFrameAmount, acceptableStagingTypes, stagingBuffersMemoryMask);
 
-			_dataBufferList.BindStagingBuffer(_stagingBufferID.value(), _stagingMemoryID.value());
+			for (size_t i = 0; i < transferFrameAmount; ++i)
+			{
+				_dataBufferList.BindStagingBuffer(_stagingBufferIDs.value()[i], _stagingMemoryID.value());
+			}
 		}
 
 		_activeLayer = 0;
@@ -80,13 +99,23 @@ namespace JJs2DEngine
 		_memoryObjectsList.FreeMemory(_vertexMemoryID, false, false);
 	}
 
-	void UiVertexDataLayerVersionListInternal::WriteDataToBuffer()
+	void UiVertexDataLayerVersionListInternal::WriteDataToBuffer(size_t transferFrameIndice)
 	{
 		if (_activeLayer >= _versionList.size())
 			throw std::runtime_error("UiVertexDataLayerVersionListInternal::WriteDataToBuffer Error: Program tried to access a non-existent layer version!");
 
 		auto& layer = _versionList[_activeLayer];
-		layer->WriteDataToBuffer(_stagingBufferID);
+		if (_stagingBufferIDs.has_value())
+		{
+			if (transferFrameIndice >= _stagingBufferIDs->size())
+				throw std::runtime_error("UiVertexDataLayerVersionListInternal::WriteDataToBuffer Error: Program tried to access an non-existent frame's data!");
+
+			layer->WriteDataToBuffer(_stagingBufferIDs.value()[transferFrameIndice], transferFrameIndice);
+		}
+		else
+		{
+			layer->WriteDataToBuffer({}, transferFrameIndice);
+		}
 	}
 
 	UiVertexDataLayerVersionInternal& UiVertexDataLayerVersionListInternal::GetLayersVersion(size_t versionIndex)

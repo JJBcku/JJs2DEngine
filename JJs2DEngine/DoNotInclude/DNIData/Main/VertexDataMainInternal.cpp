@@ -11,10 +11,15 @@ namespace JJs2DEngine
 {
 	constexpr size_t maxActiveLayersCount = maxLayerDepth + 1;
 
-	VertexDataMainInternal::VertexDataMainInternal(TextureDataMainInternal& textureDataList, VS::DataBufferLists dataBufferList, VS::MemoryObjectsList memoryObjectsList) :
-		_textureDataList(textureDataList), _dataBufferList(dataBufferList), _memoryObjectsList(memoryObjectsList), _uiLayersList(maxActiveLayersCount)
+	VertexDataMainInternal::VertexDataMainInternal(TextureDataMainInternal& textureDataList, VS::DataBufferLists dataBufferList, VS::MemoryObjectsList memoryObjectsList,
+		size_t transferFrameAmount) : _textureDataList(textureDataList), _dataBufferList(dataBufferList), _memoryObjectsList(memoryObjectsList), _uiLayersList(maxActiveLayersCount)
 	{
 		_layerOrderList.reserve(maxActiveLayersCount);
+		_transferFrameAmount = transferFrameAmount;
+
+		if (_transferFrameAmount <= 0)
+			throw std::runtime_error("VertexDataMainInternal::VertexDataMainInternal Error: Program tried to create zero transfer frames!");
+		_currentTranferFrame = 0;
 	}
 
 	VertexDataMainInternal::~VertexDataMainInternal()
@@ -30,7 +35,7 @@ namespace JJs2DEngine
 			throw std::runtime_error("VertexDataMainInternal::AddUiLayerVersionList Error: Program tried to create an empty version list!");
 
 		auto ret = _uiLayersList.AddObject(std::make_unique<UiVertexDataLayerVersionListInternal>(_textureDataList, _dataBufferList, _memoryObjectsList,
-			versionsMaxVerticesList, _layerOrderList.size()), addOnReserving);
+			versionsMaxVerticesList, _layerOrderList.size(), _transferFrameAmount), addOnReserving);
 
 		_layerOrderList.emplace_back(ret);
 
@@ -46,8 +51,12 @@ namespace JJs2DEngine
 
 			auto& layer = _uiLayersList.GetObject(_layerOrderList[i].UiLayerID.ID);
 
-			layer->WriteDataToBuffer();
+			layer->WriteDataToBuffer(_currentTranferFrame);
 		}
+
+		_currentTranferFrame++;
+		if (_currentTranferFrame >= _transferFrameAmount)
+			_currentTranferFrame = 0;
 	}
 
 	UiVertexDataLayerVersionListInternal& VertexDataMainInternal::GetUiVertexDataLayerVersionList(IDObject<UiVertexDataLayerVersionListPointer> ID)
