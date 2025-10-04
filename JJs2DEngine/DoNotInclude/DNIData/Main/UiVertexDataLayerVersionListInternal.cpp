@@ -97,6 +97,19 @@ namespace JJs2DEngine
 	{
 		_versionList.clear();
 		_memoryObjectsList.FreeMemory(_vertexMemoryID, false, false);
+
+		if (_stagingBufferIDs.has_value())
+		{
+			for (size_t i = 0; i < _stagingBufferIDs->size(); ++i)
+			{
+				_dataBufferList.RemoveStagingBuffer(_stagingBufferIDs.value()[i], false);
+			}
+		}
+
+		if (_stagingMemoryID.has_value())
+		{
+			_memoryObjectsList.FreeMemory(_stagingMemoryID.value(), false, false);
+		}
 	}
 
 	void UiVertexDataLayerVersionListInternal::WriteDataToBuffer(size_t transferFrameIndice)
