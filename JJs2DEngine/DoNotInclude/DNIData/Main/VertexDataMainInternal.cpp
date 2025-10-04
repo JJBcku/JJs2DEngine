@@ -12,7 +12,8 @@ namespace JJs2DEngine
 	constexpr size_t maxActiveLayersCount = maxLayerDepth + 1;
 
 	VertexDataMainInternal::VertexDataMainInternal(TextureDataMainInternal& textureDataList, VS::DataBufferLists dataBufferList, VS::MemoryObjectsList memoryObjectsList,
-		size_t transferFrameAmount) : _textureDataList(textureDataList), _dataBufferList(dataBufferList), _memoryObjectsList(memoryObjectsList), _uiLayersList(maxActiveLayersCount)
+		VS::SynchronizationDataLists synchroList, size_t transferFrameAmount) : _textureDataList(textureDataList), _dataBufferList(dataBufferList), _synchroList(synchroList),
+		_memoryObjectsList(memoryObjectsList), _uiLayersList(maxActiveLayersCount)
 	{
 		_layerOrderList.reserve(maxActiveLayersCount);
 		_transferFrameAmount = transferFrameAmount;
@@ -20,6 +21,15 @@ namespace JJs2DEngine
 		if (_transferFrameAmount <= 0)
 			throw std::runtime_error("VertexDataMainInternal::VertexDataMainInternal Error: Program tried to create zero transfer frames!");
 		_currentTranferFrame = 0;
+
+		_vertexTransferFinishedFences.reserve(transferFrameAmount);
+		_vertexTransferFinshedSemaphores.reserve(transferFrameAmount);
+
+		for (size_t i = 0; i < transferFrameAmount; ++i)
+		{
+			_vertexTransferFinishedFences.push_back(_synchroList.AddFence(true));
+			_vertexTransferFinshedSemaphores.push_back(_synchroList.AddSemaphore());
+		}
 	}
 
 	VertexDataMainInternal::~VertexDataMainInternal()
