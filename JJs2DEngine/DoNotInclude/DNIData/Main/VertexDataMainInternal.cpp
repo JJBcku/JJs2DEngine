@@ -12,8 +12,9 @@ namespace JJs2DEngine
 	constexpr size_t maxActiveLayersCount = maxLayerDepth + 1;
 
 	VertexDataMainInternal::VertexDataMainInternal(TextureDataMainInternal& textureDataList, VS::DataBufferLists dataBufferList, VS::MemoryObjectsList memoryObjectsList,
-		VS::SynchronizationDataLists synchroList, size_t transferFrameAmount) : _textureDataList(textureDataList), _dataBufferList(dataBufferList), _synchroList(synchroList),
-		_memoryObjectsList(memoryObjectsList), _uiLayersList(maxActiveLayersCount)
+		VS::SynchronizationDataLists synchroList, VS::CommandPoolQFGroupList transferQFGroup, uint32_t transferFrameAmount, size_t transferQueueID) :
+		_textureDataList(textureDataList), _dataBufferList(dataBufferList), _memoryObjectsList(memoryObjectsList), _synchroList(synchroList), _transferQFGroup(transferQFGroup),
+		_uiLayersList(maxActiveLayersCount)
 	{
 		_layerOrderList.reserve(maxActiveLayersCount);
 		_transferFrameAmount = transferFrameAmount;
@@ -30,6 +31,10 @@ namespace JJs2DEngine
 			_vertexTransferFinishedFences.push_back(_synchroList.AddFence(true));
 			_vertexTransferFinshedSemaphores.push_back(_synchroList.AddSemaphore());
 		}
+
+		_transferPoolID = _transferQFGroup.AddCommandPoolWithIndividualReset(true, transferQueueID, transferFrameAmount, 0);
+		_transferPool.emplace(_transferQFGroup.GetCommandPoolWithIndividualReset(_transferPoolID));
+		_transferCommandBuffersIDs = _transferPool->AllocatePrimaryCommandBuffers(static_cast<uint32_t>(transferFrameAmount));
 	}
 
 	VertexDataMainInternal::~VertexDataMainInternal()

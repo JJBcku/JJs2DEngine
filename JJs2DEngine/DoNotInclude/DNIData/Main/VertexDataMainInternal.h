@@ -6,9 +6,13 @@
 #include <VulkanSimplified/VSDevice/VSDataBufferLists.h>
 #include <VulkanSimplified/VSDevice/VSMemoryObjectsList.h>
 #include <VulkanSimplified/VSDevice/VSSynchronizationDataLists.h>
+#include <VulkanSimplified/VSDevice/VSCommandPoolQFGroupList.h>
+#include <VulkanSimplified/VSDevice/VSIRCommandPool.h>
+#include <VulkanSimplified/VSDevice/VSPrimaryIRCommandBuffer.h>
 
 #include <stdint.h>
 #include <vector>
+#include <optional>
 
 namespace JJs2DEngine
 {
@@ -20,7 +24,7 @@ namespace JJs2DEngine
 	{
 	public:
 		VertexDataMainInternal(TextureDataMainInternal& textureDataList, VS::DataBufferLists dataBufferList, VS::MemoryObjectsList memoryObjectsList, VS::SynchronizationDataLists synchroList,
-			size_t transferFrameAmount);
+			VS::CommandPoolQFGroupList transferQFGroup, uint32_t transferFrameAmount, size_t transferQueueID);
 		~VertexDataMainInternal();
 
 		IDObject<UiVertexDataLayerVersionListPointer> AddUiLayerVersionList(const std::vector<size_t>& versionsMaxVerticesList, size_t addOnReserving);
@@ -36,6 +40,7 @@ namespace JJs2DEngine
 		VS::DataBufferLists _dataBufferList;
 		VS::MemoryObjectsList _memoryObjectsList;
 		VS::SynchronizationDataLists _synchroList;
+		VS::CommandPoolQFGroupList _transferQFGroup;
 
 		UnsortedIDVector<UiVertexDataLayerVersionListPointer> _uiLayersList;
 		size_t _transferFrameAmount;
@@ -44,5 +49,9 @@ namespace JJs2DEngine
 		std::vector<VertexLayerOrderID> _layerOrderList;
 		std::vector<IDObject<VS::AutoCleanupFence>> _vertexTransferFinishedFences;
 		std::vector<IDObject<VS::AutoCleanupSemaphore>> _vertexTransferFinshedSemaphores;
+
+		IDObject<VS::IRPoolPointer> _transferPoolID;
+		std::optional<VS::IRCommandPool> _transferPool;
+		std::vector<IDObject<VS::PrimaryIRPointer>> _transferCommandBuffersIDs;
 	};
 }
