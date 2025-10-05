@@ -7,6 +7,8 @@
 
 #include "../../../Include/Main/VertexLayerOrderID.h"
 
+#include <VulkanSimplified/VSDevice/VSCommandBufferSubmissionData.h>
+
 namespace JJs2DEngine
 {
 	constexpr size_t maxActiveLayersCount = maxLayerDepth + 1;
@@ -23,13 +25,15 @@ namespace JJs2DEngine
 			throw std::runtime_error("VertexDataMainInternal::VertexDataMainInternal Error: Program tried to create zero transfer frames!");
 		_currentTranferFrame = 0;
 
+		_transferQueueID = transferQueueID;
+
 		_vertexTransferFinishedFences.reserve(transferFrameAmount);
-		_vertexTransferFinshedSemaphores.reserve(transferFrameAmount);
+		_vertexTransferFinishedSemaphores.reserve(transferFrameAmount);
 
 		for (size_t i = 0; i < transferFrameAmount; ++i)
 		{
 			_vertexTransferFinishedFences.push_back(_synchroList.AddFence(true));
-			_vertexTransferFinshedSemaphores.push_back(_synchroList.AddSemaphore());
+			_vertexTransferFinishedSemaphores.push_back(_synchroList.AddSemaphore());
 		}
 
 		_transferPoolID = _transferQFGroup.AddCommandPoolWithIndividualReset(true, transferQueueID, transferFrameAmount, 0);
@@ -62,10 +66,13 @@ namespace JJs2DEngine
 		if (_currentTranferFrame >= _transferCommandBuffersIDs.size())
 			throw std::runtime_error("VertexDataMainInternal::TransferVertexData Error: Program tried to use a non-existent transfer frame!");
 
+		if (_synchroList.WaitOnFences({ _vertexTransferFinishedFences[_currentTranferFrame] }, false, 1'000'000'000ULL) != true)
+			throw std::runtime_error("VertexDataMainInternal::TransferVertexData Error: Waiting on fence has timed out!");
+
+		_synchroList.ResetFences({ _vertexTransferFinishedFences[_currentTranferFrame] });
+
 		auto tranferCommandBuffer = _transferPool->GetPrimaryCommandBuffer(_transferCommandBuffersIDs[_currentTranferFrame]);
 		tranferCommandBuffer.BeginRecording(VS::CommandBufferUsage::ONE_USE);
-
-		bool anyCommandsWritten = false;
 
 		for (size_t i = 0; i < _layerOrderList.size(); ++i)
 		{
@@ -74,11 +81,19 @@ namespace JJs2DEngine
 
 			auto& layer = _uiLayersList.GetObject(_layerOrderList[i].UiLayerID.ID);
 
-			if (layer->WriteDataToBuffer(_currentTranferFrame, tranferCommandBuffer))
-				anyCommandsWritten = true;
+			layer->WriteDataToBuffer(_currentTranferFrame, tranferCommandBuffer);
 		}
 
 		tranferCommandBuffer.EndRecording();
+
+		VS::CommandBufferSubmissionData submitData;
+		submitData.commandBufferIDs.resize(1);
+		submitData.commandBufferIDs[0].IRPrimaryID.type = VS::CommandBufferIDType::IR_PRIMARY;
+		submitData.commandBufferIDs[0].IRPrimaryID.commandPoolID = _transferPoolID;
+		submitData.commandBufferIDs[0].IRPrimaryID.commandBufferID = _transferCommandBuffersIDs[_currentTranferFrame];
+		//submitData.signalSemaphores.push_back(_vertexTransferFinishedSemaphores[_currentTranferFrame]);
+
+		_transferQFGroup.SubmitBuffers(_transferQueueID, { submitData }, _vertexTransferFinishedFences[_currentTranferFrame]);
 
 		_currentTranferFrame++;
 		if (_currentTranferFrame >= _transferFrameAmount)

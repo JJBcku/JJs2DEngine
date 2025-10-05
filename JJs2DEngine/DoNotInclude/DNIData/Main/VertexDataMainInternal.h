@@ -46,9 +46,11 @@ namespace JJs2DEngine
 		size_t _transferFrameAmount;
 		size_t _currentTranferFrame;
 
+		size_t _transferQueueID;
+
 		std::vector<VertexLayerOrderID> _layerOrderList;
 		std::vector<IDObject<VS::AutoCleanupFence>> _vertexTransferFinishedFences;
-		std::vector<IDObject<VS::AutoCleanupSemaphore>> _vertexTransferFinshedSemaphores;
+		std::vector<IDObject<VS::AutoCleanupSemaphore>> _vertexTransferFinishedSemaphores;
 
 		IDObject<VS::IRPoolPointer> _transferPoolID;
 		std::optional<VS::IRCommandPool> _transferPool;
