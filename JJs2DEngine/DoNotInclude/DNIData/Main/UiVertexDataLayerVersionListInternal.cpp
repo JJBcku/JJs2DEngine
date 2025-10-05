@@ -3,6 +3,9 @@
 
 #include <VulkanSimplified/VSCommon/VSMemoryTypeProperties.h>
 
+#include <VulkanSimplified/VSDevice/VSPrimaryIRCommandBuffer.h>
+#include <VulkanSimplified/VSDevice/VSDataBuffersCopyRegionData.h>
+
 #include <limits>
 
 #include "UiVertexDataLayerVersionInternal.h"
@@ -90,7 +93,7 @@ namespace JJs2DEngine
 			}
 		}
 
-		_activeLayer = 0;
+		_activeVersion = 0;
 	}
 
 	UiVertexDataLayerVersionListInternal::~UiVertexDataLayerVersionListInternal()
@@ -112,23 +115,39 @@ namespace JJs2DEngine
 		}
 	}
 
-	void UiVertexDataLayerVersionListInternal::WriteDataToBuffer(size_t transferFrameIndice)
+	bool UiVertexDataLayerVersionListInternal::WriteDataToBuffer(size_t transferFrameIndice, VS::PrimaryIRCommandBuffer transferCommandBuffer)
 	{
-		if (_activeLayer >= _versionList.size())
+		bool commandRecorded = false;
+
+		if (_activeVersion >= _versionList.size())
 			throw std::runtime_error("UiVertexDataLayerVersionListInternal::WriteDataToBuffer Error: Program tried to access a non-existent layer version!");
 
-		auto& layer = _versionList[_activeLayer];
+		auto& layer = _versionList[_activeVersion];
 		if (_stagingBufferIDs.has_value())
 		{
 			if (transferFrameIndice >= _stagingBufferIDs->size())
 				throw std::runtime_error("UiVertexDataLayerVersionListInternal::WriteDataToBuffer Error: Program tried to access an non-existent frame's data!");
 
-			layer->WriteDataToBuffer(_stagingBufferIDs.value()[transferFrameIndice], transferFrameIndice);
+			uint64_t writtenData = layer->WriteDataToBuffer(_stagingBufferIDs.value()[transferFrameIndice], transferFrameIndice);
+
+			if (writtenData > 0)
+			{
+				VS::DataBuffersCopyRegionData copyData;
+				copyData.srcOffset = 0;
+				copyData.dstOffset = 0;
+				copyData.writeSize = writtenData;
+
+				transferCommandBuffer.TransferDataListToVertexBuffer(_stagingBufferIDs.value()[transferFrameIndice], _versionList[_activeVersion]->GetVertexBufferID(transferFrameIndice),
+					{ copyData });
+				commandRecorded = true;
+			}
 		}
 		else
 		{
 			layer->WriteDataToBuffer({}, transferFrameIndice);
 		}
+
+		return commandRecorded;
 	}
 
 	UiVertexDataLayerVersionInternal& UiVertexDataLayerVersionListInternal::GetLayersVersion(size_t versionIndex)

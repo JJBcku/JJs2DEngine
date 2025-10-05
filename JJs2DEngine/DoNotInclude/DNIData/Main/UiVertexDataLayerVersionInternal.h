@@ -6,6 +6,7 @@
 
 #include <Miscellaneous/Bool64Def.h>
 #include <VulkanSimplified/VSDevice/VSDataBufferLists.h>
+#include <VulkanSimplified/VSDevice/VSPrimaryIRCommandBufferDef.h>
 
 #include <CustomLists/IDObject.h>
 

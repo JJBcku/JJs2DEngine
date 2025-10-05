@@ -9,6 +9,7 @@
 
 #include <VulkanSimplified/VSDevice/VSDataBufferLists.h>
 #include <VulkanSimplified/VSDevice/VSMemoryObjectsList.h>
+#include <VulkanSimplified/VSDevice/VSPrimaryIRCommandBufferDef.h>
 
 #include <CustomLists/IDObject.h>
 
@@ -30,7 +31,7 @@ namespace JJs2DEngine
 		UiVertexDataLayerVersionListInternal& operator=(const UiVertexDataLayerVersionListInternal& rhs) noexcept = delete;
 		UiVertexDataLayerVersionListInternal& operator=(UiVertexDataLayerVersionListInternal&& rhs) noexcept = delete;
 
-		void WriteDataToBuffer(size_t transferFrameIndice);
+		bool WriteDataToBuffer(size_t transferFrameIndice, VS::PrimaryIRCommandBuffer transferCommandBuffer);
 
 		UiVertexDataLayerVersionInternal& GetLayersVersion(size_t versionIndex);
 
@@ -41,7 +42,7 @@ namespace JJs2DEngine
 		VS::MemoryObjectsList _memoryObjectsList;
 
 		std::vector<std::unique_ptr<UiVertexDataLayerVersionInternal>> _versionList;
-		size_t _activeLayer;
+		size_t _activeVersion;
 
 		VS::MemoryAllocationFullID _vertexMemoryID;
 

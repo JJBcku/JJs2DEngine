@@ -59,6 +59,14 @@ namespace JJs2DEngine
 
 	void VertexDataMainInternal::TransferVertexData()
 	{
+		if (_currentTranferFrame >= _transferCommandBuffersIDs.size())
+			throw std::runtime_error("VertexDataMainInternal::TransferVertexData Error: Program tried to use a non-existent transfer frame!");
+
+		auto tranferCommandBuffer = _transferPool->GetPrimaryCommandBuffer(_transferCommandBuffersIDs[_currentTranferFrame]);
+		tranferCommandBuffer.BeginRecording(VS::CommandBufferUsage::ONE_USE);
+
+		bool anyCommandsWritten = false;
+
 		for (size_t i = 0; i < _layerOrderList.size(); ++i)
 		{
 			if (_layerOrderList[i].type != VertexLayerOrderIDType::UI_LAYER)
@@ -66,8 +74,11 @@ namespace JJs2DEngine
 
 			auto& layer = _uiLayersList.GetObject(_layerOrderList[i].UiLayerID.ID);
 
-			layer->WriteDataToBuffer(_currentTranferFrame);
+			if (layer->WriteDataToBuffer(_currentTranferFrame, tranferCommandBuffer))
+				anyCommandsWritten = true;
 		}
+
+		tranferCommandBuffer.EndRecording();
 
 		_currentTranferFrame++;
 		if (_currentTranferFrame >= _transferFrameAmount)
