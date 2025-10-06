@@ -252,7 +252,8 @@ namespace JJs2DEngine
 				device.GetSynchronizationDataLists(), transferQFGroup, device.GetDescriptorDataLists());
 
 			_vertexDataMain = std::make_unique<VertexDataMainInternal>(*_textureDataMain, device.GetDataBufferLists(), device.GetMemoryObjectsList(), device.GetSynchronizationDataLists(),
-				transferQFGroup, _currentDevicesSettings.value().transferFramesInFlight, transferQueue);
+				transferQFGroup, _currentDevicesSettings.value().transferFramesInFlight, transferQueue,
+				graphicQFGroup, _currentDevicesSettings.value().graphicsFramesInFlight, _graphicsQueueIndex);
 		}
 	}
 

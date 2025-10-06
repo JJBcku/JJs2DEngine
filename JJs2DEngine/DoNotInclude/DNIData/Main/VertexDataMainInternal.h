@@ -24,7 +24,8 @@ namespace JJs2DEngine
 	{
 	public:
 		VertexDataMainInternal(TextureDataMainInternal& textureDataList, VS::DataBufferLists dataBufferList, VS::MemoryObjectsList memoryObjectsList, VS::SynchronizationDataLists synchroList,
-			VS::CommandPoolQFGroupList transferQFGroup, uint32_t transferFrameAmount, size_t transferQueueID);
+			VS::CommandPoolQFGroupList transferQFGroup, uint32_t transferFrameAmount, size_t transferQueueID,
+			VS::CommandPoolQFGroupList graphicQFGroup, uint32_t graphicsFrameAmount, size_t graphicQueueID);
 		~VertexDataMainInternal();
 
 		IDObject<UiVertexDataLayerVersionListPointer> AddUiLayerVersionList(const std::vector<size_t>& versionsMaxVerticesList, size_t addOnReserving);
@@ -39,8 +40,10 @@ namespace JJs2DEngine
 		TextureDataMainInternal& _textureDataList;
 		VS::DataBufferLists _dataBufferList;
 		VS::MemoryObjectsList _memoryObjectsList;
+
 		VS::SynchronizationDataLists _synchroList;
 		VS::CommandPoolQFGroupList _transferQFGroup;
+		VS::CommandPoolQFGroupList _graphicsQFGroup;
 
 		UnsortedIDVector<UiVertexDataLayerVersionListPointer> _uiLayersList;
 		size_t _transferFrameAmount;
@@ -55,5 +58,9 @@ namespace JJs2DEngine
 		IDObject<VS::IRPoolPointer> _transferPoolID;
 		std::optional<VS::IRCommandPool> _transferPool;
 		std::vector<IDObject<VS::PrimaryIRPointer>> _transferCommandBuffersIDs;
+
+		IDObject<VS::IRPoolPointer> _graphicsPoolID;
+		std::optional<VS::IRCommandPool> _graphicsPool;
+		std::vector<IDObject<VS::PrimaryIRPointer>> _graphicsCommandBuffersIDs;
 	};
 }
