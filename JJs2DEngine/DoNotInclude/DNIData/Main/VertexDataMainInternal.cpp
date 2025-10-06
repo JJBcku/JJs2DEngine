@@ -37,6 +37,19 @@ namespace JJs2DEngine
 			_vertexTransferFinishedSemaphores.push_back(_synchroList.AddSemaphore());
 		}
 
+		_renderingFinishedFences.reserve(graphicsFrameAmount);
+		_imageAcquiredSemaphores.reserve(graphicsFrameAmount);
+		_renderingFinishedSemaphores.reserve(graphicsFrameAmount);
+		_transferDataFreeToChangeSemaphores.reserve(graphicsFrameAmount);
+
+		for (size_t i = 0; i < graphicsFrameAmount; ++i)
+		{
+			_renderingFinishedFences.push_back(_synchroList.AddFence(true));
+			_imageAcquiredSemaphores.push_back(_synchroList.AddSemaphore());
+			_renderingFinishedSemaphores.push_back(_synchroList.AddSemaphore());
+			_transferDataFreeToChangeSemaphores.push_back(_synchroList.AddSemaphore());
+		}
+
 		_transferPoolID = _transferQFGroup.AddCommandPoolWithIndividualReset(true, transferQueueID, transferFrameAmount, 0);
 		_transferPool.emplace(_transferQFGroup.GetCommandPoolWithIndividualReset(_transferPoolID));
 		_transferCommandBuffersIDs = _transferPool->AllocatePrimaryCommandBuffers(transferFrameAmount);
