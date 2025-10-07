@@ -15,6 +15,7 @@
 #include <VulkanSimplified/VSDevice/VSDataBuffersMemoryBarrierData.h>
 #include <VulkanSimplified/VSDevice/VSGlobalMemoryBarrierData.h>
 #include <VulkanSimplified/VSDevice/VSImagesMemoryBarrierData.h>
+#include <VulkanSimplified/VSDevice/VSDescriptorPoolGenericID.h>
 
 #include <Miscellaneous/Bool64.h>
 
@@ -179,6 +180,9 @@ namespace JJs2DEngine
 			_windowDataList.GetRenderHeight(), _renderDataList.GetClearValuesList());
 
 		graphicsCommandBuffer.BindGraphicsPipeline(_renderDataList.GetUILayerGraphicsPipeline());
+
+		graphicsCommandBuffer.BindDescriptorSetsToGraphicsPipeline(_renderDataList.GetUILayerGraphicsPipelineLayout(), 0, _textureDataList.GetTexturesDescriptorSetPool(),
+			{ _textureDataList.GetTexturesDescriptorSets(_currentTransferFrame) }, {});
 
 		for (size_t i = 0; i < _layerOrderList.size(); ++i)
 		{
