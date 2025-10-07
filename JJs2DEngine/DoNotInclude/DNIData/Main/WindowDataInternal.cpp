@@ -100,13 +100,6 @@ namespace JJs2DEngine
 		{
 			auto& frameData = _perFrameData[i];
 
-			frameData.renderingFinishedFence = _synchroList.AddFence(_perFrameData.size() * 2);
-			frameData.transferFinishedFence = _synchroList.AddFence(_perFrameData.size() * 2);
-
-			frameData.transferFinishedSemaphore = _synchroList.AddSemaphore(_perFrameData.size() * 8);
-			frameData.imageAcquiredSemaphore = _synchroList.AddSemaphore(_perFrameData.size() * 8);
-			frameData.renderingFinishedSemaphore = _synchroList.AddSemaphore(_perFrameData.size() * 8);
-
 			frameData.colorImage = _imageList.AddColorRenderTargetImage(swapchainData.renderImagesWidth, swapchainData.renderImagesHeight, swapchainData.colorFormat,
 				VS::SAMPLE_1, {}, false, 1, _perFrameData.size() + 1);
 		}
@@ -243,6 +236,14 @@ namespace JJs2DEngine
 		return _perFrameData[frameIndex];
 	}
 
+	IDObject<VS::AutoCleanupFramebuffer> WindowDataInternal::GetFramebufferID(size_t graphicsFrameIndice)
+	{
+		if (graphicsFrameIndice >= _framebuffers.size())
+			throw std::runtime_error("WindowDataInternal::GetFrameData Error: Program tried to access a non-existent framebuffer!");
+
+		return _framebuffers[graphicsFrameIndice];
+	}
+
 	void WindowDataInternal::ChangeFullscreen(Misc::Bool64Values newFullscreen)
 	{
 		if (_fullscreen == newFullscreen)
@@ -273,26 +274,17 @@ namespace JJs2DEngine
 
 	void WindowDataInternal::RedoPerFrameData(VS::DataFormatSetIndependentID colorFormat, uint32_t framesInFlight, uint32_t width, uint32_t height)
 	{
-		bool redoSynchro = framesInFlight != _perFrameData.size();
+		bool resizeFrameData = framesInFlight != _perFrameData.size();
 
 		for (size_t i = 0; i < _perFrameData.size(); ++i)
 		{
 			auto& frameData = _perFrameData[i];
 			_imageList.RemoveColorRenderTargetImage(frameData.colorImage, true);
-
-			if (redoSynchro)
-			{
-				_synchroList.RemoveFence(frameData.renderingFinishedFence, true);
-				_synchroList.RemoveFence(frameData.transferFinishedFence, true);
-				_synchroList.RemoveSemaphore(frameData.imageAcquiredSemaphore, true);
-				_synchroList.RemoveSemaphore(frameData.renderingFinishedSemaphore, true);
-				_synchroList.RemoveSemaphore(frameData.renderingFinishedSemaphore, true);
-			}
 		}
 
 		_memoryList.FreeMemory(_colorImageMemory, true, true);
 
-		if (redoSynchro)
+		if (resizeFrameData)
 			_perFrameData.resize(framesInFlight);
 
 		_descriptorList.DeleteNIFDescriptorPool(_gammaCorrectionDescriptorPool, true);
@@ -310,16 +302,6 @@ namespace JJs2DEngine
 				VS::SAMPLE_1, {}, false, false, 1, static_cast<size_t>(framesInFlight) + 1);
 
 			frameData.gammaCorrectionDescriptorSet = descriptorSets[i];
-
-			if (redoSynchro)
-			{
-				frameData.renderingFinishedFence = _synchroList.AddFence(_perFrameData.size() * 2);
-				frameData.transferFinishedFence = _synchroList.AddFence(_perFrameData.size() * 2);
-				
-				frameData.transferFinishedSemaphore = _synchroList.AddSemaphore(_perFrameData.size() * 8);
-				frameData.imageAcquiredSemaphore = _synchroList.AddSemaphore(_perFrameData.size() * 8);
-				frameData.renderingFinishedSemaphore = _synchroList.AddSemaphore(_perFrameData.size() * 8);
-			}
 		}
 
 		_colorImageMemory = _memoryList.AllocateMemory(_imageList.GetColorRenderTargetImagesSize(_perFrameData.back().colorImage) * _perFrameData.size(), _perFrameData.size(),

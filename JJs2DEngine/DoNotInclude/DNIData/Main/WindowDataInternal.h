@@ -26,13 +26,6 @@ namespace JJs2DEngine
 
 	struct PerFrameData
 	{
-		IDObject<VS::AutoCleanupFence> transferFinishedFence;
-		IDObject<VS::AutoCleanupFence> renderingFinishedFence;
-
-		IDObject<VS::AutoCleanupSemaphore> transferFinishedSemaphore;
-		IDObject<VS::AutoCleanupSemaphore> imageAcquiredSemaphore;
-		IDObject<VS::AutoCleanupSemaphore> renderingFinishedSemaphore;
-
 		IDObject<VS::AutoCleanupColorRenderTargetImage> colorImage;
 		IDObject<VS::AutoCleanupImageView> colorImageView;
 
@@ -69,6 +62,7 @@ namespace JJs2DEngine
 		void ChangeSwapchainData(RenderImagesData newSwapchainData);
 
 		const PerFrameData& GetFrameData(size_t frameIndex) const;
+		IDObject<VS::AutoCleanupFramebuffer> GetFramebufferID(size_t graphicsFrameIndice);
 
 		void ChangeFullscreen(Misc::Bool64Values newFullscreen);
 
