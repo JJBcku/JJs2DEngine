@@ -175,6 +175,8 @@ namespace JJs2DEngine
 		graphicsCommandBuffer.BeginRenderPass(_renderDataList.GetCurrentRenderPass(), _windowDataList.GetFramebufferID(_currentGraphicsFrame), 0, 0, _windowDataList.GetRenderWidth(),
 			_windowDataList.GetRenderHeight(), _renderDataList.GetClearValuesList());
 
+		graphicsCommandBuffer.BindGraphicsPipeline(_renderDataList.GetUILayerGraphicsPipeline());
+
 		for (size_t i = 0; i < _layerOrderList.size(); ++i)
 		{
 			if (_layerOrderList[i].type != VertexLayerOrderIDType::UI_LAYER)

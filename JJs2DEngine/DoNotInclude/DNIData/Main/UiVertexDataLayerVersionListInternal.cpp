@@ -183,7 +183,7 @@ namespace JJs2DEngine
 		size_t objectCount = _versionList[_activeVersion]->GetAmountOfObjectsInVertexBuffer(transferFrameIndice);
 		auto vertexBufferID = _versionList[_activeVersion]->GetVertexBufferID(transferFrameIndice);
 
-		graphicsCommandBuffer.BindVertexBuffers(0, { {vertexBufferID, 0 } });
+		graphicsCommandBuffer.BindVertexBuffers(0, { { vertexBufferID, 0 } });
 		graphicsCommandBuffer.Draw(6, static_cast<uint32_t>(objectCount), 0, 0);
 	}
 
