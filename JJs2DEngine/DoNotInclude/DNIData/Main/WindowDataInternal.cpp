@@ -33,8 +33,8 @@ namespace JJs2DEngine
 		renderImagesHeight = 0;
 	}
 
-	WindowDataInternal::WindowDataInternal(const WindowInitializationData& initData, RenderImagesData swapchainData, VS::WindowList windowList, VS::SynchronizationDataLists synchroList,
-		VS::ImageDataLists imageList, VS::MemoryObjectsList memoryList, VS::DescriptorDataLists descriptorList) : _windowList(windowList), _synchroList(synchroList), _imageList(imageList),
+	WindowDataInternal::WindowDataInternal(const WindowInitializationData& initData, RenderImagesData swapchainData, VS::WindowList windowList,
+		VS::ImageDataLists imageList, VS::MemoryObjectsList memoryList, VS::DescriptorDataLists descriptorList) : _windowList(windowList), _imageList(imageList),
 		_memoryList(memoryList), _descriptorList(descriptorList)
 	{
 		_windowTitle = initData.windowTitle;

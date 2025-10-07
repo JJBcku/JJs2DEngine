@@ -9,7 +9,6 @@
 
 #include <VulkanSimplified/VSDevice/VSImageDataLists.h>
 #include <VulkanSimplified/VSDevice/VSMemoryObjectsList.h>
-#include <VulkanSimplified/VSDevice/VSSynchronizationDataLists.h>
 #include <VulkanSimplified/VSDevice/VSWindowList.h>
 #include <VulkanSimplified/VSDevice/VSWindow.h>
 #include <VulkanSimplified/VSDevice/VSDescriptorDataLists.h>
@@ -55,8 +54,8 @@ namespace JJs2DEngine
 	class WindowDataInternal
 	{
 	public:
-		WindowDataInternal(const WindowInitializationData& initData, RenderImagesData swapchainData,
-			VS::WindowList windowList, VS::SynchronizationDataLists synchroList, VS::ImageDataLists imageList, VS::MemoryObjectsList memoryList, VS::DescriptorDataLists descriptorList);
+		WindowDataInternal(const WindowInitializationData& initData, RenderImagesData swapchainData, VS::WindowList windowList, VS::ImageDataLists imageList,
+			VS::MemoryObjectsList memoryList, VS::DescriptorDataLists descriptorList);
 		~WindowDataInternal();
 
 		void ChangeSwapchainData(RenderImagesData newSwapchainData);
@@ -70,7 +69,6 @@ namespace JJs2DEngine
 
 	private:
 		VS::WindowList _windowList;
-		VS::SynchronizationDataLists _synchroList;
 		VS::ImageDataLists _imageList;
 		VS::MemoryObjectsList _memoryList;
 		VS::DescriptorDataLists _descriptorList;
