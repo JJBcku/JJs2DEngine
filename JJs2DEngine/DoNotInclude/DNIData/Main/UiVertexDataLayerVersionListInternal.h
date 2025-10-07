@@ -28,7 +28,7 @@ namespace JJs2DEngine
 	{
 	public:
 		UiVertexDataLayerVersionListInternal(TextureDataMainInternal& textureDataList, VS::DataBufferLists& dataBufferList, VS::MemoryObjectsList& memoryObjectsList,
-			const std::vector<size_t>& versionsMaxVerticesList, size_t layersDepth, size_t transferFrameAmount);
+			const std::vector<size_t>& versionsMaxObjectAmountsList, size_t layersDepth, size_t transferFrameAmount);
 		~UiVertexDataLayerVersionListInternal();
 
 		UiVertexDataLayerVersionListInternal(const UiVertexDataLayerVersionListInternal& rhs) noexcept = delete;
@@ -39,6 +39,7 @@ namespace JJs2DEngine
 
 		bool WriteDataToBuffer(size_t transferFrameIndice, VS::PrimaryIRCommandBuffer transferCommandBuffer);
 		VS::DataBuffersMemoryBarrierData GetOwnershipTransferData(size_t transferFrameIndice, size_t transferQueueID, size_t graphicQueueID);
+		void RecordDrawCommand(size_t transferFrameIndice, VS::PrimaryIRCommandBuffer graphicsCommandBuffer);
 
 		UiVertexDataLayerVersionInternal& GetLayersVersion(size_t versionIndex);
 

@@ -74,16 +74,16 @@ namespace JJs2DEngine
 	{
 	}
 
-	IDObject<UiVertexDataLayerVersionListPointer> VertexDataMainInternal::AddUiLayerVersionList(const std::vector<size_t>& versionsMaxVerticesList, size_t addOnReserving)
+	IDObject<UiVertexDataLayerVersionListPointer> VertexDataMainInternal::AddUiLayerVersionList(const std::vector<size_t>& versionsMaxObjectAmountsList, size_t addOnReserving)
 	{
 		if (_layerOrderList.size() == _layerOrderList.capacity())
 			throw std::runtime_error("VertexDataMainInternal::AddUiLayerVersionList Error: Program tried to add more layers than the program supports!");
 
-		if (versionsMaxVerticesList.empty())
+		if (versionsMaxObjectAmountsList.empty())
 			throw std::runtime_error("VertexDataMainInternal::AddUiLayerVersionList Error: Program tried to create an empty version list!");
 
 		auto ret = _uiLayersList.AddObject(std::make_unique<UiVertexDataLayerVersionListInternal>(_textureDataList, _dataBufferList, _memoryObjectsList,
-			versionsMaxVerticesList, _layerOrderList.size(), _transferFrameAmount), addOnReserving);
+			versionsMaxObjectAmountsList, _layerOrderList.size(), _transferFrameAmount), addOnReserving);
 
 		_layerOrderList.emplace_back(ret);
 
@@ -117,7 +117,6 @@ namespace JJs2DEngine
 			if (commandRecorded && _transferQueueID != _graphicsQueueID)
 			{
 				vertexBuffersOwnershipTransferDataList.push_back(layer->GetOwnershipTransferData(_currentTranferFrame, _transferQueueID, _graphicsQueueID));
-				layer->SetOwnedByTransferQueue(_currentTranferFrame, Misc::BOOL64_TRUE);
 			}
 		}
 
@@ -166,6 +165,16 @@ namespace JJs2DEngine
 		{
 			graphicsCommandBuffer.CreatePipelineBarrier(VS::PipelineStageFlagBits::PIPELINE_STAGE_BOTTOM_OF_PIPE, VS::PipelineStageFlagBits::PIPELINE_STAGE_VERTEX_INPUT,
 				{}, vertexBuffersOwnershipTransferDataList, {});
+		}
+
+		for (size_t i = 0; i < _layerOrderList.size(); ++i)
+		{
+			if (_layerOrderList[i].type != VertexLayerOrderIDType::UI_LAYER)
+				continue;
+
+			auto& layer = _uiLayersList.GetObject(_layerOrderList[i].UiLayerID.ID);
+
+			layer->RecordDrawCommand(_currentTranferFrame, graphicsCommandBuffer);
 		}
 
 		graphicsCommandBuffer.EndRecording();

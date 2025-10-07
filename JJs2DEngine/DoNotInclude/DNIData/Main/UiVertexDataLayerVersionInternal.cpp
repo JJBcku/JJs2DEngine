@@ -21,6 +21,7 @@ namespace JJs2DEngine
 	TransferFrameData::TransferFrameData()
 	{
 		changed = Misc::BOOL64_FALSE;
+		lastAmountWrittenToVertexBuffer = 0;
 	}
 
 	JJs2DEngine::TransferFrameData::~TransferFrameData()
@@ -28,22 +29,22 @@ namespace JJs2DEngine
 	}
 
 	UiVertexDataLayerVersionInternal::UiVertexDataLayerVersionInternal(TextureDataMainInternal& textureDataList, VS::DataBufferLists& dataBufferList,
-		size_t maxVertexAmount, size_t layersDepth, size_t transferFrameAmount) : _textureDataList(textureDataList), _dataBufferList(dataBufferList), _objectList(maxVertexAmount)
+		size_t maxObjectAmount, size_t layersDepth, size_t transferFrameAmount) : _textureDataList(textureDataList), _dataBufferList(dataBufferList), _objectList(maxObjectAmount)
 	{
-		_usedVertexAmount = 0;
+		_usedObjectAmount = 0;
 		_nextDepthValueUNORM = 0;
 		_layersDepth = layersDepth;
 
-		if (maxVertexAmount > maxVertexMaximumValue)
+		if (maxObjectAmount > maxVertexMaximumValue)
 			throw std::runtime_error("UiVertexDataLayerVersionInternal::UiVertexDataLayerVersionInternal Error: Layer was given too big max vertex value!");
 
 		if (layersDepth > maxLayerDepth)
 			throw std::runtime_error("UiVertexDataLayerVersionInternal::UiVertexDataLayerVersionInternal Error: Layer was given too big layers depth value!");
 
-		_unusedIndexes.reserve(maxVertexAmount);
-		for (size_t i = 0; i < maxVertexAmount; ++i)
+		_unusedIndexes.reserve(maxObjectAmount);
+		for (size_t i = 0; i < maxObjectAmount; ++i)
 		{
-			_unusedIndexes.push_back(maxVertexAmount - (i + 1));
+			_unusedIndexes.push_back(maxObjectAmount - (i + 1));
 		}
 
 		_ownedByTransferQueue.resize(transferFrameAmount);
@@ -79,7 +80,7 @@ namespace JJs2DEngine
 	{
 		std::optional<size_t> ret;
 
-		if (_usedVertexAmount >= _objectList.size())
+		if (_usedObjectAmount >= _objectList.size())
 			throw std::runtime_error("UiVertexDataLayerVersionInternal::AddObject Error: Program tried to add more than the maximum number of objects to the layer!");
 
 		assert(!_unusedIndexes.empty());
@@ -117,7 +118,7 @@ namespace JJs2DEngine
 		ret = addedIndex;
 		_unusedIndexes.pop_back();
 		_nextDepthValueUNORM++;
-		_usedVertexAmount++;
+		_usedObjectAmount++;
 
 		for (size_t i = 0; i < _frameData.size(); ++i)
 		{
@@ -168,11 +169,11 @@ namespace JJs2DEngine
 		size_t writtenSize = 0;
 
 		std::vector<UiObjectBufferData> dataToWrite;
-		dataToWrite.resize(_usedVertexAmount);
+		dataToWrite.resize(_usedObjectAmount);
 
 		size_t foundVertexes = 0;
 		size_t currentListIndex = 0;
-		while (foundVertexes < _usedVertexAmount)
+		while (foundVertexes < _usedObjectAmount)
 		{
 			if (currentListIndex >= _objectList.size())
 				throw std::runtime_error("UiVertexDataLayerVersionInternal::WriteDataToBuffer Error: Program failed to find all objects in a layer!");
@@ -223,8 +224,22 @@ namespace JJs2DEngine
 		}
 
 		_frameData[transferFrameIndice].changed = Misc::BOOL64_FALSE;
+		_frameData[transferFrameIndice].lastAmountWrittenToVertexBuffer = dataToWrite.size();
 
 		return writtenSize;
+	}
+
+	size_t UiVertexDataLayerVersionInternal::GetCurrentUsedObjectAmount() const
+	{
+		return _usedObjectAmount;
+	}
+
+	size_t UiVertexDataLayerVersionInternal::GetAmountOfObjectsInVertexBuffer(size_t transferFrameIndice) const
+	{
+		if (transferFrameIndice >= _ownedByTransferQueue.size())
+			throw std::runtime_error("UiVertexDataLayerVersionInternal::GetAmountOfObjectsInVertexBuffer Error: Program tried to access an non-existent frame's data!");
+
+		return _frameData[transferFrameIndice].lastAmountWrittenToVertexBuffer;
 	}
 
 	Misc::Bool64 UiVertexDataLayerVersionInternal::IsOwnedByTransferQueue(size_t transferFrameIndice) const

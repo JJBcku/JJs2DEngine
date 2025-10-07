@@ -21,6 +21,7 @@ namespace JJs2DEngine
 	struct TransferFrameData
 	{
 		Misc::Bool64 changed;
+		size_t lastAmountWrittenToVertexBuffer;
 		IDObject<VS::AutoCleanupVertexBuffer> vertexBuffer;
 
 		TransferFrameData();
@@ -30,7 +31,7 @@ namespace JJs2DEngine
 	class UiVertexDataLayerVersionInternal
 	{
 	public:
-		UiVertexDataLayerVersionInternal(TextureDataMainInternal& textureDataList, VS::DataBufferLists& dataBufferList, size_t maxVertexAmount, size_t layersDepth, size_t transferFrameAmount);
+		UiVertexDataLayerVersionInternal(TextureDataMainInternal& textureDataList, VS::DataBufferLists& dataBufferList, size_t maxObjectAmount, size_t layersDepth, size_t transferFrameAmount);
 		~UiVertexDataLayerVersionInternal();
 
 		std::optional<size_t> AddObject(const UiObjectData& newObjectData);
@@ -43,6 +44,8 @@ namespace JJs2DEngine
 		IDObject<VS::AutoCleanupVertexBuffer> GetVertexBufferID(size_t transferFrameIndice);
 
 		size_t WriteDataToBuffer(std::optional<IDObject<VS::AutoCleanupStagingBuffer>> stagingBufferID, size_t transferFrameIndice);
+		size_t GetCurrentUsedObjectAmount() const;
+		size_t GetAmountOfObjectsInVertexBuffer(size_t transferFrameIndice) const;
 
 		Misc::Bool64 IsOwnedByTransferQueue(size_t transferFrameIndice) const;
 		void SetOwnedByTransferQueue(size_t transferFrameIndice, Misc::Bool64Values newValue);
@@ -53,7 +56,7 @@ namespace JJs2DEngine
 
 		std::vector<ObjectDataOptional> _objectList;
 		std::vector<size_t> _unusedIndexes;
-		size_t _usedVertexAmount;
+		size_t _usedObjectAmount;
 		size_t _nextDepthValueUNORM;
 		size_t _layersDepth;
 

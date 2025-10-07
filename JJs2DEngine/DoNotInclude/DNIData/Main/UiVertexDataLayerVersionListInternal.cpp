@@ -17,7 +17,7 @@
 namespace JJs2DEngine
 {
 	UiVertexDataLayerVersionListInternal::UiVertexDataLayerVersionListInternal(TextureDataMainInternal& textureDataList, VS::DataBufferLists& dataBufferList,
-		VS::MemoryObjectsList& memoryObjectsList, const std::vector<size_t>& versionsMaxVerticesList, size_t layersDepth, size_t transferFrameAmount) : _dataBufferList(dataBufferList),
+		VS::MemoryObjectsList& memoryObjectsList, const std::vector<size_t>& versionsMaxObjectAmountsList, size_t layersDepth, size_t transferFrameAmount) : _dataBufferList(dataBufferList),
 		_memoryObjectsList(memoryObjectsList)
 	{
 		uint32_t allBuffersMask = std::numeric_limits<uint32_t>::max();
@@ -25,10 +25,10 @@ namespace JJs2DEngine
 
 		uint64_t biggestBufferSize = 0;
 
-		_versionList.reserve(versionsMaxVerticesList.size());
-		for (uint64_t i = 0; i < versionsMaxVerticesList.size(); ++i)
+		_versionList.reserve(versionsMaxObjectAmountsList.size());
+		for (uint64_t i = 0; i < versionsMaxObjectAmountsList.size(); ++i)
 		{
-			_versionList.push_back(std::make_unique<UiVertexDataLayerVersionInternal>(textureDataList, dataBufferList, versionsMaxVerticesList[i], layersDepth, transferFrameAmount));
+			_versionList.push_back(std::make_unique<UiVertexDataLayerVersionInternal>(textureDataList, dataBufferList, versionsMaxObjectAmountsList[i], layersDepth, transferFrameAmount));
 
 			uint32_t buffersMask = _versionList.back()->GetBuffersMask();
 			uint64_t buffersTotalSize = _versionList.back()->GetTotalBuffersMemorySize();
@@ -144,11 +144,13 @@ namespace JJs2DEngine
 				transferCommandBuffer.TransferDataListToVertexBuffer(_stagingBufferIDs.value()[transferFrameIndice], _versionList[_activeVersion]->GetVertexBufferID(transferFrameIndice),
 					{ copyData });
 				commandRecorded = true;
+				_versionList[_activeVersion]->SetOwnedByTransferQueue(transferFrameIndice, Misc::BOOL64_TRUE);
 			}
 		}
 		else
 		{
 			layer->WriteDataToBuffer({}, transferFrameIndice);
+			_versionList[_activeVersion]->SetOwnedByTransferQueue(transferFrameIndice, Misc::BOOL64_TRUE);
 		}
 
 		return commandRecorded;
@@ -171,6 +173,18 @@ namespace JJs2DEngine
 		ret.bufferID = _versionList[_activeVersion]->GetVertexBufferID(transferFrameIndice);
 
 		return ret;
+	}
+
+	void UiVertexDataLayerVersionListInternal::RecordDrawCommand(size_t transferFrameIndice, VS::PrimaryIRCommandBuffer graphicsCommandBuffer)
+	{
+		if (_activeVersion >= _versionList.size())
+			throw std::runtime_error("UiVertexDataLayerVersionListInternal::RecordDrawCommand Error: Program tried to access a non-existent layer version!");
+
+		size_t objectCount = _versionList[_activeVersion]->GetAmountOfObjectsInVertexBuffer(transferFrameIndice);
+		auto vertexBufferID = _versionList[_activeVersion]->GetVertexBufferID(transferFrameIndice);
+
+		graphicsCommandBuffer.BindVertexBuffers(0, { {vertexBufferID, 0 } });
+		graphicsCommandBuffer.Draw(6, static_cast<uint32_t>(objectCount), 0, 0);
 	}
 
 	UiVertexDataLayerVersionInternal& UiVertexDataLayerVersionListInternal::GetLayersVersion(size_t versionIndex)

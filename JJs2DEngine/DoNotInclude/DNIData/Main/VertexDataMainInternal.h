@@ -28,7 +28,7 @@ namespace JJs2DEngine
 			VS::CommandPoolQFGroupList graphicQFGroup, uint32_t graphicsFrameAmount, size_t graphicQueueID);
 		~VertexDataMainInternal();
 
-		IDObject<UiVertexDataLayerVersionListPointer> AddUiLayerVersionList(const std::vector<size_t>& versionsMaxVerticesList, size_t addOnReserving);
+		IDObject<UiVertexDataLayerVersionListPointer> AddUiLayerVersionList(const std::vector<size_t>& versionsMaxObjectAmountsList, size_t addOnReserving);
 
 		void TransferVertexData();
 		void DrawFrame();
