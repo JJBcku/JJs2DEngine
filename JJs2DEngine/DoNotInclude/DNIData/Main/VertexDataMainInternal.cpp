@@ -134,10 +134,6 @@ namespace JJs2DEngine
 		//submitData.signalSemaphores.push_back(_vertexTransferFinishedSemaphores[_currentTranferFrame]);
 
 		_transferQFGroup.SubmitBuffers(_transferQueueID, { submitData }, _vertexTransferFinishedFences[_currentTranferFrame]);
-
-		_currentTranferFrame++;
-		if (_currentTranferFrame >= _transferFrameAmount)
-			_currentTranferFrame = 0;
 	}
 
 	void VertexDataMainInternal::DrawFrame()
@@ -145,9 +141,34 @@ namespace JJs2DEngine
 		if (_currentGraphicsFrame >= _graphicsCommandBuffersIDs.size())
 			throw std::runtime_error("VertexDataMainInternal::DrawFrame Error: Program tried to use a non-existent graphics frame!");
 
-		_currentGraphicsFrame++;
-		if (_currentGraphicsFrame >= _graphicsFrameAmount)
-			_currentGraphicsFrame = 0;
+		auto graphicsCommandBuffer = _graphicsPool->GetPrimaryCommandBuffer(_graphicsCommandBuffersIDs[_currentGraphicsFrame]);
+
+		graphicsCommandBuffer.BeginRecording(VS::CommandBufferUsage::ONE_USE);
+
+		std::vector<VS::DataBuffersMemoryBarrierData> vertexBuffersOwnershipTransferDataList;
+		vertexBuffersOwnershipTransferDataList.reserve(_layerOrderList.size());
+
+		for (size_t i = 0; i < _layerOrderList.size(); ++i)
+		{
+			if (_layerOrderList[i].type != VertexLayerOrderIDType::UI_LAYER)
+				continue;
+
+			auto& layer = _uiLayersList.GetObject(_layerOrderList[i].UiLayerID.ID);
+
+			if (layer->IsOwnedByTransferQueue(_currentTranferFrame) == Misc::BOOL64_TRUE)
+			{
+				vertexBuffersOwnershipTransferDataList.push_back(layer->GetOwnershipTransferData(_currentTranferFrame, _transferQueueID, _graphicsQueueID));
+				layer->SetOwnedByTransferQueue(_currentTranferFrame, Misc::BOOL64_FALSE);
+			}
+		}
+
+		if (!vertexBuffersOwnershipTransferDataList.empty())
+		{
+			graphicsCommandBuffer.CreatePipelineBarrier(VS::PipelineStageFlagBits::PIPELINE_STAGE_BOTTOM_OF_PIPE, VS::PipelineStageFlagBits::PIPELINE_STAGE_VERTEX_INPUT,
+				{}, vertexBuffersOwnershipTransferDataList, {});
+		}
+
+		graphicsCommandBuffer.EndRecording();
 	}
 
 	UiVertexDataLayerVersionListInternal& VertexDataMainInternal::GetUiVertexDataLayerVersionList(IDObject<UiVertexDataLayerVersionListPointer> ID)
