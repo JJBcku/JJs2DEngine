@@ -125,8 +125,11 @@ namespace JJs2DEngine
 			}
 		}
 
-		tranferCommandBuffer.CreatePipelineBarrier(VS::PipelineStageFlagBits::PIPELINE_STAGE_TRANSFER, VS::PipelineStageFlagBits::PIPELINE_STAGE_TOP_OF_PIPE,
-			{}, vertexBuffersOwnershipTransferDataList, {});
+		if (!vertexBuffersOwnershipTransferDataList.empty())
+		{
+			tranferCommandBuffer.CreatePipelineBarrier(VS::PipelineStageFlagBits::PIPELINE_STAGE_TRANSFER, VS::PipelineStageFlagBits::PIPELINE_STAGE_TOP_OF_PIPE,
+				{}, vertexBuffersOwnershipTransferDataList, {});
+		}
 
 		tranferCommandBuffer.EndRecording();
 
