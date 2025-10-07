@@ -25,11 +25,16 @@ namespace JJs2DEngine
 		_graphicsQFGroup(graphicsQFGroup), _uiLayersList(maxActiveLayersCount)
 	{
 		_layerOrderList.reserve(maxActiveLayersCount);
-		_transferFrameAmount = transferFrameAmount;
 
-		if (_transferFrameAmount <= 0)
+		if (transferFrameAmount <= 0)
 			throw std::runtime_error("VertexDataMainInternal::VertexDataMainInternal Error: Program tried to create zero transfer frames!");
+		_transferFrameAmount = transferFrameAmount;
 		_currentTranferFrame = 0;
+
+		if (graphicsFrameAmount <= 0)
+			throw std::runtime_error("VertexDataMainInternal::VertexDataMainInternal Error: Program tried to create zero graphics frames!");
+		_graphicsFrameAmount = graphicsFrameAmount;
+		_currentGraphicsFrame = 0;
 
 		_transferQueueID = transferQueueID;
 		_graphicsQueueID = graphicsQueueID;
@@ -133,6 +138,16 @@ namespace JJs2DEngine
 		_currentTranferFrame++;
 		if (_currentTranferFrame >= _transferFrameAmount)
 			_currentTranferFrame = 0;
+	}
+
+	void VertexDataMainInternal::DrawFrame()
+	{
+		if (_currentGraphicsFrame >= _graphicsCommandBuffersIDs.size())
+			throw std::runtime_error("VertexDataMainInternal::DrawFrame Error: Program tried to use a non-existent graphics frame!");
+
+		_currentGraphicsFrame++;
+		if (_currentGraphicsFrame >= _graphicsFrameAmount)
+			_currentGraphicsFrame = 0;
 	}
 
 	UiVertexDataLayerVersionListInternal& VertexDataMainInternal::GetUiVertexDataLayerVersionList(IDObject<UiVertexDataLayerVersionListPointer> ID)

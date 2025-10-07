@@ -31,6 +31,7 @@ namespace JJs2DEngine
 		IDObject<UiVertexDataLayerVersionListPointer> AddUiLayerVersionList(const std::vector<size_t>& versionsMaxVerticesList, size_t addOnReserving);
 
 		void TransferVertexData();
+		void DrawFrame();
 
 		UiVertexDataLayerVersionListInternal& GetUiVertexDataLayerVersionList(IDObject<UiVertexDataLayerVersionListPointer> ID);
 
@@ -46,8 +47,12 @@ namespace JJs2DEngine
 		VS::CommandPoolQFGroupList _graphicsQFGroup;
 
 		UnsortedIDVector<UiVertexDataLayerVersionListPointer> _uiLayersList;
+
 		size_t _transferFrameAmount;
 		size_t _currentTranferFrame;
+
+		size_t _graphicsFrameAmount;
+		size_t _currentGraphicsFrame;
 
 		size_t _transferQueueID;
 		size_t _graphicsQueueID;
