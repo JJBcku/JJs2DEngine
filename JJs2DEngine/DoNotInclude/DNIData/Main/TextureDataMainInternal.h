@@ -57,6 +57,9 @@ namespace JJs2DEngine
 
 		std::shared_ptr<TextureReferenceData> GetTextureReference(bool inPreloadedTexturesList, size_t tileImageIndex, size_t referenceIndex);
 
+		IDObject<VS::AutoCleanupNIFDescriptorPool> GetTexturesDescriptorSetPool();
+		IDObject<VS::AutoCleanupDescriptorSet> GetTexturesDescriptorSets(size_t currentTransferFrame);
+
 	private:
 		VS::DataBufferLists _dataBufferList;
 		VS::ImageDataLists _imageList;

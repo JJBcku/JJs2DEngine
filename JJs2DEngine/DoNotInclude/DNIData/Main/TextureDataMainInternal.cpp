@@ -243,6 +243,19 @@ namespace JJs2DEngine
 			return _streamedTexturesData->GetTextureReference(tileImageIndex, referenceIndex);
 	}
 
+	IDObject<VS::AutoCleanupNIFDescriptorPool> TextureDataMainInternal::GetTexturesDescriptorSetPool()
+	{
+		return _transferDescriptorPool;
+	}
+
+	IDObject<VS::AutoCleanupDescriptorSet> TextureDataMainInternal::GetTexturesDescriptorSets(size_t currentTransferFrame)
+	{
+		if (currentTransferFrame >= _textureDescriptorSets.size())
+			throw std::runtime_error("TextureDataMainInternal::GetTexturesDescriptorSets Error: Program tried to access a non-existent texture descriptor set!");
+
+		return _textureDescriptorSets[currentTransferFrame];
+	}
+
 	bool TextureDataMainInternal::Is16Bit(TextureFormat textureFormat) const
 	{
 		if (textureFormat == TextureFormat::TEXTURE_FORMAT_RGBA16)
