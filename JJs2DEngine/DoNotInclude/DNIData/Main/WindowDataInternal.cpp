@@ -101,11 +101,11 @@ namespace JJs2DEngine
 			auto& frameData = _perFrameData[i];
 
 			frameData.colorImage = _imageList.AddColorRenderTargetImage(swapchainData.renderImagesWidth, swapchainData.renderImagesHeight, swapchainData.colorFormat,
-				VS::SAMPLE_1, {}, false, 1, _perFrameData.size() + 1);
+				VS::SAMPLE_1, {}, false, false, _perFrameData.size() + 1);
 		}
 
 		_depthImage = _imageList.AddDepthStencilRenderTargetImage(swapchainData.renderImagesWidth, swapchainData.renderImagesHeight, swapchainData.depthFormat,
-			VS::SAMPLE_1, {}, false, 1, _perFrameData.size() + 1);
+			VS::SAMPLE_1, {}, false, false, _perFrameData.size() + 1);
 
 		_colorImageMemory = _memoryList.AllocateMemory(imageList.GetColorRenderTargetImagesSize(_perFrameData.back().colorImage) * _perFrameData.size(), _perFrameData.size(),
 			_colorMemoryProperties, imageList.GetColorRenderTargetImagesMemoryTypeMask(_perFrameData.back().colorImage), 0x10);
@@ -166,6 +166,8 @@ namespace JJs2DEngine
 
 			_descriptorList.WriteNIFDescriptorSetInputAttachmentBindings(_gammaCorrectionDescriptorPool, inputAttachmentWritingLists);
 		}
+
+		_swapchainData = swapchainData;
 	}
 
 	WindowDataInternal::~WindowDataInternal()
