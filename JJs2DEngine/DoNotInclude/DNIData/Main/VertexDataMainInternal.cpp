@@ -7,6 +7,10 @@
 
 #include "../../../Include/Main/VertexLayerOrderID.h"
 
+#include "TextureDataMainInternal.h"
+#include "RenderDataInternal.h"
+#include "WindowDataInternal.h"
+
 #include <VulkanSimplified/VSDevice/VSCommandBufferSubmissionData.h>
 #include <VulkanSimplified/VSDevice/VSDataBuffersMemoryBarrierData.h>
 #include <VulkanSimplified/VSDevice/VSGlobalMemoryBarrierData.h>
@@ -18,11 +22,12 @@ namespace JJs2DEngine
 {
 	constexpr size_t maxActiveLayersCount = maxLayerDepth + 1;
 
-	VertexDataMainInternal::VertexDataMainInternal(TextureDataMainInternal& textureDataList, VS::DataBufferLists dataBufferList, VS::MemoryObjectsList memoryObjectsList,
-		VS::SynchronizationDataLists synchroList, VS::CommandPoolQFGroupList transferQFGroup, uint32_t transferFrameAmount, size_t transferQueueID,
-		VS::CommandPoolQFGroupList graphicsQFGroup, uint32_t graphicsFrameAmount, size_t graphicsQueueID) :
-		_textureDataList(textureDataList), _dataBufferList(dataBufferList), _memoryObjectsList(memoryObjectsList), _synchroList(synchroList), _transferQFGroup(transferQFGroup),
-		_graphicsQFGroup(graphicsQFGroup), _uiLayersList(maxActiveLayersCount)
+	VertexDataMainInternal::VertexDataMainInternal(TextureDataMainInternal& textureDataList, RenderDataInternal& renderDataList, WindowDataInternal& windowDataList,
+		VS::DataBufferLists dataBufferList, VS::MemoryObjectsList memoryObjectsList, VS::SynchronizationDataLists synchroList,
+		VS::CommandPoolQFGroupList transferQFGroup, uint32_t transferFrameAmount, size_t transferQueueID,
+		VS::CommandPoolQFGroupList graphicsQFGroup, uint32_t graphicsFrameAmount, size_t graphicsQueueID) : _textureDataList(textureDataList), _renderDataList(renderDataList),
+		_windowDataList(windowDataList), _dataBufferList(dataBufferList), _memoryObjectsList(memoryObjectsList), _synchroList(synchroList),
+		_transferQFGroup(transferQFGroup), _graphicsQFGroup(graphicsQFGroup), _uiLayersList(maxActiveLayersCount)
 	{
 		_layerOrderList.reserve(maxActiveLayersCount);
 
@@ -167,6 +172,9 @@ namespace JJs2DEngine
 				{}, vertexBuffersOwnershipTransferDataList, {});
 		}
 
+		graphicsCommandBuffer.BeginRenderPass(_renderDataList.GetCurrentRenderPass(), _windowDataList.GetFramebufferID(_currentGraphicsFrame), 0, 0, _windowDataList.GetRenderWidth(),
+			_windowDataList.GetRenderHeight(), _renderDataList.GetClearValuesList());
+
 		for (size_t i = 0; i < _layerOrderList.size(); ++i)
 		{
 			if (_layerOrderList[i].type != VertexLayerOrderIDType::UI_LAYER)
@@ -176,6 +184,8 @@ namespace JJs2DEngine
 
 			layer->RecordDrawCommand(_currentTranferFrame, graphicsCommandBuffer);
 		}
+
+		graphicsCommandBuffer.EndRenderPass();
 
 		graphicsCommandBuffer.EndRecording();
 	}

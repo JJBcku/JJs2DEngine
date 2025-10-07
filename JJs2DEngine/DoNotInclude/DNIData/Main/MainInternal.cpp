@@ -215,7 +215,7 @@ namespace JJs2DEngine
 			windowRenderData.renderPassID = _renderDataList->GetCurrentRenderPass();
 			windowRenderData.descriptorLayoutID = _renderDataList->GetGammaCorrectionDescriptorSetLayout();
 
-			_windowData = std::make_unique<WindowDataInternal>(deviceSettings.windowData, windowRenderData, device.GetWindowList(), device.GetSynchronizationDataLists(),
+			_windowData = std::make_unique<WindowDataInternal>(deviceSettings.windowData, windowRenderData, device.GetWindowList(),
 				device.GetImageDataLists(), device.GetMemoryObjectsList(), device.GetDescriptorDataLists());
 		}
 
@@ -251,8 +251,8 @@ namespace JJs2DEngine
 			_textureDataMain = std::make_unique<TextureDataMainInternal>(textureInitData, device.GetDataBufferLists(), device.GetImageDataLists(), device.GetMemoryObjectsList(),
 				device.GetSynchronizationDataLists(), transferQFGroup, device.GetDescriptorDataLists());
 
-			_vertexDataMain = std::make_unique<VertexDataMainInternal>(*_textureDataMain, device.GetDataBufferLists(), device.GetMemoryObjectsList(), device.GetSynchronizationDataLists(),
-				transferQFGroup, _currentDevicesSettings.value().transferFramesInFlight, transferQueue,
+			_vertexDataMain = std::make_unique<VertexDataMainInternal>(*_textureDataMain, *_renderDataList, *_windowData, device.GetDataBufferLists(), device.GetMemoryObjectsList(),
+				device.GetSynchronizationDataLists(), transferQFGroup, _currentDevicesSettings.value().transferFramesInFlight, transferQueue,
 				graphicQFGroup, _currentDevicesSettings.value().graphicsFramesInFlight, _graphicsQueueIndex);
 		}
 	}

@@ -19,11 +19,14 @@ namespace JJs2DEngine
 	union VertexLayerOrderID;
 
 	class TextureDataMainInternal;
+	class RenderDataInternal;
+	class WindowDataInternal;
 
 	class VertexDataMainInternal
 	{
 	public:
-		VertexDataMainInternal(TextureDataMainInternal& textureDataList, VS::DataBufferLists dataBufferList, VS::MemoryObjectsList memoryObjectsList, VS::SynchronizationDataLists synchroList,
+		VertexDataMainInternal(TextureDataMainInternal& textureDataList, RenderDataInternal& renderDataList, WindowDataInternal& windowDataList,
+			VS::DataBufferLists dataBufferList, VS::MemoryObjectsList memoryObjectsList, VS::SynchronizationDataLists synchroList,
 			VS::CommandPoolQFGroupList transferQFGroup, uint32_t transferFrameAmount, size_t transferQueueID,
 			VS::CommandPoolQFGroupList graphicQFGroup, uint32_t graphicsFrameAmount, size_t graphicQueueID);
 		~VertexDataMainInternal();
@@ -39,6 +42,9 @@ namespace JJs2DEngine
 
 	private:
 		TextureDataMainInternal& _textureDataList;
+		RenderDataInternal& _renderDataList;
+		WindowDataInternal& _windowDataList;
+
 		VS::DataBufferLists _dataBufferList;
 		VS::MemoryObjectsList _memoryObjectsList;
 
