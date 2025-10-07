@@ -244,6 +244,16 @@ namespace JJs2DEngine
 		return _framebuffers[graphicsFrameIndice];
 	}
 
+	uint32_t WindowDataInternal::GetRenderWidth() const
+	{
+		return _swapchainData.renderImagesWidth;
+	}
+
+	uint32_t WindowDataInternal::GetRenderHeight() const
+	{
+		return _swapchainData.renderImagesHeight;
+	}
+
 	void WindowDataInternal::ChangeFullscreen(Misc::Bool64Values newFullscreen)
 	{
 		if (_fullscreen == newFullscreen)

@@ -63,6 +63,9 @@ namespace JJs2DEngine
 		const PerFrameData& GetFrameData(size_t frameIndex) const;
 		IDObject<VS::AutoCleanupFramebuffer> GetFramebufferID(size_t graphicsFrameIndice);
 
+		uint32_t GetRenderWidth() const;
+		uint32_t GetRenderHeight() const;
+
 		void ChangeFullscreen(Misc::Bool64Values newFullscreen);
 
 		bool RenderingShouldBePaused() const;
