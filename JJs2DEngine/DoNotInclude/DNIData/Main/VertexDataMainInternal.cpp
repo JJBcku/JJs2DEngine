@@ -12,6 +12,8 @@
 #include <VulkanSimplified/VSDevice/VSGlobalMemoryBarrierData.h>
 #include <VulkanSimplified/VSDevice/VSImagesMemoryBarrierData.h>
 
+#include <Miscellaneous/Bool64.h>
+
 namespace JJs2DEngine
 {
 	constexpr size_t maxActiveLayersCount = maxLayerDepth + 1;
@@ -110,6 +112,7 @@ namespace JJs2DEngine
 			if (commandRecorded && _transferQueueID != _graphicsQueueID)
 			{
 				vertexBuffersOwnershipTransferDataList.push_back(layer->GetOwnershipTransferData(_currentTranferFrame, _transferQueueID, _graphicsQueueID));
+				layer->SetOwnedByTransferQueue(_currentTranferFrame, Misc::BOOL64_TRUE);
 			}
 		}
 

@@ -7,6 +7,7 @@
 
 #include "../../../Include/Main/UiVertexDataLayerVersionListDef.h"
 
+#include <Miscellaneous/Bool64Def.h>
 #include <VulkanSimplified/VSDevice/VSDataBufferLists.h>
 #include <VulkanSimplified/VSDevice/VSMemoryObjectsList.h>
 #include <VulkanSimplified/VSDevice/VSPrimaryIRCommandBufferDef.h>
@@ -42,6 +43,9 @@ namespace JJs2DEngine
 		UiVertexDataLayerVersionInternal& GetLayersVersion(size_t versionIndex);
 
 		const UiVertexDataLayerVersionInternal& GetLayersVersion(size_t versionIndex) const;
+
+		Misc::Bool64 IsOwnedByTransferQueue(size_t transferFrameIndice) const;
+		void SetOwnedByTransferQueue(size_t transferFrameIndice, Misc::Bool64Values newValue);
 
 	private:
 		VS::DataBufferLists _dataBufferList;

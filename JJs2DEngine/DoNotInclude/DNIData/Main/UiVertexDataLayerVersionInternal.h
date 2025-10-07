@@ -44,6 +44,9 @@ namespace JJs2DEngine
 
 		size_t WriteDataToBuffer(std::optional<IDObject<VS::AutoCleanupStagingBuffer>> stagingBufferID, size_t transferFrameIndice);
 
+		Misc::Bool64 IsOwnedByTransferQueue(size_t transferFrameIndice) const;
+		void SetOwnedByTransferQueue(size_t transferFrameIndice, Misc::Bool64Values newValue);
+
 	private:
 		TextureDataMainInternal& _textureDataList;
 		VS::DataBufferLists _dataBufferList;
@@ -54,12 +57,13 @@ namespace JJs2DEngine
 		size_t _nextDepthValueUNORM;
 		size_t _layersDepth;
 
+		std::vector<Misc::Bool64> _ownedByTransferQueue;
+		std::vector<TransferFrameData> _frameData;
+
 		uint64_t _buffersMemoryMask;
 		uint64_t _singleBuffersMemorySize;
 		uint64_t _buffersMemoryAligment;
 
 		uint64_t _totalBuffersMemorySize;
-
-		std::vector<TransferFrameData> _frameData;
 	};
 }

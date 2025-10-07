@@ -1,6 +1,8 @@
 #include "MainDNIpch.h"
 #include "UiVertexDataLayerVersionListInternal.h"
 
+#include <Miscellaneous/Bool64.h>
+
 #include <VulkanSimplified/VSCommon/VSMemoryTypeProperties.h>
 #include <VulkanSimplified/VSCommon/VSAccessFlags.h>
 
@@ -185,6 +187,22 @@ namespace JJs2DEngine
 			throw std::runtime_error("UiVertexDataLayerVersionListInternal::GetLayersVersion Const Error: Program tried to get a non-existent version of the layer!");
 
 		return *_versionList[versionIndex];
+	}
+
+	Misc::Bool64 UiVertexDataLayerVersionListInternal::IsOwnedByTransferQueue(size_t transferFrameIndice) const
+	{
+		if (_activeVersion >= _versionList.size())
+			throw std::runtime_error("UiVertexDataLayerVersionListInternal::GetLayersVersion Const Error: Program tried to get a non-existent version of the layer!");
+
+		return _versionList[_activeVersion]->IsOwnedByTransferQueue(transferFrameIndice);
+	}
+
+	void UiVertexDataLayerVersionListInternal::SetOwnedByTransferQueue(size_t transferFrameIndice, Misc::Bool64Values newValue)
+	{
+		if (_activeVersion >= _versionList.size())
+			throw std::runtime_error("UiVertexDataLayerVersionListInternal::GetLayersVersion Const Error: Program tried to get a non-existent version of the layer!");
+
+		_versionList[_activeVersion]->SetOwnedByTransferQueue(transferFrameIndice, newValue);
 	}
 
 }

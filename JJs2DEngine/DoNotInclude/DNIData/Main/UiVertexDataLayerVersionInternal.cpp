@@ -46,9 +46,11 @@ namespace JJs2DEngine
 			_unusedIndexes.push_back(maxVertexAmount - (i + 1));
 		}
 
+		_ownedByTransferQueue.resize(transferFrameAmount);
 		_frameData.resize(transferFrameAmount);
 		for (size_t i = 0; i < _frameData.size(); ++i)
 		{
+			_ownedByTransferQueue[i] = Misc::BOOL64_FALSE;
 			_frameData[i].vertexBuffer = _dataBufferList.AddVertexBuffer(sizeof(UiObjectBufferData) * _objectList.size(), {}, 0x10);
 		}
 
@@ -223,6 +225,26 @@ namespace JJs2DEngine
 		_frameData[transferFrameIndice].changed = Misc::BOOL64_FALSE;
 
 		return writtenSize;
+	}
+
+	Misc::Bool64 UiVertexDataLayerVersionInternal::IsOwnedByTransferQueue(size_t transferFrameIndice) const
+	{
+		if (transferFrameIndice >= _ownedByTransferQueue.size())
+			throw std::runtime_error("UiVertexDataLayerVersionInternal::IsOwnedByTransferQueue Error: Program tried to access an non-existent frame's data!");
+
+		assert(_ownedByTransferQueue[transferFrameIndice] == Misc::BOOL64_FALSE || _ownedByTransferQueue[transferFrameIndice] == Misc::BOOL64_TRUE);
+
+		return _ownedByTransferQueue[transferFrameIndice];
+	}
+
+	void UiVertexDataLayerVersionInternal::SetOwnedByTransferQueue(size_t transferFrameIndice, Misc::Bool64Values newValue)
+	{
+		if (transferFrameIndice >= _ownedByTransferQueue.size())
+			throw std::runtime_error("UiVertexDataLayerVersionInternal::SetOwnedByTransferQueue Error: Program tried to access an non-existent frame's data!");
+
+		assert(newValue == Misc::BOOL64_FALSE || newValue == Misc::BOOL64_TRUE);
+
+		_ownedByTransferQueue[transferFrameIndice] = newValue;
 	}
 
 }
