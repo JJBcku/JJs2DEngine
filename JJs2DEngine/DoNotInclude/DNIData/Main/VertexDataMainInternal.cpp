@@ -34,7 +34,7 @@ namespace JJs2DEngine
 		if (transferFrameAmount <= 0)
 			throw std::runtime_error("VertexDataMainInternal::VertexDataMainInternal Error: Program tried to create zero transfer frames!");
 		_transferFrameAmount = transferFrameAmount;
-		_currentTranferFrame = 0;
+		_currentTransferFrame = 0;
 
 		if (graphicsFrameAmount <= 0)
 			throw std::runtime_error("VertexDataMainInternal::VertexDataMainInternal Error: Program tried to create zero graphics frames!");
@@ -97,15 +97,15 @@ namespace JJs2DEngine
 
 	void VertexDataMainInternal::TransferVertexData()
 	{
-		if (_currentTranferFrame >= _transferCommandBuffersIDs.size())
+		if (_currentTransferFrame >= _transferCommandBuffersIDs.size())
 			throw std::runtime_error("VertexDataMainInternal::TransferVertexData Error: Program tried to use a non-existent transfer frame!");
 
-		if (_synchroList.WaitOnFences({ _vertexTransferFinishedFences[_currentTranferFrame] }, false, 1'000'000'000ULL) != true)
+		if (_synchroList.WaitOnFences({ _vertexTransferFinishedFences[_currentTransferFrame] }, false, 1'000'000'000ULL) != true)
 			throw std::runtime_error("VertexDataMainInternal::TransferVertexData Error: Waiting on fence has timed out!");
 
-		_synchroList.ResetFences({ _vertexTransferFinishedFences[_currentTranferFrame] });
+		_synchroList.ResetFences({ _vertexTransferFinishedFences[_currentTransferFrame] });
 
-		auto tranferCommandBuffer = _transferPool->GetPrimaryCommandBuffer(_transferCommandBuffersIDs[_currentTranferFrame]);
+		auto tranferCommandBuffer = _transferPool->GetPrimaryCommandBuffer(_transferCommandBuffersIDs[_currentTransferFrame]);
 		tranferCommandBuffer.BeginRecording(VS::CommandBufferUsage::ONE_USE);
 
 		std::vector<VS::DataBuffersMemoryBarrierData> vertexBuffersOwnershipTransferDataList;
@@ -118,10 +118,10 @@ namespace JJs2DEngine
 
 			auto& layer = _uiLayersList.GetObject(_layerOrderList[i].UiLayerID.ID);
 
-			bool commandRecorded = layer->WriteDataToBuffer(_currentTranferFrame, tranferCommandBuffer);
+			bool commandRecorded = layer->WriteDataToBuffer(_currentTransferFrame, tranferCommandBuffer);
 			if (commandRecorded && _transferQueueID != _graphicsQueueID)
 			{
-				vertexBuffersOwnershipTransferDataList.push_back(layer->GetOwnershipTransferData(_currentTranferFrame, _transferQueueID, _graphicsQueueID));
+				vertexBuffersOwnershipTransferDataList.push_back(layer->GetOwnershipTransferData(_currentTransferFrame, _transferQueueID, _graphicsQueueID));
 			}
 		}
 
@@ -134,10 +134,10 @@ namespace JJs2DEngine
 		submitData.commandBufferIDs.resize(1);
 		submitData.commandBufferIDs[0].IRPrimaryID.type = VS::CommandBufferIDType::IR_PRIMARY;
 		submitData.commandBufferIDs[0].IRPrimaryID.commandPoolID = _transferPoolID;
-		submitData.commandBufferIDs[0].IRPrimaryID.commandBufferID = _transferCommandBuffersIDs[_currentTranferFrame];
-		//submitData.signalSemaphores.push_back(_vertexTransferFinishedSemaphores[_currentTranferFrame]);
+		submitData.commandBufferIDs[0].IRPrimaryID.commandBufferID = _transferCommandBuffersIDs[_currentTransferFrame];
+		//submitData.signalSemaphores.push_back(_vertexTransferFinishedSemaphores[_currentTransferFrame]);
 
-		_transferQFGroup.SubmitBuffers(_transferQueueID, { submitData }, _vertexTransferFinishedFences[_currentTranferFrame]);
+		_transferQFGroup.SubmitBuffers(_transferQueueID, { submitData }, _vertexTransferFinishedFences[_currentTransferFrame]);
 	}
 
 	void VertexDataMainInternal::DrawFrame()
@@ -159,10 +159,10 @@ namespace JJs2DEngine
 
 			auto& layer = _uiLayersList.GetObject(_layerOrderList[i].UiLayerID.ID);
 
-			if (layer->IsOwnedByTransferQueue(_currentTranferFrame) == Misc::BOOL64_TRUE)
+			if (layer->IsOwnedByTransferQueue(_currentTransferFrame) == Misc::BOOL64_TRUE)
 			{
-				vertexBuffersOwnershipTransferDataList.push_back(layer->GetOwnershipTransferData(_currentTranferFrame, _transferQueueID, _graphicsQueueID));
-				layer->SetOwnedByTransferQueue(_currentTranferFrame, Misc::BOOL64_FALSE);
+				vertexBuffersOwnershipTransferDataList.push_back(layer->GetOwnershipTransferData(_currentTransferFrame, _transferQueueID, _graphicsQueueID));
+				layer->SetOwnedByTransferQueue(_currentTransferFrame, Misc::BOOL64_FALSE);
 			}
 		}
 
@@ -184,12 +184,23 @@ namespace JJs2DEngine
 
 			auto& layer = _uiLayersList.GetObject(_layerOrderList[i].UiLayerID.ID);
 
-			layer->RecordDrawCommand(_currentTranferFrame, graphicsCommandBuffer);
+			layer->RecordDrawCommand(_currentTransferFrame, graphicsCommandBuffer);
 		}
 
 		graphicsCommandBuffer.EndRenderPass();
 
 		graphicsCommandBuffer.EndRecording();
+	}
+
+	void VertexDataMainInternal::IncrementCurrentFrames()
+	{
+		_currentTransferFrame++;
+		if (_currentTransferFrame >= _transferFrameAmount)
+			_currentTransferFrame = 0;
+
+		_currentGraphicsFrame++;
+		if (_currentGraphicsFrame >= _graphicsFrameAmount)
+			_currentGraphicsFrame = 0;
 	}
 
 	UiVertexDataLayerVersionListInternal& VertexDataMainInternal::GetUiVertexDataLayerVersionList(IDObject<UiVertexDataLayerVersionListPointer> ID)

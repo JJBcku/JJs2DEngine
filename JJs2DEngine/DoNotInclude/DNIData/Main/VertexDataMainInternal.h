@@ -35,6 +35,7 @@ namespace JJs2DEngine
 
 		void TransferVertexData();
 		void DrawFrame();
+		void IncrementCurrentFrames();
 
 		UiVertexDataLayerVersionListInternal& GetUiVertexDataLayerVersionList(IDObject<UiVertexDataLayerVersionListPointer> ID);
 
@@ -55,7 +56,7 @@ namespace JJs2DEngine
 		UnsortedIDVector<UiVertexDataLayerVersionListPointer> _uiLayersList;
 
 		size_t _transferFrameAmount;
-		size_t _currentTranferFrame;
+		size_t _currentTransferFrame;
 
 		size_t _graphicsFrameAmount;
 		size_t _currentGraphicsFrame;

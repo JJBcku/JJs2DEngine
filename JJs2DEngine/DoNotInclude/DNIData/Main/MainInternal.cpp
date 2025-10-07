@@ -291,6 +291,7 @@ namespace JJs2DEngine
 	{
 		_vertexDataMain->TransferVertexData();
 		_vertexDataMain->DrawFrame();
+		_vertexDataMain->IncrementCurrentFrames();
 	}
 
 	bool MainInternal::RenderingShouldBePaused() const
