@@ -33,6 +33,9 @@ namespace JJs2DEngine
 		IDObject<VS::AutoCleanupGraphicsPipeline> GetUILayerGraphicsPipeline();
 		IDObject<VS::AutoCleanupGraphicsPipeline> GetGammaCorrectionGraphicsPipeline();
 
+		IDObject<VS::AutoCleanupPipelineLayout> GetUILayerGraphicsPipelineLayout();
+		IDObject<VS::AutoCleanupPipelineLayout> GetGammaCorrectionGraphicsPipelineLayout();
+
 		const std::vector<std::optional<VS::RenderPassClearValueID>>& GetClearValuesList() const;
 
 	private:

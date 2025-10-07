@@ -230,6 +230,16 @@ namespace JJs2DEngine
 		return _gammaCorrectionPipelineList[_currentPipelineSettings];
 	}
 
+	IDObject<VS::AutoCleanupPipelineLayout> RenderDataInternal::GetUILayerGraphicsPipelineLayout()
+	{
+		return _uiPipelineLayout;
+	}
+
+	IDObject<VS::AutoCleanupPipelineLayout> RenderDataInternal::GetGammaCorrectionGraphicsPipelineLayout()
+	{
+		return _gammaCorrectionPipelineLayout;
+	}
+
 	const std::vector<std::optional<VS::RenderPassClearValueID>>& RenderDataInternal::GetClearValuesList() const
 	{
 		return _clearValues;
