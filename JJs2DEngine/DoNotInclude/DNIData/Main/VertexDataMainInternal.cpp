@@ -8,6 +8,9 @@
 #include "../../../Include/Main/VertexLayerOrderID.h"
 
 #include <VulkanSimplified/VSDevice/VSCommandBufferSubmissionData.h>
+#include <VulkanSimplified/VSDevice/VSDataBuffersMemoryBarrierData.h>
+#include <VulkanSimplified/VSDevice/VSGlobalMemoryBarrierData.h>
+#include <VulkanSimplified/VSDevice/VSImagesMemoryBarrierData.h>
 
 namespace JJs2DEngine
 {
@@ -27,6 +30,7 @@ namespace JJs2DEngine
 		_currentTranferFrame = 0;
 
 		_transferQueueID = transferQueueID;
+		_graphicsQueueID = graphicsQueueID;
 
 		_vertexTransferFinishedFences.reserve(transferFrameAmount);
 		_vertexTransferFinishedSemaphores.reserve(transferFrameAmount);
@@ -92,6 +96,9 @@ namespace JJs2DEngine
 		auto tranferCommandBuffer = _transferPool->GetPrimaryCommandBuffer(_transferCommandBuffersIDs[_currentTranferFrame]);
 		tranferCommandBuffer.BeginRecording(VS::CommandBufferUsage::ONE_USE);
 
+		std::vector<VS::DataBuffersMemoryBarrierData> vertexBuffersOwnershipTransferDataList;
+		vertexBuffersOwnershipTransferDataList.reserve(_layerOrderList.size());
+
 		for (size_t i = 0; i < _layerOrderList.size(); ++i)
 		{
 			if (_layerOrderList[i].type != VertexLayerOrderIDType::UI_LAYER)
@@ -99,8 +106,15 @@ namespace JJs2DEngine
 
 			auto& layer = _uiLayersList.GetObject(_layerOrderList[i].UiLayerID.ID);
 
-			layer->WriteDataToBuffer(_currentTranferFrame, tranferCommandBuffer);
+			bool commandRecorded = layer->WriteDataToBuffer(_currentTranferFrame, tranferCommandBuffer);
+			if (commandRecorded && _transferQueueID != _graphicsQueueID)
+			{
+				vertexBuffersOwnershipTransferDataList.push_back(layer->GetOwnershipTransferData(_currentTranferFrame, _transferQueueID, _graphicsQueueID));
+			}
 		}
+
+		tranferCommandBuffer.CreatePipelineBarrier(VS::PipelineStageFlagBits::PIPELINE_STAGE_TRANSFER, VS::PipelineStageFlagBits::PIPELINE_STAGE_TOP_OF_PIPE,
+			{}, vertexBuffersOwnershipTransferDataList, {});
 
 		tranferCommandBuffer.EndRecording();
 

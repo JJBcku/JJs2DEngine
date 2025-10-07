@@ -2,9 +2,11 @@
 #include "UiVertexDataLayerVersionListInternal.h"
 
 #include <VulkanSimplified/VSCommon/VSMemoryTypeProperties.h>
+#include <VulkanSimplified/VSCommon/VSAccessFlags.h>
 
 #include <VulkanSimplified/VSDevice/VSPrimaryIRCommandBuffer.h>
 #include <VulkanSimplified/VSDevice/VSDataBuffersCopyRegionData.h>
+#include <VulkanSimplified/VSDevice/VSDataBuffersMemoryBarrierData.h>
 
 #include <limits>
 
@@ -148,6 +150,25 @@ namespace JJs2DEngine
 		}
 
 		return commandRecorded;
+	}
+
+	VS::DataBuffersMemoryBarrierData UiVertexDataLayerVersionListInternal::GetOwnershipTransferData(size_t transferFrameIndice,
+		size_t transferQueueID, size_t graphicQueueID)
+	{
+		VS::DataBuffersMemoryBarrierData ret;
+
+		if (_activeVersion >= _versionList.size())
+			throw std::runtime_error("UiVertexDataLayerVersionListInternal::GetOwnershipTransferData Error: Program tried to access a non-existent layer version!");
+
+		if (transferFrameIndice >= _stagingBufferIDs->size())
+			throw std::runtime_error("UiVertexDataLayerVersionListInternal::GetOwnershipTransferData Error: Program tried to access an non-existent frame's data!");
+
+		ret.srcAccess = VS::AccessFlagBits::ACCESS_MEMORY_WRITE;
+		ret.dstAccess = VS::AccessFlagBits::ACCESS_MEMORY_READ;
+		ret.queueData = { transferQueueID, graphicQueueID };
+		ret.bufferID = _versionList[_activeVersion]->GetVertexBufferID(transferFrameIndice);
+
+		return ret;
 	}
 
 	UiVertexDataLayerVersionInternal& UiVertexDataLayerVersionListInternal::GetLayersVersion(size_t versionIndex)

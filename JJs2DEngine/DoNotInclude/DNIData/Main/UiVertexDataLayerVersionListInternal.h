@@ -13,6 +13,11 @@
 
 #include <CustomLists/IDObject.h>
 
+namespace VulkanSimplified
+{
+	struct DataBuffersMemoryBarrierData;
+}
+
 namespace JJs2DEngine
 {
 	class UiVertexDataLayerVersionInternal;
@@ -32,6 +37,7 @@ namespace JJs2DEngine
 		UiVertexDataLayerVersionListInternal& operator=(UiVertexDataLayerVersionListInternal&& rhs) noexcept = delete;
 
 		bool WriteDataToBuffer(size_t transferFrameIndice, VS::PrimaryIRCommandBuffer transferCommandBuffer);
+		VS::DataBuffersMemoryBarrierData GetOwnershipTransferData(size_t transferFrameIndice, size_t transferQueueID, size_t graphicQueueID);
 
 		UiVertexDataLayerVersionInternal& GetLayersVersion(size_t versionIndex);
 

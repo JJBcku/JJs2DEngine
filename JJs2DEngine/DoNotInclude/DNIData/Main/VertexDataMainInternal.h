@@ -50,6 +50,7 @@ namespace JJs2DEngine
 		size_t _currentTranferFrame;
 
 		size_t _transferQueueID;
+		size_t _graphicsQueueID;
 
 		std::vector<VertexLayerOrderID> _layerOrderList;
 
