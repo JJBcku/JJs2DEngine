@@ -187,6 +187,12 @@ namespace JJs2DEngine
 			_gammaCorrectionPipelineList = devicePipelineList.AddGraphicPipelines(creationDataList, _gammaCorrectionPipelineCache, creationDataList.size() * 8);
 			SaveGammaCorrectionPipelineCacheFile(dataFolder);
 		}
+
+		{
+			auto sharedRenderPassData = _sharedData.GetSharedRenderPassDataList();
+			_clearValues.push_back(sharedRenderPassData.AddFloatColorClearValue(0.0f, 0.0f, 0.0f, 1.0f));
+			_clearValues.push_back(sharedRenderPassData.AddDepthStencilClearValue(1.0f, 0));
+		}
 	}
 
 	RenderDataInternal::~RenderDataInternal()
@@ -206,6 +212,27 @@ namespace JJs2DEngine
 	IDObject<VS::AutoCleanupDescriptorSetLayout> RenderDataInternal::GetGammaCorrectionDescriptorSetLayout() const
 	{
 		return _gammaCorrectionDescriptorSetLayout;
+	}
+
+	IDObject<VS::AutoCleanupGraphicsPipeline> RenderDataInternal::GetUILayerGraphicsPipeline()
+	{
+		if (_currentPipelineSettings >= _uiPipelineList.size())
+			throw std::runtime_error("RenderDataInternal::GetUILayerGraphicsPipeline Error: Program tried to access an non-existent pipeline!");
+
+		return _uiPipelineList[_currentPipelineSettings];
+	}
+
+	IDObject<VS::AutoCleanupGraphicsPipeline> RenderDataInternal::GetGammaCorrectionGraphicsPipeline()
+	{
+		if (_currentPipelineSettings >= _gammaCorrectionPipelineList.size())
+			throw std::runtime_error("RenderDataInternal::GetGammaCorrectionGraphicsPipeline Error: Program tried to access an non-existent pipeline!");
+
+		return _gammaCorrectionPipelineList[_currentPipelineSettings];
+	}
+
+	const std::vector<std::optional<VS::RenderPassClearValueID>>& RenderDataInternal::GetClearValuesList() const
+	{
+		return _clearValues;
 	}
 
 	void RenderDataInternal::CreateUIPipelineCacheFile(const std::string& dataFolder)

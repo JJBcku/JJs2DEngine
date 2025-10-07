@@ -30,11 +30,16 @@ namespace JJs2DEngine
 		IDObject<VS::AutoCleanupDescriptorSetLayout> GetTextureDescriptorSetLayout() const;
 		IDObject<VS::AutoCleanupDescriptorSetLayout> GetGammaCorrectionDescriptorSetLayout() const;
 
+		IDObject<VS::AutoCleanupGraphicsPipeline> GetUILayerGraphicsPipeline();
+		IDObject<VS::AutoCleanupGraphicsPipeline> GetGammaCorrectionGraphicsPipeline();
+
+		const std::vector<std::optional<VS::RenderPassClearValueID>>& GetClearValuesList() const;
+
 	private:
 		VS::DeviceMain _device;
 		VS::SharedDataMainList _sharedData;
 
-		std::vector<std::optional<VS::RenderPassClearValueID>> clearValues;
+		std::vector<std::optional<VS::RenderPassClearValueID>> _clearValues;
 
 		size_t _currentPipelineSettings;
 
