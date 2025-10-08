@@ -11,6 +11,8 @@
 #include "RenderDataInternal.h"
 #include "WindowDataInternal.h"
 
+#include <VulkanSimplified/VSCommon/VSPipelineStageFlags.h>
+
 #include <VulkanSimplified/VSDevice/VSCommandBufferSubmissionData.h>
 #include <VulkanSimplified/VSDevice/VSDataBuffersMemoryBarrierData.h>
 #include <VulkanSimplified/VSDevice/VSGlobalMemoryBarrierData.h>
@@ -139,7 +141,7 @@ namespace JJs2DEngine
 		submitData.commandBufferIDs[0].IRPrimaryID.type = VS::CommandBufferIDType::IR_PRIMARY;
 		submitData.commandBufferIDs[0].IRPrimaryID.commandPoolID = _transferPoolID;
 		submitData.commandBufferIDs[0].IRPrimaryID.commandBufferID = _transferCommandBuffersIDs[_currentTransferFrame];
-		//submitData.signalSemaphores.push_back(_vertexTransferFinishedSemaphores[_currentTransferFrame]);
+		submitData.signalSemaphores.push_back(_vertexTransferFinishedSemaphores[_currentTransferFrame]);
 
 		_transferQFGroup.SubmitBuffers(_transferQueueID, { submitData }, _vertexTransferFinishedFences[_currentTransferFrame]);
 	}
@@ -148,6 +150,11 @@ namespace JJs2DEngine
 	{
 		if (_currentGraphicsFrame >= _graphicsCommandBuffersIDs.size())
 			throw std::runtime_error("VertexDataMainInternal::DrawFrame Error: Program tried to use a non-existent graphics frame!");
+
+		if (_synchroList.WaitOnFences({ _renderingFinishedFences[_currentTransferFrame] }, false, 1'000'000'000ULL) != true)
+			throw std::runtime_error("VertexDataMainInternal::DrawFrame Error: Waiting on fence has timed out!");
+
+		_synchroList.ResetFences({ _renderingFinishedFences[_currentTransferFrame] });
 
 		auto graphicsCommandBuffer = _graphicsPool->GetPrimaryCommandBuffer(_graphicsCommandBuffersIDs[_currentGraphicsFrame]);
 
@@ -206,6 +213,16 @@ namespace JJs2DEngine
 		graphicsCommandBuffer.EndRenderPass();
 
 		graphicsCommandBuffer.EndRecording();
+
+		VS::CommandBufferSubmissionData submitData;
+		submitData.commandBufferIDs.resize(1);
+		submitData.commandBufferIDs[0].IRPrimaryID.type = VS::CommandBufferIDType::IR_PRIMARY;
+		submitData.commandBufferIDs[0].IRPrimaryID.commandPoolID = _graphicsPoolID;
+		submitData.commandBufferIDs[0].IRPrimaryID.commandBufferID = _graphicsCommandBuffersIDs[_currentTransferFrame];
+
+		submitData.waitSemaphores.emplace_back(_vertexTransferFinishedSemaphores[_currentTransferFrame], VS::PIPELINE_STAGE_VERTEX_INPUT);
+
+		_graphicsQFGroup.SubmitBuffers(_graphicsQueueID, { submitData }, _renderingFinishedFences[_currentGraphicsFrame]);
 	}
 
 	void VertexDataMainInternal::IncrementCurrentFrames()
