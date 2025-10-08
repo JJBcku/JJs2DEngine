@@ -194,6 +194,15 @@ namespace JJs2DEngine
 			layer->RecordDrawCommand(_currentTransferFrame, graphicsCommandBuffer);
 		}
 
+		graphicsCommandBuffer.BeginNextSubpass(false);
+
+		graphicsCommandBuffer.BindGraphicsPipeline(_renderDataList.GetGammaCorrectionGraphicsPipeline());
+
+		graphicsCommandBuffer.BindDescriptorSetsToGraphicsPipeline(_renderDataList.GetGammaCorrectionGraphicsPipelineLayout(), 0, _windowDataList.GetGammaCorrectionDescriptorPool(),
+			{ _windowDataList.GetGammaCorrectionDescriptorSet(_currentGraphicsFrame) }, {});
+
+		graphicsCommandBuffer.Draw(6, 1, 0, 0);
+
 		graphicsCommandBuffer.EndRenderPass();
 
 		graphicsCommandBuffer.EndRecording();
