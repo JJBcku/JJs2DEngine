@@ -205,7 +205,7 @@ namespace JJs2DEngine
 			{
 				fromTransfer[j].imageID = VS::ImagesGenericID(textureData.imageIDs[j]);
 			}
-			_commandBuffer.CreatePipelineBarrier(VS::PipelineStageFlagBits::PIPELINE_STAGE_TRANSFER, VS::PipelineStageFlagBits::PIPELINE_STAGE_BOTTOM_OF_PIPE, {}, {}, fromTransfer);
+			_commandBuffer.CreatePipelineBarrier(VS::PipelineStageFlagBits::PIPELINE_STAGE_TRANSFER, VS::PipelineStageFlagBits::PIPELINE_STAGE_TOP_OF_PIPE, {}, {}, fromTransfer);
 		}
 
 		_commandBuffer.EndRecording();
