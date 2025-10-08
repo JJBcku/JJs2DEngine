@@ -256,6 +256,19 @@ namespace JJs2DEngine
 		return _swapchainData.renderImagesHeight;
 	}
 
+	IDObject<VS::AutoCleanupNIFDescriptorPool> WindowDataInternal::GetGammaCorrectionDescriptorPool()
+	{
+		return _gammaCorrectionDescriptorPool;
+	}
+
+	IDObject<VS::AutoCleanupDescriptorSet> WindowDataInternal::GetGammaCorrectionDescriptorSet(size_t graphicsFrameIndice)
+	{
+		if (graphicsFrameIndice >= _perFrameData.size())
+			throw std::runtime_error("WindowDataInternal::GetGammaCorrectionDescriptorSet Error: Program tried to access a non-existent frame!");
+
+		return _perFrameData[graphicsFrameIndice].gammaCorrectionDescriptorSet;
+	}
+
 	void WindowDataInternal::ChangeFullscreen(Misc::Bool64Values newFullscreen)
 	{
 		if (_fullscreen == newFullscreen)

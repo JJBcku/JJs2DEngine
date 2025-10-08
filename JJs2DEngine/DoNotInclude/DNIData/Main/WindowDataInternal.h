@@ -66,6 +66,9 @@ namespace JJs2DEngine
 		uint32_t GetRenderWidth() const;
 		uint32_t GetRenderHeight() const;
 
+		IDObject<VS::AutoCleanupNIFDescriptorPool> GetGammaCorrectionDescriptorPool();
+		IDObject<VS::AutoCleanupDescriptorSet> GetGammaCorrectionDescriptorSet(size_t graphicsFrameIndice);
+
 		void ChangeFullscreen(Misc::Bool64Values newFullscreen);
 
 		bool RenderingShouldBePaused() const;
