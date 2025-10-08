@@ -12,6 +12,7 @@
 #include <VulkanSimplified/VSDevice/VSNIRCommandPoolDef.h>
 #include <VulkanSimplified/VSDevice/VSPrimaryNIRCommandBufferDef.h>
 #include <VulkanSimplified/VSDevice/VSSecondaryNIRCommandBufferDef.h>
+#include <VulkanSimplified/VSDevice/VSImagesMemoryBarrierData.h>
 
 #include <CustomLists/IDObject.h>
 
@@ -59,6 +60,8 @@ namespace JJs2DEngine
 
 		IDObject<VS::AutoCleanupNIFDescriptorPool> GetTexturesDescriptorSetPool();
 		IDObject<VS::AutoCleanupDescriptorSet> GetTexturesDescriptorSets(size_t currentTransferFrame);
+
+		std::vector<VS::ImagesMemoryBarrierData> GetTransferToGraphicsMemoryBarriers(size_t frameInFlightIndice, uint64_t transferQueue, uint64_t graphicsQueue);
 
 	private:
 		VS::DataBufferLists _dataBufferList;

@@ -256,6 +256,17 @@ namespace JJs2DEngine
 		return _textureDescriptorSets[currentTransferFrame];
 	}
 
+	std::vector<VS::ImagesMemoryBarrierData> TextureDataMainInternal::GetTransferToGraphicsMemoryBarriers(size_t frameInFlightIndice, uint64_t transferQueue, uint64_t graphicsQueue)
+	{
+		std::vector<VS::ImagesMemoryBarrierData> ret;
+		ret.reserve(imagesInAllTextureArrays);
+
+		_preLoadedTexturesData->GetTransferToGraphicsMemoryBarriers(ret, frameInFlightIndice, transferQueue, graphicsQueue);
+		_streamedTexturesData->GetTransferToGraphicsMemoryBarriers(ret, frameInFlightIndice, transferQueue, graphicsQueue);
+
+		return ret;
+	}
+
 	bool TextureDataMainInternal::Is16Bit(TextureFormat textureFormat) const
 	{
 		if (textureFormat == TextureFormat::TEXTURE_FORMAT_RGBA16)
