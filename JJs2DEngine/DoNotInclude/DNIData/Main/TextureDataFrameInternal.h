@@ -76,7 +76,7 @@ namespace JJs2DEngine
 
 		std::shared_ptr<TextureReferenceData> GetTextureReference(size_t tileImageIndex, size_t referenceIndex);
 
-		void GetTransferToGraphicsMemoryBarrier(std::vector<VS::ImagesMemoryBarrierData>& outputVector, size_t frameInFlightIndice, uint64_t transferQueue, uint64_t graphicsQueue);
+		void GetTransferToGraphicsMemoryBarriers(std::vector<VS::ImagesMemoryBarrierData>& outputVector, size_t frameInFlightIndice, uint64_t transferQueue, uint64_t graphicsQueue);
 
 	private:
 		VS::DataBufferLists _dataBufferList;

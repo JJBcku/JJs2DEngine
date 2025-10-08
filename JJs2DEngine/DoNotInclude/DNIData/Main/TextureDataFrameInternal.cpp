@@ -247,7 +247,7 @@ namespace JJs2DEngine
 		return imageData.textureReferencesList[referenceIndex];
 	}
 
-	void TextureDataFrameInternal::GetTransferToGraphicsMemoryBarrier(std::vector<VS::ImagesMemoryBarrierData>& outputVector, size_t frameInFlightIndice,
+	void TextureDataFrameInternal::GetTransferToGraphicsMemoryBarriers(std::vector<VS::ImagesMemoryBarrierData>& outputVector, size_t frameInFlightIndice,
 		uint64_t transferQueue, uint64_t graphicsQueue)
 	{
 		if (frameInFlightIndice >= _textureDataArray[0].imageIDs.size())
