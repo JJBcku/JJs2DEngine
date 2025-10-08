@@ -82,7 +82,7 @@ namespace JJs2DEngine
 			preLoadedTexturesStagingBuferSize *= 4;
 
 		TextureFrameInitData frameInitData;
-		frameInitData.frameAmount = 1;
+		frameInitData.frameAmount = initData.transferFramesInFlight;
 		frameInitData.startingIndex = 0ULL;
 		frameInitData.max2DImageSize = initData.max2DImageSize;
 		frameInitData.maxImageArrayLayers = initData.maxImageArrayLayers;
