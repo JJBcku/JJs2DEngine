@@ -247,6 +247,34 @@ namespace JJs2DEngine
 		return imageData.textureReferencesList[referenceIndex];
 	}
 
+	void TextureDataFrameInternal::GetTransferToGraphicsMemoryBarrier(std::vector<VS::ImagesMemoryBarrierData>& outputVector, size_t frameInFlightIndice,
+		uint64_t transferQueue, uint64_t graphicsQueue)
+	{
+		if (frameInFlightIndice >= _textureDataArray[0].imageIDs.size())
+			throw std::runtime_error("TextureDataFrameInternal::GetTransferToGraphicsMemoryBarrier Error: Program tried to access a non-existent frame data!");
+
+		VS::ImagesMemoryBarrierData added;
+
+		added.srcAccess = VS::AccessFlagBits::ACCESS_TRANSFER_WRITE;
+		added.dstAccess = VS::AccessFlagBits::ACCESS_SHADER_READ;
+		added.oldLayout = VS::ImageLayoutFlags::TRANSFER_DESTINATION;
+		added.newLayout = VS::ImageLayoutFlags::SHADER_READ_ONLY;
+
+		if (transferQueue != graphicsQueue)
+		{
+			added.queueData.emplace();
+			added.queueData->srcQueueIndex = transferQueue;
+			added.queueData->dstQueueIndex = graphicsQueue;
+		}
+
+		for (size_t i = 0; i < _textureDataArray.size(); ++i)
+		{
+			added.imageID = _textureDataArray[i].imageIDs[frameInFlightIndice];
+
+			outputVector.push_back(added);
+		}
+	}
+
 	TextureFrameImageData TextureDataFrameInternal::CompileTextureFrameSizeData(size_t tileSize, size_t texturesMaxAmount, uint64_t max2DImageSize, uint64_t maxImageArrayLayers) const
 	{
 		TextureFrameImageData ret;
