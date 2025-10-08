@@ -820,8 +820,6 @@ namespace JJs2DEngine
 
 		ret.rasterizationData = sharedPipelineList.AddUniquePipelineRasterizationData(VS::PipelinePolygonMode::FILL, true, false, 0x10);
 		ret.samplingData = sharedPipelineList.AddUniquePipelineMultisampleData(VS::SAMPLE_1, {}, 0x10);
-		ret.depthStencilData = sharedPipelineList.AddUniquePipelineDepthStencilStateData(VS::DepthUsage::TEST_AND_WRITE, VS::CompareOperationsType::COMPARE_OPERATION_LESS, 0.0f, 1.0f,
-			0x10);
 		ret.colorBlendingData.push_back(sharedPipelineList.AddUniquePipelineColorBlendAttachment(VS::ColorBlendingComponentBits::COLOR_COMPONENT_R |
 			VS::ColorBlendingComponentBits::COLOR_COMPONENT_G | VS::ColorBlendingComponentBits::COLOR_COMPONENT_B | VS::ColorBlendingComponentBits::COLOR_COMPONENT_A,
 			VS::ColorBlendingPreset::ALPHA_BLENDING, 0x10));
