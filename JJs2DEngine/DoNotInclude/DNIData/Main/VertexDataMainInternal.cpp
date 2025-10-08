@@ -183,10 +183,10 @@ namespace JJs2DEngine
 		if (_currentGraphicsFrame >= _graphicsCommandBuffersIDs.size())
 			throw std::runtime_error("VertexDataMainInternal::DrawFrame Error: Program tried to use a non-existent graphics frame!");
 
-		if (_synchroList.WaitOnFences({ _renderingFinishedFences[_currentTransferFrame] }, false, 1'000'000'000ULL) != true)
+		if (_synchroList.WaitOnFences({ _renderingFinishedFences[_currentGraphicsFrame] }, false, 1'000'000'000'000ULL) != true)
 			throw std::runtime_error("VertexDataMainInternal::DrawFrame Error: Waiting on fence has timed out!");
 
-		_synchroList.ResetFences({ _renderingFinishedFences[_currentTransferFrame] });
+		_synchroList.ResetFences({ _renderingFinishedFences[_currentGraphicsFrame] });
 
 		auto graphicsCommandBuffer = _graphicsPool->GetPrimaryCommandBuffer(_graphicsCommandBuffersIDs[_currentGraphicsFrame]);
 
