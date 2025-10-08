@@ -98,6 +98,38 @@ namespace JJs2DEngine
 		return ret;
 	}
 
+	void VertexDataMainInternal::PreRenderingTextureOwnershipTransfer()
+	{
+		auto graphicsCommandBuffer = _graphicsPool->GetPrimaryCommandBuffer(_graphicsCommandBuffersIDs[0]);
+
+		_synchroList.ResetFences({ _renderingFinishedFences[0] });
+
+		graphicsCommandBuffer.ResetCommandBuffer(false);
+		graphicsCommandBuffer.BeginRecording(VS::CommandBufferUsage::ONE_USE);
+
+		for (size_t i = 0; i < _transferFrameAmount; ++i)
+		{
+			auto imageBarriers = _textureDataList.GetTransferToGraphicsMemoryBarriers(i, _transferQueueID, _graphicsQueueID);
+
+			graphicsCommandBuffer.CreatePipelineBarrier(VS::PipelineStageFlagBits::PIPELINE_STAGE_BOTTOM_OF_PIPE, VS::PipelineStageFlagBits::PIPELINE_STAGE_FRAGMENT_SHADER,
+				{}, {}, imageBarriers);
+		}
+
+		graphicsCommandBuffer.EndRecording();
+
+		VS::CommandBufferSubmissionData submitData;
+		submitData.commandBufferIDs.resize(1);
+		submitData.commandBufferIDs[0].IRPrimaryID.type = VS::CommandBufferIDType::IR_PRIMARY;
+		submitData.commandBufferIDs[0].IRPrimaryID.commandPoolID = _graphicsPoolID;
+		submitData.commandBufferIDs[0].IRPrimaryID.commandBufferID = _graphicsCommandBuffersIDs[0];
+
+		_graphicsQFGroup.SubmitBuffers(_graphicsQueueID, { submitData }, _renderingFinishedFences[0]);
+
+		if (_synchroList.WaitOnFences({ _renderingFinishedFences[0] }, false, 1'000'000'000'000ULL) != true)
+			throw std::runtime_error("VertexDataMainInternal::PreRenderingTextureOwnershipTransfer Error: Waiting on fence has timed out!");
+		_synchroList.ResetFences({ _renderingFinishedFences[0] });
+	}
+
 	void VertexDataMainInternal::TransferVertexData()
 	{
 		if (_currentTransferFrame >= _transferCommandBuffersIDs.size())

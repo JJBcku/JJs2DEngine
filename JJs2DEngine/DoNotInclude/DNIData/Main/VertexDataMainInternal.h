@@ -33,6 +33,8 @@ namespace JJs2DEngine
 
 		IDObject<UiVertexDataLayerVersionListPointer> AddUiLayerVersionList(const std::vector<size_t>& versionsMaxObjectAmountsList, size_t addOnReserving);
 
+		void PreRenderingTextureOwnershipTransfer();
+
 		void TransferVertexData();
 		void DrawFrame();
 		void IncrementCurrentFrames();
