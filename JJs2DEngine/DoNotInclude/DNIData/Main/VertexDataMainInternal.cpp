@@ -125,7 +125,7 @@ namespace JJs2DEngine
 
 		_graphicsQFGroup.SubmitBuffers(_graphicsQueueID, { submitData }, _renderingFinishedFences[0]);
 
-		if (_synchroList.WaitOnFences({ _renderingFinishedFences[0] }, false, 1'000'000'000'000ULL) != true)
+		if (_synchroList.WaitOnFences({ _renderingFinishedFences[0] }, false, 1'000'000'000ULL) != true)
 			throw std::runtime_error("VertexDataMainInternal::PreRenderingTextureOwnershipTransfer Error: Waiting on fence has timed out!");
 	}
 
