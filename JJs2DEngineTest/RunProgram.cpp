@@ -14,6 +14,7 @@
 
 #include <chrono>
 #include <thread>
+#include <iostream>
 
 void RunProgram()
 {
@@ -32,6 +33,9 @@ void RunProgram()
 
 	Misc::Bool64Values fullscreen = Misc::BOOL64_FALSE;
 
+	size_t framesThisSecond = 0;
+	float lastSecond = 0.0;
+
 	while (main.IsWindowClosed() != Misc::BOOL64_TRUE && !quit)
 	{
 		main.UpdateCurrentTime();
@@ -46,6 +50,21 @@ void RunProgram()
 		else
 		{
 			main.RenderSingleFrame();
+
+			framesThisSecond++;
+
+			static const auto startTime = std::chrono::high_resolution_clock::now();
+
+			auto currentTime = std::chrono::high_resolution_clock::now();
+
+			float time = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - startTime).count();
+
+			if (time - lastSecond >= 1.0f)
+			{
+				lastSecond = time;
+				std::cout << "FPS: " << framesThisSecond << std::endl;
+				framesThisSecond = 0;
+			}
 		}
 
 		if (!fullscreenKey.empty())
