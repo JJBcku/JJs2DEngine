@@ -42,6 +42,14 @@ namespace JJs2DEngine
 		_dataBufferList(dataBufferList), _imageList(imageList), _memoryList(memoryList), _synchroList(synchroList), _transferQFGroup(transferQFGroup),
 		_descriptorDataList(descriptorDataList)
 	{
+		bool streamedTexturesUsed = false;
+
+		for (size_t i = 0; i < initData.streamedTexturesMaxAmounts.size(); ++i)
+		{
+			if (initData.streamedTexturesMaxAmounts[i] > 0)
+				streamedTexturesUsed = true;
+		}
+
 		std::array<size_t, imagesInTextureArray> _preLoadedTexturesMaxAmounts = initData.preLoadedTexturesMaxAmounts;
 		std::array<size_t, imagesInTextureArray> _streamedTexturesMaxAmounts = initData.streamedTexturesMaxAmounts;
 
@@ -64,9 +72,10 @@ namespace JJs2DEngine
 		auto preloadedCommandBuffers = textureCommandPool.AllocateSecondaryCommandBuffers(1, 0x10);
 		_preLoadedCommandBufferID = preloadedCommandBuffers.back();
 
-		if (initData.transferFramesInFlight > 0)
+		if (streamedTexturesUsed)
 		{
-			_streamedCommandBufferID = textureCommandPool.AllocateSecondaryCommandBuffers(1U)[0];
+			auto streamedCommandBuffers = textureCommandPool.AllocateSecondaryCommandBuffers(1, 0x10);
+			_streamedCommandBufferID = streamedCommandBuffers.back();
 		}
 
 		VS::DataFormatSetIndependentID format = TranslateToFormat(initData.textureFormat);
@@ -93,6 +102,24 @@ namespace JJs2DEngine
 		_preLoadedTexturesData = std::make_unique<TextureDataFrameInternal>(frameInitData, _dataBufferList, _imageList, _memoryList,
 			textureCommandPool.GetSecondaryCommandBuffer(_preLoadedCommandBufferID));
 
+		if (streamedTexturesUsed)
+		{
+			size_t streamedTexturesStagingBuferSize = static_cast<size_t>(biggestLevelTilePixelCount) * 2 * initData.streamedTexturesStagingBufferPageCount;
+
+			if (is16Bit)
+				streamedTexturesStagingBuferSize *= 8;
+			else
+				streamedTexturesStagingBuferSize *= 4;
+
+			frameInitData.frameAmount = initData.transferFramesInFlight;
+			frameInitData.startingIndex = imagesInTextureArray;
+			frameInitData.texturesMaxAmounts = _preLoadedTexturesMaxAmounts;
+			frameInitData.stagingBufferSize = streamedTexturesStagingBuferSize;
+
+			_streamedTexturesData = std::make_unique<TextureDataFrameInternal>(frameInitData, _dataBufferList, _imageList, _memoryList,
+				textureCommandPool.GetSecondaryCommandBuffer(_streamedCommandBufferID));
+		}
+
 		std::array<std::vector<unsigned char>, imagesInTextureArray> _defaultTextureDataList;
 
 		if (is16Bit)
@@ -106,30 +133,10 @@ namespace JJs2DEngine
 				_defaultTextureDataList[i] = LoadDefautTexture8Bit(initData.dataFolder, 1U << (skippedSizeLevels + i), isRBReversed);
 			}
 
-		size_t adjustedTransferFramesInFlight = std::max(initData.transferFramesInFlight, 1ULL);
-
-		_fenceList.reserve(adjustedTransferFramesInFlight);
+		_fenceList.reserve(initData.transferFramesInFlight);
 		_transferSemaphoresList.reserve(initData.transferFramesInFlight);
 
-		size_t streamedTexturesStagingBuferSize = static_cast<size_t>(biggestLevelTilePixelCount) * 2 * initData.streamedTexturesStagingBufferPageCount;
-
-		if (is16Bit)
-			streamedTexturesStagingBuferSize *= 8;
-		else
-			streamedTexturesStagingBuferSize *= 4;
-
-		frameInitData.frameAmount = initData.transferFramesInFlight;
-		frameInitData.startingIndex = imagesInTextureArray;
-		frameInitData.texturesMaxAmounts = _preLoadedTexturesMaxAmounts;
-		frameInitData.stagingBufferSize = streamedTexturesStagingBuferSize;
-
-		if (initData.transferFramesInFlight > 0)
-		{
-			_streamedTexturesData = std::make_unique<TextureDataFrameInternal>(frameInitData, _dataBufferList, _imageList, _memoryList,
-				textureCommandPool.GetSecondaryCommandBuffer(_streamedCommandBufferID));
-		}
-
-		for (size_t i = 0; i < adjustedTransferFramesInFlight; ++i)
+		for (size_t i = 0; i < initData.transferFramesInFlight; ++i)
 		{
 			_fenceList.push_back(_synchroList.AddFence(true));
 			_transferSemaphoresList.push_back(_synchroList.AddSemaphore());
@@ -139,7 +146,7 @@ namespace JJs2DEngine
 
 		_preLoadedTexturesData->LoadDefaultTextures(_defaultTextureDataList, initData.transferQueueID, initData.graphicsQueueID);
 
-		if (initData.transferFramesInFlight > 0)
+		if (_streamedTexturesData)
 			_streamedTexturesData->LoadDefaultTextures(_defaultTextureDataList, initData.transferQueueID, initData.graphicsQueueID);
 
 		auto primaryCommandBuffer = textureCommandPool.GetPrimaryCommandBuffer(_primaryCommandBufferID);
@@ -147,7 +154,7 @@ namespace JJs2DEngine
 		primaryCommandBuffer.BeginRecording(VS::CommandBufferUsage::ONE_USE);
 
 		textureCommandPool.RecordExecuteSecondaryBufferCommand(_primaryCommandBufferID, { _preLoadedCommandBufferID });
-		if (initData.transferFramesInFlight > 0)
+		if (_streamedTexturesData)
 			textureCommandPool.RecordExecuteSecondaryBufferCommand(_primaryCommandBufferID, { _streamedCommandBufferID });
 
 		primaryCommandBuffer.EndRecording();
@@ -165,18 +172,18 @@ namespace JJs2DEngine
 		_synchroList.WaitOnFences({ _fenceList[0] }, true);
 
 		{
-			size_t totalDescriptorSets = adjustedTransferFramesInFlight * imagesInAllTextureArrays;
+			size_t totalDescriptorSets = initData.transferFramesInFlight * imagesInAllTextureArrays;
 
 			_transferDescriptorPool = _descriptorDataList.AddNoIndividualFreeingDescriptorPool(static_cast<uint32_t>(totalDescriptorSets),
 				{ {VS::DescriptorTypeFlagBits::COMBINED_IMAGE_SAMPLER, static_cast<uint32_t>(totalDescriptorSets)} });
 
 			std::vector<IDObject<VS::AutoCleanupDescriptorSetLayout>> textureLayouts;
-			textureLayouts.resize(adjustedTransferFramesInFlight, initData.textureDescriptorSetLayout);
+			textureLayouts.resize(initData.transferFramesInFlight, initData.textureDescriptorSetLayout);
 
 			_textureDescriptorSets = descriptorDataList.AllocateNIFDescriptorSets(_transferDescriptorPool, textureLayouts);
 
 			std::vector<VS::DescriptorSetCombined2DArrayTextureSamplerWriteData> textureWriteDataList;
-			textureWriteDataList.resize(adjustedTransferFramesInFlight);
+			textureWriteDataList.resize(initData.transferFramesInFlight);
 
 			auto preloadedTexturesImages = _preLoadedTexturesData->GetImageIDs(0);
 			auto preloadedTexturesImageViews = _preLoadedTexturesData->GetImageViewIDs(0);
@@ -239,7 +246,6 @@ namespace JJs2DEngine
 		if (inPreloadedTexturesList)
 			return _preLoadedTexturesData->GetTextureReference(tileImageIndex, referenceIndex);
 		else
-
 			return _streamedTexturesData->GetTextureReference(tileImageIndex, referenceIndex);
 	}
 
@@ -262,7 +268,8 @@ namespace JJs2DEngine
 		ret.reserve(imagesInAllTextureArrays);
 
 		_preLoadedTexturesData->GetTransferToGraphicsMemoryBarriers(ret, frameInFlightIndice, transferQueue, graphicsQueue);
-		_streamedTexturesData->GetTransferToGraphicsMemoryBarriers(ret, frameInFlightIndice, transferQueue, graphicsQueue);
+		if (_streamedTexturesData)
+			_streamedTexturesData->GetTransferToGraphicsMemoryBarriers(ret, frameInFlightIndice, transferQueue, graphicsQueue);
 
 		return ret;
 	}
