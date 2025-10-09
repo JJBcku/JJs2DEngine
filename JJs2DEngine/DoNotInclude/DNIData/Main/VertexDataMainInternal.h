@@ -70,6 +70,7 @@ namespace JJs2DEngine
 
 		std::vector<IDObject<VS::AutoCleanupFence>> _vertexTransferFinishedFences;
 		std::vector<IDObject<VS::AutoCleanupSemaphore>> _vertexTransferFinishedSemaphores;
+		std::vector<std::optional<size_t>> _lastGraphicsFrameUsingThisTransferFrame;
 
 		std::vector<IDObject<VS::AutoCleanupFence>> _renderingFinishedFences;
 		std::vector<IDObject<VS::AutoCleanupSemaphore>> _imageAcquiredSemaphores;

@@ -269,6 +269,25 @@ namespace JJs2DEngine
 		return _perFrameData[graphicsFrameIndice].gammaCorrectionDescriptorSet;
 	}
 
+	IDObject<VS::WindowPointer> WindowDataInternal::GetWindowID()
+	{
+		return _windowID;
+	}
+
+	IDObject<VS::AutoCleanupColorRenderTargetImage> WindowDataInternal::GetColorRenderTargetImage(size_t graphicsFrameIndice)
+	{
+		if (graphicsFrameIndice >= _perFrameData.size())
+			throw std::runtime_error("WindowDataInternal::GetColorRenderTargetImage Error: Program tried to access a non-existent frame!");
+
+		return _perFrameData[graphicsFrameIndice].colorImage;
+	}
+
+	bool WindowDataInternal::AcquireNextImage(uint64_t timeoutInNS, std::optional<IDObject<VS::AutoCleanupSemaphore>> signalSemaphore,
+		std::optional<IDObject<VS::AutoCleanupFence>> signalFence, uint32_t& returnedValue)
+	{
+		return _window->AcquireNextImage(timeoutInNS, signalSemaphore, signalFence, returnedValue);
+	}
+
 	void WindowDataInternal::ChangeFullscreen(Misc::Bool64Values newFullscreen)
 	{
 		if (_fullscreen == newFullscreen)

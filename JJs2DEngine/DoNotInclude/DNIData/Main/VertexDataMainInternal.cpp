@@ -49,6 +49,7 @@ namespace JJs2DEngine
 
 		_vertexTransferFinishedFences.reserve(transferFrameAmount);
 		_vertexTransferFinishedSemaphores.reserve(transferFrameAmount);
+		_lastGraphicsFrameUsingThisTransferFrame.resize(transferFrameAmount);
 
 		for (size_t i = 0; i < transferFrameAmount; ++i)
 		{
@@ -172,7 +173,12 @@ namespace JJs2DEngine
 		submitData.commandBufferIDs[0].IRPrimaryID.type = VS::CommandBufferIDType::IR_PRIMARY;
 		submitData.commandBufferIDs[0].IRPrimaryID.commandPoolID = _transferPoolID;
 		submitData.commandBufferIDs[0].IRPrimaryID.commandBufferID = _transferCommandBuffersIDs[_currentTransferFrame];
+
 		submitData.signalSemaphores.push_back(_vertexTransferFinishedSemaphores[_currentTransferFrame]);
+		if (_lastGraphicsFrameUsingThisTransferFrame[_currentTransferFrame].has_value())
+		{
+			submitData.waitSemaphores.emplace_back(_transferDataFreeToChangeSemaphores[_lastGraphicsFrameUsingThisTransferFrame[_currentTransferFrame].value()], VS::PIPELINE_STAGE_TRANSFER);
+		}
 
 		_transferQFGroup.SubmitBuffers(_transferQueueID, { submitData }, _vertexTransferFinishedFences[_currentTransferFrame]);
 	}
@@ -184,8 +190,12 @@ namespace JJs2DEngine
 
 		if (_synchroList.WaitOnFences({ _renderingFinishedFences[_currentGraphicsFrame] }, false, 1'000'000'000ULL) != true)
 			throw std::runtime_error("VertexDataMainInternal::DrawFrame Error: Waiting on fence has timed out!");
-
 		_synchroList.ResetFences({ _renderingFinishedFences[_currentGraphicsFrame] });
+
+		uint32_t nextImagesIndice = std::numeric_limits<uint32_t>::max();
+		
+		if (_windowDataList.AcquireNextImage(1'000'000'000ULL, _imageAcquiredSemaphores[_currentGraphicsFrame], {}, nextImagesIndice) != true)
+			throw std::runtime_error("VertexDataMainInternal::DrawFrame Error: Waiting on image acquiring has timed out!");
 
 		auto graphicsCommandBuffer = _graphicsPool->GetPrimaryCommandBuffer(_graphicsCommandBuffersIDs[_currentGraphicsFrame]);
 
@@ -243,6 +253,11 @@ namespace JJs2DEngine
 
 		graphicsCommandBuffer.EndRenderPass();
 
+		graphicsCommandBuffer.TransitionSwapchainImageToTrasferDestination(_windowDataList.GetWindowID(), {}, nextImagesIndice);
+		graphicsCommandBuffer.BlitColorRenderTargetToSwapchainImage(_windowDataList.GetWindowID(), _windowDataList.GetColorRenderTargetImage(_currentGraphicsFrame), 0, 0,
+			_windowDataList.GetRenderWidth(), _windowDataList.GetRenderHeight(), nextImagesIndice);
+		graphicsCommandBuffer.TransitionSwapchainImageToPresent(_windowDataList.GetWindowID(), {}, nextImagesIndice);
+
 		graphicsCommandBuffer.EndRecording();
 
 		VS::CommandBufferSubmissionData submitData;
@@ -251,9 +266,19 @@ namespace JJs2DEngine
 		submitData.commandBufferIDs[0].IRPrimaryID.commandPoolID = _graphicsPoolID;
 		submitData.commandBufferIDs[0].IRPrimaryID.commandBufferID = _graphicsCommandBuffersIDs[_currentTransferFrame];
 
+		submitData.waitSemaphores.reserve(2);
 		submitData.waitSemaphores.emplace_back(_vertexTransferFinishedSemaphores[_currentTransferFrame], VS::PIPELINE_STAGE_VERTEX_INPUT);
+		submitData.waitSemaphores.emplace_back(_imageAcquiredSemaphores[_currentGraphicsFrame], VS::PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT);
+
+		submitData.signalSemaphores.reserve(2);
+		submitData.signalSemaphores.push_back(_renderingFinishedSemaphores[nextImagesIndice]);
+		submitData.signalSemaphores.push_back(_transferDataFreeToChangeSemaphores[_currentGraphicsFrame]);
+
+		_lastGraphicsFrameUsingThisTransferFrame[_currentTransferFrame] = _currentGraphicsFrame;
 
 		_graphicsQFGroup.SubmitBuffers(_graphicsQueueID, { submitData }, _renderingFinishedFences[_currentGraphicsFrame]);
+
+		_graphicsPool->PresentSwapchainToQueue(_windowDataList.GetWindowID(), { _renderingFinishedSemaphores[nextImagesIndice] }, nextImagesIndice);
 	}
 
 	void VertexDataMainInternal::IncrementCurrentFrames()

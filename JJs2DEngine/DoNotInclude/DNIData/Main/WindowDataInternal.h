@@ -9,6 +9,7 @@
 
 #include <VulkanSimplified/VSDevice/VSImageDataLists.h>
 #include <VulkanSimplified/VSDevice/VSMemoryObjectsList.h>
+#include <VulkanSimplified/VSDevice/VSSynchronizationDataLists.h>
 #include <VulkanSimplified/VSDevice/VSWindowList.h>
 #include <VulkanSimplified/VSDevice/VSWindow.h>
 #include <VulkanSimplified/VSDevice/VSDescriptorDataLists.h>
@@ -68,6 +69,12 @@ namespace JJs2DEngine
 
 		IDObject<VS::AutoCleanupNIFDescriptorPool> GetGammaCorrectionDescriptorPool();
 		IDObject<VS::AutoCleanupDescriptorSet> GetGammaCorrectionDescriptorSet(size_t graphicsFrameIndice);
+
+		IDObject<VS::WindowPointer> GetWindowID();
+		IDObject<VS::AutoCleanupColorRenderTargetImage> GetColorRenderTargetImage(size_t graphicsFrameIndice);
+
+		bool AcquireNextImage(uint64_t timeoutInNS, std::optional<IDObject<VS::AutoCleanupSemaphore>> signalSemaphore, std::optional<IDObject<VS::AutoCleanupFence>> signalFence,
+			uint32_t& returnedValue);
 
 		void ChangeFullscreen(Misc::Bool64Values newFullscreen);
 
