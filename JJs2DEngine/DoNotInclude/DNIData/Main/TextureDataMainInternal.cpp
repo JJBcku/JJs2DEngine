@@ -262,7 +262,7 @@ namespace JJs2DEngine
 		return _textureDescriptorSets[currentTransferFrame];
 	}
 
-	bool TextureDataMainInternal::AreStreamedTextureCreated()
+	bool TextureDataMainInternal::AreStreamedTextureCreated() const
 	{
 		return _streamedTexturesData != nullptr;
 	}
