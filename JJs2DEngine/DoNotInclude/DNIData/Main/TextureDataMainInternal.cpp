@@ -241,7 +241,7 @@ namespace JJs2DEngine
 	{
 	}
 
-	std::shared_ptr<TextureReferenceData> TextureDataMainInternal::GetTextureReference(bool inPreloadedTexturesList, size_t tileImageIndex, size_t referenceIndex)
+	std::vector<std::shared_ptr<TextureReferenceData>> TextureDataMainInternal::GetTextureReference(bool inPreloadedTexturesList, size_t tileImageIndex, size_t referenceIndex)
 	{
 		if (inPreloadedTexturesList)
 			return _preLoadedTexturesData->GetTextureReference(tileImageIndex, referenceIndex);

@@ -47,7 +47,7 @@ namespace JJs2DEngine
 		std::vector<IDObject<VS::AutoCleanup2DArrayTexture>> imageIDs;
 		std::vector<IDObject<VS::AutoCleanupImageView>> imageViewIDs;
 
-		std::vector<std::shared_ptr<TextureReferenceData>> textureReferencesList;
+		std::vector<std::vector<std::shared_ptr<TextureReferenceData>>> textureReferencesList;
 
 		TextureFrameImageData();
 		~TextureFrameImageData();
@@ -74,7 +74,7 @@ namespace JJs2DEngine
 		std::array<IDObject<VS::AutoCleanup2DArrayTexture>, imagesInTextureArray> GetImageIDs(size_t frameInFlightIndice) const;
 		std::array<IDObject<VS::AutoCleanupImageView>, imagesInTextureArray> GetImageViewIDs(size_t frameInFlightIndice) const;
 
-		std::shared_ptr<TextureReferenceData> GetTextureReference(size_t tileImageIndex, size_t referenceIndex);
+		std::vector<std::shared_ptr<TextureReferenceData>> GetTextureReference(size_t tileImageIndex, size_t referenceIndex);
 
 		void GetTransferToGraphicsMemoryBarriers(std::vector<VS::ImagesMemoryBarrierData>& outputVector, size_t frameInFlightIndice, uint64_t transferQueue, uint64_t graphicsQueue);
 

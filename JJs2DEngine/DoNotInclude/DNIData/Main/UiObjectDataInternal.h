@@ -14,7 +14,7 @@ namespace JJs2DEngine
 		glm::vec2 objectsSizeOnScreen;
 		glm::vec2 objectsPositionOnScreen;
 		size_t depthUNORM;
-		std::shared_ptr<TextureReferenceData> textureDataPointer;
+		std::vector<std::shared_ptr<TextureReferenceData>> textureDataPointer;
 
 		UiObjectDataInternal();
 		~UiObjectDataInternal();

@@ -183,8 +183,16 @@ namespace JJs2DEngine
 				auto& objectToWrite = dataToWrite[foundVertexes];
 				auto& inputObject = _objectList[currentListIndex].value();
 
-				objectToWrite.texCoords = inputObject.textureDataPointer->textureCoords;
-				objectToWrite.texSize = inputObject.textureDataPointer->textureSize * inputObject.texturesSizeInTile;
+				if (inputObject.textureDataPointer.size() > 1)
+				{
+					objectToWrite.texCoords = inputObject.textureDataPointer[transferFrameIndice]->textureCoords;
+					objectToWrite.texSize = inputObject.textureDataPointer[transferFrameIndice]->textureSize * inputObject.texturesSizeInTile;
+				}
+				else
+				{
+					objectToWrite.texCoords = inputObject.textureDataPointer[0]->textureCoords;
+					objectToWrite.texSize = inputObject.textureDataPointer[0]->textureSize * inputObject.texturesSizeInTile;
+				}
 
 				float depthMantissa = static_cast<float>(inputObject.depthUNORM) / static_cast<float>(maxVertexMaximumValue);
 
@@ -203,8 +211,16 @@ namespace JJs2DEngine
 				objectToWrite.pos = glm::vec4(inputObject.objectsPositionOnScreen, glm::vec2(depthMantissa * depthExponent, 1.0f));
 				objectToWrite.size = inputObject.objectsSizeOnScreen;
 
-				objectToWrite.texLayer = inputObject.textureDataPointer->textureLayer;
-				objectToWrite.texIndex = inputObject.textureDataPointer->textureIndex;
+				if (inputObject.textureDataPointer.size() > 1)
+				{
+					objectToWrite.texLayer = inputObject.textureDataPointer[transferFrameIndice]->textureLayer;
+					objectToWrite.texIndex = inputObject.textureDataPointer[transferFrameIndice]->textureIndex;
+				}
+				else
+				{
+					objectToWrite.texLayer = inputObject.textureDataPointer[0]->textureLayer;
+					objectToWrite.texIndex = inputObject.textureDataPointer[0]->textureIndex;
+				}
 
 				foundVertexes++;
 			}
