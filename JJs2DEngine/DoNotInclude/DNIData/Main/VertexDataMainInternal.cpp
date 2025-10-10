@@ -108,12 +108,19 @@ namespace JJs2DEngine
 		graphicsCommandBuffer.ResetCommandBuffer(false);
 		graphicsCommandBuffer.BeginRecording(VS::CommandBufferUsage::ONE_USE);
 
-		for (size_t i = 0; i < _transferFrameAmount; ++i)
-		{
-			auto imageBarriers = _textureDataList.GetTransferToGraphicsMemoryBarriers(i, _transferQueueID, _graphicsQueueID);
+		auto preLoadedImageBarriers = _textureDataList.GetPreLoadedTransferToGraphicsMemoryBarriers(_transferQueueID, _graphicsQueueID);
+		graphicsCommandBuffer.CreatePipelineBarrier(VS::PipelineStageFlagBits::PIPELINE_STAGE_BOTTOM_OF_PIPE, VS::PipelineStageFlagBits::PIPELINE_STAGE_FRAGMENT_SHADER,
+			{}, {}, preLoadedImageBarriers);
 
-			graphicsCommandBuffer.CreatePipelineBarrier(VS::PipelineStageFlagBits::PIPELINE_STAGE_BOTTOM_OF_PIPE, VS::PipelineStageFlagBits::PIPELINE_STAGE_FRAGMENT_SHADER,
-				{}, {}, imageBarriers);
+		if (_textureDataList.AreStreamedTextureCreated())
+		{
+			for (size_t i = 0; i < _transferFrameAmount; ++i)
+			{
+				auto streamedImageBarriers = _textureDataList.GetStreamedTransferToGraphicsMemoryBarriers(i, _transferQueueID, _graphicsQueueID);
+
+				graphicsCommandBuffer.CreatePipelineBarrier(VS::PipelineStageFlagBits::PIPELINE_STAGE_BOTTOM_OF_PIPE, VS::PipelineStageFlagBits::PIPELINE_STAGE_FRAGMENT_SHADER,
+					{}, {}, streamedImageBarriers);
+			}
 		}
 
 		graphicsCommandBuffer.EndRecording();

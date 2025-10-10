@@ -262,12 +262,26 @@ namespace JJs2DEngine
 		return _textureDescriptorSets[currentTransferFrame];
 	}
 
-	std::vector<VS::ImagesMemoryBarrierData> TextureDataMainInternal::GetTransferToGraphicsMemoryBarriers(size_t frameInFlightIndice, uint64_t transferQueue, uint64_t graphicsQueue)
+	bool TextureDataMainInternal::AreStreamedTextureCreated()
+	{
+		return _streamedTexturesData != nullptr;
+	}
+
+	std::vector<VS::ImagesMemoryBarrierData> TextureDataMainInternal::GetPreLoadedTransferToGraphicsMemoryBarriers(uint64_t transferQueue, uint64_t graphicsQueue)
 	{
 		std::vector<VS::ImagesMemoryBarrierData> ret;
-		ret.reserve(imagesInAllTextureArrays);
+		ret.reserve(imagesInTextureArray);
 
 		_preLoadedTexturesData->GetTransferToGraphicsMemoryBarriers(ret, 0, transferQueue, graphicsQueue);
+
+		return ret;
+	}
+
+	std::vector<VS::ImagesMemoryBarrierData> TextureDataMainInternal::GetStreamedTransferToGraphicsMemoryBarriers(size_t frameInFlightIndice, uint64_t transferQueue, uint64_t graphicsQueue)
+	{
+		std::vector<VS::ImagesMemoryBarrierData> ret;
+		ret.reserve(imagesInTextureArray);
+
 		if (_streamedTexturesData)
 			_streamedTexturesData->GetTransferToGraphicsMemoryBarriers(ret, frameInFlightIndice, transferQueue, graphicsQueue);
 

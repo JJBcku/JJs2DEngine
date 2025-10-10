@@ -61,7 +61,10 @@ namespace JJs2DEngine
 		IDObject<VS::AutoCleanupNIFDescriptorPool> GetTexturesDescriptorSetPool();
 		IDObject<VS::AutoCleanupDescriptorSet> GetTexturesDescriptorSets(size_t currentTransferFrame);
 
-		std::vector<VS::ImagesMemoryBarrierData> GetTransferToGraphicsMemoryBarriers(size_t frameInFlightIndice, uint64_t transferQueue, uint64_t graphicsQueue);
+		bool AreStreamedTextureCreated();
+
+		std::vector<VS::ImagesMemoryBarrierData> GetPreLoadedTransferToGraphicsMemoryBarriers(uint64_t transferQueue, uint64_t graphicsQueue);
+		std::vector<VS::ImagesMemoryBarrierData> GetStreamedTransferToGraphicsMemoryBarriers(size_t frameInFlightIndice, uint64_t transferQueue, uint64_t graphicsQueue);
 
 	private:
 		VS::DataBufferLists _dataBufferList;
