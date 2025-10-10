@@ -91,7 +91,7 @@ namespace JJs2DEngine
 			preLoadedTexturesStagingBuferSize *= 4;
 
 		TextureFrameInitData frameInitData;
-		frameInitData.frameAmount = initData.transferFramesInFlight;
+		frameInitData.frameAmount = 1;
 		frameInitData.startingIndex = 0ULL;
 		frameInitData.max2DImageSize = initData.max2DImageSize;
 		frameInitData.maxImageArrayLayers = initData.maxImageArrayLayers;
@@ -267,7 +267,7 @@ namespace JJs2DEngine
 		std::vector<VS::ImagesMemoryBarrierData> ret;
 		ret.reserve(imagesInAllTextureArrays);
 
-		_preLoadedTexturesData->GetTransferToGraphicsMemoryBarriers(ret, frameInFlightIndice, transferQueue, graphicsQueue);
+		_preLoadedTexturesData->GetTransferToGraphicsMemoryBarriers(ret, 0, transferQueue, graphicsQueue);
 		if (_streamedTexturesData)
 			_streamedTexturesData->GetTransferToGraphicsMemoryBarriers(ret, frameInFlightIndice, transferQueue, graphicsQueue);
 
