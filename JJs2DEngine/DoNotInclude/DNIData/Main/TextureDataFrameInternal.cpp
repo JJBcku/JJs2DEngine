@@ -99,10 +99,8 @@ namespace JJs2DEngine
 			}
 
 			acceptableMemoryTypes.clear();
-			acceptableMemoryTypes.push_back(VS::HOST_VISIBLE | VS::HOST_CACHED);
 			acceptableMemoryTypes.push_back(VS::HOST_COHERENT | VS::HOST_VISIBLE | VS::HOST_CACHED);
 			acceptableMemoryTypes.push_back(VS::HOST_COHERENT | VS::HOST_VISIBLE);
-			acceptableMemoryTypes.push_back(VS::DEVICE_LOCAL | VS::HOST_VISIBLE | VS::HOST_CACHED);
 			acceptableMemoryTypes.push_back(VS::DEVICE_LOCAL | VS::HOST_COHERENT | VS::HOST_VISIBLE | VS::HOST_CACHED);
 			acceptableMemoryTypes.push_back(VS::DEVICE_LOCAL | VS::HOST_COHERENT | VS::HOST_VISIBLE);
 
