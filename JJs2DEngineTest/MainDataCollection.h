@@ -12,6 +12,11 @@ struct MainDataCollection
 	IDObject<JJ2DE::UiVertexDataLayerVersionListPointer> layerID;
 	size_t objectID;
 
+	std::pair<size_t, size_t> texturesID;
+
+	bool is16Bit;
+	bool isRBReversed;
+
 	MainDataCollection();
 	~MainDataCollection();
 };

@@ -16,6 +16,8 @@
 #include <VulkanSimplified/VSDevice/VSDescriptorPoolGenericID.h>
 #include <VulkanSimplified/VSDevice/VSDescriptorSetCombined2DArrayTextureSamplerWriteData.h>
 
+#include <Miscellaneous/Bool64.h>
+
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb/stb_image.h>
 
@@ -85,6 +87,24 @@ namespace JJs2DEngine
 
 		bool is16Bit = Is16Bit(initData.textureFormat);
 		bool isRBReversed = IsRBReversed(initData.textureFormat);
+
+		if (is16Bit)
+		{
+			_textureFormatIs16Bit = Misc::BOOL64_TRUE;
+		}
+		else
+		{
+			_textureFormatIs16Bit = Misc::BOOL64_FALSE;
+		}
+
+		if (isRBReversed)
+		{
+			_textureFormatIsRBReversed = Misc::BOOL64_TRUE;
+		}
+		else
+		{
+			_textureFormatIsRBReversed = Misc::BOOL64_FALSE;
+		}
 
 		size_t preLoadedTexturesStagingBuferSize = static_cast<size_t>(biggestLevelTilePixelCount) * 2 * initData.preLoadedTexturesStagingBufferPageCount;
 
@@ -289,6 +309,71 @@ namespace JJs2DEngine
 			_streamedTexturesData->GetTransferToGraphicsMemoryBarriers(ret, frameInFlightIndice, transferQueue, graphicsQueue);
 
 		return ret;
+	}
+
+	std::optional<std::pair<size_t, size_t>> TextureDataMainInternal::TryToAddTextureToPreloadedTexturesTransferList(const std::vector<unsigned char>& data, uint32_t width, uint32_t height)
+	{
+		if (data.empty())
+			throw std::runtime_error("TextureDataMainInternal::TryToAddTextureToPreloadedTexturesTransferList Error: Program tried to add texture with no data!");
+
+		if (width == 0)
+			throw std::runtime_error("TextureDataMainInternal::TryToAddTextureToPreloadedTexturesTransferList Error: Program tried to add texture with width of zero!");
+
+		if (height == 0)
+			throw std::runtime_error("TextureDataMainInternal::TryToAddTextureToPreloadedTexturesTransferList Error: Program tried to add texture with height of zero!");
+		
+		assert(_textureFormatIs16Bit == Misc::BOOL64_TRUE || _textureFormatIs16Bit == Misc::BOOL64_FALSE);
+		assert(_textureFormatIsRBReversed == Misc::BOOL64_TRUE || _textureFormatIsRBReversed == Misc::BOOL64_FALSE);
+
+		size_t requiredSize = static_cast<size_t>(width) * height;
+
+		if (_textureFormatIs16Bit == Misc::BOOL64_TRUE)
+		{
+			requiredSize *= 8;
+		}
+		else
+		{
+			requiredSize *= 4;
+		}
+
+		if (data.size() != requiredSize)
+			throw std::runtime_error("TextureDataMainInternal::TryToAddTextureToPreloadedTexturesTransferList: Program was given a data vector with a wrong size!");
+
+		return _preLoadedTexturesData->TryToAddTextureToTransferList(*data.data(), requiredSize, width, height);
+	}
+
+	std::optional<std::pair<size_t, size_t>> TextureDataMainInternal::TryToAddTextureToStreamedTexturesTransferList(const std::vector<unsigned char>& data, uint32_t width, uint32_t height)
+	{
+		if (_streamedTexturesData == nullptr)
+			throw std::runtime_error("TextureDataMainInternal::TryToAddTextureToStreamedTexturesTransferList Error: Program tried to add texture to streamed textures despite the streaming textures being unused!");
+
+		if (data.empty())
+			throw std::runtime_error("TextureDataMainInternal::TryToAddTextureToStreamedTexturesTransferList Error: Program tried to add texture with no data!");
+
+		if (width == 0)
+			throw std::runtime_error("TextureDataMainInternal::TryToAddTextureToStreamedTexturesTransferList Error: Program tried to add texture with width of zero!");
+
+		if (height == 0)
+			throw std::runtime_error("TextureDataMainInternal::TryToAddTextureToStreamedTexturesTransferList Error: Program tried to add texture with height of zero!");
+
+		assert(_textureFormatIs16Bit == Misc::BOOL64_TRUE || _textureFormatIs16Bit == Misc::BOOL64_FALSE);
+		assert(_textureFormatIsRBReversed == Misc::BOOL64_TRUE || _textureFormatIsRBReversed == Misc::BOOL64_FALSE);
+
+		size_t requiredSize = static_cast<size_t>(width) * height;
+
+		if (_textureFormatIs16Bit == Misc::BOOL64_TRUE)
+		{
+			requiredSize *= 8;
+		}
+		else
+		{
+			requiredSize *= 4;
+		}
+
+		if (data.size() != requiredSize)
+			throw std::runtime_error("TextureDataMainInternal::TryToAddTextureToStreamedTexturesTransferList: Program was given a data vector with a wrong size!");
+
+		return _streamedTexturesData->TryToAddTextureToTransferList(*data.data(), requiredSize, width, height);
 	}
 
 	bool TextureDataMainInternal::Is16Bit(TextureFormat textureFormat) const

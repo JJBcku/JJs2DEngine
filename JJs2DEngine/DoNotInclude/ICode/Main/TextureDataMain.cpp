@@ -13,4 +13,14 @@ namespace JJs2DEngine
 	{
 	}
 
+	std::optional<std::pair<size_t, size_t>> TextureDataMain::TryToAddTextureToPreloadedTexturesTransferList(const std::vector<unsigned char>& data, uint32_t width, uint32_t height)
+	{
+		return _internal.TryToAddTextureToPreloadedTexturesTransferList(data, width, height);
+	}
+
+	std::optional<std::pair<size_t, size_t>> TextureDataMain::TryToAddTextureToStreamedTexturesTransferList(const std::vector<unsigned char>& data, uint32_t width, uint32_t height)
+	{
+		return _internal.TryToAddTextureToStreamedTexturesTransferList(data, width, height);
+	}
+
 }

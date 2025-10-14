@@ -4,6 +4,7 @@
 #include "MainDataCollection.h"
 
 #include "CreateMainClass.h"
+#include "CreateTexture.h"
 #include "CreateLayers.h"
 
 #include <Main.h>
@@ -21,6 +22,7 @@ void RunProgram()
 	MainDataCollection data;
 
 	CreateMainClass(data);
+	CreateTexture(data);
 	CreateLayers(data);
 
 	auto& main = *data.main;

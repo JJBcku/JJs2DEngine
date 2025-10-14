@@ -4,12 +4,12 @@ namespace JJs2DEngine
 {
 	struct TextureTransferOrderInternal
 	{
-		size_t insertionIndex;
+		uint64_t insertionIndex;
 		uint32_t texturesWidth;
 		uint32_t texturesHeight;
 
-		size_t stagingBufferDataOffset;
-		size_t stagingBufferDataSize;
+		uint64_t stagingBufferDataOffset;
+		uint64_t stagingBufferDataSize;
 
 		TextureTransferOrderInternal();
 		~TextureTransferOrderInternal();

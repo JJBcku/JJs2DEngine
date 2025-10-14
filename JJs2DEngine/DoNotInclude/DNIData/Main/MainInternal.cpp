@@ -321,6 +321,16 @@ namespace JJs2DEngine
 		return *_vertexDataMain;
 	}
 
+	TextureDataMainInternal& MainInternal::GetTextureDataMainList()
+	{
+		return *_textureDataMain;
+	}
+
+	const TextureDataMainInternal& MainInternal::GetTextureDataMainList() const
+	{
+		return *_textureDataMain;
+	}
+
 	void MainInternal::CreateInstance(const MainInitializationData& initData)
 	{
 		auto availableExtensionPacks = _VSMain->GetAvailableInstanceExtensionPacks();

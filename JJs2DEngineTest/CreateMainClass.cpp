@@ -46,7 +46,15 @@ void CreateMainClass(MainDataCollection& data)
 			currentBest = i;
 	}
 
-	data.main->CreateDevice(CreateDeviceSettings(deviceList[currentBest], currentBest));
+	auto deviceSettings = CreateDeviceSettings(deviceList[currentBest], currentBest);
+
+	if (deviceSettings.textureFormat == JJ2DE::TextureFormat::TEXTURE_FORMAT_RGBA16)
+		data.is16Bit = true;
+
+	if (deviceSettings.textureFormat == JJ2DE::TextureFormat::TEXTURE_FORMAT_BGRA8)
+		data.isRBReversed = true;
+
+	data.main->CreateDevice(deviceSettings);
 }
 
 bool CompareDevices(const JJ2DE::DeviceData& currentBest, const JJ2DE::DeviceData& compared)
@@ -98,7 +106,7 @@ JJ2DE::DeviceSettings CreateDeviceSettings(const JJ2DE::DeviceData& device, size
 			ret.textureFormat = JJ2DE::TextureFormat::TEXTURE_FORMAT_BGRA8;
 	}
 
-	ret.preLoadedTexturesMaxAmounts[5] = 1;
+	ret.preLoadedTexturesMaxAmounts[6] = 1;
 
 	ret.preLoadedTexturesStagingBuffersPageCount = 1;
 	ret.streamedTexturesStagingBuffersPageCount = 1;

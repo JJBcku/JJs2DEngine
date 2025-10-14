@@ -65,6 +65,9 @@ namespace JJs2DEngine
 		VertexDataMainInternal& GetVertexDataMainList();
 		const VertexDataMainInternal& GetVertexDataMainList() const;
 
+		TextureDataMainInternal& GetTextureDataMainList();
+		const TextureDataMainInternal& GetTextureDataMainList() const;
+
 	private:
 		std::unique_ptr<VS::Main> _VSMain;
 		VersionData _minVulkanVersion;

@@ -16,10 +16,14 @@
 
 #include <CustomLists/IDObject.h>
 
+#include <Miscellaneous/Bool64Def.h>
+
 #include <stdint.h>
 #include <array>
 #include <memory>
 #include <vector>
+#include <utility>
+#include <optional>
 
 namespace JJs2DEngine
 {
@@ -66,6 +70,9 @@ namespace JJs2DEngine
 		std::vector<VS::ImagesMemoryBarrierData> GetPreLoadedTransferToGraphicsMemoryBarriers(uint64_t transferQueue, uint64_t graphicsQueue);
 		std::vector<VS::ImagesMemoryBarrierData> GetStreamedTransferToGraphicsMemoryBarriers(size_t frameInFlightIndice, uint64_t transferQueue, uint64_t graphicsQueue);
 
+		std::optional<std::pair<size_t, size_t>> TryToAddTextureToPreloadedTexturesTransferList(const std::vector<unsigned char>& data, uint32_t width, uint32_t height);
+		std::optional<std::pair<size_t, size_t>> TryToAddTextureToStreamedTexturesTransferList(const std::vector<unsigned char>& data, uint32_t width, uint32_t height);
+
 	private:
 		VS::DataBufferLists _dataBufferList;
 		VS::ImageDataLists _imageList;
@@ -88,6 +95,9 @@ namespace JJs2DEngine
 
 		IDObject<VS::AutoCleanupNIFDescriptorPool> _transferDescriptorPool;
 		std::vector<IDObject<VS::AutoCleanupDescriptorSet>> _textureDescriptorSets;
+
+		Misc::Bool64Values _textureFormatIs16Bit;
+		Misc::Bool64Values _textureFormatIsRBReversed;
 
 		bool Is16Bit(TextureFormat textureFormat) const;
 		bool IsRBReversed(TextureFormat textureFormat) const;

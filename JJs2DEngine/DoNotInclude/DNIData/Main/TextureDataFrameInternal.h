@@ -41,8 +41,8 @@ namespace JJs2DEngine
 	struct TextureFrameStagingBufferData
 	{
 		IDObject<VS::AutoCleanupStagingBuffer> stagingBufferID;
-		size_t totalBufferSize;
-		size_t currentlyUsedSize;
+		uint64_t totalBufferSize;
+		uint64_t currentlyUsedSize;
 
 		TextureFrameStagingBufferData();
 		~TextureFrameStagingBufferData();
@@ -61,7 +61,9 @@ namespace JJs2DEngine
 		std::vector<IDObject<VS::AutoCleanupImageView>> imageViewIDs;
 
 		std::vector<std::vector<std::shared_ptr<TextureReferenceData>>> textureReferencesList;
-		std::vector<std::vector<TextureTransferOrderInternal>> textureTransferOrderList;
+		std::vector<std::vector<TextureTransferOrderInternal>> textureTransferOrderLists;
+
+		TextureReferenceData defaultReference;
 
 		TextureFrameImageData();
 		~TextureFrameImageData();
@@ -92,6 +94,8 @@ namespace JJs2DEngine
 
 		void GetTransferToGraphicsMemoryBarriers(std::vector<VS::ImagesMemoryBarrierData>& outputVector, size_t frameInFlightIndice, uint64_t transferQueue, uint64_t graphicsQueue);
 
+		std::optional<std::pair<size_t, size_t>> TryToAddTextureToTransferList(const unsigned char& data, size_t dataSize, uint32_t width, uint32_t height);
+
 	private:
 		VS::DataBufferLists _dataBufferList;
 		VS::ImageDataLists _imageList;
@@ -105,9 +109,11 @@ namespace JJs2DEngine
 		std::array<TextureFrameImageData, imagesInTextureArray> _textureDataArray;
 		VS::MemoryAllocationFullID _textureMemoryID;
 
-		std::vector<TextureFrameStagingBufferData> _texturesStagingBufferIDs;
+		std::vector<TextureFrameStagingBufferData> _texturesStagingBufferFrames;
 		VS::MemoryAllocationFullID _stagingBufferMemoryID;
 
 		TextureFrameImageData CompileTextureFrameSizeData(size_t tileSize, size_t texturesMaxAmount, uint64_t max2DImageSize, uint64_t maxImageArrayLayers) const;
+
+		uint64_t GetLeastStagingMemoryUnused() const;
 	};
 }

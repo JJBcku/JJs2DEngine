@@ -108,12 +108,12 @@ namespace JJs2DEngine
 		}
 
 		{
-			_texturesStagingBufferIDs.resize(initData.frameAmount);
+			_texturesStagingBufferFrames.resize(initData.frameAmount);
 			for (uint64_t i = 0; i < initData.frameAmount; ++i)
 			{
-				_texturesStagingBufferIDs[i].stagingBufferID = (_dataBufferList.AddStagingBuffer(initData.stagingBufferSize, {}, 0x10));
-				_texturesStagingBufferIDs[i].totalBufferSize = initData.stagingBufferSize;
-				_texturesStagingBufferIDs[i].currentlyUsedSize = 0;
+				_texturesStagingBufferFrames[i].stagingBufferID = (_dataBufferList.AddStagingBuffer(initData.stagingBufferSize, {}, 0x10));
+				_texturesStagingBufferFrames[i].totalBufferSize = initData.stagingBufferSize;
+				_texturesStagingBufferFrames[i].currentlyUsedSize = 0;
 			}
 
 			acceptableMemoryTypes.clear();
@@ -122,13 +122,13 @@ namespace JJs2DEngine
 			acceptableMemoryTypes.push_back(VS::DEVICE_LOCAL | VS::HOST_COHERENT | VS::HOST_VISIBLE | VS::HOST_CACHED);
 			acceptableMemoryTypes.push_back(VS::DEVICE_LOCAL | VS::HOST_COHERENT | VS::HOST_VISIBLE);
 
-			size_t requiredSize = _dataBufferList.GetStagingBuffersSize(_texturesStagingBufferIDs[0].stagingBufferID) * _texturesStagingBufferIDs.size();
-			uint32_t memoryMask = _dataBufferList.GetStagingBuffersMemoryTypeMask(_texturesStagingBufferIDs[0].stagingBufferID);
+			size_t requiredSize = _dataBufferList.GetStagingBuffersSize(_texturesStagingBufferFrames[0].stagingBufferID) * _texturesStagingBufferFrames.size();
+			uint32_t memoryMask = _dataBufferList.GetStagingBuffersMemoryTypeMask(_texturesStagingBufferFrames[0].stagingBufferID);
 
 			_stagingBufferMemoryID = _memoryList.AllocateMemory(requiredSize, 1, acceptableMemoryTypes, memoryMask, 0x10);
-			for (uint64_t i = 0; i < _texturesStagingBufferIDs.size(); ++i)
+			for (uint64_t i = 0; i < _texturesStagingBufferFrames.size(); ++i)
 			{
-				_dataBufferList.BindStagingBuffer(_texturesStagingBufferIDs[i].stagingBufferID, _stagingBufferMemoryID, 0x10);
+				_dataBufferList.BindStagingBuffer(_texturesStagingBufferFrames[i].stagingBufferID, _stagingBufferMemoryID, 0x10);
 			}
 		}
 
@@ -137,7 +137,7 @@ namespace JJs2DEngine
 			auto& textureData = _textureDataArray[i];
 			textureData.textureReferencesList.resize(initData.texturesMaxAmounts[i]);
 
-			TextureReferenceData defaultReference;
+			auto& defaultReference = textureData.defaultReference;
 			defaultReference.textureCoords = glm::vec2(0.0f);
 			defaultReference.textureSize = glm::vec2(1.0f);
 			defaultReference.textureLayer = 0;
@@ -153,10 +153,10 @@ namespace JJs2DEngine
 				}
 			}
 
-			textureData.textureTransferOrderList.resize(initData.frameAmount);
-			for (size_t j = 0; j < textureData.textureTransferOrderList.size(); ++j)
+			textureData.textureTransferOrderLists.resize(initData.frameAmount);
+			for (size_t j = 0; j < textureData.textureTransferOrderLists.size(); ++j)
 			{
-				textureData.textureTransferOrderList[j].reserve(initData.texturesMaxAmounts[i]);
+				textureData.textureTransferOrderLists[j].reserve(initData.texturesMaxAmounts[i]);
 			}
 		}
 	}
@@ -171,9 +171,9 @@ namespace JJs2DEngine
 
 		for (size_t i = 0; i < defaultTexturesData.size(); ++i)
 		{
-			for (size_t j = 0; j < _texturesStagingBufferIDs.size(); ++j)
+			for (size_t j = 0; j < _texturesStagingBufferFrames.size(); ++j)
 			{
-				_dataBufferList.WriteToStagingBuffer(_texturesStagingBufferIDs[j].stagingBufferID, offset, *defaultTexturesData[i].data(), defaultTexturesData[i].size());
+				_dataBufferList.WriteToStagingBuffer(_texturesStagingBufferFrames[j].stagingBufferID, offset, *defaultTexturesData[i].data(), defaultTexturesData[i].size());
 			}
 
 			offset += defaultTexturesData[i].size();
@@ -181,7 +181,7 @@ namespace JJs2DEngine
 
 		std::vector<VS::ImagesMemoryBarrierData> toTransfer, fromTransfer;
 
-		toTransfer.resize(_texturesStagingBufferIDs.size());
+		toTransfer.resize(_texturesStagingBufferFrames.size());
 		for (size_t i = 0; i < toTransfer.size(); ++i)
 		{
 			toTransfer[i].srcAccess = VS::AccessFlagBits::ACCESS_NONE;
@@ -190,7 +190,7 @@ namespace JJs2DEngine
 			toTransfer[i].newLayout = VS::ImageLayoutFlags::TRANSFER_DESTINATION;
 		}
 
-		fromTransfer.resize(_texturesStagingBufferIDs.size());
+		fromTransfer.resize(_texturesStagingBufferFrames.size());
 		for (size_t i = 0; i < toTransfer.size(); ++i)
 		{
 			fromTransfer[i].srcAccess = VS::AccessFlagBits::ACCESS_TRANSFER_WRITE;
@@ -222,7 +222,7 @@ namespace JJs2DEngine
 
 			for (size_t j = 0; j < toTransfer.size(); ++j)
 			{
-				_commandBuffer.TransferDataTo2dArrayTextureSingleLayer(_texturesStagingBufferIDs[j].stagingBufferID, offset, defaultTexturesData[i].size(), textureData.imageIDs[j],
+				_commandBuffer.TransferDataTo2dArrayTextureSingleLayer(_texturesStagingBufferFrames[j].stagingBufferID, offset, defaultTexturesData[i].size(), textureData.imageIDs[j],
 					0, 0, static_cast<uint32_t>(textureData.tileSize), static_cast<uint32_t>(textureData.tileSize), 0, 0);
 			}
 
@@ -300,6 +300,70 @@ namespace JJs2DEngine
 
 			outputVector.push_back(added);
 		}
+	}
+
+	std::optional<std::pair<size_t, size_t>> TextureDataFrameInternal::TryToAddTextureToTransferList(const unsigned char& data, size_t dataSize, uint32_t width, uint32_t height)
+	{
+		std::optional<std::pair<size_t, size_t>> ret;
+
+		if (GetLeastStagingMemoryUnused() < dataSize)
+			return ret;
+
+		std::optional<size_t> arraysIndex;
+		{
+			uint32_t biggerSide = std::max(width, height);
+
+			if (biggerSide > _textureDataArray.back().tileSize)
+				throw std::runtime_error("TextureDataFrameInternal::TryToAddTextureToTransferList Error: Program was given texture bigger than biggest tile!");
+
+			for (size_t i = 0; i < _textureDataArray.size(); ++i)
+			{
+				if (biggerSide <= _textureDataArray[i].tileSize)
+				{
+					arraysIndex = i;
+					break;
+				}
+			}
+
+			if (!arraysIndex.has_value())
+				throw std::runtime_error("TextureDataFrameInternal::TryToAddTextureToTransferList Error: Program failed to find an appropriate tiled texture image!");
+		}
+
+		auto& textureImageData = _textureDataArray[arraysIndex.value()];
+
+		std::optional<size_t> insertionIndex;
+		for (size_t i = 1; i < textureImageData.textureReferencesList.size(); ++i)
+		{
+			if (*textureImageData.textureReferencesList[i][0] == textureImageData.defaultReference)
+			{
+				insertionIndex = i;
+				break;
+			}
+		}
+
+		if (!insertionIndex.has_value())
+			throw std::runtime_error("TextureDataFrameInternal::TryToAddTextureToTransferList Error: Program failed to find an appropriate tile!");
+
+		TextureTransferOrderInternal addedOrder;
+		addedOrder.insertionIndex = insertionIndex.value();
+		addedOrder.texturesWidth = width;
+		addedOrder.texturesHeight = height;
+
+		for (size_t i = 0; i < _texturesStagingBufferFrames.size(); ++i)
+		{
+			addedOrder.stagingBufferDataOffset = _texturesStagingBufferFrames[i].currentlyUsedSize;
+			addedOrder.stagingBufferDataSize = dataSize;
+
+			_dataBufferList.WriteToStagingBuffer(_texturesStagingBufferFrames[i].stagingBufferID, addedOrder.stagingBufferDataOffset, data, addedOrder.stagingBufferDataSize);
+
+			if (textureImageData.textureTransferOrderLists[i].size() == textureImageData.textureTransferOrderLists[i].capacity())
+				textureImageData.textureTransferOrderLists[i].reserve(textureImageData.textureTransferOrderLists[i].capacity() << 1);
+			textureImageData.textureTransferOrderLists[i].push_back(addedOrder);
+		}
+
+		ret.emplace(arraysIndex.value(), insertionIndex.value());
+
+		return ret;
 	}
 
 	TextureFrameImageData TextureDataFrameInternal::CompileTextureFrameSizeData(size_t tileSize, size_t texturesMaxAmount, uint64_t max2DImageSize, uint64_t maxImageArrayLayers) const
@@ -429,6 +493,23 @@ namespace JJs2DEngine
 
 		if (!found)
 			throw std::runtime_error("TextureDataFrameInternal::CompileTextureFrameSizeData Error: Program failed to find the proper size for an image!");
+
+		return ret;
+	}
+
+	uint64_t TextureDataFrameInternal::GetLeastStagingMemoryUnused() const
+	{
+		uint64_t ret = std::numeric_limits<size_t>::max();
+
+		assert(!_texturesStagingBufferFrames.empty());
+		for (size_t i = 0; i < _texturesStagingBufferFrames.size(); ++i)
+		{
+			assert(_texturesStagingBufferFrames[i].totalBufferSize >= _texturesStagingBufferFrames[i].currentlyUsedSize);
+			uint64_t unusedSize = _texturesStagingBufferFrames[i].totalBufferSize - _texturesStagingBufferFrames[i].currentlyUsedSize;
+
+			if (unusedSize <= ret)
+				ret = unusedSize;
+		}
 
 		return ret;
 	}

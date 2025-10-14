@@ -3,6 +3,7 @@
 
 #include "../../../Include/Main/InputDataList.h"
 #include "../../../Include/Main/VertexDataMain.h"
+#include "../../../Include/Main/TextureDataMain.h"
 
 #include "../../DNIData/Main/MainInternal.h"
 
@@ -74,6 +75,16 @@ namespace JJs2DEngine
 	const VertexDataMain Main::GetVertexDataMainList() const
 	{
 		return _internal->GetVertexDataMainList();
+	}
+
+	TextureDataMain Main::GetTextureDataMainList()
+	{
+		return _internal->GetTextureDataMainList();
+	}
+
+	const TextureDataMain Main::GetTextureDataMainList() const
+	{
+		return _internal->GetTextureDataMainList();
 	}
 
 	void Main::ChangeFullscreen(Misc::Bool64Values newFullscreen)
