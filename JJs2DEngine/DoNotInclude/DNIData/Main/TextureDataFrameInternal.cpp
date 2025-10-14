@@ -1,6 +1,8 @@
 #include "MainDNIpch.h"
 #include "TextureDataFrameInternal.h"
 
+#include "TextureTransferOrderInternal.h"
+
 #include <glm/vec2.hpp>
 
 #include <VulkanSimplified/VSCommon/VSMemoryTypeProperties.h>
@@ -24,6 +26,20 @@ namespace JJs2DEngine
 		maxImageArrayLayers = 0;
 
 		stagingBufferSize = 0;
+	}
+
+	TextureFrameInitData::~TextureFrameInitData()
+	{
+	}
+
+	JJs2DEngine::TextureFrameStagingBufferData::TextureFrameStagingBufferData()
+	{
+		totalBufferSize = 0;
+		currentlyUsedSize = std::numeric_limits<size_t>::max();
+	}
+
+	TextureFrameStagingBufferData::~TextureFrameStagingBufferData()
+	{
 	}
 
 	JJs2DEngine::TextureFrameImageData::TextureFrameImageData()
@@ -92,10 +108,12 @@ namespace JJs2DEngine
 		}
 
 		{
-			_texturesStagingBufferIDs.reserve(initData.frameAmount);
+			_texturesStagingBufferIDs.resize(initData.frameAmount);
 			for (uint64_t i = 0; i < initData.frameAmount; ++i)
 			{
-				_texturesStagingBufferIDs.push_back(_dataBufferList.AddStagingBuffer(initData.stagingBufferSize, {}, 0x10));
+				_texturesStagingBufferIDs[i].stagingBufferID = (_dataBufferList.AddStagingBuffer(initData.stagingBufferSize, {}, 0x10));
+				_texturesStagingBufferIDs[i].totalBufferSize = initData.stagingBufferSize;
+				_texturesStagingBufferIDs[i].currentlyUsedSize = 0;
 			}
 
 			acceptableMemoryTypes.clear();
@@ -104,13 +122,13 @@ namespace JJs2DEngine
 			acceptableMemoryTypes.push_back(VS::DEVICE_LOCAL | VS::HOST_COHERENT | VS::HOST_VISIBLE | VS::HOST_CACHED);
 			acceptableMemoryTypes.push_back(VS::DEVICE_LOCAL | VS::HOST_COHERENT | VS::HOST_VISIBLE);
 
-			size_t requiredSize = _dataBufferList.GetStagingBuffersSize(_texturesStagingBufferIDs[0]) * _texturesStagingBufferIDs.size();
-			uint32_t memoryMask = _dataBufferList.GetStagingBuffersMemoryTypeMask(_texturesStagingBufferIDs[0]);
+			size_t requiredSize = _dataBufferList.GetStagingBuffersSize(_texturesStagingBufferIDs[0].stagingBufferID) * _texturesStagingBufferIDs.size();
+			uint32_t memoryMask = _dataBufferList.GetStagingBuffersMemoryTypeMask(_texturesStagingBufferIDs[0].stagingBufferID);
 
 			_stagingBufferMemoryID = _memoryList.AllocateMemory(requiredSize, 1, acceptableMemoryTypes, memoryMask, 0x10);
 			for (uint64_t i = 0; i < _texturesStagingBufferIDs.size(); ++i)
 			{
-				_dataBufferList.BindStagingBuffer(_texturesStagingBufferIDs[i], _stagingBufferMemoryID, 0x10);
+				_dataBufferList.BindStagingBuffer(_texturesStagingBufferIDs[i].stagingBufferID, _stagingBufferMemoryID, 0x10);
 			}
 		}
 
@@ -134,6 +152,12 @@ namespace JJs2DEngine
 					textureData.textureReferencesList[j][k] = std::make_shared<TextureReferenceData>(defaultReference);
 				}
 			}
+
+			textureData.textureTransferOrderList.resize(initData.frameAmount);
+			for (size_t j = 0; j < textureData.textureTransferOrderList.size(); ++j)
+			{
+				textureData.textureTransferOrderList[j].reserve(initData.texturesMaxAmounts[i]);
+			}
 		}
 	}
 
@@ -149,7 +173,7 @@ namespace JJs2DEngine
 		{
 			for (size_t j = 0; j < _texturesStagingBufferIDs.size(); ++j)
 			{
-				_dataBufferList.WriteToStagingBuffer(_texturesStagingBufferIDs[j], offset, *defaultTexturesData[i].data(), defaultTexturesData[i].size());
+				_dataBufferList.WriteToStagingBuffer(_texturesStagingBufferIDs[j].stagingBufferID, offset, *defaultTexturesData[i].data(), defaultTexturesData[i].size());
 			}
 
 			offset += defaultTexturesData[i].size();
@@ -198,7 +222,7 @@ namespace JJs2DEngine
 
 			for (size_t j = 0; j < toTransfer.size(); ++j)
 			{
-				_commandBuffer.TransferDataTo2dArrayTextureSingleLayer(_texturesStagingBufferIDs[j], offset, defaultTexturesData[i].size(), textureData.imageIDs[j],
+				_commandBuffer.TransferDataTo2dArrayTextureSingleLayer(_texturesStagingBufferIDs[j].stagingBufferID, offset, defaultTexturesData[i].size(), textureData.imageIDs[j],
 					0, 0, static_cast<uint32_t>(textureData.tileSize), static_cast<uint32_t>(textureData.tileSize), 0, 0);
 			}
 

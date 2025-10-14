@@ -21,6 +21,8 @@
 
 namespace JJs2DEngine
 {
+	struct TextureTransferOrderInternal;
+
 	struct TextureFrameInitData
 	{
 		uint64_t frameAmount;
@@ -33,6 +35,17 @@ namespace JJs2DEngine
 		VS::DataFormatSetIndependentID textureFormat;
 
 		TextureFrameInitData();
+		~TextureFrameInitData();
+	};
+
+	struct TextureFrameStagingBufferData
+	{
+		IDObject<VS::AutoCleanupStagingBuffer> stagingBufferID;
+		size_t totalBufferSize;
+		size_t currentlyUsedSize;
+
+		TextureFrameStagingBufferData();
+		~TextureFrameStagingBufferData();
 	};
 
 	struct TextureFrameImageData
@@ -48,6 +61,7 @@ namespace JJs2DEngine
 		std::vector<IDObject<VS::AutoCleanupImageView>> imageViewIDs;
 
 		std::vector<std::vector<std::shared_ptr<TextureReferenceData>>> textureReferencesList;
+		std::vector<std::vector<TextureTransferOrderInternal>> textureTransferOrderList;
 
 		TextureFrameImageData();
 		~TextureFrameImageData();
@@ -91,7 +105,7 @@ namespace JJs2DEngine
 		std::array<TextureFrameImageData, imagesInTextureArray> _textureDataArray;
 		VS::MemoryAllocationFullID _textureMemoryID;
 
-		std::vector<IDObject<VS::AutoCleanupStagingBuffer>> _texturesStagingBufferIDs;
+		std::vector<TextureFrameStagingBufferData> _texturesStagingBufferIDs;
 		VS::MemoryAllocationFullID _stagingBufferMemoryID;
 
 		TextureFrameImageData CompileTextureFrameSizeData(size_t tileSize, size_t texturesMaxAmount, uint64_t max2DImageSize, uint64_t maxImageArrayLayers) const;
