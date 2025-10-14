@@ -74,6 +74,9 @@ namespace JJs2DEngine
 
 		if (streamedTexturesUsed)
 		{
+			if (initData.streamedTexturesStagingBufferPageCount == 0)
+				throw std::runtime_error("TextureDataMainInternal::TextureDataMainInternal Error: Value of streamed textures buffers pages count cannot be zero if streamed textures are being used");
+
 			auto streamedCommandBuffers = textureCommandPool.AllocateSecondaryCommandBuffers(1, 0x10);
 			_streamedCommandBufferID = streamedCommandBuffers.back();
 		}

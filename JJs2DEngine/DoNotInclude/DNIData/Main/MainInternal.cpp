@@ -129,12 +129,12 @@ namespace JJs2DEngine
 			if (!CheckDepthFormatAvailability(setting.depthFormat, deviceData.depthStencilSupport))
 				throw std::runtime_error("MainInternal::CreateDevice Error: One of preinitialized pipelines has a depth format unsupported by the device!");
 		}
+
+		if (deviceSettings.transferFramesInFlight == 0)
+			throw std::runtime_error("MainInternal::CreateDevice Error: Value for transfer frames amount cannot be zero!");
 		
 		if (deviceSettings.preLoadedTexturesStagingBuffersPageCount == 0)
 			throw std::runtime_error("MainInternal::CreateDevice Error: Value for preloaded textures staging buffer page count cannot be zero!");
-
-		if (deviceSettings.streamedTexturesStagingBuffersPageCount == 0 && deviceSettings.transferFramesInFlight > 0)
-			throw std::runtime_error("MainInternal::CreateDevice Error: Value for streamed textures staging buffer page count cannot be zero!");
 
 		VS::LogicalDeviceCreationData creationData;
 		creationData.physicalGPUIndex = deviceData.deviceIndex;
