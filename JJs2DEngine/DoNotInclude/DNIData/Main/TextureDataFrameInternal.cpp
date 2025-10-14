@@ -354,6 +354,8 @@ namespace JJs2DEngine
 			addedOrder.stagingBufferDataOffset = _texturesStagingBufferFrames[i].currentlyUsedSize;
 			addedOrder.stagingBufferDataSize = dataSize;
 
+			_texturesStagingBufferFrames[i].currentlyUsedSize += addedOrder.stagingBufferDataSize;
+
 			_dataBufferList.WriteToStagingBuffer(_texturesStagingBufferFrames[i].stagingBufferID, addedOrder.stagingBufferDataOffset, data, addedOrder.stagingBufferDataSize);
 
 			if (textureImageData.textureTransferOrderLists[i].size() == textureImageData.textureTransferOrderLists[i].capacity())
