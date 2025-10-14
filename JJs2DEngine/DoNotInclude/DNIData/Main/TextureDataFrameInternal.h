@@ -9,7 +9,7 @@
 #include <VulkanSimplified/VSDevice/VSDataBufferLists.h>
 #include <VulkanSimplified/VSDevice/VSImageDataLists.h>
 #include <VulkanSimplified/VSDevice/VSMemoryObjectsList.h>
-#include <VulkanSimplified/VSDevice/VSSecondaryNIRCommandBuffer.h>
+#include <VulkanSimplified/VSDevice/VSSecondaryIRCommandBuffer.h>
 
 #include <CustomLists/IDObject.h>
 
@@ -82,7 +82,7 @@ namespace JJs2DEngine
 	{
 	public:
 		TextureDataFrameInternal(const TextureFrameInitData& initData, VS::DataBufferLists dataBufferList, VS::ImageDataLists imageList, VS::MemoryObjectsList memoryList,
-			VS::SecondaryNIRCommandBuffer commandBuffer);
+			const std::vector<VS::SecondaryIRCommandBuffer>& commandBuffersList);
 		~TextureDataFrameInternal();
 
 		void LoadDefaultTextures(const std::array<std::vector<unsigned char>, imagesInTextureArray>& defaultTexturesData, uint64_t transferQueue, uint64_t graphicsQueue);
@@ -92,15 +92,18 @@ namespace JJs2DEngine
 
 		std::vector<std::shared_ptr<TextureReferenceData>> GetTextureReference(size_t tileImageIndex, size_t referenceIndex);
 
+		void GetGraphicsToTransferMemoryBarriers(std::vector<VS::ImagesMemoryBarrierData>& outputVector, size_t frameInFlightIndice, uint64_t transferQueue, uint64_t graphicsQueue);
 		void GetTransferToGraphicsMemoryBarriers(std::vector<VS::ImagesMemoryBarrierData>& outputVector, size_t frameInFlightIndice, uint64_t transferQueue, uint64_t graphicsQueue);
 
 		std::optional<std::pair<size_t, size_t>> TryToAddTextureToTransferList(const unsigned char& data, size_t dataSize, uint32_t width, uint32_t height);
+		void RecordTransferBuffer(size_t frameInFlightIndice, uint64_t transferQueue, uint64_t graphicsQueue);
+		void FinishTextureTransfer(size_t frameInFlightIndice);
 
 	private:
 		VS::DataBufferLists _dataBufferList;
 		VS::ImageDataLists _imageList;
 		VS::MemoryObjectsList _memoryList;
-		VS::SecondaryNIRCommandBuffer _commandBuffer;
+		std::vector<VS::SecondaryIRCommandBuffer> _commandBuffersList;
 
 		uint64_t _startingIndex;
 		uint64_t _max2DImageSize;

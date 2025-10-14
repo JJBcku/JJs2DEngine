@@ -59,6 +59,8 @@ namespace JJs2DEngine
 		void RenderSingleFrame();
 		bool RenderingShouldBePaused() const;
 
+		void TransferPreLoadedTextures();
+
 		InputDataListInternal& GetInputDataList();
 		const InputDataListInternal& GetInputDataList() const;
 

@@ -57,8 +57,8 @@ namespace JJs2DEngine
 	}
 
 	TextureDataFrameInternal::TextureDataFrameInternal(const TextureFrameInitData& initData, VS::DataBufferLists dataBufferList, VS::ImageDataLists imageList,
-		VS::MemoryObjectsList memoryList, VS::SecondaryNIRCommandBuffer commandBuffer) :
-		_dataBufferList(dataBufferList), _imageList(imageList), _memoryList(memoryList), _commandBuffer(commandBuffer),
+		VS::MemoryObjectsList memoryList, const std::vector<VS::SecondaryIRCommandBuffer>& commandBuffersList) :
+		_dataBufferList(dataBufferList), _imageList(imageList), _memoryList(memoryList), _commandBuffersList(commandBuffersList),
 		_startingIndex(initData.startingIndex), _max2DImageSize(initData.max2DImageSize), _maxImageArrayLayers(initData.maxImageArrayLayers)
 	{
 		std::vector<VS::MemoryTypeProperties> acceptableMemoryTypes;
@@ -208,7 +208,7 @@ namespace JJs2DEngine
 
 		offset = 0;
 
-		_commandBuffer.BeginRecording(VS::CommandBufferUsage::ONE_USE, {}, {}, false);
+		_commandBuffersList[0].BeginRecording(VS::CommandBufferUsage::ONE_USE, {}, {}, false);
 
 		for (size_t i = 0; i < defaultTexturesData.size(); ++i)
 		{
@@ -218,11 +218,11 @@ namespace JJs2DEngine
 			{
 				toTransfer[j].imageID = VS::ImagesGenericID(textureData.imageIDs[j]);
 			}
-			_commandBuffer.CreatePipelineBarrier(VS::PipelineStageFlagBits::PIPELINE_STAGE_TOP_OF_PIPE, VS::PipelineStageFlagBits::PIPELINE_STAGE_TRANSFER, {}, {}, toTransfer);
+			_commandBuffersList[0].CreatePipelineBarrier(VS::PipelineStageFlagBits::PIPELINE_STAGE_TOP_OF_PIPE, VS::PipelineStageFlagBits::PIPELINE_STAGE_TRANSFER, {}, {}, toTransfer);
 
 			for (size_t j = 0; j < toTransfer.size(); ++j)
 			{
-				_commandBuffer.TransferDataTo2dArrayTextureSingleLayer(_texturesStagingBufferFrames[j].stagingBufferID, offset, defaultTexturesData[i].size(), textureData.imageIDs[j],
+				_commandBuffersList[0].TransferDataTo2dArrayTextureSingleLayer(_texturesStagingBufferFrames[j].stagingBufferID, offset, defaultTexturesData[i].size(), textureData.imageIDs[j],
 					0, 0, static_cast<uint32_t>(textureData.tileSize), static_cast<uint32_t>(textureData.tileSize), 0, 0);
 			}
 
@@ -232,10 +232,10 @@ namespace JJs2DEngine
 			{
 				fromTransfer[j].imageID = VS::ImagesGenericID(textureData.imageIDs[j]);
 			}
-			_commandBuffer.CreatePipelineBarrier(VS::PipelineStageFlagBits::PIPELINE_STAGE_TRANSFER, VS::PipelineStageFlagBits::PIPELINE_STAGE_TOP_OF_PIPE, {}, {}, fromTransfer);
+			_commandBuffersList[0].CreatePipelineBarrier(VS::PipelineStageFlagBits::PIPELINE_STAGE_TRANSFER, VS::PipelineStageFlagBits::PIPELINE_STAGE_TOP_OF_PIPE, {}, {}, fromTransfer);
 		}
 
-		_commandBuffer.EndRecording();
+		_commandBuffersList[0].EndRecording();
 	}
 
 	std::array<IDObject<VS::AutoCleanup2DArrayTexture>, imagesInTextureArray> TextureDataFrameInternal::GetImageIDs(size_t frameInFlightIndice) const
@@ -272,6 +272,34 @@ namespace JJs2DEngine
 			throw std::runtime_error("TextureDataFrameInternal::GetTextureReference Error: Program tried to get a non-existent reference!");
 
 		return imageData.textureReferencesList[referenceIndex];
+	}
+
+	void TextureDataFrameInternal::GetGraphicsToTransferMemoryBarriers(std::vector<VS::ImagesMemoryBarrierData>& outputVector, size_t frameInFlightIndice,
+		uint64_t transferQueue, uint64_t graphicsQueue)
+	{
+		if (frameInFlightIndice >= _textureDataArray[0].imageIDs.size())
+			throw std::runtime_error("TextureDataFrameInternal::GetGraphicsToTransferMemoryBarriers Error: Program tried to access a non-existent frame data!");
+
+		VS::ImagesMemoryBarrierData added;
+
+		added.srcAccess = VS::AccessFlagBits::ACCESS_MEMORY_READ;
+		added.dstAccess = VS::AccessFlagBits::ACCESS_MEMORY_WRITE;
+		added.oldLayout = VS::ImageLayoutFlags::SHADER_READ_ONLY;
+		added.newLayout = VS::ImageLayoutFlags::TRANSFER_DESTINATION;
+
+		if (transferQueue != graphicsQueue)
+		{
+			added.queueData.emplace();
+			added.queueData->srcQueueIndex = graphicsQueue;
+			added.queueData->dstQueueIndex = transferQueue;
+		}
+
+		for (size_t i = 0; i < _textureDataArray.size(); ++i)
+		{
+			added.imageID = _textureDataArray[i].imageIDs[frameInFlightIndice];
+
+			outputVector.push_back(added);
+		}
 	}
 
 	void TextureDataFrameInternal::GetTransferToGraphicsMemoryBarriers(std::vector<VS::ImagesMemoryBarrierData>& outputVector, size_t frameInFlightIndice,
@@ -366,6 +394,83 @@ namespace JJs2DEngine
 		ret.emplace(arraysIndex.value(), insertionIndex.value());
 
 		return ret;
+	}
+
+	void TextureDataFrameInternal::RecordTransferBuffer(size_t frameInFlightIndice, uint64_t transferQueue, uint64_t graphicsQueue)
+	{
+		if (frameInFlightIndice >= _commandBuffersList.size())
+			throw std::runtime_error("TextureDataFrameInternal::RecordTransferBuffer Error: Program tried to access a non-existent frame data!");
+
+		auto& transferCommandBuffer = _commandBuffersList[frameInFlightIndice];
+
+		transferCommandBuffer.BeginRecording(VS::CommandBufferUsage::ONE_USE, {}, {}, false);
+
+		std::vector<VS::ImagesMemoryBarrierData> fromGraphics, toGraphics;
+
+		fromGraphics.reserve(_textureDataArray.size());
+		GetGraphicsToTransferMemoryBarriers(fromGraphics, frameInFlightIndice, transferQueue, graphicsQueue);
+		transferCommandBuffer.CreatePipelineBarrier(VS::PipelineStageFlagBits::PIPELINE_STAGE_BOTTOM_OF_PIPE, VS::PipelineStageFlagBits::PIPELINE_STAGE_TRANSFER, {}, {}, fromGraphics);
+
+		for (size_t i = 0; i < _textureDataArray.size(); ++i)
+		{
+			const auto& textureData = _textureDataArray[i];
+
+			for (size_t j = 0; j < textureData.textureTransferOrderLists[frameInFlightIndice].size(); ++j)
+			{
+				const auto& transferOrder = textureData.textureTransferOrderLists[frameInFlightIndice][j];
+
+				size_t tileStartWidth = transferOrder.insertionIndex % textureData.widthInTiles;
+				tileStartWidth *= textureData.tileSize;
+				size_t divTemp = transferOrder.insertionIndex / textureData.widthInTiles;
+				size_t tileStartHeight = divTemp % textureData.heightInTiles;
+				tileStartHeight *= textureData.tileSize;
+				size_t tileLayer = divTemp / textureData.heightInTiles;
+
+				transferCommandBuffer.TransferDataTo2dArrayTextureSingleLayer(_texturesStagingBufferFrames[frameInFlightIndice].stagingBufferID, transferOrder.stagingBufferDataOffset,
+					transferOrder.stagingBufferDataSize, textureData.imageIDs[frameInFlightIndice], static_cast<uint32_t>(tileStartWidth), static_cast<uint32_t>(tileStartHeight),
+					transferOrder.texturesWidth, transferOrder.texturesHeight, 0, static_cast<uint32_t>(tileLayer));
+			}
+		}
+
+		toGraphics.reserve(_textureDataArray.size());
+		GetTransferToGraphicsMemoryBarriers(toGraphics, frameInFlightIndice, transferQueue, graphicsQueue);
+		transferCommandBuffer.CreatePipelineBarrier(VS::PipelineStageFlagBits::PIPELINE_STAGE_TRANSFER, VS::PipelineStageFlagBits::PIPELINE_STAGE_TOP_OF_PIPE, {}, {}, toGraphics);
+
+		transferCommandBuffer.EndRecording();
+	}
+
+	void TextureDataFrameInternal::FinishTextureTransfer(size_t frameInFlightIndice)
+	{
+		for (size_t i = 0; i < _textureDataArray.size(); ++i)
+		{
+			auto& textureData = _textureDataArray[i];
+			auto& referenceList = textureData.textureReferencesList;
+
+			for (size_t j = 0; j < textureData.textureTransferOrderLists[frameInFlightIndice].size(); ++j)
+			{
+				const auto& transferOrder = textureData.textureTransferOrderLists[frameInFlightIndice][j];
+				auto& referenceData = *referenceList[transferOrder.insertionIndex][frameInFlightIndice];
+				assert(referenceData == textureData.defaultReference);
+
+				size_t tileStartWidth = transferOrder.insertionIndex % textureData.widthInTiles;
+				tileStartWidth *= textureData.tileSize;
+				size_t divTemp = transferOrder.insertionIndex / textureData.widthInTiles;
+				size_t tileStartHeight = divTemp % textureData.heightInTiles;
+				tileStartHeight *= textureData.tileSize;
+				size_t tileLayer = divTemp / textureData.heightInTiles;
+
+				referenceData.textureCoords = glm::vec2(static_cast<float>(tileStartWidth) / static_cast<float>(textureData.widthInPixels),
+														static_cast<float>(tileStartHeight) / static_cast<float>(textureData.heightInPixels));
+
+				referenceData.textureSize = glm::vec2(static_cast<float>(transferOrder.texturesWidth) / static_cast<float>(textureData.widthInPixels),
+													  static_cast<float>(transferOrder.texturesHeight) / static_cast<float>(textureData.heightInPixels));
+
+				referenceData.textureLayer = static_cast<uint32_t>(tileLayer);
+				referenceData.textureIndex = static_cast<uint32_t>(i);
+			}
+
+			textureData.textureTransferOrderLists[frameInFlightIndice].clear();
+		}
 	}
 
 	TextureFrameImageData TextureDataFrameInternal::CompileTextureFrameSizeData(size_t tileSize, size_t texturesMaxAmount, uint64_t max2DImageSize, uint64_t maxImageArrayLayers) const

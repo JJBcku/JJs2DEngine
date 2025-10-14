@@ -39,6 +39,8 @@ namespace JJs2DEngine
 		void DrawFrame();
 		void IncrementCurrentFrames();
 
+		void TransferPreLoadedTextures();
+
 		UiVertexDataLayerVersionListInternal& GetUiVertexDataLayerVersionList(IDObject<UiVertexDataLayerVersionListPointer> ID);
 
 		const UiVertexDataLayerVersionListInternal& GetUiVertexDataLayerVersionList(IDObject<UiVertexDataLayerVersionListPointer> ID) const;

@@ -57,6 +57,11 @@ namespace JJs2DEngine
 		return _internal->RenderingShouldBePaused();
 	}
 
+	void Main::TransferPreLoadedTextures()
+	{
+		_internal->TransferPreLoadedTextures();
+	}
+
 	InputDataList Main::GetInputDataList()
 	{
 		return _internal->GetInputDataList();

@@ -9,9 +9,9 @@
 #include <VulkanSimplified/VSDevice/VSSynchronizationDataLists.h>
 #include <VulkanSimplified/VSDevice/VSCommandPoolQFGroupList.h>
 #include <VulkanSimplified/VSDevice/VSDescriptorDataLists.h>
-#include <VulkanSimplified/VSDevice/VSNIRCommandPoolDef.h>
-#include <VulkanSimplified/VSDevice/VSPrimaryNIRCommandBufferDef.h>
-#include <VulkanSimplified/VSDevice/VSSecondaryNIRCommandBufferDef.h>
+#include <VulkanSimplified/VSDevice/VSIRCommandPoolDef.h>
+#include <VulkanSimplified/VSDevice/VSPrimaryIRCommandBufferDef.h>
+#include <VulkanSimplified/VSDevice/VSSecondaryIRCommandBufferDef.h>
 #include <VulkanSimplified/VSDevice/VSImagesMemoryBarrierData.h>
 
 #include <CustomLists/IDObject.h>
@@ -62,7 +62,7 @@ namespace JJs2DEngine
 
 		std::vector<std::shared_ptr<TextureReferenceData>> GetTextureReference(bool inPreloadedTexturesList, size_t tileImageIndex, size_t referenceIndex);
 
-		IDObject<VS::AutoCleanupNIFDescriptorPool> GetTexturesDescriptorSetPool();
+		IDObject<VS::AutoCleanupNIFDescriptorPool> GetTexturesDescriptorSetPool() const;
 		IDObject<VS::AutoCleanupDescriptorSet> GetTexturesDescriptorSets(size_t currentTransferFrame);
 
 		bool AreStreamedTextureCreated() const;
@@ -70,8 +70,16 @@ namespace JJs2DEngine
 		std::vector<VS::ImagesMemoryBarrierData> GetPreLoadedTransferToGraphicsMemoryBarriers(uint64_t transferQueue, uint64_t graphicsQueue);
 		std::vector<VS::ImagesMemoryBarrierData> GetStreamedTransferToGraphicsMemoryBarriers(size_t frameInFlightIndice, uint64_t transferQueue, uint64_t graphicsQueue);
 
+		std::vector<VS::ImagesMemoryBarrierData> GetPreLoadedGraphicsToTransferMemoryBarriers(uint64_t transferQueue, uint64_t graphicsQueue);
+		std::vector<VS::ImagesMemoryBarrierData> GetStreamedGraphicsToTransferMemoryBarriers(size_t frameInFlightIndice, uint64_t transferQueue, uint64_t graphicsQueue);
+
 		std::optional<std::pair<size_t, size_t>> TryToAddTextureToPreloadedTexturesTransferList(const std::vector<unsigned char>& data, uint32_t width, uint32_t height);
 		std::optional<std::pair<size_t, size_t>> TryToAddTextureToStreamedTexturesTransferList(const std::vector<unsigned char>& data, uint32_t width, uint32_t height);
+
+		void TransferPreLoadedTexturesData(uint64_t transferQueue, uint64_t graphicsQueue);
+
+		IDObject<VS::AutoCleanupSemaphore> GetTransferFinishedSemaphore(size_t frameInFlightIndice) const;
+		void SetTextureUseFinishedSemaphore(size_t frameInFlightIndice, IDObject<VS::AutoCleanupSemaphore> semaphore);
 
 	private:
 		VS::DataBufferLists _dataBufferList;
@@ -81,14 +89,15 @@ namespace JJs2DEngine
 		VS::CommandPoolQFGroupList _transferQFGroup;
 		VS::DescriptorDataLists _descriptorDataList;
 
-		IDObject<VS::NIRPoolPointer> _textureCommandPoolID;
-		IDObject<VS::PrimaryNIRPointer> _primaryCommandBufferID;
+		IDObject<VS::IRPoolPointer> _textureCommandPoolID;
+		std::vector<IDObject<VS::PrimaryIRPointer>> _primaryCommandBufferIDs;
 
-		IDObject<VS::SecondaryNIRPointer> _preLoadedCommandBufferID;
-		IDObject<VS::SecondaryNIRPointer> _streamedCommandBufferID;
+		IDObject<VS::SecondaryIRPointer> _preLoadedCommandBufferID;
+		std::vector<IDObject<VS::SecondaryIRPointer>> _streamedCommandBufferIDs;
 
 		std::vector<IDObject<VS::AutoCleanupFence>> _fenceList;
 		std::vector<IDObject<VS::AutoCleanupSemaphore>> _transferSemaphoresList;
+		std::vector<std::optional<IDObject<VS::AutoCleanupSemaphore>>> _textureBeingUsedSemaphores;
 
 		std::unique_ptr<TextureDataFrameInternal> _preLoadedTexturesData;
 		std::unique_ptr<TextureDataFrameInternal> _streamedTexturesData;

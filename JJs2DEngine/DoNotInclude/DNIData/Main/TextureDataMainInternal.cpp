@@ -9,8 +9,9 @@
 #include <VulkanSimplified/VSCommon/VSDescriptorTypeFlags.h>
 
 #include <VulkanSimplified/VSCommon/VSDataFormatFlags.h>
-#include <VulkanSimplified/VSDevice/VSNIRCommandPool.h>
+#include <VulkanSimplified/VSDevice/VSIRCommandPool.h>
 #include <VulkanSimplified/VSDevice/VSPrimaryIRCommandBuffer.h>
+#include <VulkanSimplified/VSDevice/VSSecondaryIRCommandBuffer.h>
 #include <VulkanSimplified/VSDevice/VSCommandBufferSubmissionData.h>
 #include <VulkanSimplified/VSDevice/VSCommandBufferGenericID.h>
 #include <VulkanSimplified/VSDevice/VSDescriptorPoolGenericID.h>
@@ -65,22 +66,17 @@ namespace JJs2DEngine
 			_streamedTexturesMaxAmounts[i] += 1;
 		}
 
-		_textureCommandPoolID = _transferQFGroup.AddCommandPoolWithoutIndividualReset(true, initData.transferQueueID, 1, 1 + initData.transferFramesInFlight, 0x10);
-		auto textureCommandPool = _transferQFGroup.GetCommandPoolWithoutIndividualReset(_textureCommandPoolID);
+		_textureCommandPoolID = _transferQFGroup.AddCommandPoolWithIndividualReset(true, initData.transferQueueID, 1, 1 + initData.transferFramesInFlight);
+		auto textureCommandPool = _transferQFGroup.GetCommandPoolWithIndividualReset(_textureCommandPoolID);
 
-		auto primaryCommandBuffers = textureCommandPool.AllocatePrimaryCommandBuffers(1, 0x10);
-		_primaryCommandBufferID = primaryCommandBuffers.back();
+		_primaryCommandBufferIDs = textureCommandPool.AllocatePrimaryCommandBuffers(static_cast<uint32_t>(initData.transferFramesInFlight));
 
 		auto preloadedCommandBuffers = textureCommandPool.AllocateSecondaryCommandBuffers(1, 0x10);
 		_preLoadedCommandBufferID = preloadedCommandBuffers.back();
 
 		if (streamedTexturesUsed)
 		{
-			if (initData.streamedTexturesStagingBufferPageCount == 0)
-				throw std::runtime_error("TextureDataMainInternal::TextureDataMainInternal Error: Value of streamed textures buffers pages count cannot be zero if streamed textures are being used");
-
-			auto streamedCommandBuffers = textureCommandPool.AllocateSecondaryCommandBuffers(1, 0x10);
-			_streamedCommandBufferID = streamedCommandBuffers.back();
+			_streamedCommandBufferIDs = textureCommandPool.AllocateSecondaryCommandBuffers(static_cast<uint32_t>(initData.transferFramesInFlight));
 		}
 
 		VS::DataFormatSetIndependentID format = TranslateToFormat(initData.textureFormat);
@@ -122,11 +118,16 @@ namespace JJs2DEngine
 		frameInitData.stagingBufferSize = preLoadedTexturesStagingBuferSize;
 		frameInitData.textureFormat = format;
 
+		std::vector<VS::SecondaryIRCommandBuffer> preLoadedSecondaryBuffers;
+		preLoadedSecondaryBuffers.push_back(textureCommandPool.GetSecondaryCommandBuffer(_preLoadedCommandBufferID));
+
 		_preLoadedTexturesData = std::make_unique<TextureDataFrameInternal>(frameInitData, _dataBufferList, _imageList, _memoryList,
-			textureCommandPool.GetSecondaryCommandBuffer(_preLoadedCommandBufferID));
+			preLoadedSecondaryBuffers);
 
 		if (streamedTexturesUsed)
 		{
+			if (initData.streamedTexturesStagingBufferPageCount == 0)
+				throw std::runtime_error("TextureDataMainInternal::TextureDataMainInternal Error: Value of streamed textures buffers pages count cannot be zero if streamed textures are being used");
 			size_t streamedTexturesStagingBuferSize = static_cast<size_t>(biggestLevelTilePixelCount) * 2 * initData.streamedTexturesStagingBufferPageCount;
 
 			if (is16Bit)
@@ -136,11 +137,18 @@ namespace JJs2DEngine
 
 			frameInitData.frameAmount = initData.transferFramesInFlight;
 			frameInitData.startingIndex = imagesInTextureArray;
-			frameInitData.texturesMaxAmounts = _preLoadedTexturesMaxAmounts;
+			frameInitData.texturesMaxAmounts = _streamedTexturesMaxAmounts;
 			frameInitData.stagingBufferSize = streamedTexturesStagingBuferSize;
 
-			_streamedTexturesData = std::make_unique<TextureDataFrameInternal>(frameInitData, _dataBufferList, _imageList, _memoryList,
-				textureCommandPool.GetSecondaryCommandBuffer(_streamedCommandBufferID));
+			std::vector<VS::SecondaryIRCommandBuffer> streamedSecondaryBuffers;
+			streamedSecondaryBuffers.reserve(_streamedCommandBufferIDs.size());
+
+			for (uint64_t i = 0; i < _streamedCommandBufferIDs.size(); ++i)
+			{
+				streamedSecondaryBuffers.push_back(textureCommandPool.GetSecondaryCommandBuffer(_streamedCommandBufferIDs[i]));
+			}
+
+			_streamedTexturesData = std::make_unique<TextureDataFrameInternal>(frameInitData, _dataBufferList, _imageList, _memoryList, streamedSecondaryBuffers);
 		}
 
 		std::array<std::vector<unsigned char>, imagesInTextureArray> _defaultTextureDataList;
@@ -158,6 +166,7 @@ namespace JJs2DEngine
 
 		_fenceList.reserve(initData.transferFramesInFlight);
 		_transferSemaphoresList.reserve(initData.transferFramesInFlight);
+		_textureBeingUsedSemaphores.resize(initData.transferFramesInFlight);
 
 		for (size_t i = 0; i < initData.transferFramesInFlight; ++i)
 		{
@@ -172,13 +181,13 @@ namespace JJs2DEngine
 		if (_streamedTexturesData)
 			_streamedTexturesData->LoadDefaultTextures(_defaultTextureDataList, initData.transferQueueID, initData.graphicsQueueID);
 
-		auto primaryCommandBuffer = textureCommandPool.GetPrimaryCommandBuffer(_primaryCommandBufferID);
+		auto primaryCommandBuffer = textureCommandPool.GetPrimaryCommandBuffer(_primaryCommandBufferIDs[0]);
 
 		primaryCommandBuffer.BeginRecording(VS::CommandBufferUsage::ONE_USE);
 
-		textureCommandPool.RecordExecuteSecondaryBufferCommand(_primaryCommandBufferID, { _preLoadedCommandBufferID });
+		textureCommandPool.RecordExecuteSecondaryBufferCommand(_primaryCommandBufferIDs[0], { _preLoadedCommandBufferID });
 		if (_streamedTexturesData)
-			textureCommandPool.RecordExecuteSecondaryBufferCommand(_primaryCommandBufferID, { _streamedCommandBufferID });
+			textureCommandPool.RecordExecuteSecondaryBufferCommand(_primaryCommandBufferIDs[0], { _streamedCommandBufferIDs[0]});
 
 		primaryCommandBuffer.EndRecording();
 
@@ -186,9 +195,9 @@ namespace JJs2DEngine
 
 		submissionData.resize(1);
 		submissionData[0].commandBufferIDs.resize(1);
-		submissionData[0].commandBufferIDs[0].NIRPrimaryID.type = VS::CommandBufferIDType::NIR_PRIMARY;
-		submissionData[0].commandBufferIDs[0].NIRPrimaryID.commandPoolID = _textureCommandPoolID;
-		submissionData[0].commandBufferIDs[0].NIRPrimaryID.commandBufferID = _primaryCommandBufferID;
+		submissionData[0].commandBufferIDs[0].IRPrimaryID.type = VS::CommandBufferIDType::IR_PRIMARY;
+		submissionData[0].commandBufferIDs[0].IRPrimaryID.commandPoolID = _textureCommandPoolID;
+		submissionData[0].commandBufferIDs[0].IRPrimaryID.commandBufferID = _primaryCommandBufferIDs[0];
 
 		_transferQFGroup.SubmitBuffers(initData.transferQueueID, submissionData, { _fenceList[0] });
 
@@ -272,7 +281,7 @@ namespace JJs2DEngine
 			return _streamedTexturesData->GetTextureReference(tileImageIndex, referenceIndex);
 	}
 
-	IDObject<VS::AutoCleanupNIFDescriptorPool> TextureDataMainInternal::GetTexturesDescriptorSetPool()
+	IDObject<VS::AutoCleanupNIFDescriptorPool> TextureDataMainInternal::GetTexturesDescriptorSetPool() const
 	{
 		return _transferDescriptorPool;
 	}
@@ -307,6 +316,27 @@ namespace JJs2DEngine
 
 		if (_streamedTexturesData)
 			_streamedTexturesData->GetTransferToGraphicsMemoryBarriers(ret, frameInFlightIndice, transferQueue, graphicsQueue);
+
+		return ret;
+	}
+
+	std::vector<VS::ImagesMemoryBarrierData> TextureDataMainInternal::GetPreLoadedGraphicsToTransferMemoryBarriers(uint64_t transferQueue, uint64_t graphicsQueue)
+	{
+		std::vector<VS::ImagesMemoryBarrierData> ret;
+		ret.reserve(imagesInTextureArray);
+
+		_preLoadedTexturesData->GetGraphicsToTransferMemoryBarriers(ret, 0, transferQueue, graphicsQueue);
+
+		return ret;
+	}
+
+	std::vector<VS::ImagesMemoryBarrierData> TextureDataMainInternal::GetStreamedGraphicsToTransferMemoryBarriers(size_t frameInFlightIndice, uint64_t transferQueue, uint64_t graphicsQueue)
+	{
+		std::vector<VS::ImagesMemoryBarrierData> ret;
+		ret.reserve(imagesInTextureArray);
+
+		if (_streamedTexturesData)
+			_streamedTexturesData->GetGraphicsToTransferMemoryBarriers(ret, frameInFlightIndice, transferQueue, graphicsQueue);
 
 		return ret;
 	}
@@ -374,6 +404,63 @@ namespace JJs2DEngine
 			throw std::runtime_error("TextureDataMainInternal::TryToAddTextureToStreamedTexturesTransferList: Program was given a data vector with a wrong size!");
 
 		return _streamedTexturesData->TryToAddTextureToTransferList(*data.data(), requiredSize, width, height);
+	}
+
+	void TextureDataMainInternal::TransferPreLoadedTexturesData(uint64_t transferQueue, uint64_t graphicsQueue)
+	{
+		auto transferCommandPool = _transferQFGroup.GetCommandPoolWithIndividualReset(_textureCommandPoolID);
+		auto transferCommandBuffer = transferCommandPool.GetPrimaryCommandBuffer(_primaryCommandBufferIDs[0]);
+
+		if (_synchroList.WaitOnFences({ _fenceList[0] }, false, 1'000'000'000ULL) != true)
+			throw std::runtime_error("TextureDataMainInternal::TransferPreLoadedTexturesData Error: First waiting on a fence timed out!");
+		_synchroList.ResetFences({ _fenceList[0] });
+
+		transferCommandBuffer.ResetCommandBuffer(false);
+		transferCommandBuffer.BeginRecording(VS::CommandBufferUsage::ONE_USE);
+
+		_preLoadedTexturesData->RecordTransferBuffer(0, transferQueue, graphicsQueue);
+		transferCommandPool.RecordExecuteSecondaryBufferCommand(_primaryCommandBufferIDs[0], { _preLoadedCommandBufferID });
+
+		transferCommandBuffer.EndRecording();
+
+		std::vector<VS::CommandBufferSubmissionData> submissionData;
+
+		submissionData.resize(1);
+		submissionData[0].commandBufferIDs.resize(1);
+		submissionData[0].commandBufferIDs[0].IRPrimaryID.type = VS::CommandBufferIDType::IR_PRIMARY;
+		submissionData[0].commandBufferIDs[0].IRPrimaryID.commandPoolID = _textureCommandPoolID;
+		submissionData[0].commandBufferIDs[0].IRPrimaryID.commandBufferID = _primaryCommandBufferIDs[0];
+		submissionData[0].signalSemaphores.push_back(_transferSemaphoresList[0]);
+
+		if (_textureBeingUsedSemaphores[0].has_value())
+		{
+			submissionData[0].waitSemaphores.emplace_back(_textureBeingUsedSemaphores[0].value(), VS::PipelineStageFlagBits::PIPELINE_STAGE_TRANSFER);
+			_textureBeingUsedSemaphores[0].reset();
+		}
+
+		_transferQFGroup.SubmitBuffers(transferQueue, submissionData, _fenceList[0]);
+		if (_synchroList.WaitOnFences({ _fenceList[0] }, false, 1'000'000'000ULL) != true)
+			throw std::runtime_error("TextureDataMainInternal::TransferPreLoadedTexturesData Error: Second waiting on a fence timed out!");
+
+		_preLoadedTexturesData->FinishTextureTransfer(0);
+	}
+
+	IDObject<VS::AutoCleanupSemaphore> TextureDataMainInternal::GetTransferFinishedSemaphore(size_t frameInFlightIndice) const
+	{
+		if (frameInFlightIndice >= _transferSemaphoresList.size())
+			throw std::runtime_error("TextureDataMainInternal::GetTransferFinishedSemaphore Error: Program tried to access a non-existent semaphore!");
+
+		return _transferSemaphoresList[frameInFlightIndice];
+	}
+
+	void TextureDataMainInternal::SetTextureUseFinishedSemaphore(size_t frameInFlightIndice, IDObject<VS::AutoCleanupSemaphore> semaphore)
+	{
+		if (frameInFlightIndice >= _transferSemaphoresList.size())
+			throw std::runtime_error("TextureDataMainInternal::SetTextureUseFinishedSemaphore Error: Program tried to access a non-existent semaphore slot!");
+
+		assert(!_textureBeingUsedSemaphores[frameInFlightIndice].has_value());
+
+		_textureBeingUsedSemaphores[frameInFlightIndice] = semaphore;
 	}
 
 	bool TextureDataMainInternal::Is16Bit(TextureFormat textureFormat) const

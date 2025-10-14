@@ -148,6 +148,7 @@ namespace JJs2DEngine
 		_synchroList.ResetFences({ _vertexTransferFinishedFences[_currentTransferFrame] });
 
 		auto tranferCommandBuffer = _transferPool->GetPrimaryCommandBuffer(_transferCommandBuffersIDs[_currentTransferFrame]);
+		tranferCommandBuffer.ResetCommandBuffer(false);
 		tranferCommandBuffer.BeginRecording(VS::CommandBufferUsage::ONE_USE);
 
 		std::vector<VS::DataBuffersMemoryBarrierData> vertexBuffersOwnershipTransferDataList;
@@ -206,6 +207,7 @@ namespace JJs2DEngine
 
 		auto graphicsCommandBuffer = _graphicsPool->GetPrimaryCommandBuffer(_graphicsCommandBuffersIDs[_currentGraphicsFrame]);
 
+		graphicsCommandBuffer.ResetCommandBuffer(false);
 		graphicsCommandBuffer.BeginRecording(VS::CommandBufferUsage::ONE_USE);
 
 		std::vector<VS::DataBuffersMemoryBarrierData> vertexBuffersOwnershipTransferDataList;
@@ -297,6 +299,59 @@ namespace JJs2DEngine
 		_currentGraphicsFrame++;
 		if (_currentGraphicsFrame >= _graphicsFrameAmount)
 			_currentGraphicsFrame = 0;
+	}
+
+	void VertexDataMainInternal::TransferPreLoadedTextures()
+	{
+		if (_synchroList.WaitOnFences({ _renderingFinishedFences[0] }, false, 1'000'000'000ULL) != true)
+			throw std::runtime_error("VertexDataMainInternal::TransferPreLoadedTextures Error: First waiting on a fence has timed out!");
+		_synchroList.ResetFences({ _renderingFinishedFences[0] });
+
+		auto graphicsCommandBuffer = _graphicsPool->GetPrimaryCommandBuffer(_graphicsCommandBuffersIDs[0]);
+		VS::CommandBufferSubmissionData submitData;
+		submitData.commandBufferIDs.resize(1);
+		submitData.commandBufferIDs[0].IRPrimaryID.type = VS::CommandBufferIDType::IR_PRIMARY;
+		submitData.commandBufferIDs[0].IRPrimaryID.commandPoolID = _graphicsPoolID;
+		submitData.commandBufferIDs[0].IRPrimaryID.commandBufferID = _graphicsCommandBuffersIDs[0];
+
+		submitData.signalSemaphores.push_back(_renderingFinishedSemaphores[0]);
+
+		graphicsCommandBuffer.ResetCommandBuffer(false);
+		graphicsCommandBuffer.BeginRecording(VS::CommandBufferUsage::ONE_USE);
+
+		auto fromGraphics = _textureDataList.GetPreLoadedGraphicsToTransferMemoryBarriers(_transferQueueID, _graphicsQueueID);
+		graphicsCommandBuffer.CreatePipelineBarrier(VS::PipelineStageFlagBits::PIPELINE_STAGE_FRAGMENT_SHADER, VS::PipelineStageFlagBits::PIPELINE_STAGE_TOP_OF_PIPE,
+			{}, {}, fromGraphics);
+
+		graphicsCommandBuffer.EndRecording();
+
+		_graphicsQFGroup.SubmitBuffers(_graphicsQueueID, { submitData }, _renderingFinishedFences[0]);
+
+		_textureDataList.SetTextureUseFinishedSemaphore(0, _renderingFinishedSemaphores[0]);
+
+		_textureDataList.TransferPreLoadedTexturesData(_transferQueueID, _graphicsQueueID);
+
+		if (_synchroList.WaitOnFences({ _renderingFinishedFences[0] }, false, 1'000'000'000ULL) != true)
+			throw std::runtime_error("VertexDataMainInternal::TransferPreLoadedTextures Error: Second waiting on a fence has timed out!");
+		_synchroList.ResetFences({ _renderingFinishedFences[0] });
+
+		submitData.signalSemaphores.clear();
+		submitData.waitSemaphores.emplace_back(_textureDataList.GetTransferFinishedSemaphore(0), VS::PipelineStageFlagBits::PIPELINE_STAGE_TRANSFER);
+
+		graphicsCommandBuffer.ResetCommandBuffer(false);
+		graphicsCommandBuffer.BeginRecording(VS::CommandBufferUsage::ONE_USE);
+
+		auto toGraphics = _textureDataList.GetPreLoadedTransferToGraphicsMemoryBarriers(_transferQueueID, _graphicsQueueID);
+		graphicsCommandBuffer.CreatePipelineBarrier(VS::PipelineStageFlagBits::PIPELINE_STAGE_BOTTOM_OF_PIPE, VS::PipelineStageFlagBits::PIPELINE_STAGE_FRAGMENT_SHADER,
+			{}, {}, toGraphics);
+
+		graphicsCommandBuffer.EndRecording();
+
+		_graphicsQFGroup.SubmitBuffers(_graphicsQueueID, { submitData }, _renderingFinishedFences[0]);
+
+		if (_synchroList.WaitOnFences({ _renderingFinishedFences[0] }, false, 1'000'000'000ULL) != true)
+			throw std::runtime_error("VertexDataMainInternal::TransferPreLoadedTextures Error: Third waiting on a fence has timed out!");
+
 	}
 
 	UiVertexDataLayerVersionListInternal& VertexDataMainInternal::GetUiVertexDataLayerVersionList(IDObject<UiVertexDataLayerVersionListPointer> ID)

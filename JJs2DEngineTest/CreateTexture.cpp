@@ -66,4 +66,8 @@ void CreateTexture(MainDataCollection& data)
 
 	if (!resultData.has_value())
 		throw std::runtime_error("CreateTexture Error: Program failed to add the texture to the transfer order list!");
+
+	data.texturesID = resultData.value();
+
+	data.main->TransferPreLoadedTextures();
 }

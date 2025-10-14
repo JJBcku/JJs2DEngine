@@ -301,6 +301,11 @@ namespace JJs2DEngine
 		return _windowData->RenderingShouldBePaused();
 	}
 
+	void MainInternal::TransferPreLoadedTextures()
+	{
+		_vertexDataMain->TransferPreLoadedTextures();
+	}
+
 	InputDataListInternal& MainInternal::GetInputDataList()
 	{
 		return *_inputDataList;
