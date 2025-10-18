@@ -62,12 +62,10 @@ void CreateTexture(MainDataCollection& data)
 		std::memcpy(filedata.data(), pixels, dataSize);
 	}
 
-	auto resultData = textureDataList.TryToAddTextureToPreloadedTexturesTransferList(filedata, width, height);
+	auto resultData = textureDataList.TryToAddTextureToStreamedTexturesTransferList(filedata, width, height);
 
 	if (!resultData.has_value())
 		throw std::runtime_error("CreateTexture Error: Program failed to add the texture to the transfer order list!");
 
 	data.texturesID = resultData.value();
-
-	data.main->TransferPreLoadedTextures();
 }

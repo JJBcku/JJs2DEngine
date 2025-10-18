@@ -33,13 +33,14 @@ namespace JJs2DEngine
 
 		IDObject<UiVertexDataLayerVersionListPointer> AddUiLayerVersionList(const std::vector<size_t>& versionsMaxObjectAmountsList, size_t addOnReserving);
 
-		void PreRenderingTextureOwnershipTransfer();
+		void PreRenderingTexturesOwnershipTransfer();
 
 		void TransferVertexData();
 		void DrawFrame();
 		void IncrementCurrentFrames();
 
 		void TransferPreLoadedTextures();
+		void TransferStreamedTextures();
 
 		UiVertexDataLayerVersionListInternal& GetUiVertexDataLayerVersionList(IDObject<UiVertexDataLayerVersionListPointer> ID);
 
@@ -75,9 +76,11 @@ namespace JJs2DEngine
 		std::vector<std::optional<size_t>> _lastGraphicsFrameUsingThisTransferFrame;
 
 		std::vector<IDObject<VS::AutoCleanupFence>> _renderingFinishedFences;
+		std::vector<IDObject<VS::AutoCleanupFence>> _texturesQueueTrasferFinishedFences;
 		std::vector<IDObject<VS::AutoCleanupSemaphore>> _imageAcquiredSemaphores;
 		std::vector<IDObject<VS::AutoCleanupSemaphore>> _renderingFinishedSemaphores;
 		std::vector<IDObject<VS::AutoCleanupSemaphore>> _transferDataFreeToChangeSemaphores;
+		std::vector<IDObject<VS::AutoCleanupSemaphore>> _texturesQueueTrasferFinishedSemaphores;
 
 		IDObject<VS::IRPoolPointer> _transferPoolID;
 		std::optional<VS::IRCommandPool> _transferPool;

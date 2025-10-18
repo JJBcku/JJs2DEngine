@@ -77,6 +77,7 @@ namespace JJs2DEngine
 		std::optional<std::pair<size_t, size_t>> TryToAddTextureToStreamedTexturesTransferList(const std::vector<unsigned char>& data, uint32_t width, uint32_t height);
 
 		void TransferPreLoadedTexturesData(uint64_t transferQueue, uint64_t graphicsQueue);
+		void TransferStreamedTexturesData(size_t frameInFlightIndice, uint64_t transferQueue, uint64_t graphicsQueue);
 
 		IDObject<VS::AutoCleanupSemaphore> GetTransferFinishedSemaphore(size_t frameInFlightIndice) const;
 		void SetTextureUseFinishedSemaphore(size_t frameInFlightIndice, IDObject<VS::AutoCleanupSemaphore> semaphore);

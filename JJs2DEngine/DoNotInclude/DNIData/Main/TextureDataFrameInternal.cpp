@@ -466,7 +466,7 @@ namespace JJs2DEngine
 													  static_cast<float>(transferOrder.texturesHeight) / static_cast<float>(textureData.heightInPixels));
 
 				referenceData.textureLayer = static_cast<uint32_t>(tileLayer);
-				referenceData.textureIndex = static_cast<uint32_t>(i);
+				referenceData.textureIndex = static_cast<uint32_t>(_startingIndex + i);
 			}
 
 			textureData.textureTransferOrderLists[frameInFlightIndice].clear();

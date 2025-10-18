@@ -445,6 +445,46 @@ namespace JJs2DEngine
 		_preLoadedTexturesData->FinishTextureTransfer(0);
 	}
 
+	void TextureDataMainInternal::TransferStreamedTexturesData(size_t frameInFlightIndice, uint64_t transferQueue, uint64_t graphicsQueue)
+	{
+		if (frameInFlightIndice >= _transferSemaphoresList.size())
+			throw std::runtime_error("TextureDataMainInternal::TransferStreamedTexturesData Error: Program tried to access a non-existent semaphore!");
+
+		auto transferCommandPool = _transferQFGroup.GetCommandPoolWithIndividualReset(_textureCommandPoolID);
+		auto transferCommandBuffer = transferCommandPool.GetPrimaryCommandBuffer(_primaryCommandBufferIDs[frameInFlightIndice]);
+
+		if (_synchroList.WaitOnFences({ _fenceList[frameInFlightIndice] }, false, 1'000'000'000ULL) != true)
+			throw std::runtime_error("TextureDataMainInternal::TransferStreamedTexturesData Error: First waiting on a fence timed out!");
+		_synchroList.ResetFences({ _fenceList[frameInFlightIndice] });
+
+		transferCommandBuffer.ResetCommandBuffer(false);
+		transferCommandBuffer.BeginRecording(VS::CommandBufferUsage::ONE_USE);
+
+		_streamedTexturesData->RecordTransferBuffer(frameInFlightIndice, transferQueue, graphicsQueue);
+		transferCommandPool.RecordExecuteSecondaryBufferCommand(_primaryCommandBufferIDs[frameInFlightIndice], { _streamedCommandBufferIDs[frameInFlightIndice]});
+
+		transferCommandBuffer.EndRecording();
+
+		std::vector<VS::CommandBufferSubmissionData> submissionData;
+
+		submissionData.resize(1);
+		submissionData[0].commandBufferIDs.resize(1);
+		submissionData[0].commandBufferIDs[0].IRPrimaryID.type = VS::CommandBufferIDType::IR_PRIMARY;
+		submissionData[0].commandBufferIDs[0].IRPrimaryID.commandPoolID = _textureCommandPoolID;
+		submissionData[0].commandBufferIDs[0].IRPrimaryID.commandBufferID = _primaryCommandBufferIDs[frameInFlightIndice];
+		submissionData[0].signalSemaphores.push_back(_transferSemaphoresList[frameInFlightIndice]);
+
+		if (_textureBeingUsedSemaphores[frameInFlightIndice].has_value())
+		{
+			submissionData[0].waitSemaphores.emplace_back(_textureBeingUsedSemaphores[frameInFlightIndice].value(), VS::PipelineStageFlagBits::PIPELINE_STAGE_TRANSFER);
+			_textureBeingUsedSemaphores[frameInFlightIndice].reset();
+		}
+
+		_transferQFGroup.SubmitBuffers(transferQueue, submissionData, _fenceList[frameInFlightIndice]);
+
+		_streamedTexturesData->FinishTextureTransfer(frameInFlightIndice);
+	}
+
 	IDObject<VS::AutoCleanupSemaphore> TextureDataMainInternal::GetTransferFinishedSemaphore(size_t frameInFlightIndice) const
 	{
 		if (frameInFlightIndice >= _transferSemaphoresList.size())

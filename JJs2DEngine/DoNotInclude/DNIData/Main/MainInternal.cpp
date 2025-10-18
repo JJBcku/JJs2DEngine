@@ -255,7 +255,7 @@ namespace JJs2DEngine
 				device.GetSynchronizationDataLists(), transferQFGroup, _currentDevicesSettings.value().transferFramesInFlight, transferQueue,
 				graphicQFGroup, _currentDevicesSettings.value().graphicsFramesInFlight, _graphicsQueueIndex);
 
-			_vertexDataMain->PreRenderingTextureOwnershipTransfer();
+			_vertexDataMain->PreRenderingTexturesOwnershipTransfer();
 		}
 	}
 
@@ -291,6 +291,7 @@ namespace JJs2DEngine
 
 	void MainInternal::RenderSingleFrame()
 	{
+		_vertexDataMain->TransferStreamedTextures();
 		_vertexDataMain->TransferVertexData();
 		_vertexDataMain->DrawFrame();
 		_vertexDataMain->IncrementCurrentFrames();

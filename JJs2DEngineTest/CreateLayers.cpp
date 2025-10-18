@@ -26,7 +26,7 @@ void CreateLayers(MainDataCollection& data)
 	object.screenPositionY_SNORM = 0;
 	object.textureWidth_UNORM = JJ2DE::onePointZeroUNORMValue;
 	object.textureHeight_UNORM = JJ2DE::onePointZeroUNORMValue;
-	object.inPreloadedTexturesList = true;
+	object.inPreloadedTexturesList = false;
 	object.textureIndex = data.texturesID;
 
 	auto optionalObjectID = uiVertexLayer.AddObject(object);

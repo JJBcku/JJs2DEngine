@@ -106,7 +106,8 @@ JJ2DE::DeviceSettings CreateDeviceSettings(const JJ2DE::DeviceData& device, size
 			ret.textureFormat = JJ2DE::TextureFormat::TEXTURE_FORMAT_BGRA8;
 	}
 
-	ret.preLoadedTexturesMaxAmounts[6] = 1;
+	//ret.preLoadedTexturesMaxAmounts[6] = 1;
+	ret.streamedTexturesMaxAmounts[6] = 1;
 
 	ret.preLoadedTexturesStagingBuffersPageCount = 1;
 	ret.streamedTexturesStagingBuffersPageCount = 1;
