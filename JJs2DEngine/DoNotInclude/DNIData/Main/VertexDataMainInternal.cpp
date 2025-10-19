@@ -105,6 +105,9 @@ namespace JJs2DEngine
 
 	void VertexDataMainInternal::PreRenderingTexturesOwnershipTransfer()
 	{
+		if (_graphicsQueueID == _transferQueueID)
+			return;
+
 		auto graphicsCommandBuffer = _graphicsPool->GetPrimaryCommandBuffer(_graphicsCommandBuffersIDs[0]);
 
 		_synchroList.ResetFences({ _renderingFinishedFences[0] });
@@ -223,7 +226,7 @@ namespace JJs2DEngine
 		graphicsCommandBuffer.ResetCommandBuffer(false);
 		graphicsCommandBuffer.BeginRecording(VS::CommandBufferUsage::ONE_USE);
 
-		if (_textureDataList.AreStreamedTextureCreated())
+		if (_textureDataList.AreStreamedTextureCreated() && _graphicsQueueID != _transferQueueID)
 		{
 			auto toGraphics = _textureDataList.GetStreamedTransferToGraphicsMemoryBarriers(_currentTransferFrame, _transferQueueID, _graphicsQueueID);
 			graphicsCommandBuffer.CreatePipelineBarrier(VS::PipelineStageFlagBits::PIPELINE_STAGE_BOTTOM_OF_PIPE, VS::PipelineStageFlagBits::PIPELINE_STAGE_FRAGMENT_SHADER,
@@ -231,19 +234,24 @@ namespace JJs2DEngine
 		}
 
 		std::vector<VS::DataBuffersMemoryBarrierData> vertexBuffersOwnershipTransferDataList;
-		vertexBuffersOwnershipTransferDataList.reserve(_layerOrderList.size());
+		
 
-		for (size_t i = 0; i < _layerOrderList.size(); ++i)
+		if (_graphicsQueueID != _transferQueueID)
 		{
-			if (_layerOrderList[i].type != VertexLayerOrderIDType::UI_LAYER)
-				continue;
+			vertexBuffersOwnershipTransferDataList.reserve(_layerOrderList.size());
 
-			auto& layer = _uiLayersList.GetObject(_layerOrderList[i].UiLayerID.ID);
-
-			if (layer->IsOwnedByTransferQueue(_currentTransferFrame) == Misc::BOOL64_TRUE)
+			for (size_t i = 0; i < _layerOrderList.size(); ++i)
 			{
-				vertexBuffersOwnershipTransferDataList.push_back(layer->GetOwnershipTransferData(_currentTransferFrame, _transferQueueID, _graphicsQueueID));
-				layer->SetOwnedByTransferQueue(_currentTransferFrame, Misc::BOOL64_FALSE);
+				if (_layerOrderList[i].type != VertexLayerOrderIDType::UI_LAYER)
+					continue;
+
+				auto& layer = _uiLayersList.GetObject(_layerOrderList[i].UiLayerID.ID);
+
+				if (layer->IsOwnedByTransferQueue(_currentTransferFrame) == Misc::BOOL64_TRUE)
+				{
+					vertexBuffersOwnershipTransferDataList.push_back(layer->GetOwnershipTransferData(_currentTransferFrame, _transferQueueID, _graphicsQueueID));
+					layer->SetOwnedByTransferQueue(_currentTransferFrame, Misc::BOOL64_FALSE);
+				}
 			}
 		}
 
@@ -341,9 +349,12 @@ namespace JJs2DEngine
 		graphicsCommandBuffer.ResetCommandBuffer(false);
 		graphicsCommandBuffer.BeginRecording(VS::CommandBufferUsage::ONE_USE);
 
-		auto fromGraphics = _textureDataList.GetPreLoadedGraphicsToTransferMemoryBarriers(_transferQueueID, _graphicsQueueID);
-		graphicsCommandBuffer.CreatePipelineBarrier(VS::PipelineStageFlagBits::PIPELINE_STAGE_FRAGMENT_SHADER, VS::PipelineStageFlagBits::PIPELINE_STAGE_TOP_OF_PIPE,
-			{}, {}, fromGraphics);
+		if (_transferQueueID != _graphicsQueueID)
+		{
+			auto fromGraphics = _textureDataList.GetPreLoadedGraphicsToTransferMemoryBarriers(_transferQueueID, _graphicsQueueID);
+			graphicsCommandBuffer.CreatePipelineBarrier(VS::PipelineStageFlagBits::PIPELINE_STAGE_FRAGMENT_SHADER, VS::PipelineStageFlagBits::PIPELINE_STAGE_TOP_OF_PIPE,
+				{}, {}, fromGraphics);
+		}
 
 		graphicsCommandBuffer.EndRecording();
 
@@ -363,9 +374,12 @@ namespace JJs2DEngine
 		graphicsCommandBuffer.ResetCommandBuffer(false);
 		graphicsCommandBuffer.BeginRecording(VS::CommandBufferUsage::ONE_USE);
 
-		auto toGraphics = _textureDataList.GetPreLoadedTransferToGraphicsMemoryBarriers(_transferQueueID, _graphicsQueueID);
-		graphicsCommandBuffer.CreatePipelineBarrier(VS::PipelineStageFlagBits::PIPELINE_STAGE_BOTTOM_OF_PIPE, VS::PipelineStageFlagBits::PIPELINE_STAGE_FRAGMENT_SHADER,
-			{}, {}, toGraphics);
+		if (_transferQueueID != _graphicsQueueID)
+		{
+			auto toGraphics = _textureDataList.GetPreLoadedTransferToGraphicsMemoryBarriers(_transferQueueID, _graphicsQueueID);
+			graphicsCommandBuffer.CreatePipelineBarrier(VS::PipelineStageFlagBits::PIPELINE_STAGE_BOTTOM_OF_PIPE, VS::PipelineStageFlagBits::PIPELINE_STAGE_FRAGMENT_SHADER,
+				{}, {}, toGraphics);
+		}
 
 		graphicsCommandBuffer.EndRecording();
 
@@ -397,9 +411,12 @@ namespace JJs2DEngine
 		graphicsCommandBuffer.ResetCommandBuffer(false);
 		graphicsCommandBuffer.BeginRecording(VS::CommandBufferUsage::ONE_USE);
 
-		auto fromGraphics = _textureDataList.GetStreamedGraphicsToTransferMemoryBarriers(_currentTransferFrame, _transferQueueID, _graphicsQueueID);
-		graphicsCommandBuffer.CreatePipelineBarrier(VS::PipelineStageFlagBits::PIPELINE_STAGE_FRAGMENT_SHADER, VS::PipelineStageFlagBits::PIPELINE_STAGE_TOP_OF_PIPE,
-			{}, {}, fromGraphics);
+		if (_transferQueueID != _graphicsQueueID)
+		{
+			auto fromGraphics = _textureDataList.GetStreamedGraphicsToTransferMemoryBarriers(_currentTransferFrame, _transferQueueID, _graphicsQueueID);
+			graphicsCommandBuffer.CreatePipelineBarrier(VS::PipelineStageFlagBits::PIPELINE_STAGE_FRAGMENT_SHADER, VS::PipelineStageFlagBits::PIPELINE_STAGE_TOP_OF_PIPE,
+				{}, {}, fromGraphics);
+		}
 
 		graphicsCommandBuffer.EndRecording();
 

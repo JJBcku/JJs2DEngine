@@ -220,7 +220,14 @@ namespace JJs2DEngine
 			{
 				toTransfer[j].imageID = VS::ImagesGenericID(textureData.imageIDs[j]);
 			}
-			_commandBuffersList[0].CreatePipelineBarrier(VS::PipelineStageFlagBits::PIPELINE_STAGE_TOP_OF_PIPE, VS::PipelineStageFlagBits::PIPELINE_STAGE_TRANSFER, {}, {}, toTransfer);
+			if (transferQueue == graphicsQueue)
+			{
+				_commandBuffersList[0].CreatePipelineBarrier(VS::PipelineStageFlagBits::PIPELINE_STAGE_FRAGMENT_SHADER, VS::PipelineStageFlagBits::PIPELINE_STAGE_TRANSFER, {}, {}, toTransfer);
+			}
+			else
+			{
+				_commandBuffersList[0].CreatePipelineBarrier(VS::PipelineStageFlagBits::PIPELINE_STAGE_TOP_OF_PIPE, VS::PipelineStageFlagBits::PIPELINE_STAGE_TRANSFER, {}, {}, toTransfer);
+			}
 
 			for (size_t j = 0; j < toTransfer.size(); ++j)
 			{
@@ -234,7 +241,14 @@ namespace JJs2DEngine
 			{
 				fromTransfer[j].imageID = VS::ImagesGenericID(textureData.imageIDs[j]);
 			}
-			_commandBuffersList[0].CreatePipelineBarrier(VS::PipelineStageFlagBits::PIPELINE_STAGE_TRANSFER, VS::PipelineStageFlagBits::PIPELINE_STAGE_TOP_OF_PIPE, {}, {}, fromTransfer);
+			if (transferQueue == graphicsQueue)
+			{
+				_commandBuffersList[0].CreatePipelineBarrier(VS::PipelineStageFlagBits::PIPELINE_STAGE_TRANSFER, VS::PipelineStageFlagBits::PIPELINE_STAGE_FRAGMENT_SHADER, {}, {}, fromTransfer);
+			}
+			else
+			{
+				_commandBuffersList[0].CreatePipelineBarrier(VS::PipelineStageFlagBits::PIPELINE_STAGE_TRANSFER, VS::PipelineStageFlagBits::PIPELINE_STAGE_TOP_OF_PIPE, {}, {}, fromTransfer);
+			}
 		}
 
 		_commandBuffersList[0].EndRecording();
@@ -411,7 +425,14 @@ namespace JJs2DEngine
 
 		fromGraphics.reserve(_textureDataArray.size());
 		GetGraphicsToTransferMemoryBarriers(fromGraphics, frameInFlightIndice, transferQueue, graphicsQueue);
-		transferCommandBuffer.CreatePipelineBarrier(VS::PipelineStageFlagBits::PIPELINE_STAGE_BOTTOM_OF_PIPE, VS::PipelineStageFlagBits::PIPELINE_STAGE_TRANSFER, {}, {}, fromGraphics);
+		if (transferQueue == graphicsQueue)
+		{
+			transferCommandBuffer.CreatePipelineBarrier(VS::PipelineStageFlagBits::PIPELINE_STAGE_FRAGMENT_SHADER, VS::PipelineStageFlagBits::PIPELINE_STAGE_TRANSFER, {}, {}, fromGraphics);
+		}
+		else
+		{
+			transferCommandBuffer.CreatePipelineBarrier(VS::PipelineStageFlagBits::PIPELINE_STAGE_BOTTOM_OF_PIPE, VS::PipelineStageFlagBits::PIPELINE_STAGE_TRANSFER, {}, {}, fromGraphics);
+		}
 
 		for (size_t i = 0; i < _textureDataArray.size(); ++i)
 		{
@@ -436,7 +457,14 @@ namespace JJs2DEngine
 
 		toGraphics.reserve(_textureDataArray.size());
 		GetTransferToGraphicsMemoryBarriers(toGraphics, frameInFlightIndice, transferQueue, graphicsQueue);
-		transferCommandBuffer.CreatePipelineBarrier(VS::PipelineStageFlagBits::PIPELINE_STAGE_TRANSFER, VS::PipelineStageFlagBits::PIPELINE_STAGE_TOP_OF_PIPE, {}, {}, toGraphics);
+		if (transferQueue == graphicsQueue)
+		{
+			transferCommandBuffer.CreatePipelineBarrier(VS::PipelineStageFlagBits::PIPELINE_STAGE_TRANSFER, VS::PipelineStageFlagBits::PIPELINE_STAGE_FRAGMENT_SHADER, {}, {}, toGraphics);
+		}
+		else
+		{
+			transferCommandBuffer.CreatePipelineBarrier(VS::PipelineStageFlagBits::PIPELINE_STAGE_TRANSFER, VS::PipelineStageFlagBits::PIPELINE_STAGE_TOP_OF_PIPE, {}, {}, toGraphics);
+		}
 
 		transferCommandBuffer.EndRecording();
 	}

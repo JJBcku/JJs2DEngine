@@ -167,10 +167,6 @@ namespace JJs2DEngine
 			creationData.queuesCreationInfo.push_back(queueData);
 			_transferOnlyQueueIndex = 1;
 		}
-		else
-		{
-			_transferOnlyQueueIndex = 1;
-		}
 
 		creationData.requestedExtensionPacks.swapchainBase = true;
 
