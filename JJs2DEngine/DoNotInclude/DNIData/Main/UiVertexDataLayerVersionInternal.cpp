@@ -156,14 +156,14 @@ namespace JJs2DEngine
 		return _frameData[transferFrameIndice].vertexBuffer;
 	}
 
-	size_t UiVertexDataLayerVersionInternal::WriteDataToBuffer(std::optional<IDObject<VS::AutoCleanupStagingBuffer>> stagingBufferID, size_t transferFrameIndice)
+	size_t UiVertexDataLayerVersionInternal::WriteDataToBuffer(std::optional<IDObject<VS::AutoCleanupStagingBuffer>> stagingBufferID, size_t transferFrameIndice, bool noChangeOverride)
 	{
 		if (transferFrameIndice >= _frameData.size())
 			throw std::runtime_error("UiVertexDataLayerVersionInternal::WriteDataToBuffer Error: Program tried to access an non-existent frame's data!");
 
 		assert(_frameData[transferFrameIndice].changed == Misc::BOOL64_TRUE || _frameData[transferFrameIndice].changed == Misc::BOOL64_FALSE);
 
-		if (_frameData[transferFrameIndice].changed != Misc::BOOL64_TRUE)
+		if (_frameData[transferFrameIndice].changed != Misc::BOOL64_TRUE && !noChangeOverride)
 			return 0;
 
 		size_t writtenSize = 0;

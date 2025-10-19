@@ -99,6 +99,8 @@ namespace JJs2DEngine
 		void RecordTransferBuffer(size_t frameInFlightIndice, uint64_t transferQueue, uint64_t graphicsQueue);
 		void FinishTextureTransfer(size_t frameInFlightIndice);
 
+		bool PopTextureDataChangedValue(size_t frameInFlightIndice);
+
 	private:
 		VS::DataBufferLists _dataBufferList;
 		VS::ImageDataLists _imageList;
@@ -114,6 +116,8 @@ namespace JJs2DEngine
 
 		std::vector<TextureFrameStagingBufferData> _texturesStagingBufferFrames;
 		VS::MemoryAllocationFullID _stagingBufferMemoryID;
+
+		std::vector<bool> _textureDataChanged;
 
 		TextureFrameImageData CompileTextureFrameSizeData(size_t tileSize, size_t texturesMaxAmount, uint64_t max2DImageSize, uint64_t maxImageArrayLayers) const;
 

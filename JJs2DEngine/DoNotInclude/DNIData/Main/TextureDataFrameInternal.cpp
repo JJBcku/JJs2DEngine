@@ -159,6 +159,8 @@ namespace JJs2DEngine
 				textureData.textureTransferOrderLists[j].reserve(initData.texturesMaxAmounts[i]);
 			}
 		}
+
+		_textureDataChanged.resize(initData.frameAmount, false);
 	}
 
 	TextureDataFrameInternal::~TextureDataFrameInternal()
@@ -443,6 +445,15 @@ namespace JJs2DEngine
 	{
 		for (size_t i = 0; i < _textureDataArray.size(); ++i)
 		{
+			if (!_textureDataArray[i].textureTransferOrderLists.empty())
+			{
+				_textureDataChanged[frameInFlightIndice] = true;
+				break;
+			}
+		}
+
+		for (size_t i = 0; i < _textureDataArray.size(); ++i)
+		{
 			auto& textureData = _textureDataArray[i];
 			auto& referenceList = textureData.textureReferencesList;
 
@@ -471,6 +482,17 @@ namespace JJs2DEngine
 
 			textureData.textureTransferOrderLists[frameInFlightIndice].clear();
 		}
+	}
+
+	bool TextureDataFrameInternal::PopTextureDataChangedValue(size_t frameInFlightIndice)
+	{
+		if (frameInFlightIndice >= _textureDataChanged.size())
+			throw std::runtime_error("TextureDataFrameInternal::PopTextureDataChangedValue Error: Program tried to access a non-existent frame data!");
+
+		bool ret = _textureDataChanged[frameInFlightIndice];
+		_textureDataChanged[frameInFlightIndice] = false;
+
+		return ret;
 	}
 
 	TextureFrameImageData TextureDataFrameInternal::CompileTextureFrameSizeData(size_t tileSize, size_t texturesMaxAmount, uint64_t max2DImageSize, uint64_t maxImageArrayLayers) const

@@ -503,6 +503,18 @@ namespace JJs2DEngine
 		_textureBeingUsedSemaphores[frameInFlightIndice] = semaphore;
 	}
 
+	bool TextureDataMainInternal::PopTextureChangedValues(size_t frameInFlightIndice)
+	{
+		bool ret = _preLoadedTexturesData->PopTextureDataChangedValue(0);
+
+		if (_streamedTexturesData != nullptr)
+		{
+			ret = ret && _streamedTexturesData->PopTextureDataChangedValue(frameInFlightIndice);
+		}
+
+		return ret;
+	}
+
 	bool TextureDataMainInternal::Is16Bit(TextureFormat textureFormat) const
 	{
 		if (textureFormat == TextureFormat::TEXTURE_FORMAT_RGBA16)

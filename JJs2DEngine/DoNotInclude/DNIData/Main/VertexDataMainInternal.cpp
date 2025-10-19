@@ -165,7 +165,7 @@ namespace JJs2DEngine
 
 			auto& layer = _uiLayersList.GetObject(_layerOrderList[i].UiLayerID.ID);
 
-			bool commandRecorded = layer->WriteDataToBuffer(_currentTransferFrame, tranferCommandBuffer);
+			bool commandRecorded = layer->WriteDataToBuffer(_currentTransferFrame, tranferCommandBuffer, _textureDataList.PopTextureChangedValues(_currentTransferFrame));
 			if (commandRecorded && _transferQueueID != _graphicsQueueID)
 			{
 				vertexBuffersOwnershipTransferDataList.push_back(layer->GetOwnershipTransferData(_currentTransferFrame, _transferQueueID, _graphicsQueueID));
