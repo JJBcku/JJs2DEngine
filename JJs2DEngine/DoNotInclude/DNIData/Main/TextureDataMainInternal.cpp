@@ -509,7 +509,7 @@ namespace JJs2DEngine
 
 		if (_streamedTexturesData != nullptr)
 		{
-			ret = ret && _streamedTexturesData->PopTextureDataChangedValue(frameInFlightIndice);
+			ret = ret || _streamedTexturesData->PopTextureDataChangedValue(frameInFlightIndice);
 		}
 
 		return ret;
