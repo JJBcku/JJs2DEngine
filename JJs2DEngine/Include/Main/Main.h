@@ -2,6 +2,8 @@
 
 #include <memory>
 #include <vector>
+#include <optional>
+#include <utility>
 
 #include <Miscellaneous/Bool64Def.h>
 
@@ -36,6 +38,9 @@ namespace JJs2DEngine
 		void RenderSingleFrame();
 		bool RenderingShouldBePaused() const;
 
+		std::optional<std::pair<size_t, size_t>> TryToAddTextureToPreloadedTexturesTransferList(const std::vector<unsigned char>& data, uint32_t width, uint32_t height);
+		std::optional<std::pair<size_t, size_t>> TryToAddTextureToStreamedTexturesTransferList(const std::vector<unsigned char>& data, uint32_t width, uint32_t height);
+
 		void TransferPreLoadedTextures();
 
 		InputDataList GetInputDataList();
@@ -43,9 +48,6 @@ namespace JJs2DEngine
 
 		VertexDataMain GetVertexDataMainList();
 		const VertexDataMain GetVertexDataMainList() const;
-
-		TextureDataMain GetTextureDataMainList();
-		const TextureDataMain GetTextureDataMainList() const;
 
 		void ChangeFullscreen(Misc::Bool64Values newFullscreen);
 

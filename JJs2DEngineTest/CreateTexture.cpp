@@ -4,7 +4,6 @@
 #include "MainDataCollection.h"
 
 #include <Main.h>
-#include <TextureDataMain.h>
 
 #include <stb/stb_image.h>
 
@@ -12,7 +11,7 @@
 
 void CreateTexture(MainDataCollection& data)
 {
-	auto textureDataList = data.main->GetTextureDataMainList();
+	auto& main = *data.main;
 
 	std::vector<unsigned char> filedata;
 
@@ -62,7 +61,7 @@ void CreateTexture(MainDataCollection& data)
 		std::memcpy(filedata.data(), pixels, dataSize);
 	}
 
-	auto resultData = textureDataList.TryToAddTextureToStreamedTexturesTransferList(filedata, width, height);
+	auto resultData = main.TryToAddTextureToStreamedTexturesTransferList(filedata, width, height);
 
 	if (!resultData.has_value())
 		throw std::runtime_error("CreateTexture Error: Program failed to add the texture to the transfer order list!");

@@ -3,7 +3,6 @@
 
 #include "../../../Include/Main/InputDataList.h"
 #include "../../../Include/Main/VertexDataMain.h"
-#include "../../../Include/Main/TextureDataMain.h"
 
 #include "../../DNIData/Main/MainInternal.h"
 
@@ -57,6 +56,16 @@ namespace JJs2DEngine
 		return _internal->RenderingShouldBePaused();
 	}
 
+	std::optional<std::pair<size_t, size_t>> Main::TryToAddTextureToPreloadedTexturesTransferList(const std::vector<unsigned char>& data, uint32_t width, uint32_t height)
+	{
+		return _internal->TryToAddTextureToPreloadedTexturesTransferList(data, width, height);
+	}
+
+	std::optional<std::pair<size_t, size_t>> Main::TryToAddTextureToStreamedTexturesTransferList(const std::vector<unsigned char>& data, uint32_t width, uint32_t height)
+	{
+		return _internal->TryToAddTextureToStreamedTexturesTransferList(data, width, height);
+	}
+
 	void Main::TransferPreLoadedTextures()
 	{
 		_internal->TransferPreLoadedTextures();
@@ -80,16 +89,6 @@ namespace JJs2DEngine
 	const VertexDataMain Main::GetVertexDataMainList() const
 	{
 		return _internal->GetVertexDataMainList();
-	}
-
-	TextureDataMain Main::GetTextureDataMainList()
-	{
-		return _internal->GetTextureDataMainList();
-	}
-
-	const TextureDataMain Main::GetTextureDataMainList() const
-	{
-		return _internal->GetTextureDataMainList();
 	}
 
 	void Main::ChangeFullscreen(Misc::Bool64Values newFullscreen)
