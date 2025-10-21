@@ -15,6 +15,7 @@
 
 #include "../VSCommon/VSPipelineStageFlagsDef.h"
 #include "../VSCommon/VSMemorySizeDef.h"
+#include "../VSCommon/VSShaderTypeFlagsDef.h"
 
 #include <optional>
 #include <vector>
@@ -86,7 +87,7 @@ namespace VulkanSimplified
 			DescriptorPoolGenericID descriptorPoolID, const std::vector<IDObject<AutoCleanupDescriptorSet>>& descriptorSetIDList,
 			const std::vector<uint32_t>& dynamicOffsetList);
 
-		void PushConstants(IDObject<AutoCleanupPipelineLayout> layoutID, PipelineStageFlags stages, uint32_t offset, const std::vector<unsigned char>& data);
+		void PushConstants(IDObject<AutoCleanupPipelineLayout> layoutID, ShaderTypeFlags stages, uint32_t offset, const std::vector<unsigned char>& data);
 
 	private:
 		CommandBufferBaseInternal& _internal;
