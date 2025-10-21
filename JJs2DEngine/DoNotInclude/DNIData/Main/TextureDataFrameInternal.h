@@ -63,8 +63,6 @@ namespace JJs2DEngine
 		std::vector<std::vector<std::shared_ptr<TextureReferenceData>>> textureReferencesList;
 		std::vector<std::vector<TextureTransferOrderInternal>> textureTransferOrderLists;
 
-		TextureReferenceData defaultReference;
-
 		TextureFrameImageData();
 		~TextureFrameImageData();
 

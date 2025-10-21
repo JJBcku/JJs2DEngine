@@ -137,19 +137,31 @@ namespace JJs2DEngine
 			auto& textureData = _textureDataArray[i];
 			textureData.textureReferencesList.resize(initData.texturesMaxAmounts[i]);
 
-			auto& defaultReference = textureData.defaultReference;
-			defaultReference.textureCoords = glm::vec2(0.0f);
-			defaultReference.textureSize = glm::vec2(1.0f);
-			defaultReference.textureLayer = 0;
-			defaultReference.textureIndex = static_cast<uint32_t>(_startingIndex + i);
+			TextureReferenceData reference;
+			reference.textureIndex = static_cast<uint32_t>(_startingIndex + i);
+
+			reference.textureSize = glm::vec2(static_cast<float>(textureData.tileSize) / static_cast<float>(textureData.widthInPixels),
+				static_cast<float>(textureData.tileSize) / static_cast<float>(textureData.heightInPixels));
 
 			for (size_t j = 0; j < textureData.textureReferencesList.size(); ++j)
 			{
 				textureData.textureReferencesList[j].resize(initData.frameAmount);
 
+				size_t tileStartWidth = j % textureData.widthInTiles;
+				tileStartWidth *= textureData.tileSize;
+				size_t divTemp = j / textureData.widthInTiles;
+				size_t tileStartHeight = divTemp % textureData.heightInTiles;
+				tileStartHeight *= textureData.tileSize;
+				size_t tileLayer = divTemp / textureData.heightInTiles;
+
+				reference.textureCoords = glm::vec2(static_cast<float>(tileStartWidth) / static_cast<float>(textureData.widthInPixels),
+					static_cast<float>(tileStartHeight) / static_cast<float>(textureData.heightInPixels));
+				reference.textureLayer = static_cast<uint32_t>(tileLayer);
+				reference.textureIsUsed = j == 0;
+
 				for (size_t k = 0; k < initData.frameAmount; ++k)
 				{
-					textureData.textureReferencesList[j][k] = std::make_shared<TextureReferenceData>(defaultReference);
+					textureData.textureReferencesList[j][k] = std::make_shared<TextureReferenceData>(reference);
 				}
 			}
 
@@ -229,10 +241,21 @@ namespace JJs2DEngine
 				_commandBuffersList[0].CreatePipelineBarrier(VS::PipelineStageFlagBits::PIPELINE_STAGE_TOP_OF_PIPE, VS::PipelineStageFlagBits::PIPELINE_STAGE_TRANSFER, {}, {}, toTransfer);
 			}
 
-			for (size_t j = 0; j < toTransfer.size(); ++j)
+			for (size_t j = 0; j < textureData.textureReferencesList.size(); ++j)
 			{
-				_commandBuffersList[0].TransferDataTo2dArrayTextureSingleLayer(_texturesStagingBufferFrames[j].stagingBufferID, offset, defaultTexturesData[i].size(), textureData.imageIDs[j],
-					0, 0, static_cast<uint32_t>(textureData.tileSize), static_cast<uint32_t>(textureData.tileSize), 0, 0);
+				size_t tileStartWidth = j % textureData.widthInTiles;
+				tileStartWidth *= textureData.tileSize;
+				size_t divTemp = j / textureData.widthInTiles;
+				size_t tileStartHeight = divTemp % textureData.heightInTiles;
+				tileStartHeight *= textureData.tileSize;
+				size_t tileLayer = divTemp / textureData.heightInTiles;
+
+				for (size_t k = 0; k < toTransfer.size(); ++k)
+				{
+					_commandBuffersList[0].TransferDataTo2dArrayTextureSingleLayer(_texturesStagingBufferFrames[k].stagingBufferID, offset, defaultTexturesData[i].size(),
+						textureData.imageIDs[k], static_cast<uint32_t>(tileStartWidth), static_cast<uint32_t>(tileStartHeight),
+						static_cast<uint32_t>(textureData.tileSize), static_cast<uint32_t>(textureData.tileSize), 0, static_cast<uint32_t>(tileLayer));
+				}
 			}
 
 			offset += defaultTexturesData[i].size();
@@ -378,7 +401,7 @@ namespace JJs2DEngine
 		std::optional<size_t> insertionIndex;
 		for (size_t i = 1; i < textureImageData.textureReferencesList.size(); ++i)
 		{
-			if (*textureImageData.textureReferencesList[i][0] == textureImageData.defaultReference)
+			if (!textureImageData.textureReferencesList[i][0]->textureIsUsed)
 			{
 				insertionIndex = i;
 				break;
@@ -405,6 +428,8 @@ namespace JJs2DEngine
 			if (textureImageData.textureTransferOrderLists[i].size() == textureImageData.textureTransferOrderLists[i].capacity())
 				textureImageData.textureTransferOrderLists[i].reserve(textureImageData.textureTransferOrderLists[i].capacity() << 1);
 			textureImageData.textureTransferOrderLists[i].push_back(addedOrder);
+
+			textureImageData.textureReferencesList[insertionIndex.value()][i]->textureIsUsed = true;
 		}
 
 		ret.emplace(arraysIndex.value(), insertionIndex.value());
@@ -489,23 +514,10 @@ namespace JJs2DEngine
 			{
 				const auto& transferOrder = textureData.textureTransferOrderLists[frameInFlightIndice][j];
 				auto& referenceData = *referenceList[transferOrder.insertionIndex][frameInFlightIndice];
-				assert(referenceData == textureData.defaultReference);
-
-				size_t tileStartWidth = transferOrder.insertionIndex % textureData.widthInTiles;
-				tileStartWidth *= textureData.tileSize;
-				size_t divTemp = transferOrder.insertionIndex / textureData.widthInTiles;
-				size_t tileStartHeight = divTemp % textureData.heightInTiles;
-				tileStartHeight *= textureData.tileSize;
-				size_t tileLayer = divTemp / textureData.heightInTiles;
-
-				referenceData.textureCoords = glm::vec2(static_cast<float>(tileStartWidth) / static_cast<float>(textureData.widthInPixels),
-														static_cast<float>(tileStartHeight) / static_cast<float>(textureData.heightInPixels));
+				assert(referenceData.textureIsUsed);
 
 				referenceData.textureSize = glm::vec2(static_cast<float>(transferOrder.texturesWidth) / static_cast<float>(textureData.widthInPixels),
 													  static_cast<float>(transferOrder.texturesHeight) / static_cast<float>(textureData.heightInPixels));
-
-				referenceData.textureLayer = static_cast<uint32_t>(tileLayer);
-				referenceData.textureIndex = static_cast<uint32_t>(_startingIndex + i);
 			}
 
 			textureData.textureTransferOrderLists[frameInFlightIndice].clear();

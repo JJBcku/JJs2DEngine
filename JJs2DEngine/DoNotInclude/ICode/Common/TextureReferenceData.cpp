@@ -9,10 +9,12 @@ namespace JJs2DEngine
 		textureSize = glm::vec2(1.0f);
 		textureLayer = 0;
 		textureIndex = 0;
+
+		textureIsUsed = false;
 	}
 
-	TextureReferenceData::TextureReferenceData(glm::vec2 textureCoords, glm::vec2 textureSize, uint32_t textureLayer, uint32_t textureIndex) : textureCoords(textureCoords),
-		textureSize(textureSize), textureLayer(textureLayer), textureIndex(textureIndex)
+	TextureReferenceData::TextureReferenceData(glm::vec2 textureCoords, glm::vec2 textureSize, uint32_t textureLayer, uint32_t textureIndex, bool textureIsUsed) :
+		textureCoords(textureCoords), textureSize(textureSize), textureLayer(textureLayer), textureIndex(textureIndex), textureIsUsed(textureIsUsed)
 	{
 	}
 

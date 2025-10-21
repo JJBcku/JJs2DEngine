@@ -13,8 +13,10 @@ namespace JJs2DEngine
 		uint32_t textureLayer;
 		uint32_t textureIndex;
 
+		bool textureIsUsed;
+
 		TextureReferenceData();
-		TextureReferenceData(glm::vec2 textureCoords, glm::vec2 textureSize, uint32_t textureLayer, uint32_t textureIndex);
+		TextureReferenceData(glm::vec2 textureCoords, glm::vec2 textureSize, uint32_t textureLayer, uint32_t textureIndex, bool textureIsUsed = false);
 		~TextureReferenceData();
 
 		std::strong_ordering operator<=>(const TextureReferenceData& rhs) const noexcept = default;
