@@ -11,7 +11,7 @@
 
 namespace VulkanSimplified
 {
-	class SharedPipelineDataListInternal;
+	class SharedPipelineDataListsInternal;
 }
 
 namespace VulkanSimplified
@@ -33,7 +33,7 @@ namespace VulkanSimplified
 	class SharedPipelineDataList
 	{
 	public:
-		SharedPipelineDataList(SharedPipelineDataListInternal& ref);
+		SharedPipelineDataList(SharedPipelineDataListsInternal& ref);
 		~SharedPipelineDataList();
 
 		IDObject<ShaderSpecializationElement> AddShaderSpecializationElement(uint32_t constantID, uint32_t dataOffset, size_t dataSize,
@@ -97,6 +97,6 @@ namespace VulkanSimplified
 			size_t addOnReserving = 0);
 
 	private:
-		SharedPipelineDataListInternal& _internal;
+		SharedPipelineDataListsInternal& _internal;
 	};
 }
