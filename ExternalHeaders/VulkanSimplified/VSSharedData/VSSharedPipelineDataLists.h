@@ -30,11 +30,11 @@ namespace VulkanSimplified
 
 	struct DataFormatSetIndependentID;
 
-	class SharedPipelineDataList
+	class SharedPipelineDataLists
 	{
 	public:
-		SharedPipelineDataList(SharedPipelineDataListsInternal& ref);
-		~SharedPipelineDataList();
+		SharedPipelineDataLists(SharedPipelineDataListsInternal& ref);
+		~SharedPipelineDataLists();
 
 		IDObject<ShaderSpecializationElement> AddShaderSpecializationElement(uint32_t constantID, uint32_t dataOffset, size_t dataSize,
 			size_t addOnReserving = 0);
