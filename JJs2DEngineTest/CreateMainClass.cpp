@@ -95,7 +95,7 @@ JJ2DE::DeviceSettings CreateDeviceSettings(const JJ2DE::DeviceData& device, size
 	ret.deviceIndex = deviceIndex;
 
 	ret.graphicsFramesInFlight = std::min(device.swapchainSupport.minFramesInFlight + 1, device.swapchainSupport.maxFramesInFlight);
-	ret.transferFramesInFlight = ret.graphicsFramesInFlight;
+	ret.transferFramesInFlight = std::min(ret.graphicsFramesInFlight - 1, 2U);
 
 	{
 		if (device.textureSupport.textureRGBA16UNORM)

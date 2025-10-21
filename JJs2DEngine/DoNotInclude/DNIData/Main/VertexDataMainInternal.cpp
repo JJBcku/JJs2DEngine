@@ -234,7 +234,6 @@ namespace JJs2DEngine
 		}
 
 		std::vector<VS::DataBuffersMemoryBarrierData> vertexBuffersOwnershipTransferDataList;
-		
 
 		if (_graphicsQueueID != _transferQueueID)
 		{
@@ -301,7 +300,7 @@ namespace JJs2DEngine
 		submitData.commandBufferIDs.resize(1);
 		submitData.commandBufferIDs[0].IRPrimaryID.type = VS::CommandBufferIDType::IR_PRIMARY;
 		submitData.commandBufferIDs[0].IRPrimaryID.commandPoolID = _graphicsPoolID;
-		submitData.commandBufferIDs[0].IRPrimaryID.commandBufferID = _graphicsCommandBuffersIDs[_currentTransferFrame];
+		submitData.commandBufferIDs[0].IRPrimaryID.commandBufferID = _graphicsCommandBuffersIDs[_currentGraphicsFrame];
 
 		submitData.waitSemaphores.reserve(2);
 		submitData.waitSemaphores.emplace_back(_vertexTransferFinishedSemaphores[_currentTransferFrame], VS::PIPELINE_STAGE_VERTEX_INPUT);
