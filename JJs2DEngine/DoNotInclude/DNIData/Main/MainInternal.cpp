@@ -313,6 +313,16 @@ namespace JJs2DEngine
 		_vertexDataMain->TransferPreLoadedTextures();
 	}
 
+	void MainInternal::SetGammaValue(float newGammaValue)
+	{
+		_vertexDataMain->SetGammaValue(newGammaValue);
+	}
+
+	float MainInternal::GetGammaValue() const
+	{
+		return _vertexDataMain->GetGammaValue();
+	}
+
 	InputDataListInternal& MainInternal::GetInputDataList()
 	{
 		return *_inputDataList;

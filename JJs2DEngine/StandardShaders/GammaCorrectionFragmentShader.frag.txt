@@ -1,18 +1,20 @@
 ; SPIR-V
 ; Version: 1.0
 ; Generator: Google Shaderc over Glslang; 11
-; Bound: 46
+; Bound: 49
 ; Schema: 0
                OpCapability Shader
                OpCapability InputAttachment
           %1 = OpExtInstImport "GLSL.std.450"
                OpMemoryModel Logical GLSL450
-               OpEntryPoint Fragment %4 "main" %35
+               OpEntryPoint Fragment %4 "main" %38
                OpExecutionMode %4 OriginUpperLeft
                OpDecorate %12 Binding 0
                OpDecorate %12 DescriptorSet 0
                OpDecorate %12 InputAttachmentIndex 0
-               OpDecorate %35 Location 0
+               OpDecorate %_struct_27 Block
+               OpMemberDecorate %_struct_27 0 Offset 0
+               OpDecorate %38 Location 0
        %void = OpTypeVoid
           %3 = OpTypeFunction %void
       %float = OpTypeFloat 32
@@ -25,27 +27,28 @@
       %v2int = OpTypeVector %int 2
          %17 = OpConstantComposite %v2int %int_0 %int_0
     %v3float = OpTypeVector %float 3
-%float_1_05499995 = OpConstant %float 1.05499995
-         %25 = OpConstantComposite %v3float %float_1_05499995 %float_1_05499995 %float_1_05499995
-%float_0_454545468 = OpConstant %float 0.454545468
-         %28 = OpConstantComposite %v3float %float_0_454545468 %float_0_454545468 %float_0_454545468
-%float_0_0549999997 = OpConstant %float 0.0549999997
-         %32 = OpConstantComposite %v3float %float_0_0549999997 %float_0_0549999997 %float_0_0549999997
+    %float_1 = OpConstant %float 1
+ %_struct_27 = OpTypeStruct %float
+%_ptr_PushConstant__struct_27 = OpTypePointer PushConstant %_struct_27
+         %29 = OpVariable %_ptr_PushConstant__struct_27 PushConstant
+%_ptr_PushConstant_float = OpTypePointer PushConstant %float
 %_ptr_Output_v4float = OpTypePointer Output %v4float
-         %35 = OpVariable %_ptr_Output_v4float Output
+         %38 = OpVariable %_ptr_Output_v4float Output
           %4 = OpFunction %void None %3
           %5 = OpLabel
          %13 = OpLoad %10 %12
          %18 = OpImageRead %v4float %13 %17
          %23 = OpVectorShuffle %v3float %18 %18 0 1 2
-         %29 = OpExtInst %v3float %1 Pow %23 %28
-         %30 = OpFMul %v3float %25 %29
-         %33 = OpFSub %v3float %30 %32
-         %41 = OpCompositeExtract %float %18 3
-         %42 = OpCompositeExtract %float %33 0
-         %43 = OpCompositeExtract %float %33 1
-         %44 = OpCompositeExtract %float %33 2
-         %45 = OpCompositeConstruct %v4float %42 %43 %44 %41
-               OpStore %35 %45
+         %31 = OpAccessChain %_ptr_PushConstant_float %29 %int_0
+         %32 = OpLoad %float %31
+         %33 = OpFDiv %float %float_1 %32
+         %34 = OpCompositeConstruct %v3float %33 %33 %33
+         %35 = OpExtInst %v3float %1 Pow %23 %34
+         %44 = OpCompositeExtract %float %18 3
+         %45 = OpCompositeExtract %float %35 0
+         %46 = OpCompositeExtract %float %35 1
+         %47 = OpCompositeExtract %float %35 2
+         %48 = OpCompositeConstruct %v4float %45 %46 %47 %44
+               OpStore %38 %48
                OpReturn
                OpFunctionEnd

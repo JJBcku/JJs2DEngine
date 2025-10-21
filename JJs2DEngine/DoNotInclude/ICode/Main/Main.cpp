@@ -71,6 +71,16 @@ namespace JJs2DEngine
 		_internal->TransferPreLoadedTextures();
 	}
 
+	void Main::SetGammaValue(float newGammaValue)
+	{
+		_internal->SetGammaValue(newGammaValue);
+	}
+
+	float Main::GetGammaValue() const
+	{
+		return _internal->GetGammaValue();
+	}
+
 	InputDataList Main::GetInputDataList()
 	{
 		return _internal->GetInputDataList();

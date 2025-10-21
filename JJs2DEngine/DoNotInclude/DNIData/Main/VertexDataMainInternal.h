@@ -42,6 +42,9 @@ namespace JJs2DEngine
 		void TransferPreLoadedTextures();
 		void TransferStreamedTextures();
 
+		void SetGammaValue(float newGammaValue);
+		float GetGammaValue() const;
+
 		UiVertexDataLayerVersionListInternal& GetUiVertexDataLayerVersionList(IDObject<UiVertexDataLayerVersionListPointer> ID);
 
 		const UiVertexDataLayerVersionListInternal& GetUiVertexDataLayerVersionList(IDObject<UiVertexDataLayerVersionListPointer> ID) const;
@@ -68,6 +71,8 @@ namespace JJs2DEngine
 
 		size_t _transferQueueID;
 		size_t _graphicsQueueID;
+
+		float _gammaValue;
 
 		std::vector<VertexLayerOrderID> _layerOrderList;
 

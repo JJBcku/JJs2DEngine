@@ -10,8 +10,9 @@
 #include <VulkanSimplified/VSDevice/VSRenderPassDataListDef.h>
 
 #include <VulkanSimplified/VSSharedData/VSSharedDataMainList.h>
-#include <VulkanSimplified/VSSharedData/VSSharedRenderPassDataListDef.h>
+#include <VulkanSimplified/VSSharedData/VSSharedRenderPassDataListsDef.h>
 #include <VulkanSimplified/VSSharedData/VSRenderPassClearValueID.h>
+#include <VulkanSimplified/VSSharedData/VSSharedPipelineDataListsDef.h>
 
 #include <VulkanSimplified/VSDevice/VSGraphicsPipelineCreationData.h>
 
@@ -70,6 +71,7 @@ namespace JJs2DEngine
 		IDObject<VS::AutoCleanupFragmentShaderModule> _gammaCorrectionFragmentShaderID;
 		IDObject<VS::AutoCleanupVertexShaderModule> _gammaCorrectionVertexShaderID;
 		IDObject<VS::AutoCleanupDescriptorSetLayout> _gammaCorrectionDescriptorSetLayout;
+		IDObject<VS::PushConstantData> _gammaCorrectionPushConstant;
 		IDObject<VS::AutoCleanupPipelineLayout> _gammaCorrectionPipelineLayout;
 		std::vector<IDObject<VS::AutoCleanupGraphicsPipeline>> _gammaCorrectionPipelineList;
 

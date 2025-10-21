@@ -1,7 +1,7 @@
 ; SPIR-V
 ; Version: 1.0
 ; Generator: Google Shaderc over Glslang; 11
-; Bound: 46
+; Bound: 49
 ; Schema: 0
                OpCapability Shader
                OpCapability InputAttachment
@@ -16,10 +16,15 @@
                OpName %color "color"
                OpName %inColor "inColor"
                OpName %transitionColor "transitionColor"
+               OpName %GammaData "GammaData"
+               OpMemberName %GammaData 0 "gammaValue"
+               OpName %gData "gData"
                OpName %outColor "outColor"
                OpDecorate %inColor Binding 0
                OpDecorate %inColor DescriptorSet 0
                OpDecorate %inColor InputAttachmentIndex 0
+               OpDecorate %GammaData Block
+               OpMemberDecorate %GammaData 0 Offset 0
                OpDecorate %outColor Location 0
        %void = OpTypeVoid
           %3 = OpTypeFunction %void
@@ -35,12 +40,12 @@
          %17 = OpConstantComposite %v2int %int_0 %int_0
     %v3float = OpTypeVector %float 3
 %_ptr_Function_v3float = OpTypePointer Function %v3float
-%float_1_05499995 = OpConstant %float 1.05499995
-         %25 = OpConstantComposite %v3float %float_1_05499995 %float_1_05499995 %float_1_05499995
-%float_0_454545468 = OpConstant %float 0.454545468
-         %28 = OpConstantComposite %v3float %float_0_454545468 %float_0_454545468 %float_0_454545468
-%float_0_0549999997 = OpConstant %float 0.0549999997
-         %32 = OpConstantComposite %v3float %float_0_0549999997 %float_0_0549999997 %float_0_0549999997
+    %float_1 = OpConstant %float 1
+         %25 = OpConstantComposite %v3float %float_1 %float_1 %float_1
+  %GammaData = OpTypeStruct %float
+%_ptr_PushConstant_GammaData = OpTypePointer PushConstant %GammaData
+      %gData = OpVariable %_ptr_PushConstant_GammaData PushConstant
+%_ptr_PushConstant_float = OpTypePointer PushConstant %float
 %_ptr_Output_v4float = OpTypePointer Output %v4float
    %outColor = OpVariable %_ptr_Output_v4float Output
        %uint = OpTypeInt 32 0
@@ -57,17 +62,20 @@
          %23 = OpVectorShuffle %v3float %22 %22 0 1 2
                OpStore %transitionColor %23
          %26 = OpLoad %v3float %transitionColor
-         %29 = OpExtInst %v3float %1 Pow %26 %28
-         %30 = OpFMul %v3float %25 %29
-         %33 = OpFSub %v3float %30 %32
-               OpStore %transitionColor %33
-         %36 = OpLoad %v3float %transitionColor
-         %40 = OpAccessChain %_ptr_Function_float %color %uint_3
-         %41 = OpLoad %float %40
-         %42 = OpCompositeExtract %float %36 0
-         %43 = OpCompositeExtract %float %36 1
-         %44 = OpCompositeExtract %float %36 2
-         %45 = OpCompositeConstruct %v4float %42 %43 %44 %41
-               OpStore %outColor %45
+         %31 = OpAccessChain %_ptr_PushConstant_float %gData %int_0
+         %32 = OpLoad %float %31
+         %33 = OpFDiv %float %float_1 %32
+         %34 = OpCompositeConstruct %v3float %33 %33 %33
+         %35 = OpExtInst %v3float %1 Pow %26 %34
+         %36 = OpFMul %v3float %25 %35
+               OpStore %transitionColor %36
+         %39 = OpLoad %v3float %transitionColor
+         %43 = OpAccessChain %_ptr_Function_float %color %uint_3
+         %44 = OpLoad %float %43
+         %45 = OpCompositeExtract %float %39 0
+         %46 = OpCompositeExtract %float %39 1
+         %47 = OpCompositeExtract %float %39 2
+         %48 = OpCompositeConstruct %v4float %45 %46 %47 %44
+               OpStore %outColor %48
                OpReturn
                OpFunctionEnd

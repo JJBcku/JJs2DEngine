@@ -23,7 +23,7 @@
 #include <VulkanSimplified/VSDevice/VSSubpassCreationDataWithoutResolving.h>
 
 #include <VulkanSimplified/VSSharedData/VSSharedDescriptorDataList.h>
-#include <VulkanSimplified/VSSharedData/VSSharedRenderPassDataList.h>
+#include <VulkanSimplified/VSSharedData/VSSharedRenderPassDataLists.h>
 #include <VulkanSimplified/VSSharedData/VSSharedPipelineDataLists.h>
 #include <VulkanSimplified/VSSharedData/VSVertexBindingInputRate.h>
 #include <VulkanSimplified/VSSharedData/VSPipelinePrimitiveTopology.h>
@@ -170,9 +170,11 @@ namespace JJs2DEngine
 				VS::ShaderTypeFlagBit::SHADER_TYPE_FRAGMENT, 0x10);
 
 			_gammaCorrectionDescriptorSetLayout = deviceDescriptorList.AddDescriptorSetLayout(0, { {gammaCorrectionDescriptorBinding, {}} }, 0x10);
+			_gammaCorrectionPushConstant = _sharedData.GetSharedPipelineDataLists().AddPushConstantData(VS::SHADER_TYPE_FRAGMENT, 0U, 4U);
 
 			VS::PipelineLayoutCreationData gammaCorrectionPipelineLayoutCreationData;
 			gammaCorrectionPipelineLayoutCreationData._descriptorSets = { _gammaCorrectionDescriptorSetLayout };
+			gammaCorrectionPipelineLayoutCreationData._pushConstants = { _gammaCorrectionPushConstant };
 			_gammaCorrectionPipelineLayout = devicePipelineList.AddPipelineLayout(gammaCorrectionPipelineLayoutCreationData, 0x10);
 			creationDataList.clear();
 
@@ -189,7 +191,7 @@ namespace JJs2DEngine
 		}
 
 		{
-			auto sharedRenderPassData = _sharedData.GetSharedRenderPassDataList();
+			auto sharedRenderPassData = _sharedData.GetSharedRenderPassDataLists();
 			_clearValues.push_back(sharedRenderPassData.AddFloatColorClearValue(0.0f, 0.0f, 0.0f, 1.0f));
 			_clearValues.push_back(sharedRenderPassData.AddDepthStencilClearValue(1.0f, 0));
 		}
@@ -706,7 +708,7 @@ namespace JJs2DEngine
 	{
 		IDObject<VS::AutoCleanupRenderPass> ret;
 
-		auto sharedRenderPassData = _sharedData.GetSharedRenderPassDataList();
+		auto sharedRenderPassData = _sharedData.GetSharedRenderPassDataLists();
 
 		auto colorAttachment = sharedRenderPassData.AddUniqueRenderPassAttachment(TranslateToFormat(pipelineSettings.swapchainFormat), VS::SAMPLE_1,
 			VS::RenderPassAttachmentLoadOP::CLEAR, VS::RenderPassAttachmentStoreOP::STORE, VS::ImageLayoutFlags::UNDEFINED, VS::ImageLayoutFlags::TRANSFER_SOURCE, 0x10);
@@ -748,7 +750,7 @@ namespace JJs2DEngine
 	{
 		VS::GraphicsPipelineCreationData ret;
 
-		auto sharedPipelineList = _sharedData.GetSharedPipelineDataListss();
+		auto sharedPipelineList = _sharedData.GetSharedPipelineDataLists();
 
 		auto vertexShader = sharedPipelineList.AddUniqueSharedShaderPipelineData("main", VS::SHADER_TYPE_VERTEX, 0x10);
 		auto fragmentShader = sharedPipelineList.AddUniqueSharedShaderPipelineData("main", VS::SHADER_TYPE_FRAGMENT, 0x10);
@@ -798,7 +800,7 @@ namespace JJs2DEngine
 	{
 		VS::GraphicsPipelineCreationData ret;
 
-		auto sharedPipelineList = _sharedData.GetSharedPipelineDataListss();
+		auto sharedPipelineList = _sharedData.GetSharedPipelineDataLists();
 
 		auto vertexShader = sharedPipelineList.AddUniqueSharedShaderPipelineData("main", VS::SHADER_TYPE_VERTEX, 0x10);
 		auto fragmentShader = sharedPipelineList.AddUniqueSharedShaderPipelineData("main", VS::SHADER_TYPE_FRAGMENT, 0x10);

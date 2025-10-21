@@ -47,6 +47,8 @@ namespace JJs2DEngine
 		_transferQueueID = transferQueueID;
 		_graphicsQueueID = graphicsQueueID;
 
+		_gammaValue = 2.0f;
+
 		_vertexTransferFinishedFences.reserve(transferFrameAmount);
 		_vertexTransferFinishedSemaphores.reserve(transferFrameAmount);
 		_lastGraphicsFrameUsingThisTransferFrame.resize(transferFrameAmount);
@@ -285,6 +287,12 @@ namespace JJs2DEngine
 		graphicsCommandBuffer.BindDescriptorSetsToGraphicsPipeline(_renderDataList.GetGammaCorrectionGraphicsPipelineLayout(), 0, _windowDataList.GetGammaCorrectionDescriptorPool(),
 			{ _windowDataList.GetGammaCorrectionDescriptorSet(_currentGraphicsFrame) }, {});
 
+		std::vector<unsigned char> pushData;
+		pushData.resize(sizeof(_gammaValue));
+		std::memcpy(pushData.data(), &_gammaValue, sizeof(_gammaValue));
+
+		graphicsCommandBuffer.PushConstants(_renderDataList.GetGammaCorrectionGraphicsPipelineLayout(), VS::ShaderTypeFlagBit::SHADER_TYPE_FRAGMENT, 0, pushData);
+
 		graphicsCommandBuffer.Draw(6, 1, 0, 0);
 
 		graphicsCommandBuffer.EndRenderPass();
@@ -424,6 +432,16 @@ namespace JJs2DEngine
 		_textureDataList.SetTextureUseFinishedSemaphore(_currentTransferFrame, _texturesQueueTrasferFinishedSemaphores[_currentGraphicsFrame]);
 
 		_textureDataList.TransferStreamedTexturesData(_currentTransferFrame, _transferQueueID, _graphicsQueueID);
+	}
+
+	void VertexDataMainInternal::SetGammaValue(float newGammaValue)
+	{
+		_gammaValue = newGammaValue;
+	}
+
+	float VertexDataMainInternal::GetGammaValue() const
+	{
+		return _gammaValue;
 	}
 
 	UiVertexDataLayerVersionListInternal& VertexDataMainInternal::GetUiVertexDataLayerVersionList(IDObject<UiVertexDataLayerVersionListPointer> ID)
