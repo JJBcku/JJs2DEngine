@@ -18,4 +18,9 @@
 %VULKAN_SDK%\Bin\glslc.exe GammaCorrectionVertexShader.vert --target-env=vulkan -S -O0 -o GammaCorrectionVertexShader.debug.vert.txt
 %VULKAN_SDK%\Bin\glslc.exe GammaCorrectionFragmentShader.frag --target-env=vulkan -S -O0 -o GammaCorrectionFragmentShader.debug.frag.txt
 
+%VULKAN_SDK%\Bin\glslc.exe WorldLayerVertexShader.vert --target-env=vulkan -O -o WorldLayerVertexShader.vert.spv
+%VULKAN_SDK%\Bin\glslc.exe WorldLayerVertexShader.vert --target-env=vulkan -O0 -o WorldLayerVertexShader.debug.vert.spv
+%VULKAN_SDK%\Bin\glslc.exe WorldLayerVertexShader.vert --target-env=vulkan -S -O -o WorldLayerVertexShader.vert.txt
+%VULKAN_SDK%\Bin\glslc.exe WorldLayerVertexShader.vert --target-env=vulkan -S -O0 -o WorldLayerVertexShader.debug.vert.txt
+
 pause
