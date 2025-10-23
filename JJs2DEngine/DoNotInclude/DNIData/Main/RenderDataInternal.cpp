@@ -46,6 +46,7 @@ namespace JJs2DEngine
 	const std::string pipelineCacheDirectoryName("PipelineCache\\");
 
 	const std::string UIPipelineCacheName("UIPipelineCache");
+	const std::string WorldLayerPipelineCacheName("WorldLayerPipelineCache");
 	const std::string GammaCorrectionPipelineCacheName("GammaCorrectionPipelineCache");
 
 #if defined(_DEBUG) || defined(DEBUG)
@@ -55,11 +56,13 @@ namespace JJs2DEngine
 #endif
 	
 	const std::string UIPipelineFullName(pipelineCacheDirectoryName + UIPipelineCacheName + cacheFiletype);
+	const std::string WorldLayerPipelineFullName(pipelineCacheDirectoryName + WorldLayerPipelineCacheName + cacheFiletype);
 	const std::string GammaCorrectionPipelineFullName(pipelineCacheDirectoryName + GammaCorrectionPipelineCacheName + cacheFiletype);
 
 	const std::string shaderDirectoryName("Shaders\\");
 
 	const std::string uiLayerVertexShaderName("UILayerShader");
+	const std::string worldLayerVertexShaderName("WorldLayerVertexShader");
 
 	const std::string standardFragmentShaderName("StandardFragmentShader");
 
@@ -100,6 +103,15 @@ namespace JJs2DEngine
 			CreateUIPipelineCacheFile(dataFolder);
 		}
 
+		if (fs::exists(dataFolder + WorldLayerPipelineFullName))
+		{
+			LoadWorldLayerPipelineCacheFile(dataFolder);
+		}
+		else
+		{
+			CreateWorldLayerPipelineCacheFile(dataFolder);
+		}
+
 		if (fs::exists(dataFolder + GammaCorrectionPipelineFullName))
 		{
 			LoadGammaCorrectionPipelineCacheFile(dataFolder);
@@ -132,15 +144,15 @@ namespace JJs2DEngine
 			}
 		}
 
+		_textureDescriptorSetLayout = deviceDescriptorList.AddDescriptorSetLayout(0, { {textureDescriptorBinding,
+				std::vector<decltype(sampler)>(imagesInAllTextureArrays, sampler)} }, 0x10);
+
 		std::vector<VS::GraphicsPipelineCreationData> creationDataList;
 		creationDataList.reserve(preInitializedPipelineSettings.size());
 
 		{
 			auto uiLayerVertexShaderData = LoadShaderFile(dataFolder + uiLayerVertexShaderName + vertexShaderExtension);
 			_uiVertexShaderID = shaderList.CreateVertexShaderModule(*uiLayerVertexShaderData.data(), uiLayerVertexShaderData.size(), 0x10);
-
-			_textureDescriptorSetLayout = deviceDescriptorList.AddDescriptorSetLayout(0, { {textureDescriptorBinding,
-				std::vector<decltype(sampler)>(imagesInAllTextureArrays, sampler)} }, 0x10);
 
 			VS::PipelineLayoutCreationData uiPipelineLayoutCreationData;
 			uiPipelineLayoutCreationData._descriptorSets = { _textureDescriptorSetLayout };
@@ -157,6 +169,31 @@ namespace JJs2DEngine
 
 			_uiPipelineList = devicePipelineList.AddGraphicPipelines(creationDataList, _uiPipelineCache, creationDataList.size() * 8);
 			SaveUIPipelineCacheFile(dataFolder);
+		}
+
+		{
+			auto worldLayerLayerVertexShaderData = LoadShaderFile(dataFolder + worldLayerVertexShaderName + vertexShaderExtension);
+			_worldLayerVertexShaderID = shaderList.CreateVertexShaderModule(*worldLayerLayerVertexShaderData.data(), worldLayerLayerVertexShaderData.size(), 0x10);
+
+			_worldLayerPushConstant = _sharedData.GetSharedPipelineDataLists().AddPushConstantData(VS::SHADER_TYPE_VERTEX, 0U, 12U);
+
+			VS::PipelineLayoutCreationData worldLayerPipelineLayoutCreationData;
+			worldLayerPipelineLayoutCreationData._descriptorSets = { _textureDescriptorSetLayout };
+			worldLayerPipelineLayoutCreationData._pushConstants = { _worldLayerPushConstant };
+			
+			_worldLayerPipelineLayout = devicePipelineList.AddPipelineLayout(worldLayerPipelineLayoutCreationData);
+
+			creationDataList.clear();
+			for (size_t i = 0; i < preInitializedPipelineSettings.size(); ++i)
+			{
+				const auto& pipelineSettings = preInitializedPipelineSettings[i];
+
+				creationDataList.push_back(CompileWorldLayerPipelinesCreationData(pipelineSettings.renderWidth, GetHeight(pipelineSettings.renderWidth, pipelineSettings.aspectRatio),
+					_renderPassList[i]));
+			}
+
+			_worldLayerPipelineList = devicePipelineList.AddGraphicPipelines(creationDataList, _worldLayerPipelineCache);
+			SaveWorldLayerPipelineCacheFile(dataFolder);
 		}
 
 		{
@@ -224,6 +261,14 @@ namespace JJs2DEngine
 		return _uiPipelineList[_currentPipelineSettings];
 	}
 
+	IDObject<VS::AutoCleanupGraphicsPipeline> RenderDataInternal::GetWorldLayerGraphicsPipeline()
+	{
+		if (_currentPipelineSettings >= _worldLayerPipelineList.size())
+			throw std::runtime_error("RenderDataInternal::GetWorldLayerGraphicsPipeline Error: Program tried to access an non-existent pipeline!");
+
+		return _worldLayerPipelineList[_currentPipelineSettings];
+	}
+
 	IDObject<VS::AutoCleanupGraphicsPipeline> RenderDataInternal::GetGammaCorrectionGraphicsPipeline()
 	{
 		if (_currentPipelineSettings >= _gammaCorrectionPipelineList.size())
@@ -235,6 +280,11 @@ namespace JJs2DEngine
 	IDObject<VS::AutoCleanupPipelineLayout> RenderDataInternal::GetUILayerGraphicsPipelineLayout()
 	{
 		return _uiPipelineLayout;
+	}
+
+	IDObject<VS::AutoCleanupPipelineLayout> RenderDataInternal::GetWorldLayerGraphicsPipelineLayout()
+	{
+		return _worldLayerPipelineLayout;
 	}
 
 	IDObject<VS::AutoCleanupPipelineLayout> RenderDataInternal::GetGammaCorrectionGraphicsPipelineLayout()
@@ -458,6 +508,220 @@ namespace JJs2DEngine
 			throw std::runtime_error("RenderDataInternal::SaveUIPipelineCacheFile: Program failed to flush the writes!");
 
 		uiPipelineCacheOutFile.close();
+	}
+
+	void RenderDataInternal::CreateWorldLayerPipelineCacheFile(const std::string& dataFolder)
+	{
+		auto pipelineDataList = _device.GetPipelineDataLists();
+
+		std::fstream worldLayerPipelineCacheFile;
+
+		worldLayerPipelineCacheFile.open(dataFolder + WorldLayerPipelineFullName, std::ios_base::binary | std::ios_base::in | std::ios_base::out | std::ios_base::trunc);
+
+		if (!worldLayerPipelineCacheFile.is_open())
+			throw std::runtime_error("RenderDataInternal::CreateWorldLayerPipelineCacheFile Error: Program failed to open the pipeline cache file!");
+
+		PipelineCacheMainHeader worldLayerMainHeader;
+
+		worldLayerPipelineCacheFile.write(reinterpret_cast<char*>(&worldLayerMainHeader), sizeof(worldLayerMainHeader));
+		if (!worldLayerPipelineCacheFile.good())
+			throw std::runtime_error("RenderDataInternal::CreateWorldLayerPipelineCacheFile Error: Program failed to save the header to the newly created pipeline cache file!");
+
+		auto worldLayerPipelineCacheID = pipelineDataList.AddPipelineCache({}, 0x10);
+
+		if (worldLayerPipelineCacheID.has_value())
+		{
+			_worldLayerPipelineCache = worldLayerPipelineCacheID.value();
+		}
+		else
+			throw std::runtime_error("RenderDataInternal::CreateWorldLayerPipelineCacheFile Error: Program failed to create the pipeline cache!");
+
+		worldLayerPipelineCacheFile.close();
+	}
+
+	void RenderDataInternal::LoadWorldLayerPipelineCacheFile(const std::string& dataFolder)
+	{
+		auto pipelineDataList = _device.GetPipelineDataLists();
+
+		std::ifstream worldLayerPipelineCacheFile;
+
+		worldLayerPipelineCacheFile.open(dataFolder + WorldLayerPipelineFullName, std::ios_base::binary | std::ios_base::in | std::ios_base::out);
+
+		if (!worldLayerPipelineCacheFile.is_open())
+			throw std::runtime_error("RenderDataInternal::LoadWorldLayerPipelineCacheFile Error: Program failed to open the pipeline cache file!");
+
+		PipelineCacheMainHeader worldLayerMainHeader;
+
+		worldLayerPipelineCacheFile.read(reinterpret_cast<char*>(&worldLayerMainHeader), sizeof(worldLayerMainHeader));
+		if (!worldLayerPipelineCacheFile.good())
+			throw std::runtime_error("RenderDataInternal::LoadWorldLayerPipelineCacheFile Error: Program failed to read the header from the pipeline cache file!");
+		else if (worldLayerMainHeader.magicNumbers != pipelineHeaderCorrectMagicNumbers)
+			throw std::runtime_error("RenderDataInternal::LoadWorldLayerPipelineCacheFile Error: pipeline cache file is corrupted!");
+
+		bool foundCompatibleData = false;
+		std::vector<unsigned char> worldLayerPipelineCompatibleData;
+
+		for (uint64_t i = 0; i < worldLayerMainHeader.elementCount; ++i)
+		{
+			uint64_t currentPos = worldLayerPipelineCacheFile.tellg();
+
+			PipelineCacheElementHeader elementHeader;
+			worldLayerPipelineCacheFile.read(reinterpret_cast<char*>(&elementHeader), sizeof(elementHeader));
+			if (!worldLayerPipelineCacheFile.good())
+				throw std::runtime_error("RenderDataInternal::LoadWorldLayerPipelineCacheFile Error: Program failed to read a pipeline cache's element header!");
+
+			if (elementHeader.deleted != Misc::BOOL64_FALSE)
+			{
+				worldLayerPipelineCacheFile.seekg(elementHeader.elementSize, std::ios_base::cur);
+				continue;
+			}
+
+			worldLayerPipelineCompatibleData.resize(elementHeader.elementSize);
+			worldLayerPipelineCacheFile.read(reinterpret_cast<char*>(worldLayerPipelineCompatibleData.data()), elementHeader.elementSize);
+			if (!worldLayerPipelineCacheFile.good())
+				throw std::runtime_error("RenderDataInternal::LoadWorldLayerPipelineCacheFile Error: Program failed to read a pipeline cache's element data!");
+
+			uint64_t currentDataCRC64WE = CRC64::WE::calc(worldLayerPipelineCompatibleData.data(), worldLayerPipelineCompatibleData.size());
+
+			if (currentDataCRC64WE != elementHeader.elementCRC64WE)
+				throw std::runtime_error("RenderDataInternal::LoadWorldLayerPipelineCacheFile Error: At least one of the elements of pipeline cache file is corrupted!");
+
+			auto worldLayerPipelineCacheID = pipelineDataList.AddPipelineCache(worldLayerPipelineCompatibleData, 0x10);
+
+			if (worldLayerPipelineCacheID.has_value())
+			{
+				_worldLayerPipelineCache = worldLayerPipelineCacheID.value();
+				foundCompatibleData = true;
+
+				_worldLayerPipelineCompatibleSavedPos = currentPos;
+				_worldLayerPipelineCompatibleSavedSize = elementHeader.elementSize;
+				_worldLayerPipelineCompatibleSavedCRC64WE = elementHeader.elementCRC64WE;
+
+				break;
+			}
+		}
+
+		if (!foundCompatibleData)
+		{
+			auto worldLayerPipelineCacheID = pipelineDataList.AddPipelineCache({}, 0x10);
+
+			if (worldLayerPipelineCacheID.has_value())
+			{
+				_worldLayerPipelineCache = worldLayerPipelineCacheID.value();
+			}
+			else
+				throw std::runtime_error("RenderDataInternal::LoadWorldLayerPipelineCacheFile Error: Program failed to create the pipeline cache!");
+		}
+
+		worldLayerPipelineCacheFile.close();
+	}
+
+	void RenderDataInternal::SaveWorldLayerPipelineCacheFile(const std::string& dataFolder)
+	{
+		auto pipelineDataList = _device.GetPipelineDataLists();
+		std::ifstream worldLayerPipelineCacheInFile;
+		std::ofstream worldLayerPipelineCacheOutFile;
+
+		auto dataToSave = pipelineDataList.GetPipelineCacheData(_worldLayerPipelineCache);
+		if (dataToSave.empty())
+			return;
+
+		bool saveData = false;
+
+		uint64_t currentDataCRC64WE = CRC64::WE::calc(dataToSave.data(), dataToSave.size());
+
+		if (!_worldLayerPipelineCompatibleSavedSize.has_value() || dataToSave.size() != _worldLayerPipelineCompatibleSavedSize.value())
+		{
+			saveData = true;
+		}
+		else
+		{
+			saveData = currentDataCRC64WE != _worldLayerPipelineCompatibleSavedCRC64WE.value();
+		}
+
+		if (!saveData)
+			return;
+
+		PipelineCacheElementHeader elementHeader, oldElementHeader;
+		worldLayerPipelineCacheInFile.open(dataFolder + WorldLayerPipelineFullName, std::ios_base::binary | std::ios_base::in);
+
+		if (!worldLayerPipelineCacheInFile.is_open())
+			throw std::runtime_error("RenderDataInternal::SaveWorldLayerPipelineCacheFile: Program failed to open the pipeline cache in file!");
+
+		if (_uiPipelineCompatibleSavedPos.has_value())
+		{
+			worldLayerPipelineCacheInFile.seekg(_uiPipelineCompatibleSavedPos.value());
+			if (!worldLayerPipelineCacheInFile.good())
+				throw std::runtime_error("RenderDataInternal::SaveWorldLayerPipelineCacheFile: Program failed to move reading position to the old header!");
+
+			worldLayerPipelineCacheInFile.read(reinterpret_cast<char*>(&oldElementHeader), sizeof(oldElementHeader));
+			if (!worldLayerPipelineCacheInFile.good())
+				throw std::runtime_error("RenderDataInternal::SaveWorldLayerPipelineCacheFile: Program failed to read the old header!");
+		}
+
+		PipelineCacheMainHeader worldLayerMainHeader;
+
+		worldLayerPipelineCacheInFile.seekg(worldLayerMainHeader.magicNumbers.size());
+		if (!worldLayerPipelineCacheInFile.good())
+			throw std::runtime_error("RenderDataInternal::SaveWorldLayerPipelineCacheFile: Program failed to move reading position to the main header's element count!");
+
+		worldLayerPipelineCacheInFile.read(reinterpret_cast<char*>(&worldLayerMainHeader.elementCount), sizeof(worldLayerMainHeader.elementCount));
+		if (!worldLayerPipelineCacheInFile.good())
+			throw std::runtime_error("RenderDataInternal::SaveWorldLayerPipelineCacheFile: Program failed to read the old main header!");
+
+		if (!worldLayerPipelineCacheInFile.good())
+			throw std::runtime_error("RenderDataInternal::SaveWorldLayerPipelineCacheFile: Program failed to flush all writes!");
+
+		worldLayerPipelineCacheInFile.close();
+
+		worldLayerPipelineCacheOutFile.open(dataFolder + WorldLayerPipelineFullName, std::ios_base::binary | std::ios_base::out | std::ios_base::in);
+
+		if (!worldLayerPipelineCacheOutFile.is_open())
+			throw std::runtime_error("RenderDataInternal::SaveWorldLayerPipelineCacheFile: Program failed to open the pipeline cache out file!");
+
+		if (_worldLayerPipelineCompatibleSavedPos.has_value())
+		{
+			worldLayerPipelineCacheOutFile.seekp(_worldLayerPipelineCompatibleSavedPos.value());
+			if (!worldLayerPipelineCacheOutFile.good())
+				throw std::runtime_error("RenderDataInternal::SaveWorldLayerPipelineCacheFile: Program failed to move writing position to the old header!");
+
+			oldElementHeader.deleted = Misc::BOOL64_TRUE;
+
+			worldLayerPipelineCacheOutFile.write(reinterpret_cast<const char*>(&oldElementHeader), sizeof(oldElementHeader));
+			if (!worldLayerPipelineCacheOutFile.good())
+				throw std::runtime_error("RenderDataInternal::SaveWorldLayerPipelineCacheFile: Program failed to write to the old header!");
+		}
+
+		worldLayerPipelineCacheOutFile.seekp(0, std::ios_base::end);
+		if (!worldLayerPipelineCacheOutFile.good())
+			throw std::runtime_error("RenderDataInternal::SaveWorldLayerPipelineCacheFile: Program failed to move writing position to the file's end!");
+
+		elementHeader.elementSize = dataToSave.size();
+		elementHeader.elementCRC64WE = currentDataCRC64WE;
+		elementHeader.deleted = Misc::BOOL64_FALSE;
+
+		worldLayerPipelineCacheOutFile.write(reinterpret_cast<const char*>(&elementHeader), sizeof(elementHeader));
+		if (!worldLayerPipelineCacheOutFile.good())
+			throw std::runtime_error("RenderDataInternal::SaveWorldLayerPipelineCacheFile: Program failed to write the new header!");
+
+		worldLayerPipelineCacheOutFile.write(reinterpret_cast<const char*>(dataToSave.data()), dataToSave.size());
+		if (!worldLayerPipelineCacheOutFile.good())
+			throw std::runtime_error("RenderDataInternal::SaveWorldLayerPipelineCacheFile: Program failed to write the new data!");
+
+		worldLayerPipelineCacheOutFile.seekp(worldLayerMainHeader.magicNumbers.size());
+		if (!worldLayerPipelineCacheOutFile.good())
+			throw std::runtime_error("RenderDataInternal::SaveWorldLayerPipelineCacheFile: Program failed to move writing position to the main header's element count!");
+
+		worldLayerMainHeader.elementCount += 1;
+		worldLayerPipelineCacheOutFile.write(reinterpret_cast<const char*>(&worldLayerMainHeader.elementCount), sizeof(worldLayerMainHeader.elementCount));
+		if (!worldLayerPipelineCacheOutFile.good())
+			throw std::runtime_error("RenderDataInternal::SaveWorldLayerPipelineCacheFile: Program failed to write the updated main header!");
+
+		worldLayerPipelineCacheOutFile.flush();
+		if (!worldLayerPipelineCacheOutFile.good())
+			throw std::runtime_error("RenderDataInternal::SaveWorldLayerPipelineCacheFile: Program failed to flush the writes!");
+
+		worldLayerPipelineCacheOutFile.close();
 	}
 
 	void RenderDataInternal::CreateGammaCorrectionPipelineCacheFile(const std::string& dataFolder)
@@ -789,6 +1053,56 @@ namespace JJs2DEngine
 			VS::ColorBlendingPreset::ALPHA_BLENDING, 0x10));
 
 		ret.pipelineLayout = _uiPipelineLayout;
+		ret.renderPass = renderPass;
+		ret.subpassIndex = 0;
+		ret.pipelineDerrivationData.settings = VS::PipelineDerrivationSettings::DO_NOT_DERRIVE;
+
+		return ret;
+	}
+
+	VS::GraphicsPipelineCreationData RenderDataInternal::CompileWorldLayerPipelinesCreationData(uint32_t width, uint32_t height, IDObject<VS::AutoCleanupRenderPass> renderPass)
+	{
+		VS::GraphicsPipelineCreationData ret;
+
+		auto sharedPipelineList = _sharedData.GetSharedPipelineDataLists();
+
+		auto vertexShader = sharedPipelineList.AddUniqueSharedShaderPipelineData("main", VS::SHADER_TYPE_VERTEX, 0x10);
+		auto fragmentShader = sharedPipelineList.AddUniqueSharedShaderPipelineData("main", VS::SHADER_TYPE_FRAGMENT, 0x10);
+
+		ret.shaderStages.resize(2);
+		ret.shaderStages[0].sharedData = vertexShader;
+		ret.shaderStages[0].shaderDeviceID.vertexShader.type = VS::SHADER_TYPE_VERTEX;
+		ret.shaderStages[0].shaderDeviceID.vertexShader.vertexShaderID = _worldLayerVertexShaderID;
+		ret.shaderStages[1].sharedData = fragmentShader;
+		ret.shaderStages[1].shaderDeviceID.fragmentShader.type = VS::SHADER_TYPE_FRAGMENT;
+		ret.shaderStages[1].shaderDeviceID.fragmentShader.fragmentShaderID = _standardFragmentShaderID;
+
+		auto vertexInTexCoord = sharedPipelineList.AddUniqueVertexAttributeDescriptionData(0, VS::DATA_FORMAT_RG32_SFLOAT, 0x10);
+		auto vertexInTexSize = sharedPipelineList.AddUniqueVertexAttributeDescriptionData(8, VS::DATA_FORMAT_RG32_SFLOAT, 0x10);
+		auto vertexInPos = sharedPipelineList.AddUniqueVertexAttributeDescriptionData(16, VS::DATA_FORMAT_RGBA32_SFLOAT, 0x10);
+		auto vertexInSize = sharedPipelineList.AddUniqueVertexAttributeDescriptionData(32, VS::DATA_FORMAT_RG32_SFLOAT, 0x10);
+		auto vertexInTexLayer = sharedPipelineList.AddUniqueVertexAttributeDescriptionData(40, VS::DATA_FORMAT_R32_UINT, 0x10);
+		auto vertexInTexIndex = sharedPipelineList.AddUniqueVertexAttributeDescriptionData(44, VS::DATA_FORMAT_R32_UINT, 0x10);
+
+		auto vertexInstanceBinding = sharedPipelineList.AddUniqueVertexBindingData(48, VS::VertexBindingInputRate::INSTANCE,
+			{ vertexInTexCoord, vertexInTexSize, vertexInPos, vertexInSize, vertexInTexLayer,  vertexInTexIndex }, 0x10);
+
+		ret.vertexInputData = sharedPipelineList.AddUniqueVertexInputSharedPipelineData({ vertexInstanceBinding }, 0x10);
+		ret.inputAssemblyData = sharedPipelineList.AddUniquePipelineInputAssemblyData(VS::PipelinePrimitiveTopology::TRIANGLE_LIST, false, 0x10);
+
+		ret.viewportData.resize(1);
+		ret.viewportData[0].scissor = sharedPipelineList.AddUniquePipelineScissorData(0, 0, width, height, 0x10);
+		ret.viewportData[0].viewport = sharedPipelineList.AddUniquePipelineViewportData(0, 0, width, height, 0.0f, 1.0f, 0x10);
+
+		ret.rasterizationData = sharedPipelineList.AddUniquePipelineRasterizationData(VS::PipelinePolygonMode::FILL, true, false, 0x10);
+		ret.samplingData = sharedPipelineList.AddUniquePipelineMultisampleData(VS::SAMPLE_1, {}, 0x10);
+		ret.depthStencilData = sharedPipelineList.AddUniquePipelineDepthStencilStateData(VS::DepthUsage::TEST_AND_WRITE, VS::CompareOperationsType::COMPARE_OPERATION_LESS, 0.0f, 1.0f,
+			0x10);
+		ret.colorBlendingData.push_back(sharedPipelineList.AddUniquePipelineColorBlendAttachment(VS::ColorBlendingComponentBits::COLOR_COMPONENT_R |
+			VS::ColorBlendingComponentBits::COLOR_COMPONENT_G | VS::ColorBlendingComponentBits::COLOR_COMPONENT_B | VS::ColorBlendingComponentBits::COLOR_COMPONENT_A,
+			VS::ColorBlendingPreset::ALPHA_BLENDING, 0x10));
+
+		ret.pipelineLayout = _worldLayerPipelineLayout;
 		ret.renderPass = renderPass;
 		ret.subpassIndex = 0;
 		ret.pipelineDerrivationData.settings = VS::PipelineDerrivationSettings::DO_NOT_DERRIVE;

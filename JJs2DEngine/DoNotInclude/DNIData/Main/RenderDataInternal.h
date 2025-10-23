@@ -32,9 +32,11 @@ namespace JJs2DEngine
 		IDObject<VS::AutoCleanupDescriptorSetLayout> GetGammaCorrectionDescriptorSetLayout() const;
 
 		IDObject<VS::AutoCleanupGraphicsPipeline> GetUILayerGraphicsPipeline();
+		IDObject<VS::AutoCleanupGraphicsPipeline> GetWorldLayerGraphicsPipeline();
 		IDObject<VS::AutoCleanupGraphicsPipeline> GetGammaCorrectionGraphicsPipeline();
 
 		IDObject<VS::AutoCleanupPipelineLayout> GetUILayerGraphicsPipelineLayout();
+		IDObject<VS::AutoCleanupPipelineLayout> GetWorldLayerGraphicsPipelineLayout();
 		IDObject<VS::AutoCleanupPipelineLayout> GetGammaCorrectionGraphicsPipelineLayout();
 
 		const std::vector<std::optional<VS::RenderPassClearValueID>>& GetClearValuesList() const;
@@ -47,26 +49,31 @@ namespace JJs2DEngine
 
 		size_t _currentPipelineSettings;
 
+		std::vector<IDObject<VS::AutoCleanupRenderPass>> _renderPassList;
+		IDObject<VS::AutoCleanupDescriptorSetLayout> _textureDescriptorSetLayout;
+
+		IDObject<VS::AutoCleanupPipelineCache> _uiPipelineCache;
+		IDObject<VS::AutoCleanupPipelineCache> _worldLayerPipelineCache;
+		IDObject<VS::AutoCleanupPipelineCache> _gammaCorrectionPipelineCache;
+
 		std::optional<uint64_t> _uiPipelineCompatibleSavedPos;
 		std::optional<uint64_t> _uiPipelineCompatibleSavedSize;
 		std::optional<uint64_t> _uiPipelineCompatibleSavedCRC64WE;
 
 		IDObject<VS::AutoCleanupFragmentShaderModule> _standardFragmentShaderID;
 
-		std::vector<IDObject<VS::AutoCleanupRenderPass>> _renderPassList;
-
-		IDObject<VS::AutoCleanupPipelineCache> _uiPipelineCache;
-		IDObject<VS::AutoCleanupPipelineCache> _gammaCorrectionPipelineCache;
-
 		IDObject<VS::AutoCleanupVertexShaderModule> _uiVertexShaderID;
-		IDObject<VS::AutoCleanupDescriptorSetLayout> _textureDescriptorSetLayout;
 		IDObject<VS::AutoCleanupPipelineLayout> _uiPipelineLayout;
-
 		std::vector<IDObject<VS::AutoCleanupGraphicsPipeline>> _uiPipelineList;
 
-		std::optional<uint64_t> _gammaCorrectionPipelineCompatibleSavedPos;
-		std::optional<uint64_t> _gammaCorrectionPipelineCompatibleSavedSize;
-		std::optional<uint64_t> _gammaCorrectionPipelineCompatibleSavedCRC64WE;
+		std::optional<uint64_t> _worldLayerPipelineCompatibleSavedPos;
+		std::optional<uint64_t> _worldLayerPipelineCompatibleSavedSize;
+		std::optional<uint64_t> _worldLayerPipelineCompatibleSavedCRC64WE;
+
+		IDObject<VS::AutoCleanupVertexShaderModule> _worldLayerVertexShaderID;
+		IDObject<VS::PushConstantData> _worldLayerPushConstant;
+		IDObject<VS::AutoCleanupPipelineLayout> _worldLayerPipelineLayout;
+		std::vector<IDObject<VS::AutoCleanupGraphicsPipeline>> _worldLayerPipelineList;
 
 		IDObject<VS::AutoCleanupFragmentShaderModule> _gammaCorrectionFragmentShaderID;
 		IDObject<VS::AutoCleanupVertexShaderModule> _gammaCorrectionVertexShaderID;
@@ -75,9 +82,17 @@ namespace JJs2DEngine
 		IDObject<VS::AutoCleanupPipelineLayout> _gammaCorrectionPipelineLayout;
 		std::vector<IDObject<VS::AutoCleanupGraphicsPipeline>> _gammaCorrectionPipelineList;
 
+		std::optional<uint64_t> _gammaCorrectionPipelineCompatibleSavedPos;
+		std::optional<uint64_t> _gammaCorrectionPipelineCompatibleSavedSize;
+		std::optional<uint64_t> _gammaCorrectionPipelineCompatibleSavedCRC64WE;
+
 		void CreateUIPipelineCacheFile(const std::string& dataFolder);
 		void LoadUIPipelineCacheFile(const std::string& dataFolder);
 		void SaveUIPipelineCacheFile(const std::string& dataFolder);
+
+		void CreateWorldLayerPipelineCacheFile(const std::string& dataFolder);
+		void LoadWorldLayerPipelineCacheFile(const std::string& dataFolder);
+		void SaveWorldLayerPipelineCacheFile(const std::string& dataFolder);
 
 		void CreateGammaCorrectionPipelineCacheFile(const std::string& dataFolder);
 		void LoadGammaCorrectionPipelineCacheFile(const std::string& dataFolder);
@@ -88,6 +103,7 @@ namespace JJs2DEngine
 		IDObject<VS::AutoCleanupRenderPass> CreateRenderPass(const PipelineSettings& pipelineSettings);
 
 		VS::GraphicsPipelineCreationData CompileUIPipelinesCreationData(uint32_t width, uint32_t height, IDObject<VS::AutoCleanupRenderPass> renderPass);
+		VS::GraphicsPipelineCreationData CompileWorldLayerPipelinesCreationData(uint32_t width, uint32_t height, IDObject<VS::AutoCleanupRenderPass> renderPass);
 		VS::GraphicsPipelineCreationData CompileGammaCorrectionPipelinesCreationData(uint32_t width, uint32_t height, IDObject<VS::AutoCleanupRenderPass> renderPass);
 	};
 }
