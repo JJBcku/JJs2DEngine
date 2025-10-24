@@ -18,16 +18,6 @@
 
 namespace JJs2DEngine
 {
-	TransferFrameData::TransferFrameData()
-	{
-		changed = Misc::BOOL64_FALSE;
-		lastAmountWrittenToVertexBuffer = 0;
-	}
-
-	JJs2DEngine::TransferFrameData::~TransferFrameData()
-	{
-	}
-
 	UiVertexDataLayerVersionInternal::UiVertexDataLayerVersionInternal(TextureDataMainInternal& textureDataList, VS::DataBufferLists& dataBufferList,
 		size_t maxObjectAmount, size_t layersDepth, size_t transferFrameAmount) : _textureDataList(textureDataList), _dataBufferList(dataBufferList), _objectList(maxObjectAmount)
 	{

@@ -118,6 +118,7 @@
     <ClInclude Include="DoNotInclude\DNIData\Main\CameraData.h" />
     <ClInclude Include="DoNotInclude\DNIData\Main\InputDataListInternal.h" />
     <ClInclude Include="DoNotInclude\DNIData\Main\TextureTransferOrderInternal.h" />
+    <ClInclude Include="DoNotInclude\DNIData\Main\VertexTransferFrameData.h" />
     <ClInclude Include="DoNotInclude\DNIData\Main\UiObjectBufferData.h" />
     <ClInclude Include="DoNotInclude\DNIData\Main\UiObjectDataInternal.h" />
     <ClInclude Include="DoNotInclude\DNIData\Main\TextureDataFrameInternal.h" />
@@ -212,6 +213,12 @@
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">MainDNIpch.h</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">MainDNIpch.h</PrecompiledHeaderFile>
       <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)MainDNIpch.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)MainDNIpch.pch</PrecompiledHeaderOutputFile>
+    </ClCompile>
+    <ClCompile Include="DoNotInclude\DNIData\Main\VertexTransferFrameData.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">MainDNIpch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)MainDNIpch.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">MainDNIpch.h</PrecompiledHeaderFile>
       <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)MainDNIpch.pch</PrecompiledHeaderOutputFile>
     </ClCompile>
     <ClCompile Include="DoNotInclude\DNIData\Main\UiObjectBufferData.cpp">

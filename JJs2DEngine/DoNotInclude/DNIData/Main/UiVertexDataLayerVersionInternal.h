@@ -1,14 +1,16 @@
 #pragma once
 
-#include <vector>
-#include <optional>
-#include <stdint.h>
+#include "VertexTransferFrameData.h"
 
 #include <Miscellaneous/Bool64Def.h>
 #include <VulkanSimplified/VSDevice/VSDataBufferLists.h>
 #include <VulkanSimplified/VSDevice/VSPrimaryIRCommandBufferDef.h>
 
 #include <CustomLists/IDObject.h>
+
+#include <vector>
+#include <optional>
+#include <stdint.h>
 
 namespace JJs2DEngine
 {
@@ -18,15 +20,7 @@ namespace JJs2DEngine
 
 	class TextureDataMainInternal;
 
-	struct TransferFrameData
-	{
-		Misc::Bool64 changed;
-		size_t lastAmountWrittenToVertexBuffer;
-		IDObject<VS::AutoCleanupVertexBuffer> vertexBuffer;
-
-		TransferFrameData();
-		~TransferFrameData();
-	};
+	struct VertexTransferFrameData;
 
 	class UiVertexDataLayerVersionInternal
 	{
@@ -61,7 +55,7 @@ namespace JJs2DEngine
 		size_t _layersDepth;
 
 		std::vector<Misc::Bool64> _ownedByTransferQueue;
-		std::vector<TransferFrameData> _frameData;
+		std::vector<VertexTransferFrameData> _frameData;
 
 		uint64_t _buffersMemoryMask;
 		uint64_t _singleBuffersMemorySize;

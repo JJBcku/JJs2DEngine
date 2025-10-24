@@ -213,6 +213,9 @@
     <ClInclude Include="Include\Main\NormalizedValuesList.h">
       <Filter>Header Files\Include\Main</Filter>
     </ClInclude>
+    <ClInclude Include="DoNotInclude\DNIData\Main\VertexTransferFrameData.h">
+      <Filter>Header Files\Do Not Include\Main</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DoNotInclude\DNIData\Common\CommonDNIpch.cpp">
@@ -328,6 +331,9 @@
     </ClCompile>
     <ClCompile Include="DoNotInclude\ICode\Main\WorldLayerObjectData.cpp">
       <Filter>Source Files\Include\Main</Filter>
+    </ClCompile>
+    <ClCompile Include="DoNotInclude\DNIData\Main\VertexTransferFrameData.cpp">
+      <Filter>Source Files\Do Not Include\Main</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
