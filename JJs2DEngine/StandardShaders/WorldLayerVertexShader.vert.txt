@@ -1,30 +1,33 @@
 ; SPIR-V
 ; Version: 1.0
 ; Generator: Google Shaderc over Glslang; 11
-; Bound: 113
+; Bound: 121
 ; Schema: 0
                OpCapability Shader
           %1 = OpExtInstImport "GLSL.std.450"
                OpMemoryModel Logical GLSL450
-               OpEntryPoint Vertex %4 "main" %gl_VertexIndex %48 %70 %73 %92 %94 %100 %103 %105 %107 %108
+               OpEntryPoint Vertex %4 "main" %gl_VertexIndex %48 %65 %84 %100 %102 %108 %111 %113 %115 %116
                OpDecorate %gl_VertexIndex BuiltIn VertexIndex
                OpDecorate %48 Location 3
-               OpDecorate %_struct_52 Block
-               OpMemberDecorate %_struct_52 0 Offset 0
-               OpMemberDecorate %_struct_52 1 Offset 8
-               OpDecorate %_struct_68 Block
-               OpMemberDecorate %_struct_68 0 BuiltIn Position
-               OpMemberDecorate %_struct_68 1 BuiltIn PointSize
-               OpMemberDecorate %_struct_68 2 BuiltIn ClipDistance
-               OpMemberDecorate %_struct_68 3 BuiltIn CullDistance
-               OpDecorate %73 Location 2
-               OpDecorate %92 Location 0
-               OpDecorate %94 Location 1
+               OpDecorate %_struct_54 Block
+               OpMemberDecorate %_struct_54 0 ColMajor
+               OpMemberDecorate %_struct_54 0 MatrixStride 16
+               OpMemberDecorate %_struct_54 0 Offset 0
+               OpMemberDecorate %_struct_54 1 Offset 64
+               OpMemberDecorate %_struct_54 2 Offset 72
+               OpDecorate %65 Location 2
+               OpDecorate %_struct_82 Block
+               OpMemberDecorate %_struct_82 0 BuiltIn Position
+               OpMemberDecorate %_struct_82 1 BuiltIn PointSize
+               OpMemberDecorate %_struct_82 2 BuiltIn ClipDistance
+               OpMemberDecorate %_struct_82 3 BuiltIn CullDistance
                OpDecorate %100 Location 0
-               OpDecorate %103 Location 1
-               OpDecorate %105 Location 4
-               OpDecorate %107 Location 2
-               OpDecorate %108 Location 5
+               OpDecorate %102 Location 1
+               OpDecorate %108 Location 0
+               OpDecorate %111 Location 1
+               OpDecorate %113 Location 4
+               OpDecorate %115 Location 2
+               OpDecorate %116 Location 5
        %void = OpTypeVoid
           %3 = OpTypeFunction %void
       %float = OpTypeFloat 32
@@ -57,32 +60,35 @@
 %gl_VertexIndex = OpVariable %_ptr_Input_int Input
 %_ptr_Input_v2float = OpTypePointer Input %v2float
          %48 = OpVariable %_ptr_Input_v2float Input
- %_struct_52 = OpTypeStruct %v2float %float
-%_ptr_PushConstant__struct_52 = OpTypePointer PushConstant %_struct_52
-         %54 = OpVariable %_ptr_PushConstant__struct_52 PushConstant
-      %int_0 = OpConstant %int 0
-%_ptr_PushConstant_v2float = OpTypePointer PushConstant %v2float
     %v4float = OpTypeVector %float 4
-%_arr_float_uint_1 = OpTypeArray %float %uint_1
- %_struct_68 = OpTypeStruct %v4float %float %_arr_float_uint_1 %_arr_float_uint_1
-%_ptr_Output__struct_68 = OpTypePointer Output %_struct_68
-         %70 = OpVariable %_ptr_Output__struct_68 Output
-%_ptr_Input_v4float = OpTypePointer Input %v4float
-         %73 = OpVariable %_ptr_Input_v4float Input
+%mat4v4float = OpTypeMatrix %v4float 4
+ %_struct_54 = OpTypeStruct %mat4v4float %v2float %float
+%_ptr_PushConstant__struct_54 = OpTypePointer PushConstant %_struct_54
+         %56 = OpVariable %_ptr_PushConstant__struct_54 PushConstant
       %int_1 = OpConstant %int 1
+%_ptr_PushConstant_v2float = OpTypePointer PushConstant %v2float
+%_ptr_Input_v4float = OpTypePointer Input %v4float
+         %65 = OpVariable %_ptr_Input_v4float Input
+      %int_2 = OpConstant %int 2
 %_ptr_PushConstant_float = OpTypePointer PushConstant %float
+%_arr_float_uint_1 = OpTypeArray %float %uint_1
+ %_struct_82 = OpTypeStruct %v4float %float %_arr_float_uint_1 %_arr_float_uint_1
+%_ptr_Output__struct_82 = OpTypePointer Output %_struct_82
+         %84 = OpVariable %_ptr_Output__struct_82 Output
+      %int_0 = OpConstant %int 0
 %_ptr_Input_float = OpTypePointer Input %float
+%_ptr_PushConstant_mat4v4float = OpTypePointer PushConstant %mat4v4float
 %_ptr_Output_v4float = OpTypePointer Output %v4float
-         %92 = OpVariable %_ptr_Input_v2float Input
-         %94 = OpVariable %_ptr_Input_v2float Input
+        %100 = OpVariable %_ptr_Input_v2float Input
+        %102 = OpVariable %_ptr_Input_v2float Input
 %_ptr_Output_v2float = OpTypePointer Output %v2float
-        %100 = OpVariable %_ptr_Output_v2float Output
+        %108 = OpVariable %_ptr_Output_v2float Output
 %_ptr_Output_uint = OpTypePointer Output %uint
-        %103 = OpVariable %_ptr_Output_uint Output
+        %111 = OpVariable %_ptr_Output_uint Output
 %_ptr_Input_uint = OpTypePointer Input %uint
-        %105 = OpVariable %_ptr_Input_uint Input
-        %107 = OpVariable %_ptr_Output_uint Output
-        %108 = OpVariable %_ptr_Input_uint Input
+        %113 = OpVariable %_ptr_Input_uint Input
+        %115 = OpVariable %_ptr_Output_uint Output
+        %116 = OpVariable %_ptr_Input_uint Input
 %_ptr_Function__arr_v2float_uint_4 = OpTypePointer Function %_arr_v2float_uint_4
 %_ptr_Function__arr_uint_uint_6 = OpTypePointer Function %_arr_uint_uint_6
 %_ptr_Function_uint = OpTypePointer Function %uint
@@ -101,34 +107,37 @@
          %46 = OpLoad %v2float %45
          %49 = OpLoad %v2float %48
          %50 = OpFMul %v2float %46 %49
-         %57 = OpAccessChain %_ptr_PushConstant_v2float %54 %int_0
-         %58 = OpLoad %v2float %57
-         %59 = OpFSub %v2float %50 %58
-         %63 = OpLoad %uint %42
-         %64 = OpAccessChain %_ptr_Function_v2float %20 %63
-         %65 = OpLoad %v2float %64
-         %74 = OpLoad %v4float %73
-         %75 = OpVectorShuffle %v2float %74 %74 0 1
-         %76 = OpFAdd %v2float %59 %75
-         %79 = OpAccessChain %_ptr_PushConstant_float %54 %int_1
-         %80 = OpLoad %float %79
-         %81 = OpCompositeConstruct %v2float %80 %80
-         %82 = OpFMul %v2float %76 %81
-         %84 = OpAccessChain %_ptr_Input_float %73 %uint_2
-         %85 = OpLoad %float %84
-         %86 = OpCompositeExtract %float %82 0
-         %87 = OpCompositeExtract %float %82 1
-         %88 = OpCompositeConstruct %v4float %86 %87 %85 %float_1
-         %90 = OpAccessChain %_ptr_Output_v4float %70 %int_0
-               OpStore %90 %88
-         %93 = OpLoad %v2float %92
-         %95 = OpLoad %v2float %94
-         %97 = OpFMul %v2float %95 %65
-         %98 = OpFAdd %v2float %93 %97
-               OpStore %100 %98
-        %106 = OpLoad %uint %105
-               OpStore %103 %106
-        %109 = OpLoad %uint %108
-               OpStore %107 %109
+         %59 = OpAccessChain %_ptr_PushConstant_v2float %56 %int_1
+         %60 = OpLoad %v2float %59
+         %61 = OpFSub %v2float %50 %60
+         %66 = OpLoad %v4float %65
+         %67 = OpVectorShuffle %v2float %66 %66 0 1
+         %68 = OpFAdd %v2float %61 %67
+         %71 = OpAccessChain %_ptr_PushConstant_float %56 %int_2
+         %72 = OpLoad %float %71
+         %73 = OpCompositeConstruct %v2float %72 %72
+         %74 = OpFMul %v2float %68 %73
+         %78 = OpLoad %uint %42
+         %79 = OpAccessChain %_ptr_Function_v2float %20 %78
+         %80 = OpLoad %v2float %79
+         %88 = OpAccessChain %_ptr_Input_float %65 %uint_2
+         %89 = OpLoad %float %88
+         %90 = OpCompositeExtract %float %74 0
+         %91 = OpCompositeExtract %float %74 1
+         %92 = OpCompositeConstruct %v4float %90 %91 %89 %float_1
+         %94 = OpAccessChain %_ptr_PushConstant_mat4v4float %56 %int_0
+         %95 = OpLoad %mat4v4float %94
+         %96 = OpVectorTimesMatrix %v4float %92 %95
+         %98 = OpAccessChain %_ptr_Output_v4float %84 %int_0
+               OpStore %98 %96
+        %101 = OpLoad %v2float %100
+        %103 = OpLoad %v2float %102
+        %105 = OpFMul %v2float %103 %80
+        %106 = OpFAdd %v2float %101 %105
+               OpStore %108 %106
+        %114 = OpLoad %uint %113
+               OpStore %111 %114
+        %117 = OpLoad %uint %116
+               OpStore %115 %117
                OpReturn
                OpFunctionEnd

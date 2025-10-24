@@ -29,6 +29,7 @@ uint vertexIndexes[6] = uint[]( 0, 1, 2, 2, 1, 3);
 
 layout (push_constant) uniform CameraData
 {
+	mat4 rotation;
 	vec2 position;
 	float zoom;
 } camera;
@@ -37,9 +38,11 @@ void main()
 {
 	vec2 verticeOffset = vertexData[vertexIndexes[gl_VertexIndex]] * inSize;
 	verticeOffset = verticeOffset - camera.position;
+	vec2 position = (verticeOffset + inPos.xy) * vec2(camera.zoom);
+	
 	vec2 texPos = textureData[vertexIndexes[gl_VertexIndex]];
 
-	gl_Position = vec4((verticeOffset + inPos.xy) * vec2(camera.zoom), inPos.z, 1.0);
+	gl_Position = vec4(position, inPos.z, 1.0) * camera.rotation;
 	
 	vec2 texCoord = inTexCoord + (inTexSize * texPos);
 	
