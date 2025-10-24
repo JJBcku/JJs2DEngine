@@ -16,7 +16,7 @@ namespace JJs2DEngine
 {
 	struct UiObjectData;
 	struct UiObjectDataInternal;
-	typedef std::optional<UiObjectDataInternal> UIObjectDataOptional;
+	typedef std::optional<UiObjectDataInternal> UiObjectDataOptional;
 
 	class TextureDataMainInternal;
 
@@ -48,7 +48,7 @@ namespace JJs2DEngine
 		TextureDataMainInternal& _textureDataList;
 		VS::DataBufferLists _dataBufferList;
 
-		std::vector<UIObjectDataOptional> _objectList;
+		std::vector<UiObjectDataOptional> _objectList;
 		std::vector<size_t> _unusedIndexes;
 		size_t _usedObjectAmount;
 		size_t _nextDepthValueUNORM;
