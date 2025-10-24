@@ -175,7 +175,7 @@ namespace JJs2DEngine
 			auto worldLayerLayerVertexShaderData = LoadShaderFile(dataFolder + worldLayerVertexShaderName + vertexShaderExtension);
 			_worldLayerVertexShaderID = shaderList.CreateVertexShaderModule(*worldLayerLayerVertexShaderData.data(), worldLayerLayerVertexShaderData.size(), 0x10);
 
-			_worldLayerPushConstant = _sharedData.GetSharedPipelineDataLists().AddPushConstantData(VS::SHADER_TYPE_VERTEX, 0U, 12U);
+			_worldLayerPushConstant = _sharedData.GetSharedPipelineDataLists().AddPushConstantData(VS::SHADER_TYPE_VERTEX, 0U, 76U);
 
 			VS::PipelineLayoutCreationData worldLayerPipelineLayoutCreationData;
 			worldLayerPipelineLayoutCreationData._descriptorSets = { _textureDescriptorSetLayout };
@@ -648,9 +648,9 @@ namespace JJs2DEngine
 		if (!worldLayerPipelineCacheInFile.is_open())
 			throw std::runtime_error("RenderDataInternal::SaveWorldLayerPipelineCacheFile: Program failed to open the pipeline cache in file!");
 
-		if (_uiPipelineCompatibleSavedPos.has_value())
+		if (_worldLayerPipelineCompatibleSavedPos.has_value())
 		{
-			worldLayerPipelineCacheInFile.seekg(_uiPipelineCompatibleSavedPos.value());
+			worldLayerPipelineCacheInFile.seekg(_worldLayerPipelineCompatibleSavedPos.value());
 			if (!worldLayerPipelineCacheInFile.good())
 				throw std::runtime_error("RenderDataInternal::SaveWorldLayerPipelineCacheFile: Program failed to move reading position to the old header!");
 
