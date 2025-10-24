@@ -6,7 +6,7 @@
 
 namespace JJs2DEngine
 {
-	struct UiObjectData
+	struct WorldLayerObjectData
 	{
 		uint32_t textureWidth_UNORM;
 		uint32_t textureHeight_UNORM;
@@ -20,7 +20,7 @@ namespace JJs2DEngine
 		std::pair<size_t, size_t> textureIndex;
 		bool inPreloadedTexturesList;
 
-		UiObjectData();
-		~UiObjectData();
+		WorldLayerObjectData();
+		~WorldLayerObjectData();
 	};
 }

@@ -198,6 +198,21 @@
     <ClInclude Include="DoNotInclude\DNIData\Main\TextureTransferOrderInternal.h">
       <Filter>Header Files\Do Not Include\Main</Filter>
     </ClInclude>
+    <ClInclude Include="DoNotInclude\DNIData\Main\CameraData.h">
+      <Filter>Header Files\Do Not Include\Main</Filter>
+    </ClInclude>
+    <ClInclude Include="DoNotInclude\DNIData\Main\WorldLayerObjectBufferData.h">
+      <Filter>Header Files\Do Not Include\Main</Filter>
+    </ClInclude>
+    <ClInclude Include="DoNotInclude\DNIData\Main\WorldLayerObjectDataInternal.h">
+      <Filter>Header Files\Do Not Include\Main</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Main\WorldLayerObjectData.h">
+      <Filter>Header Files\Include\Main</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Main\NormalizedValuesList.h">
+      <Filter>Header Files\Include\Main</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DoNotInclude\DNIData\Common\CommonDNIpch.cpp">
@@ -301,6 +316,18 @@
     </ClCompile>
     <ClCompile Include="DoNotInclude\DNIData\Main\TextureTransferOrderInternal.cpp">
       <Filter>Source Files\Do Not Include\Main</Filter>
+    </ClCompile>
+    <ClCompile Include="DoNotInclude\DNIData\Main\CameraData.cpp">
+      <Filter>Source Files\Do Not Include\Main</Filter>
+    </ClCompile>
+    <ClCompile Include="DoNotInclude\DNIData\Main\WorldLayerObjectBufferData.cpp">
+      <Filter>Source Files\Do Not Include\Main</Filter>
+    </ClCompile>
+    <ClCompile Include="DoNotInclude\DNIData\Main\WorldLayerObjectDataInternal.cpp">
+      <Filter>Source Files\Do Not Include\Main</Filter>
+    </ClCompile>
+    <ClCompile Include="DoNotInclude\ICode\Main\WorldLayerObjectData.cpp">
+      <Filter>Source Files\Include\Main</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
