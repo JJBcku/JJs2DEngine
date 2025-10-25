@@ -2,6 +2,8 @@
 
 #include "../../../Include/Main/VertexDataMainDef.h"
 
+#include "CameraData.h"
+
 #include <CustomLists/UnsortedIDVector.h>
 #include <VulkanSimplified/VSDevice/VSDataBufferLists.h>
 #include <VulkanSimplified/VSDevice/VSMemoryObjectsList.h>
@@ -32,6 +34,7 @@ namespace JJs2DEngine
 		~VertexDataMainInternal();
 
 		IDObject<UiVertexDataLayerVersionListPointer> AddUiLayerVersionList(const std::vector<size_t>& versionsMaxObjectAmountsList, size_t addOnReserving);
+		IDObject<WorldLayerVertexDataLayerVersionListPointer> AddWorldLayerVersionList(const std::vector<size_t>& versionsMaxObjectAmountsList, size_t addOnReserving);
 
 		void PreRenderingTexturesOwnershipTransfer();
 
@@ -45,9 +48,16 @@ namespace JJs2DEngine
 		void SetGammaValue(float newGammaValue);
 		float GetGammaValue() const;
 
+		void SetCameraPosition(float X, float Y);
+		void SetCameraRotation(float rotation);
+		void SetCameraZoom(float zoom);
+		void SetCameraAspectRatio(float ratio);
+
 		UiVertexDataLayerVersionListInternal& GetUiVertexDataLayerVersionList(IDObject<UiVertexDataLayerVersionListPointer> ID);
+		WorldLayerVertexDataLayerVersionListInternal& GetWorldLayerVertexDataLayerVersionList(IDObject<WorldLayerVertexDataLayerVersionListPointer> ID);
 
 		const UiVertexDataLayerVersionListInternal& GetUiVertexDataLayerVersionList(IDObject<UiVertexDataLayerVersionListPointer> ID) const;
+		const WorldLayerVertexDataLayerVersionListInternal& GetWorldLayerVertexDataLayerVersionList(IDObject<WorldLayerVertexDataLayerVersionListPointer> ID) const;
 
 	private:
 		TextureDataMainInternal& _textureDataList;
@@ -61,7 +71,10 @@ namespace JJs2DEngine
 		VS::CommandPoolQFGroupList _transferQFGroup;
 		VS::CommandPoolQFGroupList _graphicsQFGroup;
 
+		CameraData _camera;
+
 		UnsortedIDVector<UiVertexDataLayerVersionListPointer> _uiLayersList;
+		UnsortedIDVector<WorldLayerVertexDataLayerVersionListPointer> _worldLayersList;
 
 		size_t _transferFrameAmount;
 		size_t _currentTransferFrame;

@@ -10,8 +10,14 @@ namespace JJs2DEngine
 
 	VertexLayerOrderID::VertexLayerOrderID(IDObject<UiVertexDataLayerVersionListPointer> ID)
 	{
-		UiLayerID.type = VertexLayerOrderIDType::UI_LAYER;
-		UiLayerID.ID = ID;
+		uiLayerID.type = VertexLayerOrderIDType::UI_LAYER;
+		uiLayerID.ID = ID;
+	}
+
+	VertexLayerOrderID::VertexLayerOrderID(IDObject<WorldLayerVertexDataLayerVersionListPointer> ID)
+	{
+		worldLayerID.type = VertexLayerOrderIDType::WORLD_LAYER;
+		worldLayerID.ID = ID;
 	}
 
 }

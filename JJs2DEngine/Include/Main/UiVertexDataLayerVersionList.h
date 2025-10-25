@@ -1,10 +1,9 @@
 #pragma once
 
-#include "UiVertexDataLayerVersionListDef.h"
-
 namespace JJs2DEngine
 {
 	class UiVertexDataLayerVersion;
+	class UiVertexDataLayerVersionListInternal;
 
 	class UiVertexDataLayerVersionList
 	{

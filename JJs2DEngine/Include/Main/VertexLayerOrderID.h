@@ -10,6 +10,7 @@ namespace JJs2DEngine
 	{
 		UNSET = 0,
 		UI_LAYER = 1,
+		WORLD_LAYER = 2,
 	};
 
 	union VertexLayerOrderID
@@ -19,9 +20,16 @@ namespace JJs2DEngine
 		{
 			VertexLayerOrderIDType type;
 			IDObject<UiVertexDataLayerVersionListPointer> ID;
-		} UiLayerID;
+		} uiLayerID;
+
+		struct
+		{
+			VertexLayerOrderIDType type;
+			IDObject<WorldLayerVertexDataLayerVersionListPointer> ID;
+		} worldLayerID;
 
 		VertexLayerOrderID();
 		VertexLayerOrderID(IDObject<UiVertexDataLayerVersionListPointer> ID);
+		VertexLayerOrderID(IDObject<WorldLayerVertexDataLayerVersionListPointer> ID);
 	};
 }

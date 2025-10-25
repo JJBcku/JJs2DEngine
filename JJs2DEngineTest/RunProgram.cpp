@@ -10,12 +10,15 @@
 #include <Main.h>
 #include <InputDataList.h>
 #include <SpecialKeysDataList.h>
+#include <VertexDataMain.h>
 
 #include <Miscellaneous/Bool64.h>
 
 #include <chrono>
 #include <thread>
 #include <iostream>
+
+float GetRotation();
 
 void RunProgram()
 {
@@ -26,6 +29,7 @@ void RunProgram()
 	CreateLayers(data);
 
 	auto& main = *data.main;
+	auto vertexDataMain = main.GetVertexDataMainList();
 
 	auto inputData = main.GetInputDataList();
 	const auto& keyList = inputData.GetSpecialKeyList();
@@ -51,6 +55,7 @@ void RunProgram()
 		}
 		else
 		{
+			vertexDataMain.SetCameraRotation(GetRotation());
 			main.RenderSingleFrame();
 
 			framesThisSecond++;
@@ -83,4 +88,23 @@ void RunProgram()
 	}
 
 	main.WaitForIdleDevice();
+}
+
+float GetRotation()
+{
+	float ret = 0.0f;
+
+	static const auto startTime = std::chrono::high_resolution_clock::now();
+
+	auto currentTime = std::chrono::high_resolution_clock::now();
+
+	double rotationTime = std::chrono::duration<double, std::chrono::seconds::period>(currentTime - startTime).count() * 30;
+
+	double fullRotationCountDouble = rotationTime / 360.0;
+	uint64_t fullRotationCountUint = static_cast<uint64_t>(fullRotationCountDouble);
+
+	double rotationDouble = rotationTime - (360.0 * static_cast<double>(fullRotationCountUint));
+	ret = static_cast<float>(rotationDouble);
+
+	return ret;
 }

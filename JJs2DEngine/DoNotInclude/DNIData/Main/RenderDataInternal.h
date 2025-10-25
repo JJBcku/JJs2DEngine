@@ -27,6 +27,8 @@ namespace JJs2DEngine
 			VS::DeviceMain device, VS::SharedDataMainList sharedData);
 		~RenderDataInternal();
 
+		float GetCurrentAspectRatio() const;
+
 		IDObject<VS::AutoCleanupRenderPass> GetCurrentRenderPass() const;
 		IDObject<VS::AutoCleanupDescriptorSetLayout> GetTextureDescriptorSetLayout() const;
 		IDObject<VS::AutoCleanupDescriptorSetLayout> GetGammaCorrectionDescriptorSetLayout() const;
@@ -46,6 +48,7 @@ namespace JJs2DEngine
 		VS::SharedDataMainList _sharedData;
 
 		std::vector<std::optional<VS::RenderPassClearValueID>> _clearValues;
+		std::vector<float> _pipelinesAspectRatios;
 
 		size_t _currentPipelineSettings;
 

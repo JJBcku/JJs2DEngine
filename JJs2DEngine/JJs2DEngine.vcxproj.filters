@@ -171,9 +171,6 @@
     <ClInclude Include="DoNotInclude\DNIData\Main\UiVertexDataLayerVersionListInternal.h">
       <Filter>Header Files\Do Not Include\Main</Filter>
     </ClInclude>
-    <ClInclude Include="Include\Main\UiVertexDataLayerVersionListDef.h">
-      <Filter>Header Files\Include\Main</Filter>
-    </ClInclude>
     <ClInclude Include="DoNotInclude\DNIData\Main\UiVertexDataLayerVersionInternal.h">
       <Filter>Header Files\Do Not Include\Main</Filter>
     </ClInclude>
@@ -214,6 +211,18 @@
       <Filter>Header Files\Include\Main</Filter>
     </ClInclude>
     <ClInclude Include="DoNotInclude\DNIData\Main\VertexTransferFrameData.h">
+      <Filter>Header Files\Do Not Include\Main</Filter>
+    </ClInclude>
+    <ClInclude Include="DoNotInclude\DNIData\Main\WorldLayerVertexDataLayerVersionInternal.h">
+      <Filter>Header Files\Do Not Include\Main</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Main\WorldLayerVertexDataLayerVersion.h">
+      <Filter>Header Files\Include\Main</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Main\WorldLayerVertexDataLayerVersionList.h">
+      <Filter>Header Files\Include\Main</Filter>
+    </ClInclude>
+    <ClInclude Include="DoNotInclude\DNIData\Main\WorldLayerVertexDataLayerVersionListInternal.h">
       <Filter>Header Files\Do Not Include\Main</Filter>
     </ClInclude>
   </ItemGroup>
@@ -333,6 +342,18 @@
       <Filter>Source Files\Include\Main</Filter>
     </ClCompile>
     <ClCompile Include="DoNotInclude\DNIData\Main\VertexTransferFrameData.cpp">
+      <Filter>Source Files\Do Not Include\Main</Filter>
+    </ClCompile>
+    <ClCompile Include="DoNotInclude\DNIData\Main\WorldLayerVertexDataLayerVersionInternal.cpp">
+      <Filter>Source Files\Do Not Include\Main</Filter>
+    </ClCompile>
+    <ClCompile Include="DoNotInclude\ICode\Main\WorldLayerVertexDataLayerVersion.cpp">
+      <Filter>Source Files\Include\Main</Filter>
+    </ClCompile>
+    <ClCompile Include="DoNotInclude\ICode\Main\WorldLayerVertexDataLayerVersionList.cpp">
+      <Filter>Source Files\Include\Main</Filter>
+    </ClCompile>
+    <ClCompile Include="DoNotInclude\DNIData\Main\WorldLayerVertexDataLayerVersionListInternal.cpp">
       <Filter>Source Files\Do Not Include\Main</Filter>
     </ClCompile>
   </ItemGroup>

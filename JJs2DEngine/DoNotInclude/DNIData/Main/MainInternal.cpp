@@ -252,6 +252,8 @@ namespace JJs2DEngine
 				graphicQFGroup, _currentDevicesSettings.value().graphicsFramesInFlight, _graphicsQueueIndex);
 
 			_vertexDataMain->PreRenderingTexturesOwnershipTransfer();
+
+			_vertexDataMain->SetCameraAspectRatio(_renderDataList->GetCurrentAspectRatio());
 		}
 	}
 

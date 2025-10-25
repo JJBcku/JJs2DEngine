@@ -5,6 +5,7 @@
 #include "DeviceSettingsInternal.h"
 
 #include "CameraData.h"
+#include "../../../Include/Main/AspectRatio.h"
 
 #include "../../../Include/Common/TextureArraySize.h"
 
@@ -138,6 +139,23 @@ namespace JJs2DEngine
 		auto devicePipelineList = _device.GetPipelineDataLists();
 
 		{
+			_pipelinesAspectRatios.resize(preInitializedPipelineSettings.size());
+
+			for (size_t i = 0; i < preInitializedPipelineSettings.size(); ++i)
+			{
+				switch (preInitializedPipelineSettings[i].aspectRatio)
+				{
+				case AspectRatio::ASPECT_RATIO_16_9:
+					_pipelinesAspectRatios[i] = 16.0f / 9.0f;
+					break;
+				case AspectRatio::UNSET:
+					_pipelinesAspectRatios[i] = 1.0f;
+					break;
+				}
+			}
+		}
+
+		{
 			_renderPassList.reserve(preInitializedPipelineSettings.size());
 
 			for (size_t i = 0; i < preInitializedPipelineSettings.size(); ++i)
@@ -238,6 +256,11 @@ namespace JJs2DEngine
 
 	RenderDataInternal::~RenderDataInternal()
 	{
+	}
+
+	float RenderDataInternal::GetCurrentAspectRatio() const
+	{
+		return _pipelinesAspectRatios[_currentPipelineSettings];
 	}
 
 	IDObject<VS::AutoCleanupRenderPass> RenderDataInternal::GetCurrentRenderPass() const

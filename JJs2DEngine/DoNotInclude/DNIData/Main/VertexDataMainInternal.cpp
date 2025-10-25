@@ -2,6 +2,7 @@
 #include "VertexDataMainInternal.h"
 
 #include "UiVertexDataLayerVersionListInternal.h"
+#include "WorldLayerVertexDataLayerVersionListInternal.h"
 
 #include "../Common/MaxDepthValue.h"
 
@@ -21,6 +22,8 @@
 
 #include <Miscellaneous/Bool64.h>
 
+#include <glm/gtc/matrix_transform.hpp>
+
 namespace JJs2DEngine
 {
 	constexpr size_t maxActiveLayersCount = maxLayerDepth + 1;
@@ -30,7 +33,7 @@ namespace JJs2DEngine
 		VS::CommandPoolQFGroupList transferQFGroup, uint32_t transferFrameAmount, size_t transferQueueID,
 		VS::CommandPoolQFGroupList graphicsQFGroup, uint32_t graphicsFrameAmount, size_t graphicsQueueID) : _textureDataList(textureDataList), _renderDataList(renderDataList),
 		_windowDataList(windowDataList), _dataBufferList(dataBufferList), _memoryObjectsList(memoryObjectsList), _synchroList(synchroList),
-		_transferQFGroup(transferQFGroup), _graphicsQFGroup(graphicsQFGroup), _uiLayersList(maxActiveLayersCount)
+		_transferQFGroup(transferQFGroup), _graphicsQFGroup(graphicsQFGroup), _uiLayersList(maxActiveLayersCount), _worldLayersList(maxActiveLayersCount)
 	{
 		_layerOrderList.reserve(maxActiveLayersCount);
 
@@ -105,6 +108,22 @@ namespace JJs2DEngine
 		return ret;
 	}
 
+	IDObject<WorldLayerVertexDataLayerVersionListPointer> VertexDataMainInternal::AddWorldLayerVersionList(const std::vector<size_t>& versionsMaxObjectAmountsList, size_t addOnReserving)
+	{
+		if (_layerOrderList.size() == _layerOrderList.capacity())
+			throw std::runtime_error("VertexDataMainInternal::AddWorldLayerVersionList Error: Program tried to add more layers than the program supports!");
+
+		if (versionsMaxObjectAmountsList.empty())
+			throw std::runtime_error("VertexDataMainInternal::AddWorldLayerVersionList Error: Program tried to create an empty version list!");
+
+		auto ret = _worldLayersList.AddObject(std::make_unique<WorldLayerVertexDataLayerVersionListInternal>(_textureDataList, _dataBufferList, _memoryObjectsList,
+			versionsMaxObjectAmountsList, _layerOrderList.size(), _transferFrameAmount), addOnReserving);
+
+		_layerOrderList.emplace_back(ret);
+
+		return ret;
+	}
+
 	void VertexDataMainInternal::PreRenderingTexturesOwnershipTransfer()
 	{
 		if (_graphicsQueueID == _transferQueueID)
@@ -168,7 +187,21 @@ namespace JJs2DEngine
 			if (_layerOrderList[i].type != VertexLayerOrderIDType::UI_LAYER)
 				continue;
 
-			auto& layer = _uiLayersList.GetObject(_layerOrderList[i].UiLayerID.ID);
+			auto& layer = _uiLayersList.GetObject(_layerOrderList[i].uiLayerID.ID);
+
+			bool commandRecorded = layer->WriteDataToBuffer(_currentTransferFrame, tranferCommandBuffer, _textureDataList.PopTextureChangedValues(_currentTransferFrame));
+			if (commandRecorded && _transferQueueID != _graphicsQueueID)
+			{
+				vertexBuffersOwnershipTransferDataList.push_back(layer->GetOwnershipTransferData(_currentTransferFrame, _transferQueueID, _graphicsQueueID));
+			}
+		}
+
+		for (size_t i = 0; i < _layerOrderList.size(); ++i)
+		{
+			if (_layerOrderList[i].type != VertexLayerOrderIDType::WORLD_LAYER)
+				continue;
+
+			auto& layer = _worldLayersList.GetObject(_layerOrderList[i].worldLayerID.ID);
 
 			bool commandRecorded = layer->WriteDataToBuffer(_currentTransferFrame, tranferCommandBuffer, _textureDataList.PopTextureChangedValues(_currentTransferFrame));
 			if (commandRecorded && _transferQueueID != _graphicsQueueID)
@@ -246,7 +279,21 @@ namespace JJs2DEngine
 				if (_layerOrderList[i].type != VertexLayerOrderIDType::UI_LAYER)
 					continue;
 
-				auto& layer = _uiLayersList.GetObject(_layerOrderList[i].UiLayerID.ID);
+				auto& layer = _uiLayersList.GetObject(_layerOrderList[i].uiLayerID.ID);
+
+				if (layer->IsOwnedByTransferQueue(_currentTransferFrame) == Misc::BOOL64_TRUE)
+				{
+					vertexBuffersOwnershipTransferDataList.push_back(layer->GetOwnershipTransferData(_currentTransferFrame, _transferQueueID, _graphicsQueueID));
+					layer->SetOwnedByTransferQueue(_currentTransferFrame, Misc::BOOL64_FALSE);
+				}
+			}
+
+			for (size_t i = 0; i < _layerOrderList.size(); ++i)
+			{
+				if (_layerOrderList[i].type != VertexLayerOrderIDType::WORLD_LAYER)
+					continue;
+
+				auto& layer = _worldLayersList.GetObject(_layerOrderList[i].worldLayerID.ID);
 
 				if (layer->IsOwnedByTransferQueue(_currentTransferFrame) == Misc::BOOL64_TRUE)
 				{
@@ -265,19 +312,46 @@ namespace JJs2DEngine
 		graphicsCommandBuffer.BeginRenderPass(_renderDataList.GetCurrentRenderPass(), _windowDataList.GetFramebufferID(_currentGraphicsFrame), 0, 0, _windowDataList.GetRenderWidth(),
 			_windowDataList.GetRenderHeight(), _renderDataList.GetClearValuesList());
 
-		graphicsCommandBuffer.BindGraphicsPipeline(_renderDataList.GetUILayerGraphicsPipeline());
-
-		graphicsCommandBuffer.BindDescriptorSetsToGraphicsPipeline(_renderDataList.GetUILayerGraphicsPipelineLayout(), 0, _textureDataList.GetTexturesDescriptorSetPool(),
-			{ _textureDataList.GetTexturesDescriptorSets(_currentTransferFrame) }, {});
-
-		for (size_t i = 0; i < _layerOrderList.size(); ++i)
+		if (_uiLayersList.GetUsedSize() != 0)
 		{
-			if (_layerOrderList[i].type != VertexLayerOrderIDType::UI_LAYER)
-				continue;
+			graphicsCommandBuffer.BindGraphicsPipeline(_renderDataList.GetUILayerGraphicsPipeline());
 
-			auto& layer = _uiLayersList.GetObject(_layerOrderList[i].UiLayerID.ID);
+			graphicsCommandBuffer.BindDescriptorSetsToGraphicsPipeline(_renderDataList.GetUILayerGraphicsPipelineLayout(), 0, _textureDataList.GetTexturesDescriptorSetPool(),
+				{ _textureDataList.GetTexturesDescriptorSets(_currentTransferFrame) }, {});
 
-			layer->RecordDrawCommand(_currentTransferFrame, graphicsCommandBuffer);
+			for (size_t i = 0; i < _layerOrderList.size(); ++i)
+			{
+				if (_layerOrderList[i].type != VertexLayerOrderIDType::UI_LAYER)
+					continue;
+
+				auto& layer = _uiLayersList.GetObject(_layerOrderList[i].uiLayerID.ID);
+
+				layer->RecordDrawCommand(_currentTransferFrame, graphicsCommandBuffer);
+			}
+		}
+
+		if (_worldLayersList.GetUsedSize() != 0)
+		{
+			graphicsCommandBuffer.BindGraphicsPipeline(_renderDataList.GetWorldLayerGraphicsPipeline());
+
+			graphicsCommandBuffer.BindDescriptorSetsToGraphicsPipeline(_renderDataList.GetWorldLayerGraphicsPipelineLayout(), 0, _textureDataList.GetTexturesDescriptorSetPool(),
+				{ _textureDataList.GetTexturesDescriptorSets(_currentTransferFrame) }, {});
+
+			std::vector<unsigned char> cameraData;
+			cameraData.resize(sizeof(_camera));
+			std::memcpy(cameraData.data(), &_camera, sizeof(_camera));
+
+			graphicsCommandBuffer.PushConstants(_renderDataList.GetWorldLayerGraphicsPipelineLayout(), VS::ShaderTypeFlagBit::SHADER_TYPE_VERTEX, 0, cameraData);
+
+			for (size_t i = 0; i < _layerOrderList.size(); ++i)
+			{
+				if (_layerOrderList[i].type != VertexLayerOrderIDType::WORLD_LAYER)
+					continue;
+
+				auto& layer = _worldLayersList.GetObject(_layerOrderList[i].worldLayerID.ID);
+
+				layer->RecordDrawCommand(_currentTransferFrame, graphicsCommandBuffer);
+			}
 		}
 
 		graphicsCommandBuffer.BeginNextSubpass(false);
@@ -444,14 +518,45 @@ namespace JJs2DEngine
 		return _gammaValue;
 	}
 
+	void VertexDataMainInternal::SetCameraPosition(float X, float Y)
+	{
+		_camera.position = glm::vec2(X, Y);
+	}
+
+	void VertexDataMainInternal::SetCameraRotation(float rotation)
+	{
+		_camera.rotation = glm::rotate(glm::identity<glm::mat4x4>(), glm::radians(360.0f -
+			rotation), glm::vec3(0.0f, 0.0f, 1.0f));
+	}
+
+	void VertexDataMainInternal::SetCameraZoom(float zoom)
+	{
+		_camera.zoom = zoom;
+	}
+
+	void VertexDataMainInternal::SetCameraAspectRatio(float ratio)
+	{
+		_camera.aspectRatio = ratio;
+	}
+
 	UiVertexDataLayerVersionListInternal& VertexDataMainInternal::GetUiVertexDataLayerVersionList(IDObject<UiVertexDataLayerVersionListPointer> ID)
 	{
 		return *_uiLayersList.GetObject(ID);
 	}
 
+	WorldLayerVertexDataLayerVersionListInternal& VertexDataMainInternal::GetWorldLayerVertexDataLayerVersionList(IDObject<WorldLayerVertexDataLayerVersionListPointer> ID)
+	{
+		return *_worldLayersList.GetObject(ID);
+	}
+
 	const UiVertexDataLayerVersionListInternal& VertexDataMainInternal::GetUiVertexDataLayerVersionList(IDObject<UiVertexDataLayerVersionListPointer> ID) const
 	{
 		return *_uiLayersList.GetConstObject(ID);
+	}
+
+	const WorldLayerVertexDataLayerVersionListInternal& VertexDataMainInternal::GetWorldLayerVertexDataLayerVersionList(IDObject<WorldLayerVertexDataLayerVersionListPointer> ID) const
+	{
+		return *_worldLayersList.GetConstObject(ID);
 	}
 
 }

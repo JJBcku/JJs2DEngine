@@ -5,21 +5,21 @@
 
 #include <Main.h>
 #include <VertexDataMain.h>
-#include <UiVertexDataLayerVersionList.h>
-#include <UiVertexDataLayerVersion.h>
-#include <UiObjectData.h>
+#include <WorldLayerVertexDataLayerVersionList.h>
+#include <WorldLayerVertexDataLayerVersion.h>
+#include <WorldLayerObjectData.h>
 
 void CreateLayers(MainDataCollection& data)
 {
 	auto vertexDataMain = data.main->GetVertexDataMainList();
 
-	data.layerID = vertexDataMain.AddUiLayerVersionList({ 1 }, 0x10);
+	data.layerID = vertexDataMain.AddWorldLayerVersionList({ 1 }, 0x10);
 
-	auto uiVertexLayerVersionList = vertexDataMain.GetUiVertexDataLayerVersionList(data.layerID);
+	auto worldVertexLayerVersionList = vertexDataMain.GetWorldLayerVertexDataLayerVersionList(data.layerID);
 
-	auto uiVertexLayer = uiVertexLayerVersionList.GetLayersVersion(0);
+	auto worldVertexLayerVersion = worldVertexLayerVersionList.GetLayersVersion(0);
 
-	JJ2DE::UiObjectData object;
+	JJ2DE::WorldLayerObjectData object;
 	object.screenWidth_UNORM = JJ2DE::onePointZeroUNORMValue / 2;
 	object.screenHeight_UNORM = JJ2DE::onePointZeroUNORMValue / 2;
 	object.screenPositionX_SNORM = 0;
@@ -29,11 +29,14 @@ void CreateLayers(MainDataCollection& data)
 	object.inPreloadedTexturesList = false;
 	object.textureIndex = data.texturesID;
 
-	auto optionalObjectID = uiVertexLayer.AddObject(object);
+	auto optionalObjectID = worldVertexLayerVersion.AddObject(object);
 
 	if (!optionalObjectID.has_value())
 		throw std::runtime_error("CreateLayers Error: Program failed to create the object!");
 
 	data.objectID = optionalObjectID.value();
+
+	vertexDataMain.SetCameraPosition(0.0f, 0.0f);
+	vertexDataMain.SetCameraZoom(0.5f);
 
 }

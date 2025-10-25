@@ -19,29 +19,29 @@ namespace VulkanSimplified
 
 namespace JJs2DEngine
 {
-	class UiVertexDataLayerVersionInternal;
+	class WorldLayerVertexDataLayerVersionInternal;
 	class TextureDataMainInternal;
 
-	class UiVertexDataLayerVersionListInternal
+	class WorldLayerVertexDataLayerVersionListInternal
 	{
 	public:
-		UiVertexDataLayerVersionListInternal(TextureDataMainInternal& textureDataList, VS::DataBufferLists& dataBufferList, VS::MemoryObjectsList& memoryObjectsList,
+		WorldLayerVertexDataLayerVersionListInternal(TextureDataMainInternal& textureDataList, VS::DataBufferLists& dataBufferList, VS::MemoryObjectsList& memoryObjectsList,
 			const std::vector<size_t>& versionsMaxObjectAmountsList, size_t layersDepth, size_t transferFrameAmount);
-		~UiVertexDataLayerVersionListInternal();
+		~WorldLayerVertexDataLayerVersionListInternal();
 
-		UiVertexDataLayerVersionListInternal(const UiVertexDataLayerVersionListInternal& rhs) noexcept = delete;
-		UiVertexDataLayerVersionListInternal(UiVertexDataLayerVersionListInternal&& rhs) noexcept = delete;
+		WorldLayerVertexDataLayerVersionListInternal(const WorldLayerVertexDataLayerVersionListInternal& rhs) noexcept = delete;
+		WorldLayerVertexDataLayerVersionListInternal(WorldLayerVertexDataLayerVersionListInternal&& rhs) noexcept = delete;
 
-		UiVertexDataLayerVersionListInternal& operator=(const UiVertexDataLayerVersionListInternal& rhs) noexcept = delete;
-		UiVertexDataLayerVersionListInternal& operator=(UiVertexDataLayerVersionListInternal&& rhs) noexcept = delete;
+		WorldLayerVertexDataLayerVersionListInternal& operator=(const WorldLayerVertexDataLayerVersionListInternal& rhs) noexcept = delete;
+		WorldLayerVertexDataLayerVersionListInternal& operator=(WorldLayerVertexDataLayerVersionListInternal&& rhs) noexcept = delete;
 
 		bool WriteDataToBuffer(size_t transferFrameIndice, VS::PrimaryIRCommandBuffer transferCommandBuffer, bool noChangeOverride);
 		VS::DataBuffersMemoryBarrierData GetOwnershipTransferData(size_t transferFrameIndice, size_t transferQueueID, size_t graphicQueueID);
 		void RecordDrawCommand(size_t transferFrameIndice, VS::PrimaryIRCommandBuffer graphicsCommandBuffer);
 
-		UiVertexDataLayerVersionInternal& GetLayersVersion(size_t versionIndex);
+		WorldLayerVertexDataLayerVersionInternal& GetLayersVersion(size_t versionIndex);
 
-		const UiVertexDataLayerVersionInternal& GetLayersVersion(size_t versionIndex) const;
+		const WorldLayerVertexDataLayerVersionInternal& GetLayersVersion(size_t versionIndex) const;
 
 		Misc::Bool64 IsOwnedByTransferQueue(size_t transferFrameIndice) const;
 		void SetOwnedByTransferQueue(size_t transferFrameIndice, Misc::Bool64Values newValue);
@@ -50,7 +50,7 @@ namespace JJs2DEngine
 		VS::DataBufferLists _dataBufferList;
 		VS::MemoryObjectsList _memoryObjectsList;
 
-		std::vector<std::unique_ptr<UiVertexDataLayerVersionInternal>> _versionList;
+		std::vector<std::unique_ptr<WorldLayerVertexDataLayerVersionInternal>> _versionList;
 		size_t _activeVersion;
 
 		VS::MemoryAllocationFullID _vertexMemoryID;
