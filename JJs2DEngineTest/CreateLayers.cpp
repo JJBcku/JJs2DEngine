@@ -36,7 +36,7 @@ void CreateLayers(MainDataCollection& data)
 
 	data.objectID = optionalObjectID.value();
 
-	vertexDataMain.SetCameraPosition(0.0f, 0.0f);
+	vertexDataMain.SetCameraPosition(2.0f, 0.0f);
 	vertexDataMain.SetCameraZoom(0.5f);
 
 }
