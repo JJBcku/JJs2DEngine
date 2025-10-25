@@ -1,7 +1,7 @@
 ; SPIR-V
 ; Version: 1.0
 ; Generator: Google Shaderc over Glslang; 11
-; Bound: 118
+; Bound: 132
 ; Schema: 0
                OpCapability Shader
           %1 = OpExtInstImport "GLSL.std.450"
@@ -21,9 +21,11 @@
                OpMemberName %CameraData 0 "rotation"
                OpMemberName %CameraData 1 "position"
                OpMemberName %CameraData 2 "zoom"
+               OpMemberName %CameraData 3 "aspectRatio"
                OpName %camera "camera"
-               OpName %position "position"
+               OpName %flatPosition "flatPosition"
                OpName %inPos "inPos"
+               OpName %worldPosition "worldPosition"
                OpName %texPos "texPos"
                OpName %gl_PerVertex "gl_PerVertex"
                OpMemberName %gl_PerVertex 0 "gl_Position"
@@ -47,6 +49,7 @@
                OpMemberDecorate %CameraData 0 Offset 0
                OpMemberDecorate %CameraData 1 Offset 64
                OpMemberDecorate %CameraData 2 Offset 72
+               OpMemberDecorate %CameraData 3 Offset 76
                OpDecorate %inPos Location 2
                OpDecorate %gl_PerVertex Block
                OpMemberDecorate %gl_PerVertex 0 BuiltIn Position
@@ -101,7 +104,7 @@
      %inSize = OpVariable %_ptr_Input_v2float Input
     %v4float = OpTypeVector %float 4
 %mat4v4float = OpTypeMatrix %v4float 4
- %CameraData = OpTypeStruct %mat4v4float %v2float %float
+ %CameraData = OpTypeStruct %mat4v4float %v2float %float %float
 %_ptr_PushConstant_CameraData = OpTypePointer PushConstant %CameraData
      %camera = OpVariable %_ptr_PushConstant_CameraData PushConstant
       %int_1 = OpConstant %int 1
@@ -110,13 +113,16 @@
       %inPos = OpVariable %_ptr_Input_v4float Input
       %int_2 = OpConstant %int 2
 %_ptr_PushConstant_float = OpTypePointer PushConstant %float
+%_ptr_Function_v4float = OpTypePointer Function %v4float
+%_ptr_Input_float = OpTypePointer Input %float
+      %int_0 = OpConstant %int 0
+%_ptr_PushConstant_mat4v4float = OpTypePointer PushConstant %mat4v4float
 %_arr_float_uint_1 = OpTypeArray %float %uint_1
 %gl_PerVertex = OpTypeStruct %v4float %float %_arr_float_uint_1 %_arr_float_uint_1
 %_ptr_Output_gl_PerVertex = OpTypePointer Output %gl_PerVertex
           %_ = OpVariable %_ptr_Output_gl_PerVertex Output
-      %int_0 = OpConstant %int 0
-%_ptr_Input_float = OpTypePointer Input %float
-%_ptr_PushConstant_mat4v4float = OpTypePointer PushConstant %mat4v4float
+%_ptr_Function_float = OpTypePointer Function %float
+      %int_3 = OpConstant %int 3
 %_ptr_Output_v4float = OpTypePointer Output %v4float
  %inTexCoord = OpVariable %_ptr_Input_v2float Input
   %inTexSize = OpVariable %_ptr_Input_v2float Input
@@ -131,7 +137,8 @@
        %main = OpFunction %void None %3
           %5 = OpLabel
 %verticeOffset = OpVariable %_ptr_Function_v2float Function
-   %position = OpVariable %_ptr_Function_v2float Function
+%flatPosition = OpVariable %_ptr_Function_v2float Function
+%worldPosition = OpVariable %_ptr_Function_v4float Function
      %texPos = OpVariable %_ptr_Function_v2float Function
    %texCoord = OpVariable %_ptr_Function_v2float Function
                OpStore %vertexData %19
@@ -158,35 +165,46 @@
          %72 = OpLoad %float %71
          %73 = OpCompositeConstruct %v2float %72 %72
          %74 = OpFMul %v2float %68 %73
-               OpStore %position %74
-         %76 = OpLoad %int %gl_VertexIndex
-         %77 = OpAccessChain %_ptr_Private_uint %vertexIndexes %76
-         %78 = OpLoad %uint %77
-         %79 = OpAccessChain %_ptr_Private_v2float %textureData %78
-         %80 = OpLoad %v2float %79
-               OpStore %texPos %80
-         %86 = OpLoad %v2float %position
-         %88 = OpAccessChain %_ptr_Input_float %inPos %uint_2
-         %89 = OpLoad %float %88
-         %90 = OpCompositeExtract %float %86 0
-         %91 = OpCompositeExtract %float %86 1
-         %92 = OpCompositeConstruct %v4float %90 %91 %89 %float_1
-         %94 = OpAccessChain %_ptr_PushConstant_mat4v4float %camera %int_0
-         %95 = OpLoad %mat4v4float %94
-         %96 = OpVectorTimesMatrix %v4float %92 %95
-         %98 = OpAccessChain %_ptr_Output_v4float %_ %int_0
-               OpStore %98 %96
-        %101 = OpLoad %v2float %inTexCoord
-        %103 = OpLoad %v2float %inTexSize
-        %104 = OpLoad %v2float %texPos
-        %105 = OpFMul %v2float %103 %104
-        %106 = OpFAdd %v2float %101 %105
-               OpStore %texCoord %106
-        %109 = OpLoad %v2float %texCoord
-               OpStore %outTexCoord %109
-        %114 = OpLoad %uint %inTexLayer
-               OpStore %outTexLayer %114
-        %117 = OpLoad %uint %inTexIndex
-               OpStore %outTexIndex %117
+               OpStore %flatPosition %74
+         %77 = OpLoad %v2float %flatPosition
+         %79 = OpAccessChain %_ptr_Input_float %inPos %uint_2
+         %80 = OpLoad %float %79
+         %81 = OpCompositeExtract %float %77 0
+         %82 = OpCompositeExtract %float %77 1
+         %83 = OpCompositeConstruct %v4float %81 %82 %80 %float_1
+         %86 = OpAccessChain %_ptr_PushConstant_mat4v4float %camera %int_0
+         %87 = OpLoad %mat4v4float %86
+         %88 = OpVectorTimesMatrix %v4float %83 %87
+               OpStore %worldPosition %88
+         %90 = OpLoad %int %gl_VertexIndex
+         %91 = OpAccessChain %_ptr_Private_uint %vertexIndexes %90
+         %92 = OpLoad %uint %91
+         %93 = OpAccessChain %_ptr_Private_v2float %textureData %92
+         %94 = OpLoad %v2float %93
+               OpStore %texPos %94
+        %100 = OpAccessChain %_ptr_Function_float %worldPosition %uint_0
+        %101 = OpLoad %float %100
+        %102 = OpAccessChain %_ptr_Function_float %worldPosition %uint_1
+        %103 = OpLoad %float %102
+        %105 = OpAccessChain %_ptr_PushConstant_float %camera %int_3
+        %106 = OpLoad %float %105
+        %107 = OpFMul %float %103 %106
+        %108 = OpAccessChain %_ptr_Function_float %worldPosition %uint_2
+        %109 = OpLoad %float %108
+        %110 = OpCompositeConstruct %v4float %101 %107 %109 %float_1
+        %112 = OpAccessChain %_ptr_Output_v4float %_ %int_0
+               OpStore %112 %110
+        %115 = OpLoad %v2float %inTexCoord
+        %117 = OpLoad %v2float %inTexSize
+        %118 = OpLoad %v2float %texPos
+        %119 = OpFMul %v2float %117 %118
+        %120 = OpFAdd %v2float %115 %119
+               OpStore %texCoord %120
+        %123 = OpLoad %v2float %texCoord
+               OpStore %outTexCoord %123
+        %128 = OpLoad %uint %inTexLayer
+               OpStore %outTexLayer %128
+        %131 = OpLoad %uint %inTexIndex
+               OpStore %outTexIndex %131
                OpReturn
                OpFunctionEnd

@@ -4,6 +4,8 @@
 #include "PipelineCacheHeaders.h"
 #include "DeviceSettingsInternal.h"
 
+#include "CameraData.h"
+
 #include "../../../Include/Common/TextureArraySize.h"
 
 #include <fstream>
@@ -175,7 +177,7 @@ namespace JJs2DEngine
 			auto worldLayerLayerVertexShaderData = LoadShaderFile(dataFolder + worldLayerVertexShaderName + vertexShaderExtension);
 			_worldLayerVertexShaderID = shaderList.CreateVertexShaderModule(*worldLayerLayerVertexShaderData.data(), worldLayerLayerVertexShaderData.size(), 0x10);
 
-			_worldLayerPushConstant = _sharedData.GetSharedPipelineDataLists().AddPushConstantData(VS::SHADER_TYPE_VERTEX, 0U, 76U);
+			_worldLayerPushConstant = _sharedData.GetSharedPipelineDataLists().AddPushConstantData(VS::SHADER_TYPE_VERTEX, 0U, sizeof(CameraData));
 
 			VS::PipelineLayoutCreationData worldLayerPipelineLayoutCreationData;
 			worldLayerPipelineLayoutCreationData._descriptorSets = { _textureDescriptorSetLayout };

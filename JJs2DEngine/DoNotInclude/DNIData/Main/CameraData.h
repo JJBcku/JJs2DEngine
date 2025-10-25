@@ -10,6 +10,7 @@ namespace JJs2DEngine
 		glm::mat4 rotation;
 		glm::vec2 position;
 		float zoom;
+		float aspectRatio;
 
 		CameraData();
 		~CameraData();

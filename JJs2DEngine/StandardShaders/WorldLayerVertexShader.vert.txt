@@ -1,12 +1,12 @@
 ; SPIR-V
 ; Version: 1.0
 ; Generator: Google Shaderc over Glslang; 11
-; Bound: 121
+; Bound: 135
 ; Schema: 0
                OpCapability Shader
           %1 = OpExtInstImport "GLSL.std.450"
                OpMemoryModel Logical GLSL450
-               OpEntryPoint Vertex %4 "main" %gl_VertexIndex %48 %65 %84 %100 %102 %108 %111 %113 %115 %116
+               OpEntryPoint Vertex %4 "main" %gl_VertexIndex %48 %65 %98 %114 %116 %122 %125 %127 %129 %130
                OpDecorate %gl_VertexIndex BuiltIn VertexIndex
                OpDecorate %48 Location 3
                OpDecorate %_struct_54 Block
@@ -15,19 +15,20 @@
                OpMemberDecorate %_struct_54 0 Offset 0
                OpMemberDecorate %_struct_54 1 Offset 64
                OpMemberDecorate %_struct_54 2 Offset 72
+               OpMemberDecorate %_struct_54 3 Offset 76
                OpDecorate %65 Location 2
-               OpDecorate %_struct_82 Block
-               OpMemberDecorate %_struct_82 0 BuiltIn Position
-               OpMemberDecorate %_struct_82 1 BuiltIn PointSize
-               OpMemberDecorate %_struct_82 2 BuiltIn ClipDistance
-               OpMemberDecorate %_struct_82 3 BuiltIn CullDistance
-               OpDecorate %100 Location 0
-               OpDecorate %102 Location 1
-               OpDecorate %108 Location 0
-               OpDecorate %111 Location 1
-               OpDecorate %113 Location 4
-               OpDecorate %115 Location 2
-               OpDecorate %116 Location 5
+               OpDecorate %_struct_96 Block
+               OpMemberDecorate %_struct_96 0 BuiltIn Position
+               OpMemberDecorate %_struct_96 1 BuiltIn PointSize
+               OpMemberDecorate %_struct_96 2 BuiltIn ClipDistance
+               OpMemberDecorate %_struct_96 3 BuiltIn CullDistance
+               OpDecorate %114 Location 0
+               OpDecorate %116 Location 1
+               OpDecorate %122 Location 0
+               OpDecorate %125 Location 1
+               OpDecorate %127 Location 4
+               OpDecorate %129 Location 2
+               OpDecorate %130 Location 5
        %void = OpTypeVoid
           %3 = OpTypeFunction %void
       %float = OpTypeFloat 32
@@ -62,7 +63,7 @@
          %48 = OpVariable %_ptr_Input_v2float Input
     %v4float = OpTypeVector %float 4
 %mat4v4float = OpTypeMatrix %v4float 4
- %_struct_54 = OpTypeStruct %mat4v4float %v2float %float
+ %_struct_54 = OpTypeStruct %mat4v4float %v2float %float %float
 %_ptr_PushConstant__struct_54 = OpTypePointer PushConstant %_struct_54
          %56 = OpVariable %_ptr_PushConstant__struct_54 PushConstant
       %int_1 = OpConstant %int 1
@@ -71,24 +72,25 @@
          %65 = OpVariable %_ptr_Input_v4float Input
       %int_2 = OpConstant %int 2
 %_ptr_PushConstant_float = OpTypePointer PushConstant %float
-%_arr_float_uint_1 = OpTypeArray %float %uint_1
- %_struct_82 = OpTypeStruct %v4float %float %_arr_float_uint_1 %_arr_float_uint_1
-%_ptr_Output__struct_82 = OpTypePointer Output %_struct_82
-         %84 = OpVariable %_ptr_Output__struct_82 Output
-      %int_0 = OpConstant %int 0
 %_ptr_Input_float = OpTypePointer Input %float
+      %int_0 = OpConstant %int 0
 %_ptr_PushConstant_mat4v4float = OpTypePointer PushConstant %mat4v4float
+%_arr_float_uint_1 = OpTypeArray %float %uint_1
+ %_struct_96 = OpTypeStruct %v4float %float %_arr_float_uint_1 %_arr_float_uint_1
+%_ptr_Output__struct_96 = OpTypePointer Output %_struct_96
+         %98 = OpVariable %_ptr_Output__struct_96 Output
+      %int_3 = OpConstant %int 3
 %_ptr_Output_v4float = OpTypePointer Output %v4float
-        %100 = OpVariable %_ptr_Input_v2float Input
-        %102 = OpVariable %_ptr_Input_v2float Input
+        %114 = OpVariable %_ptr_Input_v2float Input
+        %116 = OpVariable %_ptr_Input_v2float Input
 %_ptr_Output_v2float = OpTypePointer Output %v2float
-        %108 = OpVariable %_ptr_Output_v2float Output
+        %122 = OpVariable %_ptr_Output_v2float Output
 %_ptr_Output_uint = OpTypePointer Output %uint
-        %111 = OpVariable %_ptr_Output_uint Output
+        %125 = OpVariable %_ptr_Output_uint Output
 %_ptr_Input_uint = OpTypePointer Input %uint
-        %113 = OpVariable %_ptr_Input_uint Input
-        %115 = OpVariable %_ptr_Output_uint Output
-        %116 = OpVariable %_ptr_Input_uint Input
+        %127 = OpVariable %_ptr_Input_uint Input
+        %129 = OpVariable %_ptr_Output_uint Output
+        %130 = OpVariable %_ptr_Input_uint Input
 %_ptr_Function__arr_v2float_uint_4 = OpTypePointer Function %_arr_v2float_uint_4
 %_ptr_Function__arr_uint_uint_6 = OpTypePointer Function %_arr_uint_uint_6
 %_ptr_Function_uint = OpTypePointer Function %uint
@@ -117,27 +119,34 @@
          %72 = OpLoad %float %71
          %73 = OpCompositeConstruct %v2float %72 %72
          %74 = OpFMul %v2float %68 %73
-         %78 = OpLoad %uint %42
-         %79 = OpAccessChain %_ptr_Function_v2float %20 %78
-         %80 = OpLoad %v2float %79
-         %88 = OpAccessChain %_ptr_Input_float %65 %uint_2
-         %89 = OpLoad %float %88
-         %90 = OpCompositeExtract %float %74 0
-         %91 = OpCompositeExtract %float %74 1
-         %92 = OpCompositeConstruct %v4float %90 %91 %89 %float_1
-         %94 = OpAccessChain %_ptr_PushConstant_mat4v4float %56 %int_0
-         %95 = OpLoad %mat4v4float %94
-         %96 = OpVectorTimesMatrix %v4float %92 %95
-         %98 = OpAccessChain %_ptr_Output_v4float %84 %int_0
-               OpStore %98 %96
-        %101 = OpLoad %v2float %100
-        %103 = OpLoad %v2float %102
-        %105 = OpFMul %v2float %103 %80
-        %106 = OpFAdd %v2float %101 %105
-               OpStore %108 %106
-        %114 = OpLoad %uint %113
-               OpStore %111 %114
-        %117 = OpLoad %uint %116
-               OpStore %115 %117
+         %79 = OpAccessChain %_ptr_Input_float %65 %uint_2
+         %80 = OpLoad %float %79
+         %81 = OpCompositeExtract %float %74 0
+         %82 = OpCompositeExtract %float %74 1
+         %83 = OpCompositeConstruct %v4float %81 %82 %80 %float_1
+         %86 = OpAccessChain %_ptr_PushConstant_mat4v4float %56 %int_0
+         %87 = OpLoad %mat4v4float %86
+         %88 = OpVectorTimesMatrix %v4float %83 %87
+         %92 = OpLoad %uint %42
+         %93 = OpAccessChain %_ptr_Function_v2float %20 %92
+         %94 = OpLoad %v2float %93
+        %101 = OpCompositeExtract %float %88 0
+        %103 = OpCompositeExtract %float %88 1
+        %105 = OpAccessChain %_ptr_PushConstant_float %56 %int_3
+        %106 = OpLoad %float %105
+        %107 = OpFMul %float %103 %106
+        %109 = OpCompositeExtract %float %88 2
+        %110 = OpCompositeConstruct %v4float %101 %107 %109 %float_1
+        %112 = OpAccessChain %_ptr_Output_v4float %98 %int_0
+               OpStore %112 %110
+        %115 = OpLoad %v2float %114
+        %117 = OpLoad %v2float %116
+        %119 = OpFMul %v2float %117 %94
+        %120 = OpFAdd %v2float %115 %119
+               OpStore %122 %120
+        %128 = OpLoad %uint %127
+               OpStore %125 %128
+        %131 = OpLoad %uint %130
+               OpStore %129 %131
                OpReturn
                OpFunctionEnd
