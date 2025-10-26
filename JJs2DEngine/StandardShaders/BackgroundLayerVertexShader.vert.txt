@@ -17,9 +17,9 @@
                OpDecorate %69 Location 1
                OpDecorate %75 Location 0
                OpDecorate %78 Location 1
-               OpDecorate %80 Location 4
+               OpDecorate %80 Location 2
                OpDecorate %82 Location 2
-               OpDecorate %83 Location 5
+               OpDecorate %83 Location 3
        %void = OpTypeVoid
           %3 = OpTypeFunction %void
       %float = OpTypeFloat 32

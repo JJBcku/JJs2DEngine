@@ -41,9 +41,9 @@
                OpDecorate %inTexSize Location 1
                OpDecorate %outTexCoord Location 0
                OpDecorate %outTexLayer Location 1
-               OpDecorate %inTexLayer Location 4
+               OpDecorate %inTexLayer Location 2
                OpDecorate %outTexIndex Location 2
-               OpDecorate %inTexIndex Location 5
+               OpDecorate %inTexIndex Location 3
        %void = OpTypeVoid
           %3 = OpTypeFunction %void
       %float = OpTypeFloat 32

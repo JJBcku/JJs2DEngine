@@ -2,8 +2,8 @@
 
 layout(location = 0) in vec2 inTexCoord;
 layout(location = 1) in vec2 inTexSize;
-layout(location = 4) in uint inTexLayer;
-layout(location = 5) in uint inTexIndex;
+layout(location = 2) in uint inTexLayer;
+layout(location = 3) in uint inTexIndex;
 
 layout(location = 0) out vec2 outTexCoord;
 layout(location = 1) out uint outTexLayer;
