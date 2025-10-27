@@ -68,12 +68,12 @@ namespace JJs2DEngine
 
 	const std::string backgroundLayerVertexShaderName("BackgroundShader");
 	const std::string uiLayerVertexShaderName("UILayerShader");
-	const std::string worldLayerVertexShaderName("WorldLayerVertexShader");
+	const std::string worldLayerVertexShaderName("WorldLayerShader");
 
-	const std::string standardFragmentShaderName("StandardFragmentShader");
+	const std::string standardFragmentShaderName("SharedShader");
 
-	const std::string gammaCorrectionFragmentShaderName("GammaCorrectionFragmentShader");
-	const std::string gammaCorrectionVertexShaderName("GammaCorrectionVertexShader");
+	const std::string gammaCorrectionFragmentShaderName("GammaCorrectionShader");
+	const std::string gammaCorrectionVertexShaderName("GammaCorrectionShader");
 
 #if defined(_DEBUG) || defined(DEBUG)
 	const std::string vertexShaderExtension(".debug.vert.spv");
