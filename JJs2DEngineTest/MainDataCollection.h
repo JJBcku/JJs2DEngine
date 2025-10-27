@@ -12,6 +12,7 @@ struct MainDataCollection
 	IDObject<JJ2DE::WorldLayerVertexDataLayerVersionListPointer> layerID;
 	size_t objectID;
 
+	std::pair<size_t, size_t> backgroundtexturesID;
 	std::pair<size_t, size_t> texturesID;
 
 	bool is16Bit;

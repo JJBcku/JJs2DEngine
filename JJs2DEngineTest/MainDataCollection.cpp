@@ -9,6 +9,9 @@ MainDataCollection::MainDataCollection()
 {
 	objectID = std::numeric_limits<size_t>::max();
 
+	backgroundtexturesID = { std::numeric_limits<size_t>::max(), std::numeric_limits<size_t>::max() };
+	texturesID = { std::numeric_limits<size_t>::max(), std::numeric_limits<size_t>::max() };
+
 	is16Bit = false;
 	isRBReversed = false;
 }

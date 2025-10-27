@@ -33,7 +33,7 @@
     <ClCompile Include="CreateLayers.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="CreateTexture.cpp">
+    <ClCompile Include="CreateTextures.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -56,7 +56,7 @@
     <ClInclude Include="CreateLayers.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="CreateTexture.h">
+    <ClInclude Include="CreateTextures.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

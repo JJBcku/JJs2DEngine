@@ -94,7 +94,7 @@
   <ItemGroup>
     <ClCompile Include="CreateLayers.cpp" />
     <ClCompile Include="CreateMainClass.cpp" />
-    <ClCompile Include="CreateTexture.cpp" />
+    <ClCompile Include="CreateTextures.cpp" />
     <ClCompile Include="JJs2DEngineTest.cpp" />
     <ClCompile Include="MainDataCollection.cpp" />
     <ClCompile Include="pch.cpp">
@@ -106,7 +106,7 @@
   <ItemGroup>
     <ClInclude Include="CreateLayers.h" />
     <ClInclude Include="CreateMainClass.h" />
-    <ClInclude Include="CreateTexture.h" />
+    <ClInclude Include="CreateTextures.h" />
     <ClInclude Include="MainDataCollection.h" />
     <ClInclude Include="NamespaceAliases.h" />
     <ClInclude Include="pch.h" />
