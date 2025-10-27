@@ -89,9 +89,9 @@ namespace JJs2DEngine
 		std::optional<uint64_t> _gammaCorrectionPipelineCompatibleSavedSize;
 		std::optional<uint64_t> _gammaCorrectionPipelineCompatibleSavedCRC64WE;
 
-		void CreateUIPipelineCacheFile(const std::string& dataFolder);
-		void LoadUIPipelineCacheFile(const std::string& dataFolder);
-		void SaveUIPipelineCacheFile(const std::string& dataFolder);
+		void CreateUILayerPipelineCacheFile(const std::string& dataFolder);
+		void LoadUILayerPipelineCacheFile(const std::string& dataFolder);
+		void SaveUILayerPipelineCacheFile(const std::string& dataFolder);
 
 		void CreateWorldLayerPipelineCacheFile(const std::string& dataFolder);
 		void LoadWorldLayerPipelineCacheFile(const std::string& dataFolder);
