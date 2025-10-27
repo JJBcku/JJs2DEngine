@@ -100,21 +100,21 @@ namespace JJs2DEngine
 		IDObject<VS::AutoCleanupPipelineLayout> _gammaCorrectionPipelineLayout;
 		std::vector<IDObject<VS::AutoCleanupGraphicsPipeline>> _gammaCorrectionPipelineList;
 
-		void CreateBackgroundPipelineCacheFile(const std::string& dataFolder);
-		void LoadBackgroundPipelineCacheFile(const std::string& dataFolder);
-		void SaveBackgroundPipelineCacheFile(const std::string& dataFolder);
+		void CreateBackgroundPipelineCacheFile(const std::string& datafilePath);
+		void LoadBackgroundPipelineCacheFile(const std::string& datafilePath);
+		void SaveBackgroundPipelineCacheFile(const std::string& datafilePath);
 
-		void CreateUILayerPipelineCacheFile(const std::string& dataFolder);
-		void LoadUILayerPipelineCacheFile(const std::string& dataFolder);
-		void SaveUILayerPipelineCacheFile(const std::string& dataFolder);
+		void CreateUILayerPipelineCacheFile(const std::string& datafilePath);
+		void LoadUILayerPipelineCacheFile(const std::string& datafilePath);
+		void SaveUILayerPipelineCacheFile(const std::string& datafilePath);
 
-		void CreateWorldLayerPipelineCacheFile(const std::string& dataFolder);
-		void LoadWorldLayerPipelineCacheFile(const std::string& dataFolder);
-		void SaveWorldLayerPipelineCacheFile(const std::string& dataFolder);
+		void CreateWorldLayerPipelineCacheFile(const std::string& datafilePath);
+		void LoadWorldLayerPipelineCacheFile(const std::string& datafilePath);
+		void SaveWorldLayerPipelineCacheFile(const std::string& datafilePath);
 
-		void CreateGammaCorrectionPipelineCacheFile(const std::string& dataFolder);
-		void LoadGammaCorrectionPipelineCacheFile(const std::string& dataFolder);
-		void SaveGammaCorrectionPipelineCacheFile(const std::string& dataFolder);
+		void CreateGammaCorrectionPipelineCacheFile(const std::string& datafilePath);
+		void LoadGammaCorrectionPipelineCacheFile(const std::string& datafilePath);
+		void SaveGammaCorrectionPipelineCacheFile(const std::string& datafilePath);
 
 		std::vector<char> LoadShaderFile(std::string shaderName);
 

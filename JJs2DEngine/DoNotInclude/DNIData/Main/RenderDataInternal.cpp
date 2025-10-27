@@ -88,52 +88,55 @@ namespace JJs2DEngine
 	RenderDataInternal::RenderDataInternal(size_t currentPipelineSettings, const std::vector<PipelineSettings>& preInitializedPipelineSettings, const std::string& dataFolder,
 		VS::DeviceMain device, VS::SharedDataMainList sharedData) : _device(device), _sharedData(sharedData), _currentPipelineSettings(currentPipelineSettings)
 	{
-		bool uiCacheCreateMainHeader = false;
-
 		if (dataFolder != "" && !fs::exists(dataFolder))
 			throw std::runtime_error("RenderDataInternal Constructor Error: Program was given an non-existent data folder!");
 
-		if (!fs::exists(dataFolder + pipelineCacheDirectoryName))
-		{
-			fs::create_directory(dataFolder + pipelineCacheDirectoryName);
+		std::string pipelineCacheDirectoryPath = dataFolder + pipelineCacheDirectoryName;
 
-			uiCacheCreateMainHeader = true;
+		std::string backgroundPipelineCachePath = dataFolder + BackgroundPipelineFullName;
+		std::string UIPipelineCachePath = dataFolder + UIPipelineFullName;
+		std::string worldLayerPipelineCachePath = dataFolder + WorldLayerPipelineFullName;
+		std::string gammaCorrectionPipelineCachePath = dataFolder + GammaCorrectionPipelineFullName;
+
+		if (!fs::exists(pipelineCacheDirectoryPath))
+		{
+			fs::create_directory(pipelineCacheDirectoryPath);
 		}
 
-		if (fs::exists(dataFolder + BackgroundPipelineFullName))
+		if (fs::exists(backgroundPipelineCachePath))
 		{
-			LoadBackgroundPipelineCacheFile(dataFolder);
+			LoadBackgroundPipelineCacheFile(backgroundPipelineCachePath);
 		}
 		else
 		{
-			CreateBackgroundPipelineCacheFile(dataFolder);
+			CreateBackgroundPipelineCacheFile(backgroundPipelineCachePath);
 		}
 
-		if (fs::exists(dataFolder + UIPipelineFullName))
+		if (fs::exists(UIPipelineCachePath))
 		{
-			LoadUILayerPipelineCacheFile(dataFolder);
+			LoadUILayerPipelineCacheFile(UIPipelineCachePath);
 		}
 		else
 		{
-			CreateUILayerPipelineCacheFile(dataFolder);
+			CreateUILayerPipelineCacheFile(UIPipelineCachePath);
 		}
 
-		if (fs::exists(dataFolder + WorldLayerPipelineFullName))
+		if (fs::exists(worldLayerPipelineCachePath))
 		{
-			LoadWorldLayerPipelineCacheFile(dataFolder);
+			LoadWorldLayerPipelineCacheFile(worldLayerPipelineCachePath);
 		}
 		else
 		{
-			CreateWorldLayerPipelineCacheFile(dataFolder);
+			CreateWorldLayerPipelineCacheFile(worldLayerPipelineCachePath);
 		}
 
-		if (fs::exists(dataFolder + GammaCorrectionPipelineFullName))
+		if (fs::exists(gammaCorrectionPipelineCachePath))
 		{
-			LoadGammaCorrectionPipelineCacheFile(dataFolder);
+			LoadGammaCorrectionPipelineCacheFile(gammaCorrectionPipelineCachePath);
 		}
 		else
 		{
-			CreateGammaCorrectionPipelineCacheFile(dataFolder);
+			CreateGammaCorrectionPipelineCacheFile(gammaCorrectionPipelineCachePath);
 		}
 
 		auto shaderList = _device.GetShaderLists();
@@ -368,13 +371,13 @@ namespace JJs2DEngine
 		return _clearValues;
 	}
 
-	void RenderDataInternal::CreateBackgroundPipelineCacheFile(const std::string& dataFolder)
+	void RenderDataInternal::CreateBackgroundPipelineCacheFile(const std::string& datafilePath)
 	{
 		auto pipelineDataList = _device.GetPipelineDataLists();
 
 		std::fstream pipelineCacheFile;
 
-		pipelineCacheFile.open(dataFolder + BackgroundPipelineFullName, std::ios_base::binary | std::ios_base::in | std::ios_base::out | std::ios_base::trunc);
+		pipelineCacheFile.open(datafilePath, std::ios_base::binary | std::ios_base::in | std::ios_base::out | std::ios_base::trunc);
 
 		if (!pipelineCacheFile.is_open())
 			throw std::runtime_error("RenderDataInternal::CreateBackgroundPipelineCacheFile Error: Program failed to open the pipeline cache file!");
@@ -397,13 +400,13 @@ namespace JJs2DEngine
 		pipelineCacheFile.close();
 	}
 
-	void RenderDataInternal::LoadBackgroundPipelineCacheFile(const std::string& dataFolder)
+	void RenderDataInternal::LoadBackgroundPipelineCacheFile(const std::string& datafilePath)
 	{
 		auto pipelineDataList = _device.GetPipelineDataLists();
 
 		std::ifstream pipelineCacheFile;
 
-		pipelineCacheFile.open(dataFolder + BackgroundPipelineFullName, std::ios_base::binary | std::ios_base::in | std::ios_base::out);
+		pipelineCacheFile.open(datafilePath, std::ios_base::binary | std::ios_base::in | std::ios_base::out);
 
 		if (!pipelineCacheFile.is_open())
 			throw std::runtime_error("RenderDataInternal::LoadBackgroundPipelineCacheFile Error: Program failed to open the pipeline cache file!");
@@ -474,7 +477,7 @@ namespace JJs2DEngine
 		pipelineCacheFile.close();
 	}
 
-	void RenderDataInternal::SaveBackgroundPipelineCacheFile(const std::string& dataFolder)
+	void RenderDataInternal::SaveBackgroundPipelineCacheFile(const std::string& datafilePath)
 	{
 		auto pipelineDataList = _device.GetPipelineDataLists();
 		std::ifstream pipelineCacheInFile;
@@ -501,7 +504,7 @@ namespace JJs2DEngine
 			return;
 
 		PipelineCacheElementHeader elementHeader, oldElementHeader;
-		pipelineCacheInFile.open(dataFolder + BackgroundPipelineFullName, std::ios_base::binary | std::ios_base::in);
+		pipelineCacheInFile.open(datafilePath, std::ios_base::binary | std::ios_base::in);
 
 		if (!pipelineCacheInFile.is_open())
 			throw std::runtime_error("RenderDataInternal::SaveBackgroundPipelineCacheFile: Program failed to open the pipeline cache in file!");
@@ -532,7 +535,7 @@ namespace JJs2DEngine
 
 		pipelineCacheInFile.close();
 
-		pipelineCacheOutFile.open(dataFolder + BackgroundPipelineFullName, std::ios_base::binary | std::ios_base::out | std::ios_base::in);
+		pipelineCacheOutFile.open(datafilePath, std::ios_base::binary | std::ios_base::out | std::ios_base::in);
 
 		if (!pipelineCacheOutFile.is_open())
 			throw std::runtime_error("RenderDataInternal::SaveBackgroundPipelineCacheFile: Program failed to open the pipeline cache out file!");
@@ -582,13 +585,13 @@ namespace JJs2DEngine
 		pipelineCacheOutFile.close();
 	}
 
-	void RenderDataInternal::CreateUILayerPipelineCacheFile(const std::string& dataFolder)
+	void RenderDataInternal::CreateUILayerPipelineCacheFile(const std::string& datafilePath)
 	{
 		auto pipelineDataList = _device.GetPipelineDataLists();
 
 		std::fstream pipelineCacheFile;
 
-		pipelineCacheFile.open(dataFolder + UIPipelineFullName, std::ios_base::binary | std::ios_base::in | std::ios_base::out | std::ios_base::trunc);
+		pipelineCacheFile.open(datafilePath, std::ios_base::binary | std::ios_base::in | std::ios_base::out | std::ios_base::trunc);
 
 		if (!pipelineCacheFile.is_open())
 			throw std::runtime_error("RenderDataInternal::CreateUILayerPipelineCacheFile Error: Program failed to open the pipeline cache file!");
@@ -610,13 +613,13 @@ namespace JJs2DEngine
 		pipelineCacheFile.close();
 	}
 
-	void RenderDataInternal::LoadUILayerPipelineCacheFile(const std::string& dataFolder)
+	void RenderDataInternal::LoadUILayerPipelineCacheFile(const std::string& datafilePath)
 	{
 		auto pipelineDataList = _device.GetPipelineDataLists();
 
 		std::ifstream pipelineCacheFile;
 
-		pipelineCacheFile.open(dataFolder + UIPipelineFullName, std::ios_base::binary | std::ios_base::in | std::ios_base::out);
+		pipelineCacheFile.open(datafilePath, std::ios_base::binary | std::ios_base::in | std::ios_base::out);
 
 		if (!pipelineCacheFile.is_open())
 			throw std::runtime_error("RenderDataInternal::LoadUILayerPipelineCacheFile Error: Program failed to open the pipeline cache file!");
@@ -687,7 +690,7 @@ namespace JJs2DEngine
 		pipelineCacheFile.close();
 	}
 
-	void RenderDataInternal::SaveUILayerPipelineCacheFile(const std::string& dataFolder)
+	void RenderDataInternal::SaveUILayerPipelineCacheFile(const std::string& datafilePath)
 	{
 		auto pipelineDataList = _device.GetPipelineDataLists();
 		std::ifstream pipelineCacheInFile;
@@ -714,7 +717,7 @@ namespace JJs2DEngine
 			return;
 
 		PipelineCacheElementHeader elementHeader, oldElementHeader;
-		pipelineCacheInFile.open(dataFolder + UIPipelineFullName, std::ios_base::binary | std::ios_base::in);
+		pipelineCacheInFile.open(datafilePath, std::ios_base::binary | std::ios_base::in);
 
 		if (!pipelineCacheInFile.is_open())
 			throw std::runtime_error("RenderDataInternal::SaveUILayerPipelineCacheFile: Program failed to open the pipeline cache in file!");
@@ -745,7 +748,7 @@ namespace JJs2DEngine
 
 		pipelineCacheInFile.close();
 
-		pipelineCacheOutFile.open(dataFolder + UIPipelineFullName, std::ios_base::binary | std::ios_base::out | std::ios_base::in);
+		pipelineCacheOutFile.open(datafilePath, std::ios_base::binary | std::ios_base::out | std::ios_base::in);
 
 		if (!pipelineCacheOutFile.is_open())
 			throw std::runtime_error("RenderDataInternal::SaveUILayerPipelineCacheFile: Program failed to open the pipeline cache out file!");
@@ -795,13 +798,13 @@ namespace JJs2DEngine
 		pipelineCacheOutFile.close();
 	}
 
-	void RenderDataInternal::CreateWorldLayerPipelineCacheFile(const std::string& dataFolder)
+	void RenderDataInternal::CreateWorldLayerPipelineCacheFile(const std::string& datafilePath)
 	{
 		auto pipelineDataList = _device.GetPipelineDataLists();
 
 		std::fstream pipelineCacheFile;
 
-		pipelineCacheFile.open(dataFolder + WorldLayerPipelineFullName, std::ios_base::binary | std::ios_base::in | std::ios_base::out | std::ios_base::trunc);
+		pipelineCacheFile.open(datafilePath, std::ios_base::binary | std::ios_base::in | std::ios_base::out | std::ios_base::trunc);
 
 		if (!pipelineCacheFile.is_open())
 			throw std::runtime_error("RenderDataInternal::CreateWorldLayerPipelineCacheFile Error: Program failed to open the pipeline cache file!");
@@ -824,13 +827,13 @@ namespace JJs2DEngine
 		pipelineCacheFile.close();
 	}
 
-	void RenderDataInternal::LoadWorldLayerPipelineCacheFile(const std::string& dataFolder)
+	void RenderDataInternal::LoadWorldLayerPipelineCacheFile(const std::string& datafilePath)
 	{
 		auto pipelineDataList = _device.GetPipelineDataLists();
 
 		std::ifstream pipelineCacheFile;
 
-		pipelineCacheFile.open(dataFolder + WorldLayerPipelineFullName, std::ios_base::binary | std::ios_base::in | std::ios_base::out);
+		pipelineCacheFile.open(datafilePath, std::ios_base::binary | std::ios_base::in | std::ios_base::out);
 
 		if (!pipelineCacheFile.is_open())
 			throw std::runtime_error("RenderDataInternal::LoadWorldLayerPipelineCacheFile Error: Program failed to open the pipeline cache file!");
@@ -901,7 +904,7 @@ namespace JJs2DEngine
 		pipelineCacheFile.close();
 	}
 
-	void RenderDataInternal::SaveWorldLayerPipelineCacheFile(const std::string& dataFolder)
+	void RenderDataInternal::SaveWorldLayerPipelineCacheFile(const std::string& datafilePath)
 	{
 		auto pipelineDataList = _device.GetPipelineDataLists();
 		std::ifstream pipelineCacheInFile;
@@ -928,7 +931,7 @@ namespace JJs2DEngine
 			return;
 
 		PipelineCacheElementHeader elementHeader, oldElementHeader;
-		pipelineCacheInFile.open(dataFolder + WorldLayerPipelineFullName, std::ios_base::binary | std::ios_base::in);
+		pipelineCacheInFile.open(datafilePath, std::ios_base::binary | std::ios_base::in);
 
 		if (!pipelineCacheInFile.is_open())
 			throw std::runtime_error("RenderDataInternal::SaveWorldLayerPipelineCacheFile: Program failed to open the pipeline cache in file!");
@@ -959,7 +962,7 @@ namespace JJs2DEngine
 
 		pipelineCacheInFile.close();
 
-		pipelineCacheOutFile.open(dataFolder + WorldLayerPipelineFullName, std::ios_base::binary | std::ios_base::out | std::ios_base::in);
+		pipelineCacheOutFile.open(datafilePath, std::ios_base::binary | std::ios_base::out | std::ios_base::in);
 
 		if (!pipelineCacheOutFile.is_open())
 			throw std::runtime_error("RenderDataInternal::SaveWorldLayerPipelineCacheFile: Program failed to open the pipeline cache out file!");
@@ -1009,13 +1012,13 @@ namespace JJs2DEngine
 		pipelineCacheOutFile.close();
 	}
 
-	void RenderDataInternal::CreateGammaCorrectionPipelineCacheFile(const std::string& dataFolder)
+	void RenderDataInternal::CreateGammaCorrectionPipelineCacheFile(const std::string& datafilePath)
 	{
 		auto pipelineDataList = _device.GetPipelineDataLists();
 
 		std::fstream pipelineCacheFile;
 
-		pipelineCacheFile.open(dataFolder + GammaCorrectionPipelineFullName, std::ios_base::binary | std::ios_base::in | std::ios_base::out | std::ios_base::trunc);
+		pipelineCacheFile.open(datafilePath, std::ios_base::binary | std::ios_base::in | std::ios_base::out | std::ios_base::trunc);
 
 		if (!pipelineCacheFile.is_open())
 			throw std::runtime_error("RenderDataInternal::CreateGammaCorrectionPipelineCacheFile Error: Program failed to open the pipeline cache file!");
@@ -1038,13 +1041,13 @@ namespace JJs2DEngine
 		pipelineCacheFile.close();
 	}
 
-	void RenderDataInternal::LoadGammaCorrectionPipelineCacheFile(const std::string& dataFolder)
+	void RenderDataInternal::LoadGammaCorrectionPipelineCacheFile(const std::string& datafilePath)
 	{
 		auto pipelineDataList = _device.GetPipelineDataLists();
 
 		std::ifstream pipelineCacheFile;
 
-		pipelineCacheFile.open(dataFolder + GammaCorrectionPipelineFullName, std::ios_base::binary | std::ios_base::in | std::ios_base::out);
+		pipelineCacheFile.open(datafilePath, std::ios_base::binary | std::ios_base::in | std::ios_base::out);
 
 		if (!pipelineCacheFile.is_open())
 			throw std::runtime_error("RenderDataInternal::LoadGammaCorrectionPipelineCacheFile Error: Program failed to open the pipeline cache file!");
@@ -1115,7 +1118,7 @@ namespace JJs2DEngine
 		pipelineCacheFile.close();
 	}
 
-	void RenderDataInternal::SaveGammaCorrectionPipelineCacheFile(const std::string& dataFolder)
+	void RenderDataInternal::SaveGammaCorrectionPipelineCacheFile(const std::string& datafilePath)
 	{
 		auto pipelineDataList = _device.GetPipelineDataLists();
 		std::ifstream pipelineCacheInFile;
@@ -1142,7 +1145,7 @@ namespace JJs2DEngine
 			return;
 
 		PipelineCacheElementHeader elementHeader, oldElementHeader;
-		pipelineCacheInFile.open(dataFolder + GammaCorrectionPipelineFullName, std::ios_base::binary | std::ios_base::in);
+		pipelineCacheInFile.open(datafilePath, std::ios_base::binary | std::ios_base::in);
 
 		if (!pipelineCacheInFile.is_open())
 			throw std::runtime_error("RenderDataInternal::SaveGammaCorrectionPipelineCacheFile: Program failed to open the pipeline cache in file!");
@@ -1173,7 +1176,7 @@ namespace JJs2DEngine
 
 		pipelineCacheInFile.close();
 
-		pipelineCacheOutFile.open(dataFolder + GammaCorrectionPipelineFullName, std::ios_base::binary | std::ios_base::out | std::ios_base::in);
+		pipelineCacheOutFile.open(datafilePath, std::ios_base::binary | std::ios_base::out | std::ios_base::in);
 
 		if (!pipelineCacheOutFile.is_open())
 			throw std::runtime_error("RenderDataInternal::SaveGammaCorrectionPipelineCacheFile: Program failed to open the pipeline cache out file!");
