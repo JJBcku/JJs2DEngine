@@ -66,7 +66,7 @@ namespace JJs2DEngine
 
 	const std::string shaderDirectoryName("Shaders\\");
 
-	const std::string backgroundLayerVertexShaderName("BackgroundVertexShader");
+	const std::string backgroundLayerVertexShaderName("BackgroundShader");
 	const std::string uiLayerVertexShaderName("UILayerShader");
 	const std::string worldLayerVertexShaderName("WorldLayerVertexShader");
 
