@@ -124,11 +124,26 @@
     <Filter Include="Source Files\Include\Main\VertexData">
       <UniqueIdentifier>{fffbe937-133a-4819-a1c4-bef383516b43}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Include\Main\VertexData\UI">
+    <Filter Include="Header Files\Include\Main\VertexData\Layers\Background">
+      <UniqueIdentifier>{ac73d6b2-a842-40f8-b473-caf6f5f27bb4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Do Not Include\Main\VertexData\Layers\Background">
+      <UniqueIdentifier>{73296b61-0cae-428a-a8a6-c5b8bb0f1087}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Do Not Include\Main\VertexData\Layers\Background">
+      <UniqueIdentifier>{15a88f54-caf6-4874-b34b-febd5fbf4ce4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Include\Main\VertexData\Layers">
+      <UniqueIdentifier>{6e71db12-69fc-4532-bd75-3e6dc265ce77}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Include\Main\VertexData\Layers\UI">
       <UniqueIdentifier>{430c0919-a0ba-4dfa-9e10-a2b2116d0913}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Include\Main\VertexData\World">
+    <Filter Include="Source Files\Include\Main\VertexData\Layers\World">
       <UniqueIdentifier>{761953b2-0056-4670-9f21-431113d33d06}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Include\Main\VertexData\Layers\Background">
+      <UniqueIdentifier>{930411a3-dee4-4987-8e19-0d8bcff787d1}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -306,6 +321,15 @@
     <ClInclude Include="DoNotInclude\DNIData\Common\VersionDataInternal.h">
       <Filter>Header Files\Do Not Include\Common\OtherData</Filter>
     </ClInclude>
+    <ClInclude Include="Include\Main\BackgroundObjectData.h">
+      <Filter>Header Files\Include\Main\VertexData\Layers\Background</Filter>
+    </ClInclude>
+    <ClInclude Include="DoNotInclude\DNIData\Main\BackgroundObjectBufferData.h">
+      <Filter>Header Files\Do Not Include\Main\VertexData\Layers\Background</Filter>
+    </ClInclude>
+    <ClInclude Include="DoNotInclude\DNIData\Main\BackgroundObjectDataInternal.h">
+      <Filter>Header Files\Do Not Include\Main\VertexData\Layers\Background</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DoNotInclude\DNIData\Common\CommonDNIpch.cpp">
@@ -420,22 +444,31 @@
       <Filter>Source Files\Include\Main\VertexData</Filter>
     </ClCompile>
     <ClCompile Include="DoNotInclude\ICode\Main\UiObjectData.cpp">
-      <Filter>Source Files\Include\Main\VertexData\UI</Filter>
+      <Filter>Source Files\Include\Main\VertexData\Layers\UI</Filter>
     </ClCompile>
     <ClCompile Include="DoNotInclude\ICode\Main\UiVertexDataLayerVersion.cpp">
-      <Filter>Source Files\Include\Main\VertexData\UI</Filter>
+      <Filter>Source Files\Include\Main\VertexData\Layers\UI</Filter>
     </ClCompile>
     <ClCompile Include="DoNotInclude\ICode\Main\UiVertexDataLayerVersionList.cpp">
-      <Filter>Source Files\Include\Main\VertexData\UI</Filter>
+      <Filter>Source Files\Include\Main\VertexData\Layers\UI</Filter>
     </ClCompile>
     <ClCompile Include="DoNotInclude\ICode\Main\WorldLayerObjectData.cpp">
-      <Filter>Source Files\Include\Main\VertexData\World</Filter>
+      <Filter>Source Files\Include\Main\VertexData\Layers\World</Filter>
     </ClCompile>
     <ClCompile Include="DoNotInclude\ICode\Main\WorldLayerVertexDataLayerVersion.cpp">
-      <Filter>Source Files\Include\Main\VertexData\World</Filter>
+      <Filter>Source Files\Include\Main\VertexData\Layers\World</Filter>
     </ClCompile>
     <ClCompile Include="DoNotInclude\ICode\Main\WorldLayerVertexDataLayerVersionList.cpp">
-      <Filter>Source Files\Include\Main\VertexData\World</Filter>
+      <Filter>Source Files\Include\Main\VertexData\Layers\World</Filter>
+    </ClCompile>
+    <ClCompile Include="DoNotInclude\DNIData\Main\BackgroundObjectBufferData.cpp">
+      <Filter>Source Files\Do Not Include\Main\VertexData\Layers\Background</Filter>
+    </ClCompile>
+    <ClCompile Include="DoNotInclude\DNIData\Main\BackgroundObjectDataInternal.cpp">
+      <Filter>Source Files\Do Not Include\Main\VertexData\Layers\Background</Filter>
+    </ClCompile>
+    <ClCompile Include="DoNotInclude\ICode\Main\BackgroundObjectData.cpp">
+      <Filter>Source Files\Include\Main\VertexData\Layers\Background</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

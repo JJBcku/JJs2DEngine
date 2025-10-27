@@ -115,6 +115,8 @@
     <ClInclude Include="DoNotInclude\DNIData\Common\CommonDNIframework.h" />
     <ClInclude Include="DoNotInclude\DNIData\Common\CommonDNIpch.h" />
     <ClInclude Include="DoNotInclude\DNIData\Common\MaxDepthValue.h" />
+    <ClInclude Include="DoNotInclude\DNIData\Main\BackgroundObjectBufferData.h" />
+    <ClInclude Include="DoNotInclude\DNIData\Main\BackgroundObjectDataInternal.h" />
     <ClInclude Include="DoNotInclude\DNIData\Main\CameraData.h" />
     <ClInclude Include="DoNotInclude\DNIData\Main\InputDataListInternal.h" />
     <ClInclude Include="DoNotInclude\DNIData\Main\TextureTransferOrderInternal.h" />
@@ -129,6 +131,7 @@
     <ClInclude Include="DoNotInclude\DNIData\Main\WorldLayerObjectDataInternal.h" />
     <ClInclude Include="DoNotInclude\DNIData\Main\WorldLayerVertexDataLayerVersionInternal.h" />
     <ClInclude Include="DoNotInclude\DNIData\Main\WorldLayerVertexDataLayerVersionListInternal.h" />
+    <ClInclude Include="Include\Main\BackgroundObjectData.h" />
     <ClInclude Include="Include\Main\NormalizedValuesList.h" />
     <ClInclude Include="Include\Main\UiObjectData.h" />
     <ClInclude Include="Include\Main\UiVertexDataLayerVersion.h" />
@@ -179,6 +182,18 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">CommonDNIpch.h</PrecompiledHeaderFile>
       <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)CommonDNIpch.pch</PrecompiledHeaderOutputFile>
+    </ClCompile>
+    <ClCompile Include="DoNotInclude\DNIData\Main\BackgroundObjectBufferData.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">MainDNIpch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)MainDNIpch.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">MainDNIpch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)MainDNIpch.pch</PrecompiledHeaderOutputFile>
+    </ClCompile>
+    <ClCompile Include="DoNotInclude\DNIData\Main\BackgroundObjectDataInternal.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">MainDNIpch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)MainDNIpch.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">MainDNIpch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)MainDNIpch.pch</PrecompiledHeaderOutputFile>
     </ClCompile>
     <ClCompile Include="DoNotInclude\DNIData\Main\CameraData.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">MainDNIpch.h</PrecompiledHeaderFile>
@@ -333,6 +348,12 @@
       <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)CommonIpch.pch</PrecompiledHeaderOutputFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">CommonIpch.h</PrecompiledHeaderFile>
       <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)CommonIpch.pch</PrecompiledHeaderOutputFile>
+    </ClCompile>
+    <ClCompile Include="DoNotInclude\ICode\Main\BackgroundObjectData.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">MainIpch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)MainIpch.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">MainIpch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)MainIpch.pch</PrecompiledHeaderOutputFile>
     </ClCompile>
     <ClCompile Include="DoNotInclude\ICode\Main\DeviceSettings.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">MainIpch.h</PrecompiledHeaderFile>
