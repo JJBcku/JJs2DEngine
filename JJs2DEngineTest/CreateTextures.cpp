@@ -56,6 +56,8 @@ void CreateBackgroundTexture(MainDataCollection& data)
 		filedata.resize(dataSize);
 
 		std::memcpy(filedata.data(), pixels, dataSize);
+
+		stbi_image_free(pixels);
 	}
 	else
 	{
@@ -68,6 +70,8 @@ void CreateBackgroundTexture(MainDataCollection& data)
 		filedata.resize(dataSize);
 
 		std::memcpy(filedata.data(), pixels, dataSize);
+
+		stbi_image_free(pixels);
 	}
 
 	auto resultData = main.TryToAddTextureToStreamedTexturesTransferList(filedata, width, height);
@@ -116,6 +120,8 @@ void CreateObjectTexture(MainDataCollection& data)
 		filedata.resize(dataSize);
 
 		std::memcpy(filedata.data(), pixels, dataSize);
+
+		stbi_image_free(pixels);
 	}
 	else
 	{
@@ -128,6 +134,8 @@ void CreateObjectTexture(MainDataCollection& data)
 		filedata.resize(dataSize);
 
 		std::memcpy(filedata.data(), pixels, dataSize);
+
+		stbi_image_free(pixels);
 	}
 
 	auto resultData = main.TryToAddTextureToStreamedTexturesTransferList(filedata, width, height);
