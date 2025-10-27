@@ -1,3 +1,8 @@
+%VULKAN_SDK%\Bin\glslc.exe BackgroundShader.vert --target-env=vulkan -O -o BackgroundShader.vert.spv
+%VULKAN_SDK%\Bin\glslc.exe BackgroundShader.vert --target-env=vulkan -O0 -o BackgroundShader.debug.vert.spv
+%VULKAN_SDK%\Bin\glslc.exe BackgroundShader.vert --target-env=vulkan -S -O -o BackgroundShader.vert.txt
+%VULKAN_SDK%\Bin\glslc.exe BackgroundShader.vert --target-env=vulkan -S -O0 -o BackgroundShader.debug.vert.txt
+
 %VULKAN_SDK%\Bin\glslc.exe UILayerShader.vert --target-env=vulkan -O -o UILayerShader.vert.spv
 %VULKAN_SDK%\Bin\glslc.exe StandardFragmentShader.frag --target-env=vulkan -O -o StandardFragmentShader.frag.spv
 %VULKAN_SDK%\Bin\glslc.exe UILayerShader.vert --target-env=vulkan -O0 -o UILayerShader.debug.vert.spv
@@ -22,10 +27,5 @@
 %VULKAN_SDK%\Bin\glslc.exe WorldLayerVertexShader.vert --target-env=vulkan -O0 -o WorldLayerVertexShader.debug.vert.spv
 %VULKAN_SDK%\Bin\glslc.exe WorldLayerVertexShader.vert --target-env=vulkan -S -O -o WorldLayerVertexShader.vert.txt
 %VULKAN_SDK%\Bin\glslc.exe WorldLayerVertexShader.vert --target-env=vulkan -S -O0 -o WorldLayerVertexShader.debug.vert.txt
-
-%VULKAN_SDK%\Bin\glslc.exe BackgroundLayerVertexShader.vert --target-env=vulkan -O -o BackgroundLayerVertexShader.vert.spv
-%VULKAN_SDK%\Bin\glslc.exe BackgroundLayerVertexShader.vert --target-env=vulkan -O0 -o BackgroundLayerVertexShader.debug.vert.spv
-%VULKAN_SDK%\Bin\glslc.exe BackgroundLayerVertexShader.vert --target-env=vulkan -S -O -o BackgroundLayerVertexShader.vert.txt
-%VULKAN_SDK%\Bin\glslc.exe BackgroundLayerVertexShader.vert --target-env=vulkan -S -O0 -o BackgroundLayerVertexShader.debug.vert.txt
 
 pause
