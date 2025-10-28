@@ -330,6 +330,15 @@
     <ClInclude Include="DoNotInclude\DNIData\Main\BackgroundObjectDataInternal.h">
       <Filter>Header Files\Do Not Include\Main\VertexData\Layers\Background</Filter>
     </ClInclude>
+    <ClInclude Include="Include\Main\BackgroundVertexDataLayerVersionList.h">
+      <Filter>Header Files\Include\Main\VertexData\Layers\Background</Filter>
+    </ClInclude>
+    <ClInclude Include="DoNotInclude\DNIData\Main\BackgroundVertexDataLayerVersionInternal.h">
+      <Filter>Header Files\Do Not Include\Main\VertexData\Layers\Background</Filter>
+    </ClInclude>
+    <ClInclude Include="DoNotInclude\DNIData\Main\BackgroundVertexDataLayerVersionListInternal.h">
+      <Filter>Header Files\Do Not Include\Main\VertexData\Layers\Background</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DoNotInclude\DNIData\Common\CommonDNIpch.cpp">
@@ -468,6 +477,15 @@
       <Filter>Source Files\Do Not Include\Main\VertexData\Layers\Background</Filter>
     </ClCompile>
     <ClCompile Include="DoNotInclude\ICode\Main\BackgroundObjectData.cpp">
+      <Filter>Source Files\Include\Main\VertexData\Layers\Background</Filter>
+    </ClCompile>
+    <ClCompile Include="DoNotInclude\DNIData\Main\BackgroundVertexDataLayerVersionInternal.cpp">
+      <Filter>Source Files\Do Not Include\Main\VertexData\Layers\Background</Filter>
+    </ClCompile>
+    <ClCompile Include="DoNotInclude\DNIData\Main\BackgroundVertexDataLayerVersionListInternal.cpp">
+      <Filter>Source Files\Do Not Include\Main\VertexData\Layers\Background</Filter>
+    </ClCompile>
+    <ClCompile Include="DoNotInclude\ICode\Main\BackgroundVertexDataLayerVersionList.cpp">
       <Filter>Source Files\Include\Main\VertexData\Layers\Background</Filter>
     </ClCompile>
   </ItemGroup>

@@ -24,6 +24,8 @@ namespace JJs2DEngine
 	class RenderDataInternal;
 	class WindowDataInternal;
 
+	struct BackgroundObjectData;
+
 	class VertexDataMainInternal
 	{
 	public:
@@ -33,6 +35,7 @@ namespace JJs2DEngine
 			VS::CommandPoolQFGroupList graphicQFGroup, uint32_t graphicsFrameAmount, size_t graphicQueueID);
 		~VertexDataMainInternal();
 
+		void CreateBackgroundLayerVersionList(const std::vector<BackgroundObjectData>& versionDataList);
 		IDObject<UiVertexDataLayerVersionListPointer> AddUiLayerVersionList(const std::vector<size_t>& versionsMaxObjectAmountsList, size_t addOnReserving);
 		IDObject<WorldLayerVertexDataLayerVersionListPointer> AddWorldLayerVersionList(const std::vector<size_t>& versionsMaxObjectAmountsList, size_t addOnReserving);
 
@@ -53,9 +56,11 @@ namespace JJs2DEngine
 		void SetCameraZoom(float zoom);
 		void SetCameraAspectRatio(float ratio);
 
+		BackgroundVertexDataLayerVersionListInternal& GetBackgroundVertexDataLayerVersionList();
 		UiVertexDataLayerVersionListInternal& GetUiVertexDataLayerVersionList(IDObject<UiVertexDataLayerVersionListPointer> ID);
 		WorldLayerVertexDataLayerVersionListInternal& GetWorldLayerVertexDataLayerVersionList(IDObject<WorldLayerVertexDataLayerVersionListPointer> ID);
 
+		const BackgroundVertexDataLayerVersionListInternal& GetBackgroundVertexDataLayerVersionList() const;
 		const UiVertexDataLayerVersionListInternal& GetUiVertexDataLayerVersionList(IDObject<UiVertexDataLayerVersionListPointer> ID) const;
 		const WorldLayerVertexDataLayerVersionListInternal& GetWorldLayerVertexDataLayerVersionList(IDObject<WorldLayerVertexDataLayerVersionListPointer> ID) const;
 
@@ -72,6 +77,8 @@ namespace JJs2DEngine
 		VS::CommandPoolQFGroupList _graphicsQFGroup;
 
 		CameraData _camera;
+
+		BackgroundDataLayerVersionListPointer _backgroundLayerVersionList;
 
 		UnsortedIDVector<UiVertexDataLayerVersionListPointer> _uiLayersList;
 		UnsortedIDVector<WorldLayerVertexDataLayerVersionListPointer> _worldLayersList;

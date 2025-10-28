@@ -1,6 +1,7 @@
 #include "MainDNIpch.h"
 #include "VertexDataMainInternal.h"
 
+#include "BackgroundVertexDataLayerVersionListInternal.h"
 #include "UiVertexDataLayerVersionListInternal.h"
 #include "WorldLayerVertexDataLayerVersionListInternal.h"
 
@@ -92,6 +93,15 @@ namespace JJs2DEngine
 	{
 	}
 
+	void VertexDataMainInternal::CreateBackgroundLayerVersionList(const std::vector<BackgroundObjectData>& versionDataList)
+	{
+		if (_backgroundLayerVersionList != nullptr)
+			throw std::runtime_error("VertexDataMainInternal::CreateBackgroundLayerVersionList Error: Program tried to create already existing background layer version list!");
+
+		_backgroundLayerVersionList = std::make_unique<BackgroundVertexDataLayerVersionListInternal>(_dataBufferList, _memoryObjectsList, _textureDataList, versionDataList,
+			_transferFrameAmount);
+	}
+
 	IDObject<UiVertexDataLayerVersionListPointer> VertexDataMainInternal::AddUiLayerVersionList(const std::vector<size_t>& versionsMaxObjectAmountsList, size_t addOnReserving)
 	{
 		if (_layerOrderList.size() == _layerOrderList.capacity())
@@ -180,7 +190,18 @@ namespace JJs2DEngine
 		tranferCommandBuffer.BeginRecording(VS::CommandBufferUsage::ONE_USE);
 
 		std::vector<VS::DataBuffersMemoryBarrierData> vertexBuffersOwnershipTransferDataList;
-		vertexBuffersOwnershipTransferDataList.reserve(_layerOrderList.size());
+		vertexBuffersOwnershipTransferDataList.reserve(_layerOrderList.size() + 1);
+
+		if (_backgroundLayerVersionList != nullptr)
+		{
+			auto& layer = *_backgroundLayerVersionList;
+
+			bool commandRecorded = layer.WriteDataToBuffer(_currentTransferFrame, tranferCommandBuffer, _textureDataList.PopTextureChangedValues(_currentTransferFrame));
+			if (commandRecorded && _transferQueueID != _graphicsQueueID)
+			{
+				vertexBuffersOwnershipTransferDataList.push_back(layer.GetOwnershipTransferData(_currentTransferFrame, _transferQueueID, _graphicsQueueID));
+			}
+		}
 
 		for (size_t i = 0; i < _layerOrderList.size(); ++i)
 		{
@@ -272,7 +293,18 @@ namespace JJs2DEngine
 
 		if (_graphicsQueueID != _transferQueueID)
 		{
-			vertexBuffersOwnershipTransferDataList.reserve(_layerOrderList.size());
+			vertexBuffersOwnershipTransferDataList.reserve(_layerOrderList.size() + 1);
+
+			if (_backgroundLayerVersionList != nullptr)
+			{
+				auto& layer = *_backgroundLayerVersionList;
+
+				if (layer.IsOwnedByTransferQueue(_currentTransferFrame) == Misc::BOOL64_TRUE)
+				{
+					vertexBuffersOwnershipTransferDataList.push_back(layer.GetOwnershipTransferData(_currentTransferFrame, _transferQueueID, _graphicsQueueID));
+					layer.SetOwnedByTransferQueue(_currentTransferFrame, Misc::BOOL64_FALSE);
+				}
+			}
 
 			for (size_t i = 0; i < _layerOrderList.size(); ++i)
 			{
@@ -311,6 +343,18 @@ namespace JJs2DEngine
 
 		graphicsCommandBuffer.BeginRenderPass(_renderDataList.GetCurrentRenderPass(), _windowDataList.GetFramebufferID(_currentGraphicsFrame), 0, 0, _windowDataList.GetRenderWidth(),
 			_windowDataList.GetRenderHeight(), _renderDataList.GetClearValuesList());
+
+		if (_backgroundLayerVersionList != nullptr)
+		{
+			graphicsCommandBuffer.BindGraphicsPipeline(_renderDataList.GetBackgroundLayerGraphicsPipeline());
+
+			graphicsCommandBuffer.BindDescriptorSetsToGraphicsPipeline(_renderDataList.GetBackgroundLayerGraphicsPipelineLayout(), 0,
+				_textureDataList.GetTexturesDescriptorSetPool(), { _textureDataList.GetTexturesDescriptorSets(_currentTransferFrame) }, {});
+
+			auto& layer = *_backgroundLayerVersionList;
+
+			layer.RecordDrawCommand(_currentTransferFrame, graphicsCommandBuffer);
+		}
 
 		if (_uiLayersList.GetUsedSize() != 0)
 		{
@@ -539,6 +583,14 @@ namespace JJs2DEngine
 		_camera.aspectRatio = ratio;
 	}
 
+	BackgroundVertexDataLayerVersionListInternal& VertexDataMainInternal::GetBackgroundVertexDataLayerVersionList()
+	{
+		if (_backgroundLayerVersionList == nullptr)
+			throw std::runtime_error("VertexDataMainInternal::CreateBackgroundLayerVersionList Error: Program tried to access a non-existent backgrond layers version list!");
+
+		return *_backgroundLayerVersionList;
+	}
+
 	UiVertexDataLayerVersionListInternal& VertexDataMainInternal::GetUiVertexDataLayerVersionList(IDObject<UiVertexDataLayerVersionListPointer> ID)
 	{
 		return *_uiLayersList.GetObject(ID);
@@ -547,6 +599,14 @@ namespace JJs2DEngine
 	WorldLayerVertexDataLayerVersionListInternal& VertexDataMainInternal::GetWorldLayerVertexDataLayerVersionList(IDObject<WorldLayerVertexDataLayerVersionListPointer> ID)
 	{
 		return *_worldLayersList.GetObject(ID);
+	}
+
+	const BackgroundVertexDataLayerVersionListInternal& VertexDataMainInternal::GetBackgroundVertexDataLayerVersionList() const
+	{
+		if (_backgroundLayerVersionList == nullptr)
+			throw std::runtime_error("VertexDataMainInternal::CreateBackgroundLayerVersionList Const Error: Program tried to access a non-existent backgrond layers version list!");
+
+		return *_backgroundLayerVersionList;
 	}
 
 	const UiVertexDataLayerVersionListInternal& VertexDataMainInternal::GetUiVertexDataLayerVersionList(IDObject<UiVertexDataLayerVersionListPointer> ID) const

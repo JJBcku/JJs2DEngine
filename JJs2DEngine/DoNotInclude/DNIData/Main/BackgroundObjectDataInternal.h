@@ -11,7 +11,7 @@ namespace JJs2DEngine
 	struct BackgroundObjectDataInternal
 	{
 		glm::vec2 inTextureSize;
-		std::shared_ptr<TextureReferenceData> textureReference;
+		std::vector<std::shared_ptr<TextureReferenceData>> textureReference;
 
 		BackgroundObjectDataInternal();
 		~BackgroundObjectDataInternal();

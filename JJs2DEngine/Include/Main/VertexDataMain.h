@@ -10,6 +10,8 @@ namespace JJs2DEngine
 {
 	class VertexDataMainInternal;
 
+	struct BackgroundObjectData;
+
 	class VertexDataMain
 	{
 	public:
@@ -20,12 +22,15 @@ namespace JJs2DEngine
 		void SetCameraRotation(float rotation);
 		void SetCameraZoom(float zoom);
 
+		void CreateBackgroundLayerVersionList(const std::vector<BackgroundObjectData>& versionDataList);
 		IDObject<UiVertexDataLayerVersionListPointer> AddUiLayerVersionList(const std::vector<size_t>& versionsMaxVerticesList, size_t addOnReserving);
 		IDObject<WorldLayerVertexDataLayerVersionListPointer> AddWorldLayerVersionList(const std::vector<size_t>& versionsMaxObjectAmountsList, size_t addOnReserving);
 
+		BackgroundVertexDataLayerVersionList GetBackgroundVertexDataLayerVersionList();
 		UiVertexDataLayerVersionList GetUiVertexDataLayerVersionList(IDObject<UiVertexDataLayerVersionListPointer> ID);
 		WorldLayerVertexDataLayerVersionList GetWorldLayerVertexDataLayerVersionList(IDObject<WorldLayerVertexDataLayerVersionListPointer> ID);
 
+		const BackgroundVertexDataLayerVersionList GetBackgroundVertexDataLayerVersionList() const;
 		const UiVertexDataLayerVersionList GetUiVertexDataLayerVersionList(IDObject<UiVertexDataLayerVersionListPointer> ID) const;
 		const WorldLayerVertexDataLayerVersionList GetWorldLayerVertexDataLayerVersionList(IDObject<WorldLayerVertexDataLayerVersionListPointer> ID) const;
 

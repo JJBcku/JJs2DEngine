@@ -5,6 +5,8 @@
 
 #include <Main.h>
 #include <VertexDataMain.h>
+#include <BackgroundObjectData.h>
+#include <BackgroundVertexDataLayerVersionList.h>
 #include <WorldLayerVertexDataLayerVersionList.h>
 #include <WorldLayerVertexDataLayerVersion.h>
 #include <WorldLayerObjectData.h>
@@ -12,6 +14,17 @@
 void CreateLayers(MainDataCollection& data)
 {
 	auto vertexDataMain = data.main->GetVertexDataMainList();
+
+	JJ2DE::BackgroundObjectData backgroundData;
+	backgroundData.textureWidth_UNORM = JJ2DE::onePointZeroUNORMValue;
+	backgroundData.textureHeight_UNORM = JJ2DE::onePointZeroUNORMValue;
+	backgroundData.textureIndex = data.backgroundtexturesID;
+	backgroundData.inPreloadedTexturesList = false;
+
+	vertexDataMain.CreateBackgroundLayerVersionList({ backgroundData });
+
+	auto backgroundList = vertexDataMain.GetBackgroundVertexDataLayerVersionList();
+	backgroundList.SetActiveVersion(0);
 
 	data.layerID = vertexDataMain.AddWorldLayerVersionList({ 1 }, 0x10);
 

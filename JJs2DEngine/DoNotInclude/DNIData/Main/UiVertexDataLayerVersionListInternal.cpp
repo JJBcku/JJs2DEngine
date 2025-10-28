@@ -141,8 +141,8 @@ namespace JJs2DEngine
 				copyData.dstOffset = 0;
 				copyData.writeSize = writtenData;
 
-				transferCommandBuffer.TransferDataListToVertexBuffer(_stagingBufferIDs.value()[transferFrameIndice], _versionList[_activeVersion]->GetVertexBufferID(transferFrameIndice),
-					{ copyData });
+				transferCommandBuffer.TransferDataListToVertexBuffer(_stagingBufferIDs.value()[transferFrameIndice],
+					_versionList[_activeVersion]->GetVertexBufferID(transferFrameIndice), { copyData });
 				commandRecorded = true;
 				_versionList[_activeVersion]->SetOwnedByTransferQueue(transferFrameIndice, Misc::BOOL64_TRUE);
 			}
@@ -169,7 +169,8 @@ namespace JJs2DEngine
 
 		ret.srcAccess = VS::AccessFlagBits::ACCESS_MEMORY_WRITE;
 		ret.dstAccess = VS::AccessFlagBits::ACCESS_MEMORY_READ;
-		ret.queueData = { transferQueueID, graphicQueueID };
+		if (transferQueueID != graphicQueueID)
+			ret.queueData = { transferQueueID, graphicQueueID };
 		ret.bufferID = _versionList[_activeVersion]->GetVertexBufferID(transferFrameIndice);
 
 		return ret;
