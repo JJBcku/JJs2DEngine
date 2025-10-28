@@ -55,7 +55,7 @@ namespace JJs2DEngine
 
 		VS::MemoryAllocationFullID _vertexMemoryID;
 
-		std::optional<std::vector<IDObject<VS::AutoCleanupStagingBuffer>>> _stagingBufferIDs;
+		std::vector<IDObject<VS::AutoCleanupStagingBuffer>> _stagingBufferIDs;
 		std::optional<VS::MemoryAllocationFullID> _stagingMemoryID;
 	};
 }

@@ -69,21 +69,20 @@ namespace JJs2DEngine
 
 		if (!_memoryObjectsList.IsMemoryMapped(_vertexMemoryID))
 		{
-			_stagingBufferIDs.emplace();
-			_stagingBufferIDs->reserve(transferFrameAmount);
+			_stagingBufferIDs.reserve(transferFrameAmount);
 
 			for (size_t i = 0; i < transferFrameAmount; ++i)
 			{
-				_stagingBufferIDs->push_back(_dataBufferList.AddStagingBuffer(biggestBufferSize, {}));
+				_stagingBufferIDs.push_back(_dataBufferList.AddStagingBuffer(biggestBufferSize, {}));
 			}
 
-			uint32_t stagingBuffersMemoryMask = _dataBufferList.GetStagingBuffersMemoryTypeMask(_stagingBufferIDs.value()[0]);
-			uint64_t stagingBuffersMemorySize = _dataBufferList.GetStagingBuffersSize(_stagingBufferIDs.value()[0]);
-			uint64_t stagingBuffersMemoryAligment = _dataBufferList.GetStagingBuffersRequiredAligment(_stagingBufferIDs.value()[0]);
+			uint32_t stagingBuffersMemoryMask = _dataBufferList.GetStagingBuffersMemoryTypeMask(_stagingBufferIDs[0]);
+			uint64_t stagingBuffersMemorySize = _dataBufferList.GetStagingBuffersSize(_stagingBufferIDs[0]);
+			uint64_t stagingBuffersMemoryAligment = _dataBufferList.GetStagingBuffersRequiredAligment(_stagingBufferIDs[0]);
 			uint64_t stagingBuffersMemorySizeMod = stagingBuffersMemorySize % stagingBuffersMemoryAligment;
 			if (stagingBuffersMemorySizeMod != 0)
 				stagingBuffersMemorySize += stagingBuffersMemoryAligment - stagingBuffersMemorySizeMod;
-			stagingBuffersMemorySize *= _stagingBufferIDs->size();
+			stagingBuffersMemorySize *= _stagingBufferIDs.size();
 
 			std::vector<VS::MemoryTypeProperties> acceptableStagingTypes;
 			acceptableStagingTypes.reserve(2);
@@ -94,7 +93,7 @@ namespace JJs2DEngine
 
 			for (size_t i = 0; i < transferFrameAmount; ++i)
 			{
-				_dataBufferList.BindStagingBuffer(_stagingBufferIDs.value()[i], _stagingMemoryID.value());
+				_dataBufferList.BindStagingBuffer(_stagingBufferIDs[i], _stagingMemoryID.value());
 			}
 		}
 
@@ -106,11 +105,11 @@ namespace JJs2DEngine
 		_versionList.clear();
 		_memoryObjectsList.FreeMemory(_vertexMemoryID, false, false);
 
-		if (_stagingBufferIDs.has_value())
+		if (_stagingMemoryID.has_value())
 		{
-			for (size_t i = 0; i < _stagingBufferIDs->size(); ++i)
+			for (size_t i = 0; i < _stagingBufferIDs.size(); ++i)
 			{
-				_dataBufferList.RemoveStagingBuffer(_stagingBufferIDs.value()[i], false);
+				_dataBufferList.RemoveStagingBuffer(_stagingBufferIDs[i], false);
 			}
 		}
 
@@ -128,12 +127,12 @@ namespace JJs2DEngine
 			throw std::runtime_error("WorldLayerVertexDataLayerVersionListInternal::WriteDataToBuffer Error: Program tried to access a non-existent layer version!");
 
 		auto& layer = _versionList[_activeVersion];
-		if (_stagingBufferIDs.has_value())
+		if (_stagingMemoryID.has_value())
 		{
-			if (transferFrameIndice >= _stagingBufferIDs->size())
+			if (transferFrameIndice >= _stagingBufferIDs.size())
 				throw std::runtime_error("WorldLayerVertexDataLayerVersionListInternal::WriteDataToBuffer Error: Program tried to access an non-existent frame's data!");
 
-			uint64_t writtenData = layer->WriteDataToBuffer(_stagingBufferIDs.value()[transferFrameIndice], transferFrameIndice, noChangeOverride);
+			uint64_t writtenData = layer->WriteDataToBuffer(_stagingBufferIDs[transferFrameIndice], transferFrameIndice, noChangeOverride);
 
 			if (writtenData > 0)
 			{
@@ -142,8 +141,8 @@ namespace JJs2DEngine
 				copyData.dstOffset = 0;
 				copyData.writeSize = writtenData;
 
-				transferCommandBuffer.TransferDataListToVertexBuffer(_stagingBufferIDs.value()[transferFrameIndice], _versionList[_activeVersion]->GetVertexBufferID(transferFrameIndice),
-					{ copyData });
+				transferCommandBuffer.TransferDataListToVertexBuffer(_stagingBufferIDs[transferFrameIndice],
+					_versionList[_activeVersion]->GetVertexBufferID(transferFrameIndice), { copyData });
 				commandRecorded = true;
 				_versionList[_activeVersion]->SetOwnedByTransferQueue(transferFrameIndice, Misc::BOOL64_TRUE);
 			}
@@ -164,9 +163,6 @@ namespace JJs2DEngine
 
 		if (_activeVersion >= _versionList.size())
 			throw std::runtime_error("WorldLayerVertexDataLayerVersionListInternal::GetOwnershipTransferData Error: Program tried to access a non-existent layer version!");
-
-		if (transferFrameIndice >= _stagingBufferIDs->size())
-			throw std::runtime_error("WorldLayerVertexDataLayerVersionListInternal::GetOwnershipTransferData Error: Program tried to access an non-existent frame's data!");
 
 		ret.srcAccess = VS::AccessFlagBits::ACCESS_MEMORY_WRITE;
 		ret.dstAccess = VS::AccessFlagBits::ACCESS_MEMORY_READ;
