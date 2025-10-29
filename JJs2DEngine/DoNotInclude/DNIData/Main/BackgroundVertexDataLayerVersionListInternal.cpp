@@ -112,7 +112,7 @@ namespace JJs2DEngine
 	{
 	}
 
-	bool BackgroundVertexDataLayerVersionListInternal::WriteDataToBuffer(size_t transferFrameIndice, VS::PrimaryIRCommandBuffer transferCommandBuffer, bool noChangeOverride)
+	bool BackgroundVertexDataLayerVersionListInternal::WriteDataToBuffer(size_t transferFrameIndice, VS::PrimaryIRCommandBuffer transferCommandBuffer)
 	{
 		bool commandRecorded = false;
 
@@ -127,7 +127,7 @@ namespace JJs2DEngine
 
 		assert(_changed[_activeVersion.value()][transferFrameIndice] == Misc::BOOL64_TRUE || _changed[_activeVersion.value()][transferFrameIndice] == Misc::BOOL64_FALSE);
 
-		if (_changed[_activeVersion.value()][transferFrameIndice] != Misc::BOOL64_TRUE && !noChangeOverride)
+		if (_changed[_activeVersion.value()][transferFrameIndice] != Misc::BOOL64_TRUE)
 			return commandRecorded;
 
 		auto dataToWrite = _versionList[_activeVersion.value()]->GetBufferData(transferFrameIndice);

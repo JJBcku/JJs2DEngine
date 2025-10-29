@@ -8,8 +8,8 @@ namespace JJs2DEngine
 {
 	struct UiObjectData
 	{
-		uint32_t textureWidth_UNORM;
-		uint32_t textureHeight_UNORM;
+		uint32_t textureWidthInPixels;
+		uint32_t textureHeightInPixels;
 
 		uint32_t screenWidth_UNORM;
 		uint32_t screenHeight_UNORM;

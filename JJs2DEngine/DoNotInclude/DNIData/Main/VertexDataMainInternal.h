@@ -46,7 +46,6 @@ namespace JJs2DEngine
 		void IncrementCurrentFrames();
 
 		void TransferPreLoadedTextures();
-		void TransferStreamedTextures();
 
 		void SetGammaValue(float newGammaValue);
 		float GetGammaValue() const;
@@ -114,5 +113,7 @@ namespace JJs2DEngine
 		IDObject<VS::IRPoolPointer> _graphicsPoolID;
 		std::optional<VS::IRCommandPool> _graphicsPool;
 		std::vector<IDObject<VS::PrimaryIRPointer>> _graphicsCommandBuffersIDs;
+
+		bool TransferStreamedTextures();
 	};
 }

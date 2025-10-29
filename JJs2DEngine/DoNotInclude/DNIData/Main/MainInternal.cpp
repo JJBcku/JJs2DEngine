@@ -289,7 +289,6 @@ namespace JJs2DEngine
 
 	void MainInternal::RenderSingleFrame()
 	{
-		_vertexDataMain->TransferStreamedTextures();
 		_vertexDataMain->TransferVertexData();
 		_vertexDataMain->DrawFrame();
 		_vertexDataMain->IncrementCurrentFrames();

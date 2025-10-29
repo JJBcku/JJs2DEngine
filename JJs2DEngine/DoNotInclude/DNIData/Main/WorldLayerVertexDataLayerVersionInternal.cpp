@@ -80,10 +80,13 @@ namespace JJs2DEngine
 
 		WorldLayerObjectDataInternal added;
 
-		float textureWidth = static_cast<float>(newObjectData.textureWidth_UNORM);
-		textureWidth /= static_cast<float>(onePointZeroUNORMValue);
-		float textureHeight = static_cast<float>(newObjectData.textureHeight_UNORM);
-		textureHeight /= static_cast<float>(onePointZeroUNORMValue);
+		size_t tileSize = 1ULL << (skippedSizeLevels + newObjectData.textureIndex.first);
+		float fTileSize = static_cast<float>(tileSize);
+
+		float textureWidth = static_cast<float>(newObjectData.textureWidthInPixels);
+		textureWidth /= fTileSize;
+		float textureHeight = static_cast<float>(newObjectData.textureHeightInPixels);
+		textureHeight /= fTileSize;
 		added.texturesSizeInTile = glm::vec2(textureWidth, textureHeight);
 
 		float screenWidth = static_cast<float>(newObjectData.screenWidth_UNORM);
@@ -99,7 +102,8 @@ namespace JJs2DEngine
 		added.objectsPositionOnScreen = glm::vec2(screenX, screenY);
 
 		added.depthUNORM = _nextDepthValueUNORM;
-		added.textureDataPointer = _textureDataList.GetTextureReference(newObjectData.inPreloadedTexturesList, newObjectData.textureIndex.first, newObjectData.textureIndex.second);
+		added.textureDataPointer = _textureDataList.GetTextureReference(newObjectData.inPreloadedTexturesList,
+			newObjectData.textureIndex.first, newObjectData.textureIndex.second);
 
 		size_t addedIndex = _unusedIndexes.back();
 		assert(!_objectList[addedIndex].has_value());
@@ -146,14 +150,14 @@ namespace JJs2DEngine
 		return _frameData[transferFrameIndice].vertexBuffer;
 	}
 
-	size_t WorldLayerVertexDataLayerVersionInternal::WriteDataToBuffer(std::optional<IDObject<VS::AutoCleanupStagingBuffer>> stagingBufferID, size_t transferFrameIndice, bool noChangeOverride)
+	size_t WorldLayerVertexDataLayerVersionInternal::WriteDataToBuffer(std::optional<IDObject<VS::AutoCleanupStagingBuffer>> stagingBufferID, size_t transferFrameIndice)
 	{
 		if (transferFrameIndice >= _frameData.size())
 			throw std::runtime_error("WorldLayerVertexDataLayerVersionInternal::WriteDataToBuffer Error: Program tried to access an non-existent frame's data!");
 
 		assert(_frameData[transferFrameIndice].changed == Misc::BOOL64_TRUE || _frameData[transferFrameIndice].changed == Misc::BOOL64_FALSE);
 
-		if (_frameData[transferFrameIndice].changed != Misc::BOOL64_TRUE && !noChangeOverride)
+		if (_frameData[transferFrameIndice].changed != Misc::BOOL64_TRUE)
 			return 0;
 
 		size_t writtenSize = 0;

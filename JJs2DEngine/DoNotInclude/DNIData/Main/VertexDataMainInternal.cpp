@@ -196,7 +196,7 @@ namespace JJs2DEngine
 		{
 			auto& layer = *_backgroundLayerVersionList;
 
-			bool commandRecorded = layer.WriteDataToBuffer(_currentTransferFrame, tranferCommandBuffer, _textureDataList.PopTextureChangedValues(_currentTransferFrame));
+			bool commandRecorded = layer.WriteDataToBuffer(_currentTransferFrame, tranferCommandBuffer);
 			if (commandRecorded && _transferQueueID != _graphicsQueueID)
 			{
 				vertexBuffersOwnershipTransferDataList.push_back(layer.GetOwnershipTransferData(_currentTransferFrame, _transferQueueID, _graphicsQueueID));
@@ -210,7 +210,7 @@ namespace JJs2DEngine
 
 			auto& layer = _uiLayersList.GetObject(_layerOrderList[i].uiLayerID.ID);
 
-			bool commandRecorded = layer->WriteDataToBuffer(_currentTransferFrame, tranferCommandBuffer, _textureDataList.PopTextureChangedValues(_currentTransferFrame));
+			bool commandRecorded = layer->WriteDataToBuffer(_currentTransferFrame, tranferCommandBuffer);
 			if (commandRecorded && _transferQueueID != _graphicsQueueID)
 			{
 				vertexBuffersOwnershipTransferDataList.push_back(layer->GetOwnershipTransferData(_currentTransferFrame, _transferQueueID, _graphicsQueueID));
@@ -224,7 +224,7 @@ namespace JJs2DEngine
 
 			auto& layer = _worldLayersList.GetObject(_layerOrderList[i].worldLayerID.ID);
 
-			bool commandRecorded = layer->WriteDataToBuffer(_currentTransferFrame, tranferCommandBuffer, _textureDataList.PopTextureChangedValues(_currentTransferFrame));
+			bool commandRecorded = layer->WriteDataToBuffer(_currentTransferFrame, tranferCommandBuffer);
 			if (commandRecorded && _transferQueueID != _graphicsQueueID)
 			{
 				vertexBuffersOwnershipTransferDataList.push_back(layer->GetOwnershipTransferData(_currentTransferFrame, _transferQueueID, _graphicsQueueID));
@@ -259,7 +259,9 @@ namespace JJs2DEngine
 		if (_currentGraphicsFrame >= _graphicsCommandBuffersIDs.size())
 			throw std::runtime_error("VertexDataMainInternal::DrawFrame Error: Program tried to use a non-existent graphics frame!");
 
-		if (_textureDataList.AreStreamedTextureCreated())
+		bool streamedTexturesTransfered = _textureDataList.AreStreamedTextureCreated() && TransferStreamedTextures();
+
+		if (streamedTexturesTransfered)
 		{
 			if (_synchroList.WaitOnFences({ _texturesQueueTrasferFinishedFences[_currentGraphicsFrame] }, false, 1'000'000'000ULL) != true)
 				throw std::runtime_error("VertexDataMainInternal::DrawFrame Error: Waiting on queue transfer fence has timed out!");
@@ -282,7 +284,7 @@ namespace JJs2DEngine
 		graphicsCommandBuffer.ResetCommandBuffer(false);
 		graphicsCommandBuffer.BeginRecording(VS::CommandBufferUsage::ONE_USE);
 
-		if (_textureDataList.AreStreamedTextureCreated() && _graphicsQueueID != _transferQueueID)
+		if (streamedTexturesTransfered && _graphicsQueueID != _transferQueueID)
 		{
 			auto toGraphics = _textureDataList.GetStreamedTransferToGraphicsMemoryBarriers(_currentTransferFrame, _transferQueueID, _graphicsQueueID);
 			graphicsCommandBuffer.CreatePipelineBarrier(VS::PipelineStageFlagBits::PIPELINE_STAGE_BOTTOM_OF_PIPE, VS::PipelineStageFlagBits::PIPELINE_STAGE_FRAGMENT_SHADER,
@@ -512,44 +514,6 @@ namespace JJs2DEngine
 
 		if (_synchroList.WaitOnFences({ _renderingFinishedFences[0] }, false, 1'000'000'000ULL) != true)
 			throw std::runtime_error("VertexDataMainInternal::TransferPreLoadedTextures Error: Third waiting on a fence has timed out!");
-
-	}
-
-	void VertexDataMainInternal::TransferStreamedTextures()
-	{
-		if (!_textureDataList.AreStreamedTextureCreated())
-			return;
-
-		if (_synchroList.WaitOnFences({ _renderingFinishedFences[_currentGraphicsFrame] }, false, 1'000'000'000ULL) != true)
-			throw std::runtime_error("VertexDataMainInternal::TransferPreLoadedTextures Error: First waiting on a fence has timed out!");
-		_synchroList.ResetFences({ _renderingFinishedFences[_currentGraphicsFrame] });
-
-		auto graphicsCommandBuffer = _graphicsPool->GetPrimaryCommandBuffer(_graphicsCommandBuffersIDs[_currentGraphicsFrame]);
-		VS::CommandBufferSubmissionData submitData;
-		submitData.commandBufferIDs.resize(1);
-		submitData.commandBufferIDs[0].IRPrimaryID.type = VS::CommandBufferIDType::IR_PRIMARY;
-		submitData.commandBufferIDs[0].IRPrimaryID.commandPoolID = _graphicsPoolID;
-		submitData.commandBufferIDs[0].IRPrimaryID.commandBufferID = _graphicsCommandBuffersIDs[_currentGraphicsFrame];
-
-		submitData.signalSemaphores.push_back(_texturesQueueTrasferFinishedSemaphores[_currentGraphicsFrame]);
-
-		graphicsCommandBuffer.ResetCommandBuffer(false);
-		graphicsCommandBuffer.BeginRecording(VS::CommandBufferUsage::ONE_USE);
-
-		if (_transferQueueID != _graphicsQueueID)
-		{
-			auto fromGraphics = _textureDataList.GetStreamedGraphicsToTransferMemoryBarriers(_currentTransferFrame, _transferQueueID, _graphicsQueueID);
-			graphicsCommandBuffer.CreatePipelineBarrier(VS::PipelineStageFlagBits::PIPELINE_STAGE_FRAGMENT_SHADER, VS::PipelineStageFlagBits::PIPELINE_STAGE_TOP_OF_PIPE,
-				{}, {}, fromGraphics);
-		}
-
-		graphicsCommandBuffer.EndRecording();
-
-		_graphicsQFGroup.SubmitBuffers(_graphicsQueueID, { submitData }, _texturesQueueTrasferFinishedFences[_currentGraphicsFrame]);
-
-		_textureDataList.SetTextureUseFinishedSemaphore(_currentTransferFrame, _texturesQueueTrasferFinishedSemaphores[_currentGraphicsFrame]);
-
-		_textureDataList.TransferStreamedTexturesData(_currentTransferFrame, _transferQueueID, _graphicsQueueID);
 	}
 
 	void VertexDataMainInternal::SetGammaValue(float newGammaValue)
@@ -617,6 +581,45 @@ namespace JJs2DEngine
 	const WorldLayerVertexDataLayerVersionListInternal& VertexDataMainInternal::GetWorldLayerVertexDataLayerVersionList(IDObject<WorldLayerVertexDataLayerVersionListPointer> ID) const
 	{
 		return *_worldLayersList.GetConstObject(ID);
+	}
+
+	bool VertexDataMainInternal::TransferStreamedTextures()
+	{
+		if (!_textureDataList.AreStreamedTextureCreated() || _textureDataList.AreAllFramesStreamedTransferOrderListsEmpty(_currentTransferFrame))
+			return false;
+
+		if (_synchroList.WaitOnFences({ _renderingFinishedFences[_currentGraphicsFrame] }, false, 1'000'000'000ULL) != true)
+			throw std::runtime_error("VertexDataMainInternal::TransferPreLoadedTextures Error: First waiting on a fence has timed out!");
+		_synchroList.ResetFences({ _renderingFinishedFences[_currentGraphicsFrame] });
+
+		auto graphicsCommandBuffer = _graphicsPool->GetPrimaryCommandBuffer(_graphicsCommandBuffersIDs[_currentGraphicsFrame]);
+		VS::CommandBufferSubmissionData submitData;
+		submitData.commandBufferIDs.resize(1);
+		submitData.commandBufferIDs[0].IRPrimaryID.type = VS::CommandBufferIDType::IR_PRIMARY;
+		submitData.commandBufferIDs[0].IRPrimaryID.commandPoolID = _graphicsPoolID;
+		submitData.commandBufferIDs[0].IRPrimaryID.commandBufferID = _graphicsCommandBuffersIDs[_currentGraphicsFrame];
+
+		submitData.signalSemaphores.push_back(_texturesQueueTrasferFinishedSemaphores[_currentGraphicsFrame]);
+
+		graphicsCommandBuffer.ResetCommandBuffer(false);
+		graphicsCommandBuffer.BeginRecording(VS::CommandBufferUsage::ONE_USE);
+
+		if (_transferQueueID != _graphicsQueueID)
+		{
+			auto fromGraphics = _textureDataList.GetStreamedGraphicsToTransferMemoryBarriers(_currentTransferFrame, _transferQueueID, _graphicsQueueID);
+			graphicsCommandBuffer.CreatePipelineBarrier(VS::PipelineStageFlagBits::PIPELINE_STAGE_FRAGMENT_SHADER, VS::PipelineStageFlagBits::PIPELINE_STAGE_TOP_OF_PIPE,
+				{}, {}, fromGraphics);
+		}
+
+		graphicsCommandBuffer.EndRecording();
+
+		_graphicsQFGroup.SubmitBuffers(_graphicsQueueID, { submitData }, _texturesQueueTrasferFinishedFences[_currentGraphicsFrame]);
+
+		_textureDataList.SetTextureUseFinishedSemaphore(_currentTransferFrame, _texturesQueueTrasferFinishedSemaphores[_currentGraphicsFrame]);
+
+		_textureDataList.TransferStreamedTexturesData(_currentTransferFrame, _transferQueueID, _graphicsQueueID);
+
+		return true;
 	}
 
 }

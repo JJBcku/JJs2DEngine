@@ -119,7 +119,7 @@ namespace JJs2DEngine
 		}
 	}
 
-	bool WorldLayerVertexDataLayerVersionListInternal::WriteDataToBuffer(size_t transferFrameIndice, VS::PrimaryIRCommandBuffer transferCommandBuffer, bool noChangeOverride)
+	bool WorldLayerVertexDataLayerVersionListInternal::WriteDataToBuffer(size_t transferFrameIndice, VS::PrimaryIRCommandBuffer transferCommandBuffer)
 	{
 		bool commandRecorded = false;
 
@@ -132,7 +132,7 @@ namespace JJs2DEngine
 			if (transferFrameIndice >= _stagingBufferIDs.size())
 				throw std::runtime_error("WorldLayerVertexDataLayerVersionListInternal::WriteDataToBuffer Error: Program tried to access an non-existent frame's data!");
 
-			uint64_t writtenData = layer->WriteDataToBuffer(_stagingBufferIDs[transferFrameIndice], transferFrameIndice, noChangeOverride);
+			uint64_t writtenData = layer->WriteDataToBuffer(_stagingBufferIDs[transferFrameIndice], transferFrameIndice);
 
 			if (writtenData > 0)
 			{
@@ -149,7 +149,7 @@ namespace JJs2DEngine
 		}
 		else
 		{
-			layer->WriteDataToBuffer({}, transferFrameIndice, noChangeOverride);
+			layer->WriteDataToBuffer({}, transferFrameIndice);
 			_versionList[_activeVersion]->SetOwnedByTransferQueue(transferFrameIndice, Misc::BOOL64_TRUE);
 		}
 

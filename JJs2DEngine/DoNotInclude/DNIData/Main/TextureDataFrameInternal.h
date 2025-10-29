@@ -93,11 +93,10 @@ namespace JJs2DEngine
 		void GetGraphicsToTransferMemoryBarriers(std::vector<VS::ImagesMemoryBarrierData>& outputVector, size_t frameInFlightIndice, uint64_t transferQueue, uint64_t graphicsQueue);
 		void GetTransferToGraphicsMemoryBarriers(std::vector<VS::ImagesMemoryBarrierData>& outputVector, size_t frameInFlightIndice, uint64_t transferQueue, uint64_t graphicsQueue);
 
+		bool AreAllFramesTransferOrderListsEmpty(size_t frameInFlightIndice) const;
+
 		std::optional<std::pair<size_t, size_t>> TryToAddTextureToTransferList(const unsigned char& data, size_t dataSize, uint32_t width, uint32_t height);
 		void RecordTransferBuffer(size_t frameInFlightIndice, uint64_t transferQueue, uint64_t graphicsQueue);
-		void FinishTextureTransfer(size_t frameInFlightIndice);
-
-		bool PopTextureDataChangedValue(size_t frameInFlightIndice);
 
 	private:
 		VS::DataBufferLists _dataBufferList;
@@ -114,8 +113,6 @@ namespace JJs2DEngine
 
 		std::vector<TextureFrameStagingBufferData> _texturesStagingBufferFrames;
 		VS::MemoryAllocationFullID _stagingBufferMemoryID;
-
-		std::vector<bool> _textureDataChanged;
 
 		TextureFrameImageData CompileTextureFrameSizeData(size_t tileSize, size_t texturesMaxAmount, uint64_t max2DImageSize, uint64_t maxImageArrayLayers) const;
 

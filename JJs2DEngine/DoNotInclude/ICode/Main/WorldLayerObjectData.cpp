@@ -5,8 +5,8 @@ namespace JJs2DEngine
 {
 	WorldLayerObjectData::WorldLayerObjectData()
 	{
-		textureWidth_UNORM = 0;
-		textureHeight_UNORM = 0;
+		textureWidthInPixels = 0;
+		textureHeightInPixels = 0;
 
 		screenWidth_UNORM = 0;
 		screenHeight_UNORM = 0;

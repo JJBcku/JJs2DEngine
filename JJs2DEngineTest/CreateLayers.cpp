@@ -16,8 +16,8 @@ void CreateLayers(MainDataCollection& data)
 	auto vertexDataMain = data.main->GetVertexDataMainList();
 
 	JJ2DE::BackgroundObjectData backgroundData;
-	backgroundData.textureWidth_UNORM = JJ2DE::onePointZeroUNORMValue;
-	backgroundData.textureHeight_UNORM = JJ2DE::onePointZeroUNORMValue;
+	backgroundData.textureWidthInPixels = 1920U;
+	backgroundData.textureHeightInPixels = 1080U;
 	backgroundData.textureIndex = data.backgroundtexturesID;
 	backgroundData.inPreloadedTexturesList = false;
 
@@ -37,8 +37,8 @@ void CreateLayers(MainDataCollection& data)
 	object.screenHeight_UNORM = JJ2DE::onePointZeroUNORMValue / 2;
 	object.screenPositionX_SNORM = 0;
 	object.screenPositionY_SNORM = 0;
-	object.textureWidth_UNORM = JJ2DE::onePointZeroUNORMValue;
-	object.textureHeight_UNORM = JJ2DE::onePointZeroUNORMValue;
+	object.textureWidthInPixels = 1024U;
+	object.textureHeightInPixels = 1024U;
 	object.inPreloadedTexturesList = false;
 	object.textureIndex = data.texturesID;
 

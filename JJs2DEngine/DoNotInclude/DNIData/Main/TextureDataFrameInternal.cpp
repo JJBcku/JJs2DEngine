@@ -171,8 +171,6 @@ namespace JJs2DEngine
 				textureData.textureTransferOrderLists[j].reserve(initData.texturesMaxAmounts[i]);
 			}
 		}
-
-		_textureDataChanged.resize(initData.frameAmount, false);
 	}
 
 	TextureDataFrameInternal::~TextureDataFrameInternal()
@@ -369,6 +367,22 @@ namespace JJs2DEngine
 		}
 	}
 
+	bool TextureDataFrameInternal::AreAllFramesTransferOrderListsEmpty(size_t frameInFlightIndice) const
+	{
+		if (frameInFlightIndice >= _commandBuffersList.size())
+			throw std::runtime_error("TextureDataFrameInternal::AreAllFramesTransferOrderListsEmpty Error: Program tried to access a non-existent frame data!");
+
+		for (size_t i = 0; i < _textureDataArray.size(); ++i)
+		{
+			const auto& textureData = _textureDataArray[i];
+
+			if (!textureData.textureTransferOrderLists[frameInFlightIndice].empty())
+				return false;
+		}
+
+		return true;
+	}
+
 	std::optional<std::pair<size_t, size_t>> TextureDataFrameInternal::TryToAddTextureToTransferList(const unsigned char& data, size_t dataSize, uint32_t width, uint32_t height)
 	{
 		std::optional<std::pair<size_t, size_t>> ret;
@@ -492,47 +506,6 @@ namespace JJs2DEngine
 		}
 
 		transferCommandBuffer.EndRecording();
-	}
-
-	void TextureDataFrameInternal::FinishTextureTransfer(size_t frameInFlightIndice)
-	{
-		for (size_t i = 0; i < _textureDataArray.size(); ++i)
-		{
-			if (!_textureDataArray[i].textureTransferOrderLists.empty())
-			{
-				_textureDataChanged[frameInFlightIndice] = true;
-				break;
-			}
-		}
-
-		for (size_t i = 0; i < _textureDataArray.size(); ++i)
-		{
-			auto& textureData = _textureDataArray[i];
-			auto& referenceList = textureData.textureReferencesList;
-
-			for (size_t j = 0; j < textureData.textureTransferOrderLists[frameInFlightIndice].size(); ++j)
-			{
-				const auto& transferOrder = textureData.textureTransferOrderLists[frameInFlightIndice][j];
-				auto& referenceData = *referenceList[transferOrder.insertionIndex][frameInFlightIndice];
-				assert(referenceData.textureIsUsed);
-
-				referenceData.textureSize = glm::vec2(static_cast<float>(transferOrder.texturesWidth) / static_cast<float>(textureData.widthInPixels),
-													  static_cast<float>(transferOrder.texturesHeight) / static_cast<float>(textureData.heightInPixels));
-			}
-
-			textureData.textureTransferOrderLists[frameInFlightIndice].clear();
-		}
-	}
-
-	bool TextureDataFrameInternal::PopTextureDataChangedValue(size_t frameInFlightIndice)
-	{
-		if (frameInFlightIndice >= _textureDataChanged.size())
-			throw std::runtime_error("TextureDataFrameInternal::PopTextureDataChangedValue Error: Program tried to access a non-existent frame data!");
-
-		bool ret = _textureDataChanged[frameInFlightIndice];
-		_textureDataChanged[frameInFlightIndice] = false;
-
-		return ret;
 	}
 
 	TextureFrameImageData TextureDataFrameInternal::CompileTextureFrameSizeData(size_t tileSize, size_t texturesMaxAmount, uint64_t max2DImageSize, uint64_t maxImageArrayLayers) const

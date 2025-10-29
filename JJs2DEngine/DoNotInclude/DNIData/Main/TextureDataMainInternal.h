@@ -82,7 +82,7 @@ namespace JJs2DEngine
 		IDObject<VS::AutoCleanupSemaphore> GetTransferFinishedSemaphore(size_t frameInFlightIndice) const;
 		void SetTextureUseFinishedSemaphore(size_t frameInFlightIndice, IDObject<VS::AutoCleanupSemaphore> semaphore);
 
-		bool PopTextureChangedValues(size_t frameInFlightIndice);
+		bool AreAllFramesStreamedTransferOrderListsEmpty(size_t frameInFlightIndice) const;
 
 	private:
 		VS::DataBufferLists _dataBufferList;

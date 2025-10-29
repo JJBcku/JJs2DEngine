@@ -37,7 +37,7 @@ namespace JJs2DEngine
 
 		IDObject<VS::AutoCleanupVertexBuffer> GetVertexBufferID(size_t transferFrameIndice);
 
-		size_t WriteDataToBuffer(std::optional<IDObject<VS::AutoCleanupStagingBuffer>> stagingBufferID, size_t transferFrameIndice, bool noChangeOverride);
+		size_t WriteDataToBuffer(std::optional<IDObject<VS::AutoCleanupStagingBuffer>> stagingBufferID, size_t transferFrameIndice);
 		size_t GetCurrentUsedObjectAmount() const;
 		size_t GetAmountOfObjectsInVertexBuffer(size_t transferFrameIndice) const;
 

@@ -441,8 +441,6 @@ namespace JJs2DEngine
 		_transferQFGroup.SubmitBuffers(transferQueue, submissionData, _fenceList[0]);
 		if (_synchroList.WaitOnFences({ _fenceList[0] }, false, 1'000'000'000ULL) != true)
 			throw std::runtime_error("TextureDataMainInternal::TransferPreLoadedTexturesData Error: Second waiting on a fence timed out!");
-
-		_preLoadedTexturesData->FinishTextureTransfer(0);
 	}
 
 	void TextureDataMainInternal::TransferStreamedTexturesData(size_t frameInFlightIndice, uint64_t transferQueue, uint64_t graphicsQueue)
@@ -481,8 +479,6 @@ namespace JJs2DEngine
 		}
 
 		_transferQFGroup.SubmitBuffers(transferQueue, submissionData, _fenceList[frameInFlightIndice]);
-
-		_streamedTexturesData->FinishTextureTransfer(frameInFlightIndice);
 	}
 
 	IDObject<VS::AutoCleanupSemaphore> TextureDataMainInternal::GetTransferFinishedSemaphore(size_t frameInFlightIndice) const
@@ -503,16 +499,12 @@ namespace JJs2DEngine
 		_textureBeingUsedSemaphores[frameInFlightIndice] = semaphore;
 	}
 
-	bool TextureDataMainInternal::PopTextureChangedValues(size_t frameInFlightIndice)
+	bool TextureDataMainInternal::AreAllFramesStreamedTransferOrderListsEmpty(size_t frameInFlightIndice) const
 	{
-		bool ret = _preLoadedTexturesData->PopTextureDataChangedValue(0);
+		if (_streamedTexturesData == nullptr)
+			return true;
 
-		if (_streamedTexturesData != nullptr)
-		{
-			ret = ret || _streamedTexturesData->PopTextureDataChangedValue(frameInFlightIndice);
-		}
-
-		return ret;
+		return _streamedTexturesData->AreAllFramesTransferOrderListsEmpty(frameInFlightIndice);
 	}
 
 	bool TextureDataMainInternal::Is16Bit(TextureFormat textureFormat) const

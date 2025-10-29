@@ -11,12 +11,16 @@
 
 namespace JJs2DEngine
 {
-	BackgroundVertexDataLayerVersionInternal::BackgroundVertexDataLayerVersionInternal(TextureDataMainInternal& textureDataList, BackgroundObjectData textureData) : _textureDataList(textureDataList)
+	BackgroundVertexDataLayerVersionInternal::BackgroundVertexDataLayerVersionInternal(TextureDataMainInternal& textureDataList, BackgroundObjectData textureData) :
+_textureDataList(textureDataList)
 	{
-		float textureWidth = static_cast<float>(textureData.textureWidth_UNORM);
-		textureWidth /= static_cast<float>(onePointZeroUNORMValue);
-		float textureHeight = static_cast<float>(textureData.textureHeight_UNORM);
-		textureHeight /= static_cast<float>(onePointZeroUNORMValue);
+		size_t tileSize = 1ULL << (skippedSizeLevels + textureData.textureIndex.first);
+		float fTileSize = static_cast<float>(tileSize);
+
+		float textureWidth = static_cast<float>(textureData.textureWidthInPixels);
+		textureWidth /= fTileSize;
+		float textureHeight = static_cast<float>(textureData.textureHeightInPixels);
+		textureHeight /= fTileSize;
 
 		_data.inTextureSize = glm::vec2(textureWidth, textureHeight);
 		_data.textureReference = _textureDataList.GetTextureReference(textureData.inPreloadedTexturesList, textureData.textureIndex.first, textureData.textureIndex.second);
