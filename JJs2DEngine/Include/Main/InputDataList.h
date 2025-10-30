@@ -3,6 +3,7 @@
 namespace JJs2DEngine
 {
 	class InputDataListInternal;
+	class KeyPressData;
 
 	struct SpecialKeysDataList;
 
@@ -14,7 +15,7 @@ namespace JJs2DEngine
 
 		InputDataList& operator=(const InputDataList& rhs) noexcept = delete;
 
-		const SpecialKeysDataList& GetSpecialKeyList() const;
+		const KeyPressData& GetKeyPressData(size_t scanCode) const;
 
 		void ClearKeyPressesLists();
 

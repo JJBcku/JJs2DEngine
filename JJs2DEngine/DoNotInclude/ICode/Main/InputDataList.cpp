@@ -13,9 +13,9 @@ namespace JJs2DEngine
 	{
 	}
 
-	const SpecialKeysDataList& InputDataList::GetSpecialKeyList() const
+	const KeyPressData& InputDataList::GetKeyPressData(size_t scanCode) const
 	{
-		return _internal.GetSpecialKeyList();
+		return _internal.GetKeyPressData(scanCode);
 	}
 
 	void InputDataList::ClearKeyPressesLists()

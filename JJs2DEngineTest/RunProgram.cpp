@@ -9,7 +9,8 @@
 
 #include <Main.h>
 #include <InputDataList.h>
-#include <SpecialKeysDataList.h>
+#include <KeyPressData.h>
+#include <SdlScancode.h>
 #include <VertexDataMain.h>
 
 #include <Miscellaneous/Bool64.h>
@@ -32,8 +33,8 @@ void RunProgram()
 	auto vertexDataMain = main.GetVertexDataMainList();
 
 	auto inputData = main.GetInputDataList();
-	const auto& keyList = inputData.GetSpecialKeyList();
-	const auto& fullscreenKey = keyList.f10Key.GetKeyPressList();
+	const auto& escKey = inputData.GetKeyPressData(JJ2DE::SdlScancode::SDL_SCANCODE_MODULE_ESCAPE);
+	const auto& fullscreenKey = inputData.GetKeyPressData(JJ2DE::SdlScancode::SDL_SCANCODE_MODULE_F10);
 
 	bool quit = false;
 
@@ -47,7 +48,7 @@ void RunProgram()
 		main.UpdateCurrentTime();
 		main.HandleEvents();
 
-		quit = !keyList.ESCkey.GetKeyPressList().empty();
+		quit = !escKey.GetKeyPressList().empty();
 
 		if (main.RenderingShouldBePaused())
 		{
@@ -74,7 +75,7 @@ void RunProgram()
 			}
 		}
 
-		if (!fullscreenKey.empty())
+		if (!fullscreenKey.GetKeyPressList().empty())
 		{
 			if (fullscreen == Misc::BOOL64_FALSE)
 				fullscreen = Misc::BOOL64_TRUE;

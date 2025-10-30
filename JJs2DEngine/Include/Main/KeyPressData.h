@@ -1,6 +1,6 @@
 #pragma once
 
-#include  <Miscellaneous/Bool64Def.h>
+#include <Miscellaneous/Bool64Def.h>
 
 #include <stdint.h>
 #include <optional>
@@ -38,7 +38,7 @@ namespace JJs2DEngine
 	class KeyPressData
 	{
 	public:
-		KeyPressData(uint64_t unicode);
+		KeyPressData();
 		~KeyPressData();
 
 		KeyPressData(const KeyPressData& rhs) noexcept = default;
@@ -56,12 +56,12 @@ namespace JJs2DEngine
 		const std::vector<KeyModifiers>& GetKeyPressList() const;
 		void ClearKeyPressList();
 
+		void OnFocusLost();
+
 		std::optional<std::chrono::high_resolution_clock::time_point> GetCurrentKeyPressBegginingTime() const;
 		std::optional<KeyModifiers> GetCurrentModifiers() const;
 
 	private:
-		uint64_t _unicode;
-
 		std::vector<KeyModifiers> _keyPressList;
 		std::optional<std::chrono::high_resolution_clock::time_point> _currentKeyPressBeginning;
 		std::optional<KeyModifiers> _currentModifiers;

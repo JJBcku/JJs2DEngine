@@ -30,9 +30,8 @@ namespace JJs2DEngine
 	{
 	}
 
-	KeyPressData::KeyPressData(uint64_t unicode)
+	KeyPressData::KeyPressData()
 	{
-		_unicode = unicode;
 		_keyPressList.reserve(0x8);
 	}
 
@@ -69,6 +68,12 @@ namespace JJs2DEngine
 	void KeyPressData::ClearKeyPressList()
 	{
 		_keyPressList.clear();
+	}
+
+	void KeyPressData::OnFocusLost()
+	{
+		ReleaseKey();
+		ClearKeyPressList();
 	}
 
 	std::optional<std::chrono::high_resolution_clock::time_point> KeyPressData::GetCurrentKeyPressBegginingTime() const

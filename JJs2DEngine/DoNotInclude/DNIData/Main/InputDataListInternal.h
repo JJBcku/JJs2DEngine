@@ -1,11 +1,14 @@
 #pragma once
 
-#include "../../../Include/Main/SpecialKeysDataList.h"
+#include "../../../Include/Common/SdlScancode.h"
+
+#include "../../../Include/Main/KeyPressData.h"
 
 #include <VulkanSimplified/VSMain/EventHandler/SdlEventHandler.h>
 #include <CustomLists/IDObject.h>
 
 #include <chrono>
+#include <array>
 #include <utility>
 
 namespace JJs2DEngine
@@ -18,7 +21,7 @@ namespace JJs2DEngine
 
 		void UpdateCurrentTime(std::chrono::high_resolution_clock::time_point currentTime);
 
-		const SpecialKeysDataList& GetSpecialKeyList() const;
+		const KeyPressData& GetKeyPressData(size_t scanCode) const;
 
 		void ClearKeyPressesLists();
 
@@ -30,7 +33,7 @@ namespace JJs2DEngine
 		IDObject<std::pair<VS::WindowEventFunction, void*>> _windowEventHandlerID;
 		IDObject<std::pair<VS::KeyboardEventFunction, void*>> _keyboardEventHandlerID;
 
-		SpecialKeysDataList _specialKeys;
+		std::array<KeyPressData, SdlScancode::SDL_DATA_NUM_SCANCODES> _keyList;
 
 		void RegisterWindowEventHandler();
 		void UnregisterWindowEventHandler();

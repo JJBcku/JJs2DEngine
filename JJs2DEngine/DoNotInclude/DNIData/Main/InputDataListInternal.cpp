@@ -24,39 +24,20 @@ namespace JJs2DEngine
 		_currentTime = currentTime;
 	}
 
-	const SpecialKeysDataList& InputDataListInternal::GetSpecialKeyList() const
+	const KeyPressData& InputDataListInternal::GetKeyPressData(size_t scanCode) const
 	{
-		return _specialKeys;
+		if (scanCode >= _keyList.size())
+			throw std::runtime_error("InputDataListInternal::GetKeyPressData Error: Erroneous scan code!");
+
+		return _keyList[scanCode];
 	}
 
 	void InputDataListInternal::ClearKeyPressesLists()
 	{
-		_specialKeys.ESCkey.ClearKeyPressList();
-
-		_specialKeys.lAltkey.ClearKeyPressList();
-		_specialKeys.lCrtlkey.ClearKeyPressList();
-		_specialKeys.lShiftkey.ClearKeyPressList();
-		_specialKeys.lGuikey.ClearKeyPressList();
-
-		_specialKeys.rAltkey.ClearKeyPressList();
-		_specialKeys.rCrtlkey.ClearKeyPressList();
-		_specialKeys.rShiftkey.ClearKeyPressList();
-		_specialKeys.rGuikey.ClearKeyPressList();
-
-		_specialKeys.f1Key.ClearKeyPressList();
-		_specialKeys.f2Key.ClearKeyPressList();
-		_specialKeys.f3Key.ClearKeyPressList();
-		_specialKeys.f4Key.ClearKeyPressList();
-
-		_specialKeys.f5Key.ClearKeyPressList();
-		_specialKeys.f6Key.ClearKeyPressList();
-		_specialKeys.f7Key.ClearKeyPressList();
-		_specialKeys.f8Key.ClearKeyPressList();
-
-		_specialKeys.f9Key.ClearKeyPressList();
-		_specialKeys.f10Key.ClearKeyPressList();
-		_specialKeys.f11Key.ClearKeyPressList();
-		_specialKeys.f12Key.ClearKeyPressList();
+		for (size_t i = 0; i < _keyList.size(); ++i)
+		{
+			_keyList[i].ClearKeyPressList();
+		}
 	}
 
 	void InputDataListInternal::RegisterWindowEventHandler()
@@ -73,8 +54,8 @@ namespace JJs2DEngine
 	{
 		if (eventData.event == VS::SDL_DATA_WINDOWEVENT_FOCUS_LOST)
 		{
-			_specialKeys.OnFocusLost();
-			return false;
+			for (size_t i = 0; i < _keyList.size(); ++i)
+				_keyList[i].OnFocusLost();
 		}
 
 		return true;
@@ -97,89 +78,18 @@ namespace JJs2DEngine
 
 	bool InputDataListInternal::HandleKeyboardEvent(const VS::SdlKeyboardEventData& eventData)
 	{
-		auto& key = eventData.keysym.sym;
+		auto& key = eventData.keysym.scancode;
 
-		KeyPressData* specialKey = nullptr;
+		if (key >= _keyList.size() || key < 0)
+			throw std::runtime_error("InputDataListInternal::HandleKeyboardEvent Error: Event has an erroneous key scan code value!");
 
-		switch (key)
+		if (eventData.state > 0)
 		{
-		case VS::SDLK_DATA_ESCAPE:
-			specialKey = &_specialKeys.ESCkey;
-			break;
-		case VS::SDLK_DATA_F1:
-			specialKey = &_specialKeys.f1Key;
-			break;
-		case VS::SDLK_DATA_F2:
-			specialKey = &_specialKeys.f2Key;
-			break;
-		case VS::SDLK_DATA_F3:
-			specialKey = &_specialKeys.f3Key;
-			break;
-		case VS::SDLK_DATA_F4:
-			specialKey = &_specialKeys.f4Key;
-			break;
-		case VS::SDLK_DATA_F5:
-			specialKey = &_specialKeys.f5Key;
-			break;
-		case VS::SDLK_DATA_F6:
-			specialKey = &_specialKeys.f6Key;
-			break;
-		case VS::SDLK_DATA_F7:
-			specialKey = &_specialKeys.f7Key;
-			break;
-		case VS::SDLK_DATA_F8:
-			specialKey = &_specialKeys.f8Key;
-			break;
-		case VS::SDLK_DATA_F9:
-			specialKey = &_specialKeys.f9Key;
-			break;
-		case VS::SDLK_DATA_F10:
-			specialKey = &_specialKeys.f10Key;
-			break;
-		case VS::SDLK_DATA_F11:
-			specialKey = &_specialKeys.f11Key;
-			break;
-		case VS::SDLK_DATA_F12:
-			specialKey = &_specialKeys.f12Key;
-			break;
-		case VS::SDLK_DATA_LCTRL:
-			specialKey = &_specialKeys.lCrtlkey;
-			break;
-		case VS::SDLK_DATA_LSHIFT:
-			specialKey = &_specialKeys.lShiftkey;
-			break;
-		case VS::SDLK_DATA_LALT:
-			specialKey = &_specialKeys.lAltkey;
-			break;
-		case VS::SDLK_DATA_LGUI:
-			specialKey = &_specialKeys.lGuikey;
-			break;
-		case VS::SDLK_DATA_RCTRL:
-			specialKey = &_specialKeys.rCrtlkey;
-			break;
-		case VS::SDLK_DATA_RSHIFT:
-			specialKey = &_specialKeys.rShiftkey;
-			break;
-		case VS::SDLK_DATA_RALT:
-			specialKey = &_specialKeys.rAltkey;
-			break;
-		case VS::SDLK_DATA_RGUI:
-			specialKey = &_specialKeys.rGuikey;
-			break;
-		default:
-			break;
+			_keyList[key].PressKey(eventData.keysym.mod, _currentTime);
 		}
-
-		if (specialKey != nullptr)
+		else
 		{
-			if (eventData.state > 0)
-			{
-				specialKey->PressKey(eventData.keysym.mod, _currentTime);
-			}
-			else
-			{
-				specialKey->ReleaseKey();
-			}
+			_keyList[key].ReleaseKey();
 		}
 
 		return true;
