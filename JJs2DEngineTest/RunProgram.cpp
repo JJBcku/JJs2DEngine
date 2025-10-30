@@ -21,6 +21,9 @@
 
 constexpr float changeRatio = 0.25f;
 
+float GetPreviousZoomValue(float currentZoom);
+float GetNextZoomValue(float currentZoom);
+
 void RunProgram()
 {
 	MainDataCollection data;
@@ -48,6 +51,8 @@ void RunProgram()
 
 	const auto& eKey = inputData.GetKeyPressData(JJ2DE::SdlScancode::SDL_SCANCODE_MODULE_E);
 	const auto& qKey = inputData.GetKeyPressData(JJ2DE::SdlScancode::SDL_SCANCODE_MODULE_Q);
+	const auto& zKey = inputData.GetKeyPressData(JJ2DE::SdlScancode::SDL_SCANCODE_MODULE_Z);
+	const auto& xKey = inputData.GetKeyPressData(JJ2DE::SdlScancode::SDL_SCANCODE_MODULE_X);
 
 	bool quit = false;
 
@@ -79,30 +84,43 @@ void RunProgram()
 			float time = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - startTime).count();
 			float frameDelta = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - lastFrameTime).count();
 
+			for (size_t i = 0; i < zKey.GetKeyPressList().size(); ++i)
+			{
+				data.zoom = GetNextZoomValue(data.zoom);
+			}
+
+			for (size_t i = 0; i < xKey.GetKeyPressList().size(); ++i)
+			{
+				data.zoom = GetPreviousZoomValue(data.zoom);
+			}
+
+			float maxCameraOffset = 1.0f / data.zoom;
+			float minCameraOffset = -1.0f / data.zoom;
+
 			if (sKey.GetCurrentKeyPressBegginingTime().has_value() || downKey.GetCurrentKeyPressBegginingTime().has_value())
 			{
 				data.cameraY += changeRatio * frameDelta;
-				if (data.cameraY > data.zoom)
-					data.cameraY = data.zoom;
+				if (data.cameraY > maxCameraOffset)
+					data.cameraY = maxCameraOffset;
 			}
 			else if (wKey.GetCurrentKeyPressBegginingTime().has_value() || upKey.GetCurrentKeyPressBegginingTime().has_value())
 			{
 				data.cameraY -= changeRatio * frameDelta;
-				if (data.cameraY < (data.zoom * -1.0f))
-					data.cameraY = (data.zoom * -1.0f);
+				if (data.cameraY < minCameraOffset)
+					data.cameraY = minCameraOffset;
 			}
 
 			if (dKey.GetCurrentKeyPressBegginingTime().has_value() || rightKey.GetCurrentKeyPressBegginingTime().has_value())
 			{
 				data.cameraX += changeRatio * frameDelta;
-				if (data.cameraX > data.zoom)
-					data.cameraX = data.zoom;
+				if (data.cameraX > maxCameraOffset)
+					data.cameraX = maxCameraOffset;
 			}
 			else if (aKey.GetCurrentKeyPressBegginingTime().has_value() || leftKey.GetCurrentKeyPressBegginingTime().has_value())
 			{
 				data.cameraX -= changeRatio * frameDelta;
-				if (data.cameraX < (data.zoom * -1.0f))
-					data.cameraX = (data.zoom * -1.0f);
+				if (data.cameraX < minCameraOffset)
+					data.cameraX = minCameraOffset;
 			}
 
 			if (qKey.GetCurrentKeyPressBegginingTime().has_value())
@@ -120,6 +138,7 @@ void RunProgram()
 
 			vertexDataMain.SetCameraPosition(data.cameraX, data.cameraY);
 			vertexDataMain.SetCameraRotation(data.rotation);
+			vertexDataMain.SetCameraZoom(data.zoom);
 
 			lastFrameTime = currentTime;
 			main.RenderSingleFrame();
@@ -146,4 +165,24 @@ void RunProgram()
 	}
 
 	main.WaitForIdleDevice();
+}
+
+float GetPreviousZoomValue(float currentZoom)
+{
+	float ret = 1.0f;
+
+	if (currentZoom <= 1.0f)
+		ret = 0.5f;
+
+	return ret;
+}
+
+float GetNextZoomValue(float currentZoom)
+{
+	float ret = 1.0f;
+
+	if (currentZoom >= 1.0f)
+		ret = 2.0f;
+
+	return ret;
 }
