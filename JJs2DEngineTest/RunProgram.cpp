@@ -86,16 +86,28 @@ void RunProgram()
 
 			for (size_t i = 0; i < zKey.GetKeyPressList().size(); ++i)
 			{
-				data.zoom = GetNextZoomValue(data.zoom);
+				float newZoom = GetNextZoomValue(data.zoom);
+				float change = newZoom / data.zoom;
+
+				data.cameraX *= change;
+				data.cameraY *= change;
+
+				data.zoom = newZoom;
 			}
 
 			for (size_t i = 0; i < xKey.GetKeyPressList().size(); ++i)
 			{
-				data.zoom = GetPreviousZoomValue(data.zoom);
+				float newZoom = GetPreviousZoomValue(data.zoom);
+				float change = newZoom / data.zoom;
+
+				data.cameraX *= change;
+				data.cameraY *= change;
+
+				data.zoom = newZoom;
 			}
 
-			float maxCameraOffset = 1.0f / data.zoom;
-			float minCameraOffset = -1.0f / data.zoom;
+			float maxCameraOffset = 0.25f * data.zoom;
+			float minCameraOffset = -0.25f * data.zoom;
 
 			if (sKey.GetCurrentKeyPressBegginingTime().has_value() || downKey.GetCurrentKeyPressBegginingTime().has_value())
 			{
