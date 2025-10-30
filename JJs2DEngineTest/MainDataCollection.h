@@ -18,6 +18,11 @@ struct MainDataCollection
 	bool is16Bit;
 	bool isRBReversed;
 
+	float cameraX;
+	float cameraY;
+	float rotation;
+	float zoom;
+
 	MainDataCollection();
 	~MainDataCollection();
 };

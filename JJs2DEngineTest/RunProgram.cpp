@@ -19,7 +19,7 @@
 #include <thread>
 #include <iostream>
 
-float GetRotation();
+constexpr float changeRatio = 0.25f;
 
 void RunProgram()
 {
@@ -36,12 +36,28 @@ void RunProgram()
 	const auto& escKey = inputData.GetKeyPressData(JJ2DE::SdlScancode::SDL_SCANCODE_MODULE_ESCAPE);
 	const auto& fullscreenKey = inputData.GetKeyPressData(JJ2DE::SdlScancode::SDL_SCANCODE_MODULE_F10);
 
+	const auto& wKey = inputData.GetKeyPressData(JJ2DE::SdlScancode::SDL_SCANCODE_MODULE_W);
+	const auto& aKey = inputData.GetKeyPressData(JJ2DE::SdlScancode::SDL_SCANCODE_MODULE_A);
+	const auto& sKey = inputData.GetKeyPressData(JJ2DE::SdlScancode::SDL_SCANCODE_MODULE_S);
+	const auto& dKey = inputData.GetKeyPressData(JJ2DE::SdlScancode::SDL_SCANCODE_MODULE_D);
+
+	const auto& upKey = inputData.GetKeyPressData(JJ2DE::SdlScancode::SDL_SCANCODE_MODULE_UP);
+	const auto& rightKey = inputData.GetKeyPressData(JJ2DE::SdlScancode::SDL_SCANCODE_MODULE_RIGHT);
+	const auto& downKey = inputData.GetKeyPressData(JJ2DE::SdlScancode::SDL_SCANCODE_MODULE_DOWN);
+	const auto& leftKey = inputData.GetKeyPressData(JJ2DE::SdlScancode::SDL_SCANCODE_MODULE_LEFT);
+
+	const auto& eKey = inputData.GetKeyPressData(JJ2DE::SdlScancode::SDL_SCANCODE_MODULE_E);
+	const auto& qKey = inputData.GetKeyPressData(JJ2DE::SdlScancode::SDL_SCANCODE_MODULE_Q);
+
 	bool quit = false;
 
 	Misc::Bool64Values fullscreen = Misc::BOOL64_FALSE;
 
 	size_t framesThisSecond = 0;
 	float lastSecond = 0.0;
+
+	static const auto startTime = std::chrono::high_resolution_clock::now();
+	auto lastFrameTime = startTime;
 
 	while (main.IsWindowClosed() != Misc::BOOL64_TRUE && !quit)
 	{
@@ -56,16 +72,57 @@ void RunProgram()
 		}
 		else
 		{
-			vertexDataMain.SetCameraRotation(GetRotation());
-			main.RenderSingleFrame();
-
 			framesThisSecond++;
-
-			static const auto startTime = std::chrono::high_resolution_clock::now();
 
 			auto currentTime = std::chrono::high_resolution_clock::now();
 
 			float time = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - startTime).count();
+			float frameDelta = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - lastFrameTime).count();
+
+			if (sKey.GetCurrentKeyPressBegginingTime().has_value() || downKey.GetCurrentKeyPressBegginingTime().has_value())
+			{
+				data.cameraY += changeRatio * frameDelta;
+				if (data.cameraY > data.zoom)
+					data.cameraY = data.zoom;
+			}
+			else if (wKey.GetCurrentKeyPressBegginingTime().has_value() || upKey.GetCurrentKeyPressBegginingTime().has_value())
+			{
+				data.cameraY -= changeRatio * frameDelta;
+				if (data.cameraY < (data.zoom * -1.0f))
+					data.cameraY = (data.zoom * -1.0f);
+			}
+
+			if (dKey.GetCurrentKeyPressBegginingTime().has_value() || rightKey.GetCurrentKeyPressBegginingTime().has_value())
+			{
+				data.cameraX += changeRatio * frameDelta;
+				if (data.cameraX > data.zoom)
+					data.cameraX = data.zoom;
+			}
+			else if (aKey.GetCurrentKeyPressBegginingTime().has_value() || leftKey.GetCurrentKeyPressBegginingTime().has_value())
+			{
+				data.cameraX -= changeRatio * frameDelta;
+				if (data.cameraX < (data.zoom * -1.0f))
+					data.cameraX = (data.zoom * -1.0f);
+			}
+
+			if (qKey.GetCurrentKeyPressBegginingTime().has_value())
+			{
+				data.rotation += changeRatio * frameDelta * 360.0f;
+				while (data.rotation >= 360.0f)
+					data.rotation -= 360.0f;
+			}
+			else if (eKey.GetCurrentKeyPressBegginingTime().has_value())
+			{
+				data.rotation -= changeRatio * frameDelta * 360.0f;
+				while (data.rotation <= 0.0f)
+					data.rotation += 360.0f;
+			}
+
+			vertexDataMain.SetCameraPosition(data.cameraX, data.cameraY);
+			vertexDataMain.SetCameraRotation(data.rotation);
+
+			lastFrameTime = currentTime;
+			main.RenderSingleFrame();
 
 			if (time - lastSecond >= 1.0f)
 			{
@@ -89,23 +146,4 @@ void RunProgram()
 	}
 
 	main.WaitForIdleDevice();
-}
-
-float GetRotation()
-{
-	float ret = 0.0f;
-
-	static const auto startTime = std::chrono::high_resolution_clock::now();
-
-	auto currentTime = std::chrono::high_resolution_clock::now();
-
-	double rotationTime = std::chrono::duration<double, std::chrono::seconds::period>(currentTime - startTime).count() * 30;
-
-	double fullRotationCountDouble = rotationTime / 360.0;
-	uint64_t fullRotationCountUint = static_cast<uint64_t>(fullRotationCountDouble);
-
-	double rotationDouble = rotationTime - (360.0 * static_cast<double>(fullRotationCountUint));
-	ret = static_cast<float>(rotationDouble);
-
-	return ret;
 }
