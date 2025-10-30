@@ -533,6 +533,12 @@ namespace JJs2DEngine
 
 	void VertexDataMainInternal::SetCameraRotation(float rotation)
 	{
+		if (rotation == 0.0f)
+		{
+			_camera.rotation = glm::identity<glm::mat4x4>();
+			return;
+		}
+
 		_camera.rotation = glm::rotate(glm::identity<glm::mat4x4>(), glm::radians(360.0f -
 			rotation), glm::vec3(0.0f, 0.0f, 1.0f));
 	}
