@@ -203,7 +203,7 @@ namespace JJs2DEngine
 			}
 
 			_backgroundPipelineList = devicePipelineList.AddGraphicPipelines(creationDataList, _backgroundPipelineCache, creationDataList.size() * 8);
-			SaveBackgroundPipelineCacheFile(dataFolder);
+			SaveBackgroundPipelineCacheFile(backgroundPipelineCachePath);
 		}
 
 		{
@@ -224,7 +224,7 @@ namespace JJs2DEngine
 			}
 
 			_uiPipelineList = devicePipelineList.AddGraphicPipelines(creationDataList, _uiPipelineCache, creationDataList.size() * 8);
-			SaveUILayerPipelineCacheFile(dataFolder);
+			SaveUILayerPipelineCacheFile(UIPipelineCachePath);
 		}
 
 		{
@@ -249,7 +249,7 @@ namespace JJs2DEngine
 			}
 
 			_worldLayerPipelineList = devicePipelineList.AddGraphicPipelines(creationDataList, _worldLayerPipelineCache);
-			SaveWorldLayerPipelineCacheFile(dataFolder);
+			SaveWorldLayerPipelineCacheFile(worldLayerPipelineCachePath);
 		}
 
 		{
@@ -280,7 +280,7 @@ namespace JJs2DEngine
 			}
 
 			_gammaCorrectionPipelineList = devicePipelineList.AddGraphicPipelines(creationDataList, _gammaCorrectionPipelineCache, creationDataList.size() * 8);
-			SaveGammaCorrectionPipelineCacheFile(dataFolder);
+			SaveGammaCorrectionPipelineCacheFile(gammaCorrectionPipelineCachePath);
 		}
 
 		{
