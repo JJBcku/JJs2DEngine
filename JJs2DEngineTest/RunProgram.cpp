@@ -141,7 +141,7 @@ void RunProgram()
 			}
 
 			vertexDataMain.SetCameraPosition(data.cameraX, data.cameraY);
-			vertexDataMain.SetCameraRotation(data.rotation);
+			vertexDataMain.SetPerspectiveRotation(data.rotation);
 			vertexDataMain.SetCameraZoom(data.zoom);
 
 			lastFrameTime = currentTime;

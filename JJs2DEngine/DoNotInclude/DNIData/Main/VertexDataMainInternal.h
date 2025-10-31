@@ -51,7 +51,7 @@ namespace JJs2DEngine
 		float GetGammaValue() const;
 
 		void SetCameraPosition(float X, float Y);
-		void SetCameraRotation(float rotation);
+		void SetPerspectiveRotation(float rotation);
 		void SetCameraZoom(float zoom);
 		void SetCameraAspectRatio(float ratio);
 

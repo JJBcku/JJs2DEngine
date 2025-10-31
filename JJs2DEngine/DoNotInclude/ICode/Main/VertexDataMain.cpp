@@ -22,9 +22,9 @@ namespace JJs2DEngine
 		_internal.SetCameraPosition(X, Y);
 	}
 
-	void VertexDataMain::SetCameraRotation(float rotation)
+	void VertexDataMain::SetPerspectiveRotation(float rotation)
 	{
-		_internal.SetCameraRotation(rotation);
+		_internal.SetPerspectiveRotation(rotation);
 	}
 
 	void VertexDataMain::SetCameraZoom(float zoom)

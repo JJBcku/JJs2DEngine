@@ -7,7 +7,7 @@ namespace JJs2DEngine
 {
 	struct CameraData
 	{
-		glm::mat4 rotation;
+		glm::mat4 perspectiveRotation;
 		glm::vec2 position;
 		float zoom;
 		float aspectRatio;

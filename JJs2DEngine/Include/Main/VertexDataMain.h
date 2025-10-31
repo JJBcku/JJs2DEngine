@@ -19,7 +19,7 @@ namespace JJs2DEngine
 		~VertexDataMain();
 
 		void SetCameraPosition(float X, float Y);
-		void SetCameraRotation(float rotation);
+		void SetPerspectiveRotation(float rotation);
 		void SetCameraZoom(float zoom);
 
 		void CreateBackgroundLayerVersionList(const std::vector<BackgroundObjectData>& versionDataList);

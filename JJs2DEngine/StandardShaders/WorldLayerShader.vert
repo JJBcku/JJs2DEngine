@@ -29,23 +29,21 @@ uint vertexIndexes[6] = uint[]( 0, 1, 2, 2, 1, 3);
 
 layout (push_constant) uniform CameraData
 {
-	mat4 rotation;
-	vec2 position;
+	mat4 perspectiveRotation;
+	vec2 cameraPosition;
 	float zoom;
 	float aspectRatio;
 } camera;
 
 void main()
 {
-	vec2 verticeOffset = vertexData[vertexIndexes[gl_VertexIndex]] * inSize;
-	verticeOffset = verticeOffset;
-	vec2 flatPosition = (verticeOffset + inPos.xy) * vec2(camera.zoom);
-	vec4 worldPosition = vec4(flatPosition, inPos.z, 1.0) * camera.rotation;
+	vec2 verticeOffset = vertexData[vertexIndexes[gl_VertexIndex]] * inSize * vec2(camera.zoom);
+	vec4 worldPosition = vec4(verticeOffset, inPos.z, 1.0) * camera.perspectiveRotation;
+	vec4 inCameraPosition = vec4(worldPosition.xy - camera.cameraPosition, inPos.z, 1.0);
+
+	gl_Position = vec4(inCameraPosition.x, inCameraPosition.y * camera.aspectRatio, inPos.z, 1.0);
 	
 	vec2 texPos = textureData[vertexIndexes[gl_VertexIndex]];
-
-	gl_Position = vec4(worldPosition.x - camera.position.x, (worldPosition.y - camera.position.y) * camera.aspectRatio, worldPosition.z, 1.0);
-	
 	vec2 texCoord = inTexCoord + (inTexSize * texPos);
 	
 	outTexCoord = texCoord;

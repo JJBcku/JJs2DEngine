@@ -531,16 +531,15 @@ namespace JJs2DEngine
 		_camera.position = glm::vec2(X, Y);
 	}
 
-	void VertexDataMainInternal::SetCameraRotation(float rotation)
+	void VertexDataMainInternal::SetPerspectiveRotation(float rotation)
 	{
 		if (rotation == 0.0f)
 		{
-			_camera.rotation = glm::identity<glm::mat4x4>();
+			_camera.perspectiveRotation = glm::identity<glm::mat4x4>();
 			return;
 		}
 
-		_camera.rotation = glm::rotate(glm::identity<glm::mat4x4>(), glm::radians(360.0f -
-			rotation), glm::vec3(0.0f, 0.0f, 1.0f));
+		_camera.perspectiveRotation = glm::rotate(glm::identity<glm::mat4x4>(), glm::radians(rotation), glm::vec3(0.0f, 0.0f, 1.0f));
 	}
 
 	void VertexDataMainInternal::SetCameraZoom(float zoom)
