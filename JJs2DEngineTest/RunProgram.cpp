@@ -127,13 +127,13 @@ void RunProgram()
 					data.cameraX = minCameraOffset;
 			}
 
-			if (qKey.GetCurrentKeyPressBegginingTime().has_value())
+			if (eKey.GetCurrentKeyPressBegginingTime().has_value())
 			{
 				data.rotation += changeRatio * frameDelta * 360.0f;
 				while (data.rotation >= 360.0f)
 					data.rotation -= 360.0f;
 			}
-			else if (eKey.GetCurrentKeyPressBegginingTime().has_value())
+			else if (qKey.GetCurrentKeyPressBegginingTime().has_value())
 			{
 				data.rotation -= changeRatio * frameDelta * 360.0f;
 				while (data.rotation <= 0.0f)
