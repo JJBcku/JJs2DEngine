@@ -133,6 +133,8 @@
     <ClInclude Include="DoNotInclude\DNIData\Main\WorldLayerObjectDataInternal.h" />
     <ClInclude Include="DoNotInclude\DNIData\Main\WorldLayerVertexDataLayerVersionInternal.h" />
     <ClInclude Include="DoNotInclude\DNIData\Main\WorldLayerVertexDataLayerVersionListInternal.h" />
+    <ClInclude Include="Include\Common\SdlKeycode.h" />
+    <ClInclude Include="Include\Common\SdlModuleKeymod.h" />
     <ClInclude Include="Include\Common\SdlScancode.h" />
     <ClInclude Include="Include\Main\BackgroundVertexDataLayerVersionList.h" />
     <ClInclude Include="Include\Main\BackgroundObjectData.h" />

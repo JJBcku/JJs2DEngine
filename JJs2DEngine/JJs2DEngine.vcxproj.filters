@@ -336,8 +336,14 @@
     <ClInclude Include="DoNotInclude\DNIData\Main\BackgroundVertexDataLayerVersionListInternal.h">
       <Filter>Header Files\Do Not Include\Main\VertexData\Layers\Background</Filter>
     </ClInclude>
+    <ClInclude Include="Include\Common\SdlKeycode.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\Common\SdlModuleKeymod.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="Include\Common\SdlScancode.h">
-      <Filter>Header Files\Include\Common</Filter>
+      <Filter>Header Files\Include\Common\OtherData</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -3,7 +3,7 @@
 namespace JJs2DEngine
 {
 	class InputDataListInternal;
-	class KeyPressData;
+	struct KeyPressData;
 
 	struct SpecialKeysDataList;
 
@@ -15,9 +15,11 @@ namespace JJs2DEngine
 
 		InputDataList& operator=(const InputDataList& rhs) noexcept = delete;
 
-		const KeyPressData& GetKeyPressData(size_t scanCode) const;
+		const std::vector<KeyPressData>& GetEventList() const;
+		void ClearEventList();
 
-		void ClearKeyPressesLists();
+		bool WasFocusLost() const;
+		void ResetFocusLost();
 
 	private:
 		InputDataListInternal& _internal;

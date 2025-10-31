@@ -24,6 +24,32 @@ constexpr float changeRatio = 0.25f;
 float GetPreviousZoomValue(float currentZoom);
 float GetNextZoomValue(float currentZoom);
 
+struct KeyPressList
+{
+	bool escKey = false;
+	bool f10Key = false;
+
+	bool wKey = false;
+	bool aKey = false;
+	bool sKey = false;
+	bool dKey = false;
+
+	bool upKey = false;
+	bool rightKey = false;
+	bool downKey = false;
+	bool leftKey = false;
+
+	bool eKey = false;
+	bool qKey = false;
+	uint64_t zKey = 0;
+	uint64_t xKey = 0;
+
+	KeyPressList() {};
+	~KeyPressList() {};
+};
+
+void HandleKeyPress(KeyPressList& keyPressData, JJ2DE::KeyPressData keyPress);
+
 void RunProgram()
 {
 	MainDataCollection data;
@@ -36,23 +62,7 @@ void RunProgram()
 	auto vertexDataMain = main.GetVertexDataMainList();
 
 	auto inputData = main.GetInputDataList();
-	const auto& escKey = inputData.GetKeyPressData(JJ2DE::SdlScancode::SDL_SCANCODE_MODULE_ESCAPE);
-	const auto& fullscreenKey = inputData.GetKeyPressData(JJ2DE::SdlScancode::SDL_SCANCODE_MODULE_F10);
-
-	const auto& wKey = inputData.GetKeyPressData(JJ2DE::SdlScancode::SDL_SCANCODE_MODULE_W);
-	const auto& aKey = inputData.GetKeyPressData(JJ2DE::SdlScancode::SDL_SCANCODE_MODULE_A);
-	const auto& sKey = inputData.GetKeyPressData(JJ2DE::SdlScancode::SDL_SCANCODE_MODULE_S);
-	const auto& dKey = inputData.GetKeyPressData(JJ2DE::SdlScancode::SDL_SCANCODE_MODULE_D);
-
-	const auto& upKey = inputData.GetKeyPressData(JJ2DE::SdlScancode::SDL_SCANCODE_MODULE_UP);
-	const auto& rightKey = inputData.GetKeyPressData(JJ2DE::SdlScancode::SDL_SCANCODE_MODULE_RIGHT);
-	const auto& downKey = inputData.GetKeyPressData(JJ2DE::SdlScancode::SDL_SCANCODE_MODULE_DOWN);
-	const auto& leftKey = inputData.GetKeyPressData(JJ2DE::SdlScancode::SDL_SCANCODE_MODULE_LEFT);
-
-	const auto& eKey = inputData.GetKeyPressData(JJ2DE::SdlScancode::SDL_SCANCODE_MODULE_E);
-	const auto& qKey = inputData.GetKeyPressData(JJ2DE::SdlScancode::SDL_SCANCODE_MODULE_Q);
-	const auto& zKey = inputData.GetKeyPressData(JJ2DE::SdlScancode::SDL_SCANCODE_MODULE_Z);
-	const auto& xKey = inputData.GetKeyPressData(JJ2DE::SdlScancode::SDL_SCANCODE_MODULE_X);
+	KeyPressList keyPressList;
 
 	bool quit = false;
 
@@ -69,7 +79,15 @@ void RunProgram()
 		main.UpdateCurrentTime();
 		main.HandleEvents();
 
-		quit = !escKey.GetKeyPressList().empty();
+		quit = keyPressList.escKey;
+
+		const auto& eventDataList = inputData.GetEventList();
+
+		for (size_t i = 0; i < eventDataList.size(); ++i)
+		{
+			HandleKeyPress(keyPressList, eventDataList[i]);
+		}
+		inputData.ClearEventList();
 
 		if (main.RenderingShouldBePaused())
 		{
@@ -84,14 +102,14 @@ void RunProgram()
 			float time = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - startTime).count();
 			float frameDelta = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - lastFrameTime).count();
 
-			for (size_t i = 0; i < zKey.GetKeyPressList().size(); ++i)
+			for (uint64_t i = 0; i < keyPressList.zKey; ++i)
 			{
 				float newZoom = GetNextZoomValue(data.zoom);
 
 				data.zoom = newZoom;
 			}
 
-			for (size_t i = 0; i < xKey.GetKeyPressList().size(); ++i)
+			for (uint64_t i = 0; i < keyPressList.xKey; ++i)
 			{
 				float newZoom = GetPreviousZoomValue(data.zoom);
 
@@ -101,39 +119,39 @@ void RunProgram()
 			float maxCameraOffset = 0.5f;
 			float minCameraOffset = -0.5f;
 
-			if (sKey.GetCurrentKeyPressBegginingTime().has_value() || downKey.GetCurrentKeyPressBegginingTime().has_value())
+			if (keyPressList.sKey || keyPressList.downKey)
 			{
 				data.cameraY += changeRatio * frameDelta;
 				if (data.cameraY > maxCameraOffset)
 					data.cameraY = maxCameraOffset;
 			}
-			else if (wKey.GetCurrentKeyPressBegginingTime().has_value() || upKey.GetCurrentKeyPressBegginingTime().has_value())
+			else if (keyPressList.wKey || keyPressList.upKey)
 			{
 				data.cameraY -= changeRatio * frameDelta;
 				if (data.cameraY < minCameraOffset)
 					data.cameraY = minCameraOffset;
 			}
 
-			if (dKey.GetCurrentKeyPressBegginingTime().has_value() || rightKey.GetCurrentKeyPressBegginingTime().has_value())
+			if (keyPressList.dKey || keyPressList.rightKey)
 			{
 				data.cameraX += changeRatio * frameDelta;
 				if (data.cameraX > maxCameraOffset)
 					data.cameraX = maxCameraOffset;
 			}
-			else if (aKey.GetCurrentKeyPressBegginingTime().has_value() || leftKey.GetCurrentKeyPressBegginingTime().has_value())
+			else if (keyPressList.aKey || keyPressList.leftKey)
 			{
 				data.cameraX -= changeRatio * frameDelta;
 				if (data.cameraX < minCameraOffset)
 					data.cameraX = minCameraOffset;
 			}
 
-			if (eKey.GetCurrentKeyPressBegginingTime().has_value())
+			if (keyPressList.eKey)
 			{
 				data.rotation += changeRatio * frameDelta * 360.0f;
 				while (data.rotation >= 360.0f)
 					data.rotation -= 360.0f;
 			}
-			else if (qKey.GetCurrentKeyPressBegginingTime().has_value())
+			else if (keyPressList.qKey)
 			{
 				data.rotation -= changeRatio * frameDelta * 360.0f;
 				while (data.rotation <= 0.0f)
@@ -155,7 +173,7 @@ void RunProgram()
 			}
 		}
 
-		if (!fullscreenKey.GetKeyPressList().empty())
+		if (keyPressList.f10Key)
 		{
 			if (fullscreen == Misc::BOOL64_FALSE)
 				fullscreen = Misc::BOOL64_TRUE;
@@ -165,7 +183,8 @@ void RunProgram()
 			main.ChangeFullscreen(fullscreen);
 		}
 
-		inputData.ClearKeyPressesLists();
+		keyPressList.zKey = 0;
+		keyPressList.xKey = 0;
 	}
 
 	main.WaitForIdleDevice();
@@ -189,4 +208,65 @@ float GetNextZoomValue(float currentZoom)
 		ret = 2.0f;
 
 	return ret;
+}
+
+void HandleKeyPress(KeyPressList& keyPressData, JJ2DE::KeyPressData keyPress)
+{
+	switch (keyPress.scanCode)
+	{
+	case JJ2DE::SdlScancode::SDL_SCANCODE_MODULE_ESCAPE:
+		keyPressData.escKey = keyPress.keyPressed;
+		break;
+	case JJ2DE::SdlScancode::SDL_SCANCODE_MODULE_F10:
+		keyPressData.f10Key = keyPress.keyPressed;
+		break;
+	case JJ2DE::SdlScancode::SDL_SCANCODE_MODULE_W:
+		keyPressData.wKey = keyPress.keyPressed;
+		break;
+	case JJ2DE::SdlScancode::SDL_SCANCODE_MODULE_A:
+		keyPressData.aKey = keyPress.keyPressed;
+		break;
+	case JJ2DE::SdlScancode::SDL_SCANCODE_MODULE_S:
+		keyPressData.sKey = keyPress.keyPressed;
+		break;
+	case JJ2DE::SdlScancode::SDL_SCANCODE_MODULE_D:
+		keyPressData.dKey = keyPress.keyPressed;
+		break;
+	case JJ2DE::SdlScancode::SDL_SCANCODE_MODULE_UP:
+		keyPressData.upKey = keyPress.keyPressed;
+		break;
+	case JJ2DE::SdlScancode::SDL_SCANCODE_MODULE_RIGHT:
+		keyPressData.rightKey = keyPress.keyPressed;
+		break;
+	case JJ2DE::SdlScancode::SDL_SCANCODE_MODULE_DOWN:
+		keyPressData.downKey = keyPress.keyPressed;
+		break;
+	case JJ2DE::SdlScancode::SDL_SCANCODE_MODULE_LEFT:
+		keyPressData.leftKey = keyPress.keyPressed;
+		break;
+	case JJ2DE::SdlScancode::SDL_SCANCODE_MODULE_E:
+		keyPressData.eKey = keyPress.keyPressed;
+		break;
+	case JJ2DE::SdlScancode::SDL_SCANCODE_MODULE_Q:
+		keyPressData.qKey = keyPress.keyPressed;
+		break;
+	case JJ2DE::SdlScancode::SDL_SCANCODE_MODULE_Z:
+		if (!keyPress.keyPressed || keyPress.keyRepeat)
+			break;
+		if (keyPressData.xKey > 0)
+			keyPressData.xKey -= 1;
+		else
+			keyPressData.zKey += 1;
+		break;
+	case JJ2DE::SdlScancode::SDL_SCANCODE_MODULE_X:
+		if (!keyPress.keyPressed || keyPress.keyRepeat)
+			break;
+		if (keyPressData.zKey > 0)
+			keyPressData.zKey -= 1;
+		else
+			keyPressData.xKey += 1;
+		break;
+	default:
+		break;
+	}
 }

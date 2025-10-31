@@ -4,5 +4,5 @@
 
 namespace JJs2DEngine
 {
-	typedef VulkanSimplified::SdlScancode SdlScancode;
+	typedef VulkanSimplified::SdlKeycode SdlKeycode;
 }

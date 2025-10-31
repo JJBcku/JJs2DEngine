@@ -13,6 +13,8 @@
 
 namespace JJs2DEngine
 {
+	struct KeyPressData;
+
 	class InputDataListInternal
 	{
 	public:
@@ -21,9 +23,11 @@ namespace JJs2DEngine
 
 		void UpdateCurrentTime(std::chrono::high_resolution_clock::time_point currentTime);
 
-		const KeyPressData& GetKeyPressData(size_t scanCode) const;
+		const std::vector<KeyPressData>& GetEventList() const;
+		void ClearEventList();
 
-		void ClearKeyPressesLists();
+		bool WasFocusLost() const;
+		void ResetFocusLost();
 
 	private:
 		VS::SdlEventHandler _eventHandler;
@@ -33,7 +37,9 @@ namespace JJs2DEngine
 		IDObject<std::pair<VS::WindowEventFunction, void*>> _windowEventHandlerID;
 		IDObject<std::pair<VS::KeyboardEventFunction, void*>> _keyboardEventHandlerID;
 
-		std::array<KeyPressData, SdlScancode::SDL_DATA_NUM_SCANCODES> _keyList;
+		std::vector<KeyPressData> _eventList;
+
+		bool _focusLost;
 
 		void RegisterWindowEventHandler();
 		void UnregisterWindowEventHandler();

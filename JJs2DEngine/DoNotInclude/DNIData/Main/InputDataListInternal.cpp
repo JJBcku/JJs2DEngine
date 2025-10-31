@@ -9,6 +9,9 @@ namespace JJs2DEngine
 	InputDataListInternal::InputDataListInternal(std::chrono::high_resolution_clock::time_point currentTime, VS::SdlEventHandler eventHandler) : _eventHandler(eventHandler),
 		_currentTime(currentTime)
 	{
+		_eventList.reserve(0x100);
+		_focusLost = false;
+
 		RegisterWindowEventHandler();
 		RegisterKeyboardEventHandler();
 	}
@@ -24,20 +27,24 @@ namespace JJs2DEngine
 		_currentTime = currentTime;
 	}
 
-	const KeyPressData& InputDataListInternal::GetKeyPressData(size_t scanCode) const
+	const std::vector<KeyPressData>& InputDataListInternal::GetEventList() const
 	{
-		if (scanCode >= _keyList.size())
-			throw std::runtime_error("InputDataListInternal::GetKeyPressData Error: Erroneous scan code!");
-
-		return _keyList[scanCode];
+		return _eventList;
 	}
 
-	void InputDataListInternal::ClearKeyPressesLists()
+	void InputDataListInternal::ClearEventList()
 	{
-		for (size_t i = 0; i < _keyList.size(); ++i)
-		{
-			_keyList[i].ClearKeyPressList();
-		}
+		_eventList.clear();
+	}
+
+	bool InputDataListInternal::WasFocusLost() const
+	{
+		return _focusLost;
+	}
+
+	void InputDataListInternal::ResetFocusLost()
+	{
+		_focusLost = false;
 	}
 
 	void InputDataListInternal::RegisterWindowEventHandler()
@@ -54,8 +61,7 @@ namespace JJs2DEngine
 	{
 		if (eventData.event == VS::SDL_DATA_WINDOWEVENT_FOCUS_LOST)
 		{
-			for (size_t i = 0; i < _keyList.size(); ++i)
-				_keyList[i].OnFocusLost();
+			_focusLost = true;
 		}
 
 		return true;
@@ -78,19 +84,18 @@ namespace JJs2DEngine
 
 	bool InputDataListInternal::HandleKeyboardEvent(const VS::SdlKeyboardEventData& eventData)
 	{
-		auto& key = eventData.keysym.scancode;
+		KeyPressData keyAdd;
 
-		if (key >= _keyList.size() || key < 0)
-			throw std::runtime_error("InputDataListInternal::HandleKeyboardEvent Error: Event has an erroneous key scan code value!");
+		keyAdd.scanCode = eventData.keysym.scancode;
+		keyAdd.keyCode = eventData.keysym.sym;
+		keyAdd.keyMods = eventData.keysym.mod;
+		keyAdd.keyPressed = eventData.state > 0;
+		keyAdd.keyRepeat = eventData.repeat > 0;
 
-		if (eventData.state > 0)
-		{
-			_keyList[key].PressKey(eventData.keysym.mod, _currentTime);
-		}
-		else
-		{
-			_keyList[key].ReleaseKey();
-		}
+		if (_eventList.size() == _eventList.capacity())
+			_eventList.reserve(_eventList.capacity() << 1);
+
+		_eventList.push_back(keyAdd);
 
 		return true;
 	}

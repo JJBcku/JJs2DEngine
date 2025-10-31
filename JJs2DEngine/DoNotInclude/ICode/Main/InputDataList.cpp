@@ -13,14 +13,24 @@ namespace JJs2DEngine
 	{
 	}
 
-	const KeyPressData& InputDataList::GetKeyPressData(size_t scanCode) const
+	const std::vector<KeyPressData>& InputDataList::GetEventList() const
 	{
-		return _internal.GetKeyPressData(scanCode);
+		return _internal.GetEventList();
 	}
 
-	void InputDataList::ClearKeyPressesLists()
+	void InputDataList::ClearEventList()
 	{
-		_internal.ClearKeyPressesLists();
+		_internal.ClearEventList();
+	}
+
+	bool InputDataList::WasFocusLost() const
+	{
+		return _internal.WasFocusLost();
+	}
+
+	void InputDataList::ResetFocusLost()
+	{
+		_internal.ResetFocusLost();
 	}
 
 }
