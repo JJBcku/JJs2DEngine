@@ -365,12 +365,12 @@ void HandleMouseButtons(const JJ2DE::Main& main, MouseDataList& mouseDataList, J
 			mouseDataList.lastPositionX.reset();
 			mouseDataList.lastPositionY.reset();
 		}
-		if (mouseDataList.leftClick && mouseEvent.doubleClick)
+		if (mouseDataList.leftClick && mouseEvent.buttonPressed && mouseEvent.doubleClick)
 			mouseDataList.leftDoubleClicks += 1;
 		mouseDataList.leftClick = mouseEvent.buttonPressed;
 		break;
 	case JJ2DE::SdlMouseButtonIndex::SDL_DATA_BUTTON_INDEX_RIGHT:
-		if (mouseDataList.rightClick && mouseEvent.doubleClick)
+		if (mouseDataList.rightClick && mouseEvent.buttonPressed && mouseEvent.doubleClick)
 			mouseDataList.rightDoubleClicks += 1;
 		mouseDataList.rightClick = mouseEvent.buttonPressed;
 		break;
