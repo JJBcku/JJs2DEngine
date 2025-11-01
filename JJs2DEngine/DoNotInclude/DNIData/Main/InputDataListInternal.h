@@ -26,7 +26,7 @@ namespace JJs2DEngine
 		const std::vector<KeyPressData>& GetEventList() const;
 		void ClearEventList();
 
-		bool WasFocusLost() const;
+		bool FocusWasLost() const;
 		void ResetFocusLost();
 
 	private:

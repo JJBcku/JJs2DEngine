@@ -52,5 +52,4 @@ void CreateLayers(MainDataCollection& data)
 	vertexDataMain.SetCameraPosition(data.cameraX, data.cameraY);
 	vertexDataMain.SetCameraZoom(data.zoom);
 	vertexDataMain.SetPerspectiveRotation(data.rotation);
-
 }

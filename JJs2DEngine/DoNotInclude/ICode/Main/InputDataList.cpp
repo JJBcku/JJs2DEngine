@@ -23,9 +23,9 @@ namespace JJs2DEngine
 		_internal.ClearEventList();
 	}
 
-	bool InputDataList::WasFocusLost() const
+	bool InputDataList::FocusWasLost() const
 	{
-		return _internal.WasFocusLost();
+		return _internal.FocusWasLost();
 	}
 
 	void InputDataList::ResetFocusLost()

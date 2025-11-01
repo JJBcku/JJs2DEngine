@@ -37,7 +37,7 @@ namespace JJs2DEngine
 		_eventList.clear();
 	}
 
-	bool InputDataListInternal::WasFocusLost() const
+	bool InputDataListInternal::FocusWasLost() const
 	{
 		return _focusLost;
 	}

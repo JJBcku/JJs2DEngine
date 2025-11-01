@@ -79,15 +79,23 @@ void RunProgram()
 		main.UpdateCurrentTime();
 		main.HandleEvents();
 
-		quit = keyPressList.escKey;
-
 		const auto& eventDataList = inputData.GetEventList();
 
-		for (size_t i = 0; i < eventDataList.size(); ++i)
+		if (inputData.FocusWasLost())
 		{
-			HandleKeyPress(keyPressList, eventDataList[i]);
+			keyPressList = KeyPressList();
+			inputData.ResetFocusLost();
 		}
-		inputData.ClearEventList();
+		else
+		{
+			for (size_t i = 0; i < eventDataList.size(); ++i)
+			{
+				HandleKeyPress(keyPressList, eventDataList[i]);
+			}
+			inputData.ClearEventList();
+		}
+
+		quit = keyPressList.escKey;
 
 		if (main.RenderingShouldBePaused())
 		{
