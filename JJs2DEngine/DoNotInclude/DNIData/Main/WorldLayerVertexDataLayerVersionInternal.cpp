@@ -83,10 +83,10 @@ namespace JJs2DEngine
 		size_t tileSize = 1ULL << (skippedSizeLevels + newObjectData.textureIndex.first);
 		float fTileSize = static_cast<float>(tileSize);
 
-		float textureWidth = static_cast<float>(newObjectData.textureWidthInPixels);
-		textureWidth /= fTileSize;
-		float textureHeight = static_cast<float>(newObjectData.textureHeightInPixels);
-		textureHeight /= fTileSize;
+		float textureWidth = static_cast<float>(newObjectData.textureWidthInPixels) * 2.0f - 1.0f;
+		textureWidth /= fTileSize * 2.0f;
+		float textureHeight = static_cast<float>(newObjectData.textureHeightInPixels) * 2.0f - 1.0f;
+		textureHeight /= fTileSize * 2.0f;
 		added.texturesSizeInTile = glm::vec2(textureWidth, textureHeight);
 
 		float screenWidth = static_cast<float>(newObjectData.screenWidth_UNORM);
