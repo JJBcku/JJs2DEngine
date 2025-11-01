@@ -1336,7 +1336,7 @@ namespace JJs2DEngine
 			0x10);
 		ret.colorBlendingData.push_back(sharedPipelineList.AddUniquePipelineColorBlendAttachment(VS::ColorBlendingComponentBits::COLOR_COMPONENT_R |
 			VS::ColorBlendingComponentBits::COLOR_COMPONENT_G | VS::ColorBlendingComponentBits::COLOR_COMPONENT_B | VS::ColorBlendingComponentBits::COLOR_COMPONENT_A,
-			VS::ColorBlendingPreset::ALPHA_BLENDING, 0x10));
+			VS::ColorBlendingPreset::NO_BLENDING, 0x10));
 
 		ret.pipelineLayout = _backgroundPipelineLayout;
 		ret.renderPass = renderPass;
@@ -1386,7 +1386,7 @@ namespace JJs2DEngine
 			0x10);
 		ret.colorBlendingData.push_back(sharedPipelineList.AddUniquePipelineColorBlendAttachment(VS::ColorBlendingComponentBits::COLOR_COMPONENT_R |
 			VS::ColorBlendingComponentBits::COLOR_COMPONENT_G | VS::ColorBlendingComponentBits::COLOR_COMPONENT_B | VS::ColorBlendingComponentBits::COLOR_COMPONENT_A,
-			VS::ColorBlendingPreset::ALPHA_BLENDING, 0x10));
+			VS::ColorBlendingPreset::NO_BLENDING, 0x10));
 
 		ret.pipelineLayout = _uiPipelineLayout;
 		ret.renderPass = renderPass;
@@ -1436,7 +1436,7 @@ namespace JJs2DEngine
 			0x10);
 		ret.colorBlendingData.push_back(sharedPipelineList.AddUniquePipelineColorBlendAttachment(VS::ColorBlendingComponentBits::COLOR_COMPONENT_R |
 			VS::ColorBlendingComponentBits::COLOR_COMPONENT_G | VS::ColorBlendingComponentBits::COLOR_COMPONENT_B | VS::ColorBlendingComponentBits::COLOR_COMPONENT_A,
-			VS::ColorBlendingPreset::ALPHA_BLENDING, 0x10));
+			VS::ColorBlendingPreset::NO_BLENDING, 0x10));
 
 		ret.pipelineLayout = _worldLayerPipelineLayout;
 		ret.renderPass = renderPass;
@@ -1474,7 +1474,7 @@ namespace JJs2DEngine
 		ret.samplingData = sharedPipelineList.AddUniquePipelineMultisampleData(VS::SAMPLE_1, {}, 0x10);
 		ret.colorBlendingData.push_back(sharedPipelineList.AddUniquePipelineColorBlendAttachment(VS::ColorBlendingComponentBits::COLOR_COMPONENT_R |
 			VS::ColorBlendingComponentBits::COLOR_COMPONENT_G | VS::ColorBlendingComponentBits::COLOR_COMPONENT_B | VS::ColorBlendingComponentBits::COLOR_COMPONENT_A,
-			VS::ColorBlendingPreset::ALPHA_BLENDING, 0x10));
+			VS::ColorBlendingPreset::NO_BLENDING, 0x10));
 
 		ret.pipelineLayout = _gammaCorrectionPipelineLayout;
 		ret.renderPass = renderPass;
