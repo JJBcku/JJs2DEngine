@@ -154,8 +154,8 @@ namespace JJs2DEngine
 				tileStartHeight *= textureData.tileSize;
 				size_t tileLayer = divTemp / textureData.heightInTiles;
 
-				reference.textureCoords = glm::vec2(static_cast<float>(tileStartWidth) / static_cast<float>(textureData.widthInPixels),
-					static_cast<float>(tileStartHeight) / static_cast<float>(textureData.heightInPixels));
+				reference.textureCoords = glm::vec2(((static_cast<float>(tileStartWidth) * 2.0f) + 1.0f) / (static_cast<float>(textureData.widthInPixels) * 2.0f),
+					((static_cast<float>(tileStartHeight) * 2.0f) + 1.0f) / (static_cast<float>(textureData.heightInPixels) * 2.0f));
 				reference.textureLayer = static_cast<uint32_t>(tileLayer);
 				reference.textureIsUsed = j == 0;
 
