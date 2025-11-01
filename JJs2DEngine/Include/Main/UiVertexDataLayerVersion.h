@@ -1,6 +1,7 @@
 #pragma once
 
 #include <optional>
+#include <utility>
 
 namespace JJs2DEngine
 {
@@ -15,6 +16,8 @@ namespace JJs2DEngine
 		~UiVertexDataLayerVersion();
 
 		std::optional<size_t> AddObject(const UiObjectData& newObjectData);
+
+		void ChangeObjectsTexture(bool inPreloadedTexturesList, std::pair<size_t, size_t> newTextureID, size_t objectsIndex);
 
 	private:
 		UiVertexDataLayerVersionInternal& _internal;

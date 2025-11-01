@@ -15,7 +15,7 @@ struct MainDataCollection
 	size_t objectID;
 
 	std::pair<size_t, size_t> backgroundtexturesID;
-	std::array<std::pair<size_t, size_t>, 3> texturesID;
+	std::array<std::pair<size_t, size_t>, 3> texturesIDs;
 	size_t currentObjectTexture;
 
 	bool is16Bit;

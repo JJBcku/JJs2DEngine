@@ -11,6 +11,8 @@
 #include <InputDataList.h>
 #include <InputEvent.h>
 #include <VertexDataMain.h>
+#include <WorldLayerVertexDataLayerVersionList.h>
+#include <WorldLayerVertexDataLayerVersion.h>
 
 #include <Miscellaneous/Bool64.h>
 
@@ -85,6 +87,8 @@ void RunProgram()
 	auto inputData = main.GetInputDataList();
 	KeyPressList keyPressList;
 	MouseDataList mouseDataList;
+
+	auto worldLayer = vertexDataMain.GetWorldLayerVertexDataLayerVersionList(data.layerID).GetLayersVersion(0);
 
 	bool quit = false;
 
@@ -232,6 +236,12 @@ void RunProgram()
 
 			if (time - lastSecond >= 1.0f)
 			{
+				data.currentObjectTexture += 1;
+				if (data.currentObjectTexture >= data.texturesIDs.size())
+					data.currentObjectTexture = 0;
+
+				worldLayer.ChangeObjectsTexture(false, data.texturesIDs[data.currentObjectTexture], 0);
+
 				lastSecond = time;
 				std::cout << "FPS: " << framesThisSecond << std::endl;
 				framesThisSecond = 0;

@@ -147,7 +147,7 @@ void CreateObjectTexture(MainDataCollection& data)
 	if (!resultData.has_value())
 		throw std::runtime_error("CreateObjectTexture Error: Program failed to add the texture to the transfer order list!");
 
-	data.texturesID[0] = resultData.value();
+	data.texturesIDs[0] = resultData.value();
 }
 
 void CreateObjectTextureSecondFrame(MainDataCollection& data)
@@ -211,7 +211,7 @@ void CreateObjectTextureSecondFrame(MainDataCollection& data)
 	if (!resultData.has_value())
 		throw std::runtime_error("CreateObjectTextureSecondFrame Error: Program failed to add the texture to the transfer order list!");
 
-	data.texturesID[1] = resultData.value();
+	data.texturesIDs[1] = resultData.value();
 }
 
 void CreateObjectTextureThirdFrame(MainDataCollection& data)
@@ -275,5 +275,5 @@ void CreateObjectTextureThirdFrame(MainDataCollection& data)
 	if (!resultData.has_value())
 		throw std::runtime_error("CreateObjectTextureThirdFrame Error: Program failed to add the texture to the transfer order list!");
 
-	data.texturesID[2] = resultData.value();
+	data.texturesIDs[2] = resultData.value();
 }

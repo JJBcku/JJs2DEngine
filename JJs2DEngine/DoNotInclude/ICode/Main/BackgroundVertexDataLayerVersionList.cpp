@@ -23,4 +23,9 @@ namespace JJs2DEngine
 		return _internal.GetActiveVersion();
 	}
 
+	void BackgroundVertexDataLayerVersionList::ChangeObjectsTexture(size_t layerIndex, bool inPreloadedTexturesList, std::pair<size_t, size_t> newTextureID)
+	{
+		_internal.ChangeObjectsTexture(layerIndex, inPreloadedTexturesList, newTextureID);
+	}
+
 }

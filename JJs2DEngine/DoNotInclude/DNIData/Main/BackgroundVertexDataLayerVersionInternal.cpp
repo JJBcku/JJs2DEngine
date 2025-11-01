@@ -49,4 +49,17 @@ _textureDataList(textureDataList)
 		return ret;
 	}
 
+	bool BackgroundVertexDataLayerVersionInternal::ChangeObjectsTexture(bool inPreloadedTexturesList, std::pair<size_t, size_t> newTextureID)
+	{
+		auto newTextures = _textureDataList.GetTextureReference(inPreloadedTexturesList, newTextureID.first, newTextureID.second);
+
+		if (newTextures == _data.textureReference)
+			return false;
+		else
+		{
+			_data.textureReference = newTextures;
+			return true;
+		}
+	}
+
 }

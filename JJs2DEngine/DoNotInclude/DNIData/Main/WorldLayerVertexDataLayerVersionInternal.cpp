@@ -271,4 +271,25 @@ namespace JJs2DEngine
 
 		_ownedByTransferQueue[transferFrameIndice] = newValue;
 	}
+
+	void WorldLayerVertexDataLayerVersionInternal::ChangeObjectsTexture(bool inPreloadedTexturesList, std::pair<size_t, size_t> newTextureID, size_t objectsIndex)
+	{
+		if (objectsIndex >= _objectList.size())
+			throw std::runtime_error("WorldLayerVertexDataLayerVersionInternal::ChangeObjectsTexture Error: Program tried to change non-existent object!");
+
+		if (!_objectList[objectsIndex].has_value())
+			throw std::runtime_error("WorldLayerVertexDataLayerVersionInternal::ChangeObjectsTexture Error: Program tried to change unused object!");
+
+		auto newTextureData = _textureDataList.GetTextureReference(inPreloadedTexturesList, newTextureID.first, newTextureID.second);
+
+		if (newTextureData == _objectList[objectsIndex]->textureDataPointer)
+			return;
+
+		_objectList[objectsIndex]->textureDataPointer = newTextureData;
+		for (size_t i = 0; i < _frameData.size(); ++i)
+		{
+			_frameData[i].changed = Misc::BOOL64_TRUE;
+		}
+	}
+
 }

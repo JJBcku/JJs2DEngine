@@ -40,7 +40,7 @@ void CreateLayers(MainDataCollection& data)
 	object.textureWidthInPixels = 1024U;
 	object.textureHeightInPixels = 1024U;
 	object.inPreloadedTexturesList = false;
-	object.textureIndex = data.texturesID[0];
+	object.textureIndex = data.texturesIDs[0];
 
 	auto optionalObjectID = worldVertexLayerVersion.AddObject(object);
 

@@ -244,4 +244,20 @@ namespace JJs2DEngine
 		_ownedByTransferQueue[_activeVersion.value()][transferFrameIndice] = newValue;
 	}
 
+	void BackgroundVertexDataLayerVersionListInternal::ChangeObjectsTexture(size_t layerIndex, bool inPreloadedTexturesList, std::pair<size_t, size_t> newTextureID)
+	{
+		if (layerIndex > _vertexBufferIDs.size())
+			throw std::runtime_error("BackgroundVertexDataLayerVersionListInternal::ChangeObjectsTexture Error: Program tried access non-existent layers version!");
+
+		bool changed = _versionList[layerIndex]->ChangeObjectsTexture(inPreloadedTexturesList, newTextureID);
+
+		if (changed)
+		{
+			for (size_t i = 0; i < _changed[layerIndex].size(); ++i)
+			{
+				_changed[layerIndex][i] = Misc::BOOL64_TRUE;
+			}
+		}
+	}
+
 }

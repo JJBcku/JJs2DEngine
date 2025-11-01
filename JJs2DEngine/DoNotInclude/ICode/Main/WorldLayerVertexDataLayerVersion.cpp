@@ -17,4 +17,10 @@ namespace JJs2DEngine
 	{
 		return _internal.AddObject(newObjectData);
 	}
+
+	void WorldLayerVertexDataLayerVersion::ChangeObjectsTexture(bool inPreloadedTexturesList, std::pair<size_t, size_t> newTextureID, size_t objectsIndex)
+	{
+		_internal.ChangeObjectsTexture(inPreloadedTexturesList, newTextureID, objectsIndex);
+	}
+
 }

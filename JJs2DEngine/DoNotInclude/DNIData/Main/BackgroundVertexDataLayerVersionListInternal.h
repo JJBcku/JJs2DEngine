@@ -41,6 +41,8 @@ namespace JJs2DEngine
 		Misc::Bool64 IsOwnedByTransferQueue(size_t transferFrameIndice) const;
 		void SetOwnedByTransferQueue(size_t transferFrameIndice, Misc::Bool64Values newValue);
 
+		void ChangeObjectsTexture(size_t layerIndex, bool inPreloadedTexturesList, std::pair<size_t, size_t> newTextureID);
+
 	private:
 		VS::DataBufferLists _dataBufferList;
 		VS::MemoryObjectsList _memoryObjectsList;
