@@ -5,6 +5,8 @@
 #include <MainDef.h>
 #include <VertexDataMainDef.h>
 
+#include <array>
+
 struct MainDataCollection
 {
 	std::unique_ptr<JJ2DE::Main> main;
@@ -13,7 +15,8 @@ struct MainDataCollection
 	size_t objectID;
 
 	std::pair<size_t, size_t> backgroundtexturesID;
-	std::pair<size_t, size_t> texturesID;
+	std::array<std::pair<size_t, size_t>, 3> texturesID;
+	size_t currentObjectTexture;
 
 	bool is16Bit;
 	bool isRBReversed;
