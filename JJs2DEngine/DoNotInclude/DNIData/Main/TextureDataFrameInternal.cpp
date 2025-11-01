@@ -230,14 +230,7 @@ namespace JJs2DEngine
 			{
 				toTransfer[j].imageID = VS::ImagesGenericID(textureData.imageIDs[j]);
 			}
-			if (transferQueue == graphicsQueue)
-			{
-				_commandBuffersList[0].CreatePipelineBarrier(VS::PipelineStageFlagBits::PIPELINE_STAGE_FRAGMENT_SHADER, VS::PipelineStageFlagBits::PIPELINE_STAGE_TRANSFER, {}, {}, toTransfer);
-			}
-			else
-			{
-				_commandBuffersList[0].CreatePipelineBarrier(VS::PipelineStageFlagBits::PIPELINE_STAGE_TOP_OF_PIPE, VS::PipelineStageFlagBits::PIPELINE_STAGE_TRANSFER, {}, {}, toTransfer);
-			}
+			_commandBuffersList[0].CreatePipelineBarrier(VS::PipelineStageFlagBits::PIPELINE_STAGE_TRANSFER, VS::PipelineStageFlagBits::PIPELINE_STAGE_TRANSFER, {}, {}, toTransfer);
 
 			for (size_t j = 0; j < textureData.textureReferencesList.size(); ++j)
 			{
@@ -475,7 +468,7 @@ namespace JJs2DEngine
 
 		for (size_t i = 0; i < _textureDataArray.size(); ++i)
 		{
-			const auto& textureData = _textureDataArray[i];
+			auto& textureData = _textureDataArray[i];
 
 			for (size_t j = 0; j < textureData.textureTransferOrderLists[frameInFlightIndice].size(); ++j)
 			{
@@ -492,6 +485,8 @@ namespace JJs2DEngine
 					transferOrder.stagingBufferDataSize, textureData.imageIDs[frameInFlightIndice], static_cast<uint32_t>(tileStartWidth), static_cast<uint32_t>(tileStartHeight),
 					transferOrder.texturesWidth, transferOrder.texturesHeight, 0, static_cast<uint32_t>(tileLayer));
 			}
+
+			textureData.textureTransferOrderLists[frameInFlightIndice].clear();
 		}
 
 		toGraphics.reserve(_textureDataArray.size());

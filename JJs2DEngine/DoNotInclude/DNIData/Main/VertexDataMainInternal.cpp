@@ -432,7 +432,7 @@ namespace JJs2DEngine
 
 		submitData.waitSemaphores.reserve(2);
 		submitData.waitSemaphores.emplace_back(_vertexTransferFinishedSemaphores[_currentTransferFrame], VS::PIPELINE_STAGE_VERTEX_INPUT);
-		if (_textureDataList.AreStreamedTextureCreated())
+		if (streamedTexturesTransfered)
 			submitData.waitSemaphores.emplace_back(_textureDataList.GetTransferFinishedSemaphore(_currentTransferFrame), VS::PIPELINE_STAGE_FRAGMENT_SHADER);
 		submitData.waitSemaphores.emplace_back(_imageAcquiredSemaphores[_currentGraphicsFrame], VS::PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT);
 
