@@ -18,6 +18,7 @@
 #include <thread>
 #include <iostream>
 #include <optional>
+#include <algorithm>
 
 constexpr float changeRatio = 0.25f;
 
@@ -26,8 +27,8 @@ float GetNextZoomValue(float currentZoom);
 
 struct KeyPressList
 {
-	bool escKey = false;
-	bool f10Key = false;
+	uint64_t escKey = 0;
+	uint64_t f10Key = 0;
 
 	bool wKey = false;
 	bool aKey = false;
@@ -122,7 +123,7 @@ void RunProgram()
 		}
 		inputData.ClearEventList();
 
-		quit = keyPressList.escKey;
+		quit = keyPressList.escKey > 0;
 
 		if (main.RenderingShouldBePaused())
 		{
@@ -165,11 +166,20 @@ void RunProgram()
 				data.zoom = newZoom;
 			}
 
+			if (!mouseDataList.leftClick && mouseDataList.lastPositionX.has_value())
+			{
+				data.cameraX -= mouseDataList.positionChangeX;
+				data.cameraY -= mouseDataList.positionChangeY;
+
+				mouseDataList.positionChangeX = 0.0f;
+				mouseDataList.positionChangeY = 0.0f;
+
+				mouseDataList.lastPositionX.reset();
+				mouseDataList.lastPositionY.reset();
+			}
+
 			float maxCameraOffset = 0.5f;
 			float minCameraOffset = -0.5f;
-
-			data.cameraX -= mouseDataList.positionChangeX;
-			data.cameraY -= mouseDataList.positionChangeY;
 
 			if (keyPressList.sKey || keyPressList.downKey)
 			{
@@ -212,7 +222,8 @@ void RunProgram()
 					data.rotation += 360.0f;
 			}
 
-			vertexDataMain.SetCameraPosition(data.cameraX, data.cameraY);
+			vertexDataMain.SetCameraPosition(std::clamp(data.cameraX - mouseDataList.positionChangeX, minCameraOffset, maxCameraOffset),
+				std::clamp(data.cameraY - mouseDataList.positionChangeY, minCameraOffset, maxCameraOffset));
 			vertexDataMain.SetPerspectiveRotation(data.rotation);
 			vertexDataMain.SetCameraZoom(data.zoom);
 
@@ -227,7 +238,7 @@ void RunProgram()
 			}
 		}
 
-		if (keyPressList.f10Key)
+		if (keyPressList.f10Key > 0)
 		{
 			if (fullscreen == Misc::BOOL64_FALSE)
 				fullscreen = Misc::BOOL64_TRUE;
@@ -237,14 +248,14 @@ void RunProgram()
 			main.ChangeFullscreen(fullscreen);
 		}
 
+		keyPressList.escKey = 0;
+		keyPressList.f10Key = 0;
+
 		keyPressList.zKey = 0;
 		keyPressList.xKey = 0;
 
 		mouseDataList.leftDoubleClicks = 0;
 		mouseDataList.rightDoubleClicks = 0;
-
-		mouseDataList.positionChangeX = 0.0f;
-		mouseDataList.positionChangeY = 0.0f;
 	}
 
 	main.WaitForIdleDevice();
@@ -275,10 +286,12 @@ void HandleKeyPress(KeyPressList& keyPressData, JJ2DE::KeyEventData keyPress)
 	switch (keyPress.scanCode)
 	{
 	case JJ2DE::SdlScancode::SDL_SCANCODE_MODULE_ESCAPE:
-		keyPressData.escKey = keyPress.keyPressed;
+		if (!keyPress.keyPressed)
+			keyPressData.escKey += 1;
 		break;
 	case JJ2DE::SdlScancode::SDL_SCANCODE_MODULE_F10:
-		keyPressData.f10Key = keyPress.keyPressed;
+		if (!keyPress.keyPressed)
+			keyPressData.f10Key += 1;
 		break;
 	case JJ2DE::SdlScancode::SDL_SCANCODE_MODULE_W:
 		keyPressData.wKey = keyPress.keyPressed;
@@ -329,8 +342,6 @@ void HandleMouseMovement(const JJ2DE::Main& main, MouseDataList& mouseDataList, 
 {
 	if (!mouseDataList.leftClick)
 	{
-		mouseDataList.lastPositionX.reset();
-		mouseDataList.lastPositionY.reset();
 		return;
 	}
 
@@ -339,12 +350,9 @@ void HandleMouseMovement(const JJ2DE::Main& main, MouseDataList& mouseDataList, 
 
 	if (mouseDataList.lastPositionX.has_value())
 	{
-		mouseDataList.positionChangeX += positionRatioX - mouseDataList.lastPositionX.value();
-		mouseDataList.positionChangeY += positionRatioY - mouseDataList.lastPositionY.value();
+		mouseDataList.positionChangeX = positionRatioX - mouseDataList.lastPositionX.value();
+		mouseDataList.positionChangeY = positionRatioY - mouseDataList.lastPositionY.value();
 	}
-	
-	mouseDataList.lastPositionX = positionRatioX;
-	mouseDataList.lastPositionY = positionRatioY;
 }
 
 void HandleMouseButtons(const JJ2DE::Main& main, MouseDataList& mouseDataList, JJ2DE::MouseButtonEvent mouseEvent)
@@ -359,11 +367,6 @@ void HandleMouseButtons(const JJ2DE::Main& main, MouseDataList& mouseDataList, J
 		{
 			mouseDataList.lastPositionX = positionRatioX;
 			mouseDataList.lastPositionY = positionRatioY;
-		}
-		else if (!mouseEvent.buttonPressed)
-		{
-			mouseDataList.lastPositionX.reset();
-			mouseDataList.lastPositionY.reset();
 		}
 		if (mouseDataList.leftClick && mouseEvent.doubleClick)
 			mouseDataList.leftDoubleClicks += 1;
