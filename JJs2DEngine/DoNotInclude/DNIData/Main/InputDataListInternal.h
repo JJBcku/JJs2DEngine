@@ -1,9 +1,5 @@
 #pragma once
 
-#include "../../../Include/Common/SdlScancode.h"
-
-#include "../../../Include/Main/KeyPressData.h"
-
 #include <VulkanSimplified/VSMain/EventHandler/SdlEventHandler.h>
 #include <CustomLists/IDObject.h>
 
@@ -13,7 +9,7 @@
 
 namespace JJs2DEngine
 {
-	struct KeyPressData;
+	union InputEvent;
 
 	class InputDataListInternal
 	{
@@ -23,7 +19,7 @@ namespace JJs2DEngine
 
 		void UpdateCurrentTime(std::chrono::high_resolution_clock::time_point currentTime);
 
-		const std::vector<KeyPressData>& GetEventList() const;
+		const std::vector<InputEvent>& GetEventList() const;
 		void ClearEventList();
 
 		bool FocusWasLost() const;
@@ -36,8 +32,11 @@ namespace JJs2DEngine
 
 		IDObject<std::pair<VS::WindowEventFunction, void*>> _windowEventHandlerID;
 		IDObject<std::pair<VS::KeyboardEventFunction, void*>> _keyboardEventHandlerID;
+		IDObject<std::pair<VS::MouseMotionEventFunction, void*>> _mouseMotionEventHandlerID;
+		IDObject<std::pair<VS::MouseButtonEventFunction, void*>> _mouseButtonEventHandlerID;
+		IDObject<std::pair<VS::MouseWheelEventFunction, void*>> _mouseWheelEventHandlerID;
 
-		std::vector<KeyPressData> _eventList;
+		std::vector<InputEvent> _eventList;
 
 		bool _focusLost;
 
@@ -52,5 +51,23 @@ namespace JJs2DEngine
 
 		bool HandleKeyboardEvent(const VS::SdlKeyboardEventData& eventData);
 		static bool HandleKeyboardEventStatic(const VS::SdlKeyboardEventData& eventData, void* pointer);
+
+		void RegisterMouseMotionEventHandler();
+		void UnregisterMouseMotionEventHandler();
+
+		bool HandleMouseMotionEvent(const VS::SdlMouseMotionEventData& eventData);
+		static bool HandleMouseMotionEventStatic(const VS::SdlMouseMotionEventData& eventData, void* pointer);
+
+		void RegisterMouseButtonEventHandler();
+		void UnregisterMouseButtonEventHandler();
+
+		bool HandleMouseButtonEvent(const VS::SdlMouseButtonEventData& eventData);
+		static bool HandleMouseButtonEventStatic(const VS::SdlMouseButtonEventData& eventData, void* pointer);
+
+		void RegisterMouseWheelEventHandler();
+		void UnregisterMouseWheelEventHandler();
+
+		bool HandleMouseWheelEvent(const VS::SdlMouseWheelEventData& eventData);
+		static bool HandleMouseWheelEventStatic(const VS::SdlMouseWheelEventData& eventData, void* pointer);
 	};
 }

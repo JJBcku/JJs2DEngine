@@ -39,15 +39,12 @@ namespace JJs2DEngine
 	{
 		_windowTitle = initData.windowTitle;
 
-		_windowWidth = initData.windowWidth;
-		_windowHeight = GetHeight(initData.windowWidth, initData.aspectRatio);
-
 		_fullscreen = initData.fullscreenWindow;
 
 		VS::WindowCreationData windowCreationData;
 		windowCreationData.windowTitle = _windowTitle;
-		windowCreationData.width = _windowWidth;
-		windowCreationData.height = _windowHeight;
+		windowCreationData.width = initData.windowWidth;
+		windowCreationData.height = GetHeight(initData.windowWidth, initData.aspectRatio);
 		
 		if (_fullscreen == Misc::BOOL64_FALSE)
 		{
@@ -254,6 +251,16 @@ namespace JJs2DEngine
 	uint32_t WindowDataInternal::GetRenderHeight() const
 	{
 		return _swapchainData.renderImagesHeight;
+	}
+
+	uint32_t WindowDataInternal::GetWindowWidth() const
+	{
+		return _window->GetWidth();
+	}
+
+	uint32_t WindowDataInternal::GetWindowHeight() const
+	{
+		return _window->GetHeight();
 	}
 
 	IDObject<VS::AutoCleanupNIFDescriptorPool> WindowDataInternal::GetGammaCorrectionDescriptorPool()

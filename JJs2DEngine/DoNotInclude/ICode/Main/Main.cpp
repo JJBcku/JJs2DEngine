@@ -81,6 +81,16 @@ namespace JJs2DEngine
 		return _internal->GetGammaValue();
 	}
 
+	float Main::TranslatePositionXInPixelsToWindowSizeRatio(int32_t positionX) const
+	{
+		return _internal->TranslatePositionXInPixelsToWindowSizeRatio(positionX);
+	}
+
+	float Main::TranslatePositionYInPixelsToWindowSizeRatio(int32_t positionY) const
+	{
+		return _internal->TranslatePositionYInPixelsToWindowSizeRatio(positionY);
+	}
+
 	InputDataList Main::GetInputDataList()
 	{
 		return _internal->GetInputDataList();

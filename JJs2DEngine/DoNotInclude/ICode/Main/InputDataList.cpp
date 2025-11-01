@@ -13,7 +13,7 @@ namespace JJs2DEngine
 	{
 	}
 
-	const std::vector<KeyPressData>& InputDataList::GetEventList() const
+	const std::vector<InputEvent>& InputDataList::GetEventList() const
 	{
 		return _internal.GetEventList();
 	}

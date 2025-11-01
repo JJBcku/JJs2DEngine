@@ -133,11 +133,9 @@
     <ClInclude Include="DoNotInclude\DNIData\Main\WorldLayerObjectDataInternal.h" />
     <ClInclude Include="DoNotInclude\DNIData\Main\WorldLayerVertexDataLayerVersionInternal.h" />
     <ClInclude Include="DoNotInclude\DNIData\Main\WorldLayerVertexDataLayerVersionListInternal.h" />
-    <ClInclude Include="Include\Common\SdlKeycode.h" />
-    <ClInclude Include="Include\Common\SdlModuleKeymod.h" />
-    <ClInclude Include="Include\Common\SdlScancode.h" />
     <ClInclude Include="Include\Main\BackgroundVertexDataLayerVersionList.h" />
     <ClInclude Include="Include\Main\BackgroundObjectData.h" />
+    <ClInclude Include="Include\Main\InputEvent.h" />
     <ClInclude Include="Include\Main\NormalizedValuesList.h" />
     <ClInclude Include="Include\Main\UiObjectData.h" />
     <ClInclude Include="Include\Main\UiVertexDataLayerVersion.h" />
@@ -168,7 +166,6 @@
     <ClInclude Include="Include\Common\VersionData.h" />
     <ClInclude Include="Include\Main\DeviceSettings.h" />
     <ClInclude Include="Include\Main\InputDataList.h" />
-    <ClInclude Include="Include\Main\KeyPressData.h" />
     <ClInclude Include="Include\Main\Main.h" />
     <ClInclude Include="Include\Main\MainDef.h" />
     <ClInclude Include="Include\Main\MainInitializationData.h" />
@@ -390,7 +387,7 @@
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">MainIpch.h</PrecompiledHeaderFile>
       <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)MainIpch.pch</PrecompiledHeaderOutputFile>
     </ClCompile>
-    <ClCompile Include="DoNotInclude\ICode\Main\KeyPressData.cpp">
+    <ClCompile Include="DoNotInclude\ICode\Main\InputEvent.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">MainIpch.h</PrecompiledHeaderFile>
       <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)MainIpch.pch</PrecompiledHeaderOutputFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">MainIpch.h</PrecompiledHeaderFile>

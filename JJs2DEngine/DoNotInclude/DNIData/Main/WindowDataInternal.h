@@ -67,14 +67,17 @@ namespace JJs2DEngine
 		uint32_t GetRenderWidth() const;
 		uint32_t GetRenderHeight() const;
 
+		uint32_t GetWindowWidth() const;
+		uint32_t GetWindowHeight() const;
+
 		IDObject<VS::AutoCleanupNIFDescriptorPool> GetGammaCorrectionDescriptorPool();
 		IDObject<VS::AutoCleanupDescriptorSet> GetGammaCorrectionDescriptorSet(size_t graphicsFrameIndice);
 
 		IDObject<VS::WindowPointer> GetWindowID();
 		IDObject<VS::AutoCleanupColorRenderTargetImage> GetColorRenderTargetImage(size_t graphicsFrameIndice);
 
-		bool AcquireNextImage(uint64_t timeoutInNS, std::optional<IDObject<VS::AutoCleanupSemaphore>> signalSemaphore, std::optional<IDObject<VS::AutoCleanupFence>> signalFence,
-			uint32_t& returnedValue);
+		bool AcquireNextImage(uint64_t timeoutInNS, std::optional<IDObject<VS::AutoCleanupSemaphore>> signalSemaphore,
+			std::optional<IDObject<VS::AutoCleanupFence>> signalFence, uint32_t& returnedValue);
 
 		void ChangeFullscreen(Misc::Bool64Values newFullscreen);
 
@@ -89,8 +92,6 @@ namespace JJs2DEngine
 		std::optional<VS::Window> _window;
 
 		std::string _windowTitle;
-		uint32_t _windowWidth;
-		uint32_t _windowHeight;
 
 		Misc::Bool64Values _fullscreen;
 

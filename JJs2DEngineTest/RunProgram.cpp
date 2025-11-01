@@ -9,8 +9,7 @@
 
 #include <Main.h>
 #include <InputDataList.h>
-#include <KeyPressData.h>
-#include <SdlScancode.h>
+#include <InputEvent.h>
 #include <VertexDataMain.h>
 
 #include <Miscellaneous/Bool64.h>
@@ -18,6 +17,7 @@
 #include <chrono>
 #include <thread>
 #include <iostream>
+#include <optional>
 
 constexpr float changeRatio = 0.25f;
 
@@ -48,7 +48,27 @@ struct KeyPressList
 	~KeyPressList() {};
 };
 
-void HandleKeyPress(KeyPressList& keyPressData, JJ2DE::KeyPressData keyPress);
+struct MouseDataList
+{
+	bool leftClick = false;
+	bool rightClick = false;
+
+	uint32_t leftDoubleClicks = 0;
+	uint32_t rightDoubleClicks = 0;
+
+	float positionChangeX = 0.0f;
+	float positionChangeY = 0.0f;
+
+	std::optional<float> lastPositionX;
+	std::optional<float> lastPositionY;
+
+	MouseDataList() {};
+	~MouseDataList() {};
+};
+
+void HandleKeyPress(KeyPressList& keyPressData, JJ2DE::KeyEventData keyPress);
+void HandleMouseMovement(const JJ2DE::Main& main, MouseDataList& mouseDataList, JJ2DE::MouseMotionEvent mouseEvent);
+void HandleMouseButtons(const JJ2DE::Main& main, MouseDataList& mouseDataList, JJ2DE::MouseButtonEvent mouseEvent);
 
 void RunProgram()
 {
@@ -63,6 +83,7 @@ void RunProgram()
 
 	auto inputData = main.GetInputDataList();
 	KeyPressList keyPressList;
+	MouseDataList mouseDataList;
 
 	bool quit = false;
 
@@ -84,16 +105,22 @@ void RunProgram()
 		if (inputData.FocusWasLost())
 		{
 			keyPressList = KeyPressList();
+			mouseDataList = MouseDataList();
 			inputData.ResetFocusLost();
 		}
 		else
 		{
 			for (size_t i = 0; i < eventDataList.size(); ++i)
 			{
-				HandleKeyPress(keyPressList, eventDataList[i]);
+				if (eventDataList[i].type == JJ2DE::InputEventsType::KEY_EVENT)
+					HandleKeyPress(keyPressList, eventDataList[i].keyEvent.data);
+				else if (eventDataList[i].type == JJ2DE::InputEventsType::MOUSE_MOTION_EVENT)
+					HandleMouseMovement(main, mouseDataList, eventDataList[i].mouseMotionEvent.data);
+				else if (eventDataList[i].type == JJ2DE::InputEventsType::MOUSE_BUTTON_EVENT)
+					HandleMouseButtons(main, mouseDataList, eventDataList[i].mouseButtonEvent.data);
 			}
-			inputData.ClearEventList();
 		}
+		inputData.ClearEventList();
 
 		quit = keyPressList.escKey;
 
@@ -109,6 +136,20 @@ void RunProgram()
 
 			float time = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - startTime).count();
 			float frameDelta = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - lastFrameTime).count();
+
+			keyPressList.zKey += mouseDataList.leftDoubleClicks;
+			keyPressList.xKey += mouseDataList.rightDoubleClicks;
+
+			if (keyPressList.zKey >= keyPressList.xKey)
+			{
+				keyPressList.zKey -= keyPressList.xKey;
+				keyPressList.xKey = 0;
+			}
+			else
+			{
+				keyPressList.xKey -= keyPressList.zKey;
+				keyPressList.zKey = 0;
+			}
 
 			for (uint64_t i = 0; i < keyPressList.zKey; ++i)
 			{
@@ -127,31 +168,36 @@ void RunProgram()
 			float maxCameraOffset = 0.5f;
 			float minCameraOffset = -0.5f;
 
+			data.cameraX -= mouseDataList.positionChangeX;
+			data.cameraY -= mouseDataList.positionChangeY;
+
 			if (keyPressList.sKey || keyPressList.downKey)
 			{
 				data.cameraY += changeRatio * frameDelta;
-				if (data.cameraY > maxCameraOffset)
-					data.cameraY = maxCameraOffset;
 			}
 			else if (keyPressList.wKey || keyPressList.upKey)
 			{
 				data.cameraY -= changeRatio * frameDelta;
-				if (data.cameraY < minCameraOffset)
-					data.cameraY = minCameraOffset;
 			}
 
 			if (keyPressList.dKey || keyPressList.rightKey)
 			{
 				data.cameraX += changeRatio * frameDelta;
-				if (data.cameraX > maxCameraOffset)
-					data.cameraX = maxCameraOffset;
 			}
 			else if (keyPressList.aKey || keyPressList.leftKey)
 			{
 				data.cameraX -= changeRatio * frameDelta;
-				if (data.cameraX < minCameraOffset)
-					data.cameraX = minCameraOffset;
 			}
+
+			if (data.cameraY > maxCameraOffset)
+				data.cameraY = maxCameraOffset;
+			if (data.cameraY < minCameraOffset)
+				data.cameraY = minCameraOffset;
+
+			if (data.cameraX > maxCameraOffset)
+				data.cameraX = maxCameraOffset;
+			if (data.cameraX < minCameraOffset)
+				data.cameraX = minCameraOffset;
 
 			if (keyPressList.eKey)
 			{
@@ -193,6 +239,12 @@ void RunProgram()
 
 		keyPressList.zKey = 0;
 		keyPressList.xKey = 0;
+
+		mouseDataList.leftDoubleClicks = 0;
+		mouseDataList.rightDoubleClicks = 0;
+
+		mouseDataList.positionChangeX = 0.0f;
+		mouseDataList.positionChangeY = 0.0f;
 	}
 
 	main.WaitForIdleDevice();
@@ -218,7 +270,7 @@ float GetNextZoomValue(float currentZoom)
 	return ret;
 }
 
-void HandleKeyPress(KeyPressList& keyPressData, JJ2DE::KeyPressData keyPress)
+void HandleKeyPress(KeyPressList& keyPressData, JJ2DE::KeyEventData keyPress)
 {
 	switch (keyPress.scanCode)
 	{
@@ -261,18 +313,66 @@ void HandleKeyPress(KeyPressList& keyPressData, JJ2DE::KeyPressData keyPress)
 	case JJ2DE::SdlScancode::SDL_SCANCODE_MODULE_Z:
 		if (!keyPress.keyPressed || keyPress.keyRepeat)
 			break;
-		if (keyPressData.xKey > 0)
-			keyPressData.xKey -= 1;
-		else
-			keyPressData.zKey += 1;
+		keyPressData.zKey += 1;
 		break;
 	case JJ2DE::SdlScancode::SDL_SCANCODE_MODULE_X:
 		if (!keyPress.keyPressed || keyPress.keyRepeat)
 			break;
-		if (keyPressData.zKey > 0)
-			keyPressData.zKey -= 1;
-		else
-			keyPressData.xKey += 1;
+		keyPressData.xKey += 1;
+		break;
+	default:
+		break;
+	}
+}
+
+void HandleMouseMovement(const JJ2DE::Main& main, MouseDataList& mouseDataList, JJ2DE::MouseMotionEvent mouseEvent)
+{
+	if (!mouseDataList.leftClick)
+	{
+		mouseDataList.lastPositionX.reset();
+		mouseDataList.lastPositionY.reset();
+		return;
+	}
+
+	float positionRatioX = main.TranslatePositionXInPixelsToWindowSizeRatio(mouseEvent.positionX);
+	float positionRatioY = main.TranslatePositionYInPixelsToWindowSizeRatio(mouseEvent.positionY);
+
+	if (mouseDataList.lastPositionX.has_value())
+	{
+		mouseDataList.positionChangeX += positionRatioX - mouseDataList.lastPositionX.value();
+		mouseDataList.positionChangeY += positionRatioY - mouseDataList.lastPositionY.value();
+	}
+	
+	mouseDataList.lastPositionX = positionRatioX;
+	mouseDataList.lastPositionY = positionRatioY;
+}
+
+void HandleMouseButtons(const JJ2DE::Main& main, MouseDataList& mouseDataList, JJ2DE::MouseButtonEvent mouseEvent)
+{
+	float positionRatioX = main.TranslatePositionXInPixelsToWindowSizeRatio(mouseEvent.mousePositionX);
+	float positionRatioY = main.TranslatePositionYInPixelsToWindowSizeRatio(mouseEvent.mousePositionY);
+
+	switch (mouseEvent.buttonIndex)
+	{
+	case JJ2DE::SdlMouseButtonIndex::SDL_DATA_BUTTON_INDEX_LEFT:
+		if (mouseEvent.buttonPressed && !mouseDataList.leftClick)
+		{
+			mouseDataList.lastPositionX = positionRatioX;
+			mouseDataList.lastPositionY = positionRatioY;
+		}
+		else if (!mouseEvent.buttonPressed)
+		{
+			mouseDataList.lastPositionX.reset();
+			mouseDataList.lastPositionY.reset();
+		}
+		if (mouseDataList.leftClick && mouseEvent.doubleClick)
+			mouseDataList.leftDoubleClicks += 1;
+		mouseDataList.leftClick = mouseEvent.buttonPressed;
+		break;
+	case JJ2DE::SdlMouseButtonIndex::SDL_DATA_BUTTON_INDEX_RIGHT:
+		if (mouseDataList.rightClick && mouseEvent.doubleClick)
+			mouseDataList.rightDoubleClicks += 1;
+		mouseDataList.rightClick = mouseEvent.buttonPressed;
 		break;
 	default:
 		break;

@@ -276,9 +276,6 @@
     <ClInclude Include="Include\Main\InputDataList.h">
       <Filter>Header Files\Include\Main\OtherData</Filter>
     </ClInclude>
-    <ClInclude Include="Include\Main\KeyPressData.h">
-      <Filter>Header Files\Include\Main\OtherData</Filter>
-    </ClInclude>
     <ClInclude Include="Include\Main\Main.h">
       <Filter>Header Files\Include\Main\OtherData</Filter>
     </ClInclude>
@@ -336,14 +333,8 @@
     <ClInclude Include="DoNotInclude\DNIData\Main\BackgroundVertexDataLayerVersionListInternal.h">
       <Filter>Header Files\Do Not Include\Main\VertexData\Layers\Background</Filter>
     </ClInclude>
-    <ClInclude Include="Include\Common\SdlScancode.h">
-      <Filter>Header Files\Include\Common\OtherData</Filter>
-    </ClInclude>
-    <ClInclude Include="Include\Common\SdlKeycode.h">
-      <Filter>Header Files\Include\Common\OtherData</Filter>
-    </ClInclude>
-    <ClInclude Include="Include\Common\SdlModuleKeymod.h">
-      <Filter>Header Files\Include\Common\OtherData</Filter>
+    <ClInclude Include="Include\Main\InputEvent.h">
+      <Filter>Header Files\Include\Main\OtherData</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -437,9 +428,6 @@
     <ClCompile Include="DoNotInclude\ICode\Main\InputDataList.cpp">
       <Filter>Source Files\Include\Main\OtherData</Filter>
     </ClCompile>
-    <ClCompile Include="DoNotInclude\ICode\Main\KeyPressData.cpp">
-      <Filter>Source Files\Include\Main\OtherData</Filter>
-    </ClCompile>
     <ClCompile Include="DoNotInclude\ICode\Main\Main.cpp">
       <Filter>Source Files\Include\Main\OtherData</Filter>
     </ClCompile>
@@ -490,6 +478,9 @@
     </ClCompile>
     <ClCompile Include="DoNotInclude\ICode\Main\BackgroundVertexDataLayerVersionList.cpp">
       <Filter>Source Files\Include\Main\VertexData\Layers\Background</Filter>
+    </ClCompile>
+    <ClCompile Include="DoNotInclude\ICode\Main\InputEvent.cpp">
+      <Filter>Source Files\Include\Main\OtherData</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

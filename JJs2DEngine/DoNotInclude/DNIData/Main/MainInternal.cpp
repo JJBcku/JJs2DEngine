@@ -324,6 +324,20 @@ namespace JJs2DEngine
 		return _vertexDataMain->GetGammaValue();
 	}
 
+	float MainInternal::TranslatePositionXInPixelsToWindowSizeRatio(int32_t positionX) const
+	{
+		uint32_t windowWidth = _windowData->GetWindowWidth();
+
+		return static_cast<float>(positionX) / static_cast<float>(windowWidth);
+	}
+
+	float MainInternal::TranslatePositionYInPixelsToWindowSizeRatio(int32_t positionY) const
+	{
+		uint32_t windowHeight = _windowData->GetWindowHeight();
+
+		return static_cast<float>(positionY) / static_cast<float>(windowHeight);
+	}
+
 	InputDataListInternal& MainInternal::GetInputDataList()
 	{
 		return *_inputDataList;
