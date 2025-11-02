@@ -56,7 +56,6 @@ void CreateLayers(MainDataCollection& data)
 			throw std::runtime_error("CreateLayers Error: Program failed to create the UI object!");
 
 		data.UIObjectID = optionalObjectID.value();
-		
 	}
 
 	{
@@ -64,10 +63,10 @@ void CreateLayers(MainDataCollection& data)
 		auto worldVertexLayerVersion = vertexDataMain.GetWorldLayerVertexDataLayerVersionList(data.worldLayerID).GetLayersVersion(0);
 
 		JJ2DE::WorldLayerObjectData object;
-		object.screenWidth_UNORM = JJ2DE::onePointZeroUNORMValue / 2;
-		object.screenHeight_UNORM = JJ2DE::onePointZeroUNORMValue / 2;
-		object.screenPositionX_SNORM = 0;
-		object.screenPositionY_SNORM = 0;
+		object.worldWidth_UNORM = JJ2DE::onePointZeroUNORMValue / 2;
+		object.worldHeight_UNORM = JJ2DE::onePointZeroUNORMValue / 2;
+		object.worldPositionX_SNORM = JJ2DE::onePointZeroSNORMValue / 8;
+		object.worldPositionY_SNORM = 0;
 		object.textureWidthInPixels = 1024U;
 		object.textureHeightInPixels = 1024U;
 		object.inPreloadedTexturesList = false;

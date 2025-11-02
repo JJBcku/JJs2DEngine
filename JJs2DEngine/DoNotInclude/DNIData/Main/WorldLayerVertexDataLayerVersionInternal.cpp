@@ -89,15 +89,15 @@ namespace JJs2DEngine
 		textureHeight /= fTileSize * 2.0f;
 		added.texturesSizeInTile = glm::vec2(textureWidth, textureHeight);
 
-		float screenWidth = static_cast<float>(newObjectData.screenWidth_UNORM);
+		float screenWidth = static_cast<float>(newObjectData.worldWidth_UNORM);
 		screenWidth /= static_cast<float>(onePointZeroUNORMValue);
-		float screenHeight = static_cast<float>(newObjectData.screenHeight_UNORM);
+		float screenHeight = static_cast<float>(newObjectData.worldHeight_UNORM);
 		screenHeight /= static_cast<float>(onePointZeroUNORMValue);
 		added.objectsSizeOnScreen = glm::vec2(screenWidth, screenHeight);
 
-		float screenX = static_cast<float>(newObjectData.screenPositionX_SNORM);
+		float screenX = static_cast<float>(newObjectData.worldPositionX_SNORM);
 		screenX /= static_cast<float>(onePointZeroSNORMValue);
-		float screenY = static_cast<float>(newObjectData.screenPositionY_SNORM);
+		float screenY = static_cast<float>(newObjectData.worldPositionY_SNORM);
 		screenY /= static_cast<float>(onePointZeroSNORMValue);
 		added.objectsPositionOnScreen = glm::vec2(screenX, screenY);
 

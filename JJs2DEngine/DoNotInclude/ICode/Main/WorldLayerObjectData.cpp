@@ -8,11 +8,11 @@ namespace JJs2DEngine
 		textureWidthInPixels = 0;
 		textureHeightInPixels = 0;
 
-		screenWidth_UNORM = 0;
-		screenHeight_UNORM = 0;
+		worldWidth_UNORM = 0;
+		worldHeight_UNORM = 0;
 
-		screenPositionX_SNORM = 0;
-		screenPositionY_SNORM = 0;
+		worldPositionX_SNORM = 0;
+		worldPositionY_SNORM = 0;
 
 		textureIndex = { 0, 0 };
 		inPreloadedTexturesList = false;

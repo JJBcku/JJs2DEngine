@@ -11,11 +11,11 @@ namespace JJs2DEngine
 		uint32_t textureWidthInPixels;
 		uint32_t textureHeightInPixels;
 
-		uint32_t screenWidth_UNORM;
-		uint32_t screenHeight_UNORM;
+		uint32_t worldWidth_UNORM;
+		uint32_t worldHeight_UNORM;
 
-		int32_t screenPositionX_SNORM;
-		int32_t screenPositionY_SNORM;
+		int32_t worldPositionX_SNORM;
+		int32_t worldPositionY_SNORM;
 
 		std::pair<size_t, size_t> textureIndex;
 		bool inPreloadedTexturesList;
