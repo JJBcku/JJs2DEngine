@@ -236,11 +236,11 @@ void RunProgram()
 
 			if (time - lastSecond >= 1.0f)
 			{
-				data.currentObjectTexture += 1;
-				if (data.currentObjectTexture >= data.texturesIDs.size())
-					data.currentObjectTexture = 0;
+				data.currentWorldObjectTexture += 1;
+				if (data.currentWorldObjectTexture >= data.worldTexturesIDs.size())
+					data.currentWorldObjectTexture = 0;
 
-				worldLayer.ChangeObjectsTexture(false, data.texturesIDs[data.currentObjectTexture], 0);
+				worldLayer.ChangeObjectsTexture(false, data.worldTexturesIDs[data.currentWorldObjectTexture], 0);
 
 				lastSecond = time;
 				std::cout << "FPS: " << framesThisSecond << std::endl;

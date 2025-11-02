@@ -10,10 +10,15 @@ MainDataCollection::MainDataCollection()
 	objectID = std::numeric_limits<size_t>::max();
 
 	backgroundtexturesID = { std::numeric_limits<size_t>::max(), std::numeric_limits<size_t>::max() };
-	texturesIDs[0] = {std::numeric_limits<size_t>::max(), std::numeric_limits<size_t>::max()};
-	texturesIDs[1] = {std::numeric_limits<size_t>::max(), std::numeric_limits<size_t>::max()};
-	texturesIDs[2] = {std::numeric_limits<size_t>::max(), std::numeric_limits<size_t>::max()};
-	currentObjectTexture = 0;
+	worldTexturesIDs[0] = {std::numeric_limits<size_t>::max(), std::numeric_limits<size_t>::max()};
+	worldTexturesIDs[1] = {std::numeric_limits<size_t>::max(), std::numeric_limits<size_t>::max()};
+	worldTexturesIDs[2] = {std::numeric_limits<size_t>::max(), std::numeric_limits<size_t>::max()};
+	currentWorldObjectTexture = 0;
+
+	uiTexturesIDs[0] = { std::numeric_limits<size_t>::max(), std::numeric_limits<size_t>::max() };
+	uiTexturesIDs[1] = { std::numeric_limits<size_t>::max(), std::numeric_limits<size_t>::max() };
+	uiTexturesIDs[2] = { std::numeric_limits<size_t>::max(), std::numeric_limits<size_t>::max() };
+	currentUIObjectTexture = 0;
 
 	is16Bit = false;
 	isRBReversed = false;
