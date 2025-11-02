@@ -107,7 +107,7 @@ JJ2DE::DeviceSettings CreateDeviceSettings(const JJ2DE::DeviceData& device, size
 	}
 
 	ret.streamedTexturesMaxAmounts[6] = 3;
-	ret.streamedTexturesMaxAmounts[7] = 1;
+	ret.streamedTexturesMaxAmounts[7] = 4;
 
 	ret.preLoadedTexturesStagingBuffersPageCount = 1;
 	ret.streamedTexturesStagingBuffersPageCount = 1;

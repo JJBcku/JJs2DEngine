@@ -59,6 +59,9 @@ struct MouseDataList
 	uint32_t leftDoubleClicks = 0;
 	uint32_t rightDoubleClicks = 0;
 
+	std::optional<float> positionX;
+	std::optional<float> positionY;
+
 	float positionChangeX = 0.0f;
 	float positionChangeY = 0.0f;
 
@@ -88,7 +91,7 @@ void RunProgram()
 	KeyPressList keyPressList;
 	MouseDataList mouseDataList;
 
-	auto worldLayer = vertexDataMain.GetWorldLayerVertexDataLayerVersionList(data.layerID).GetLayersVersion(0);
+	auto worldLayer = vertexDataMain.GetWorldLayerVertexDataLayerVersionList(data.worldLayerID).GetLayersVersion(0);
 
 	bool quit = false;
 
@@ -240,7 +243,7 @@ void RunProgram()
 				if (data.currentWorldObjectTexture >= data.worldTexturesIDs.size())
 					data.currentWorldObjectTexture = 0;
 
-				worldLayer.ChangeObjectsTexture(false, data.worldTexturesIDs[data.currentWorldObjectTexture], 0);
+				worldLayer.ChangeObjectsTexture(false, data.worldTexturesIDs[data.currentWorldObjectTexture], data.worldObjectID);
 
 				lastSecond = time;
 				std::cout << "FPS: " << framesThisSecond << std::endl;
@@ -355,13 +358,13 @@ void HandleMouseMovement(const JJ2DE::Main& main, MouseDataList& mouseDataList, 
 		return;
 	}
 
-	float positionRatioX = main.TranslatePositionXInPixelsToWindowSizeRatio(mouseEvent.positionX);
-	float positionRatioY = main.TranslatePositionYInPixelsToWindowSizeRatio(mouseEvent.positionY);
+	mouseDataList.positionX = main.TranslatePositionXInPixelsToWindowSizeRatio(mouseEvent.positionX);
+	mouseDataList.positionY = main.TranslatePositionYInPixelsToWindowSizeRatio(mouseEvent.positionY);
 
 	if (mouseDataList.lastPositionX.has_value())
 	{
-		mouseDataList.positionChangeX = positionRatioX - mouseDataList.lastPositionX.value();
-		mouseDataList.positionChangeY = positionRatioY - mouseDataList.lastPositionY.value();
+		mouseDataList.positionChangeX = mouseDataList.positionX.value() - mouseDataList.lastPositionX.value();
+		mouseDataList.positionChangeY = mouseDataList.positionY.value() - mouseDataList.lastPositionY.value();
 	}
 }
 

@@ -25,7 +25,9 @@ void CreateTextures(MainDataCollection& data)
 	CreateWorldObjectTextureSecondFrame(data);
 	CreateWorldObjectTextureThirdFrame(data);
 
-
+	CreateUIObjectTexture(data);
+	CreateUIObjectTextureSecondFrame(data);
+	CreateUIObjectTextureThirdFrame(data);
 }
 
 void CreateBackgroundTexture(MainDataCollection& data)

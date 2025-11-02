@@ -7,7 +7,8 @@
 
 MainDataCollection::MainDataCollection()
 {
-	objectID = std::numeric_limits<size_t>::max();
+	UIObjectID = std::numeric_limits<size_t>::max();
+	worldObjectID = std::numeric_limits<size_t>::max();
 
 	backgroundtexturesID = { std::numeric_limits<size_t>::max(), std::numeric_limits<size_t>::max() };
 	worldTexturesIDs[0] = {std::numeric_limits<size_t>::max(), std::numeric_limits<size_t>::max()};
