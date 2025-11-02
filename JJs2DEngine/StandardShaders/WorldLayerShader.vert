@@ -38,10 +38,10 @@ layout (push_constant) uniform CameraData
 void main()
 {
 	vec2 verticeOffset = vertexData[vertexIndexes[gl_VertexIndex]] * inSize * vec2(camera.zoom);
-	vec4 worldPosition = vec4(verticeOffset, inPos.z, 1.0) * camera.perspectiveRotation;
+	vec4 worldPosition = vec4(verticeOffset.x, verticeOffset.y * camera.aspectRatio, inPos.z, 1.0) * camera.perspectiveRotation;
 	vec4 inCameraPosition = vec4(worldPosition.xy - camera.cameraPosition, inPos.z, 1.0);
 
-	gl_Position = vec4(inCameraPosition.x, inCameraPosition.y * camera.aspectRatio, inPos.z, 1.0);
+	gl_Position = vec4(inCameraPosition.x, inCameraPosition.y, inPos.z, 1.0);
 	
 	vec2 texPos = textureData[vertexIndexes[gl_VertexIndex]];
 	vec2 texCoord = inTexCoord + (inTexSize * texPos);
