@@ -21,8 +21,11 @@ struct MainDataCollection
 	std::array<std::pair<size_t, size_t>, 3> worldTexturesIDs;
 	size_t currentWorldObjectTexture;
 
-	std::array<std::pair<size_t, size_t>, 3> uiTexturesIDs;
+	std::array<std::pair<size_t, size_t>, 3> UITexturesIDs;
 	size_t currentUIObjectTexture;
+
+	float UITextureUpperY;
+	float UITextureLowerY;
 
 	bool is16Bit;
 	bool isRBReversed;

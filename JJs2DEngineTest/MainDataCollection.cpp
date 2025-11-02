@@ -16,10 +16,13 @@ MainDataCollection::MainDataCollection()
 	worldTexturesIDs[2] = {std::numeric_limits<size_t>::max(), std::numeric_limits<size_t>::max()};
 	currentWorldObjectTexture = 0;
 
-	uiTexturesIDs[0] = { std::numeric_limits<size_t>::max(), std::numeric_limits<size_t>::max() };
-	uiTexturesIDs[1] = { std::numeric_limits<size_t>::max(), std::numeric_limits<size_t>::max() };
-	uiTexturesIDs[2] = { std::numeric_limits<size_t>::max(), std::numeric_limits<size_t>::max() };
+	UITexturesIDs[0] = { std::numeric_limits<size_t>::max(), std::numeric_limits<size_t>::max() };
+	UITexturesIDs[1] = { std::numeric_limits<size_t>::max(), std::numeric_limits<size_t>::max() };
+	UITexturesIDs[2] = { std::numeric_limits<size_t>::max(), std::numeric_limits<size_t>::max() };
 	currentUIObjectTexture = 0;
+
+	UITextureUpperY = 0.0f;
+	UITextureLowerY = 0.0f;
 
 	is16Bit = false;
 	isRBReversed = false;

@@ -45,7 +45,10 @@ void CreateLayers(MainDataCollection& data)
 		UIObject.textureWidthInPixels = 2048U;
 		UIObject.textureHeightInPixels = 256U;
 		UIObject.inPreloadedTexturesList = false;
-		UIObject.textureIndex = data.uiTexturesIDs[0];
+		UIObject.textureIndex = data.UITexturesIDs[0];
+
+		data.UITextureUpperY = static_cast<float>(UIObject.screenPositionY_SNORM - UIObject.screenHeight_UNORM) / static_cast<float>(JJ2DE::onePointZeroSNORMValue);
+		data.UITextureLowerY = static_cast<float>(UIObject.screenPositionY_SNORM + UIObject.screenHeight_UNORM) / static_cast<float>(JJ2DE::onePointZeroSNORMValue);
 
 		auto optionalObjectID = UIVertexLayerVersion.AddObject(UIObject);
 

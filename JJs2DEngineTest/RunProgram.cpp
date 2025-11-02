@@ -13,6 +13,8 @@
 #include <VertexDataMain.h>
 #include <WorldLayerVertexDataLayerVersionList.h>
 #include <WorldLayerVertexDataLayerVersion.h>
+#include <UiVertexDataLayerVersionList.h>
+#include <UiVertexDataLayerVersion.h>
 
 #include <Miscellaneous/Bool64.h>
 
@@ -91,6 +93,7 @@ void RunProgram()
 	KeyPressList keyPressList;
 	MouseDataList mouseDataList;
 
+	auto UILayer = vertexDataMain.GetUiVertexDataLayerVersionList(data.UILayerID).GetLayersVersion(0);
 	auto worldLayer = vertexDataMain.GetWorldLayerVertexDataLayerVersionList(data.worldLayerID).GetLayersVersion(0);
 
 	bool quit = false;
@@ -144,6 +147,27 @@ void RunProgram()
 
 			float time = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - startTime).count();
 			float frameDelta = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - lastFrameTime).count();
+
+			bool cursorOnUIObject = mouseDataList.positionY <= data.UITextureLowerY && mouseDataList.positionY >= data.UITextureUpperY;
+
+			if (cursorOnUIObject)
+			{
+				if (mouseDataList.leftClick && data.currentUIObjectTexture != 2)
+				{
+					UILayer.ChangeObjectsTexture(false, data.UITexturesIDs[2], data.UIObjectID);
+					data.currentUIObjectTexture = 2;
+				}
+				else if (!mouseDataList.leftClick && data.currentUIObjectTexture != 1)
+				{
+					UILayer.ChangeObjectsTexture(false, data.UITexturesIDs[1], data.UIObjectID);
+					data.currentUIObjectTexture = 1;
+				}
+			}
+			else if (data.currentUIObjectTexture != 0)
+			{
+				UILayer.ChangeObjectsTexture(false, data.UITexturesIDs[0], data.UIObjectID);
+				data.currentUIObjectTexture = 0;
+			}
 
 			keyPressList.zKey += mouseDataList.leftDoubleClicks;
 			keyPressList.xKey += mouseDataList.rightDoubleClicks;
@@ -353,13 +377,16 @@ void HandleKeyPress(KeyPressList& keyPressData, JJ2DE::KeyEventData keyPress)
 
 void HandleMouseMovement(const JJ2DE::Main& main, MouseDataList& mouseDataList, JJ2DE::MouseMotionEvent mouseEvent)
 {
+	mouseDataList.positionX = main.TranslatePositionXInPixelsToWindowSizeRatio(mouseEvent.positionX);
+	mouseDataList.positionY = main.TranslatePositionYInPixelsToWindowSizeRatio(mouseEvent.positionY);
+
+	mouseDataList.positionX = mouseDataList.positionX.value() * 2.0f - 1.0f;
+	mouseDataList.positionY = mouseDataList.positionY.value() * 2.0f - 1.0f;
+
 	if (!mouseDataList.leftClick)
 	{
 		return;
 	}
-
-	mouseDataList.positionX = main.TranslatePositionXInPixelsToWindowSizeRatio(mouseEvent.positionX);
-	mouseDataList.positionY = main.TranslatePositionYInPixelsToWindowSizeRatio(mouseEvent.positionY);
 
 	if (mouseDataList.lastPositionX.has_value())
 	{
@@ -372,6 +399,9 @@ void HandleMouseButtons(const JJ2DE::Main& main, MouseDataList& mouseDataList, J
 {
 	float positionRatioX = main.TranslatePositionXInPixelsToWindowSizeRatio(mouseEvent.mousePositionX);
 	float positionRatioY = main.TranslatePositionYInPixelsToWindowSizeRatio(mouseEvent.mousePositionY);
+
+	positionRatioX = positionRatioX * 2.0f - 1.0f;
+	positionRatioY = positionRatioY * 2.0f - 1.0f;
 
 	switch (mouseEvent.buttonIndex)
 	{
