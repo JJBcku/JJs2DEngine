@@ -1,23 +1,6 @@
 #include "MainDNIpch.h"
 #include "MainInternal.h"
 
-#include "../../../Include/Main/MainInitializationData.h"
-
-#include "../../../Include/Common/EngineVersion.h"
-#include "../../../Include/Common/DeviceData.h"
-
-#include "../Common/VersionDataInternal.h"
-
-#include "DeviceSettingsInternal.h"
-
-#include "WindowDataInternal.h"
-#include "RenderDataInternal.h"
-#include "InputDataListInternal.h"
-#include "TextureDataMainInternal.h"
-#include "VertexDataMainInternal.h"
-
-#include <Miscellaneous/Bool64.h>
-
 #include <VulkanSimplified/VSMain/VSMainInitData.h>
 #include <VulkanSimplified/VSMain/VSInstanceExtensionPacksList.h>
 #include <VulkanSimplified/VSMain/VSInstanceLayerPacksList.h>
@@ -55,6 +38,25 @@
 #include <VulkanSimplified/VSCommon/VSSurfaceTransformFlags.h>
 #include <VulkanSimplified/VSCommon/VSImageUsageFlags.h>
 #include <VulkanSimplified/VSCommon/VSDataFormatFlags.h>
+
+#include <Miscellaneous/Bool64.h>
+
+#include "../../../Include/Main/MainInitializationData.h"
+
+#include "../../../Include/Common/EngineVersion.h"
+#include "../../../Include/Common/DeviceData.h"
+
+#include "../Common/VersionDataInternal.h"
+
+#include "DeviceSettingsInternal.h"
+
+#include "WindowDataInternal.h"
+#include "RenderDataInternal.h"
+#include "InputDataListInternal.h"
+#include "TextureDataMainInternal.h"
+#include "VertexDataMainInternal.h"
+
+
 
 namespace JJs2DEngine
 {
@@ -265,9 +267,11 @@ namespace JJs2DEngine
 		_inputDataList->UpdateCurrentTime(_currentTime);
 	}
 
-	Misc::Bool64 MainInternal::IsWindowClosed() const
+	bool MainInternal::IsWindowClosed() const
 	{
-		return _windowClosed;
+		assert(_windowClosed == Misc::BOOL64_TRUE || _windowClosed == Misc::BOOL64_FALSE);
+
+		return _windowClosed == Misc::BOOL64_TRUE;
 	}
 
 	void MainInternal::HandleEvents()
@@ -282,7 +286,7 @@ namespace JJs2DEngine
 		deviceCore.WaitIdle();
 	}
 
-	void MainInternal::ChangeFullscreen(Misc::Bool64Values newFullscreen)
+	void MainInternal::ChangeFullscreen(bool newFullscreen)
 	{
 		_windowData->ChangeFullscreen(newFullscreen);
 	}

@@ -31,7 +31,7 @@ namespace JJs2DEngine
 		_internal->UpdateCurrentTime();
 	}
 
-	Misc::Bool64 Main::IsWindowClosed() const
+	bool Main::IsWindowClosed() const
 	{
 		return _internal->IsWindowClosed();
 	}
@@ -111,7 +111,7 @@ namespace JJs2DEngine
 		return _internal->GetVertexDataMainList();
 	}
 
-	void Main::ChangeFullscreen(Misc::Bool64Values newFullscreen)
+	void Main::ChangeFullscreen(bool newFullscreen)
 	{
 		_internal->ChangeFullscreen(newFullscreen);
 	}

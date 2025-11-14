@@ -1,5 +1,20 @@
 #pragma once
 
+#include "../../../Include/Main/DeviceSettings.h"
+
+#include "../../../Include/Common/VersionData.h"
+
+#include <VulkanSimplified/VSDevice/VSCommandPoolMainListDef.h>
+
+#include <VulkanSimplified/VSInstance/VSInstance.h>
+
+#include <VulkanSimplified/VSMain/VSMain.h>
+
+#include <VulkanSimplified/VSMain/EventHandler/SdlEventHandlerTypedefs.h>
+
+#include <CustomLists/IDObject.h>
+#include <Miscellaneous/Bool64Def.h>
+
 #include <stdint.h>
 #include <memory>
 #include <vector>
@@ -7,20 +22,6 @@
 #include <string>
 #include <chrono>
 #include <utility>
-
-#include <Miscellaneous/Bool64Def.h>
-#include <CustomLists/IDObject.h>
-#include <VulkanSimplified/VSMain/EventHandler/SdlEventHandlerTypedefs.h>
-
-#include <VulkanSimplified/VSMain/VSMain.h>
-
-#include <VulkanSimplified/VSInstance/VSInstance.h>
-
-#include <VulkanSimplified/VSDevice/VSCommandPoolMainListDef.h>
-
-#include "../../../Include/Common/VersionData.h"
-
-#include "../../../Include/Main/DeviceSettings.h"
 
 namespace JJs2DEngine
 {
@@ -49,12 +50,12 @@ namespace JJs2DEngine
 
 		void UpdateCurrentTime();
 
-		Misc::Bool64 IsWindowClosed() const;
+		bool IsWindowClosed() const;
 
 		void HandleEvents();
 		void WaitForIdleDevice() const;
 
-		void ChangeFullscreen(Misc::Bool64Values newFullscreen);
+		void ChangeFullscreen(bool newFullscreen);
 
 		void RenderSingleFrame();
 		bool RenderingShouldBePaused() const;

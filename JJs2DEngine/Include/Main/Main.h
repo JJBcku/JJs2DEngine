@@ -5,8 +5,6 @@
 #include <optional>
 #include <utility>
 
-#include <Miscellaneous/Bool64Def.h>
-
 namespace JJs2DEngine
 {
 	struct MainInitializationData;
@@ -30,7 +28,7 @@ namespace JJs2DEngine
 
 		void UpdateCurrentTime();
 
-		Misc::Bool64 IsWindowClosed() const;
+		bool IsWindowClosed() const;
 
 		void HandleEvents();
 		void WaitForIdleDevice() const;
@@ -55,7 +53,7 @@ namespace JJs2DEngine
 		VertexDataMain GetVertexDataMainList();
 		const VertexDataMain GetVertexDataMainList() const;
 
-		void ChangeFullscreen(Misc::Bool64Values newFullscreen);
+		void ChangeFullscreen(bool newFullscreen);
 
 	private:
 		std::unique_ptr<MainInternal> _internal;

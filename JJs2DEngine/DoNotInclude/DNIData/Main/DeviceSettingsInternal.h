@@ -1,8 +1,8 @@
 #pragma once
 
-#include "../../../Include/Main/DeviceSettings.h"
-
 #include <VulkanSimplified/VSCommon/VSDataFormatFlags.h>
+
+#include "../../../Include/Main/DeviceSettings.h"
 
 namespace JJs2DEngine
 {

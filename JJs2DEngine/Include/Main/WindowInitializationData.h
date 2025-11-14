@@ -2,8 +2,6 @@
 
 #include "AspectRatioDef.h"
 
-#include <Miscellaneous/Bool64Def.h>
-
 namespace JJs2DEngine
 {
 	struct WindowInitializationData
@@ -11,7 +9,7 @@ namespace JJs2DEngine
 		std::string windowTitle;
 		uint32_t windowWidth;
 		AspectRatio aspectRatio;
-		Misc::Bool64Values fullscreenWindow;
+		bool fullscreenWindow;
 
 		WindowInitializationData();
 	};

@@ -16,8 +16,6 @@
 #include <UiVertexDataLayerVersionList.h>
 #include <UiVertexDataLayerVersion.h>
 
-#include <Miscellaneous/Bool64.h>
-
 #include <chrono>
 #include <thread>
 #include <iostream>
@@ -98,7 +96,7 @@ void RunProgram()
 
 	bool quit = false;
 
-	Misc::Bool64Values fullscreen = Misc::BOOL64_FALSE;
+	bool fullscreen = false;
 
 	size_t framesThisSecond = 0;
 	float lastSecond = 0.0;
@@ -106,7 +104,7 @@ void RunProgram()
 	static const auto startTime = std::chrono::high_resolution_clock::now();
 	auto lastFrameTime = startTime;
 
-	while (main.IsWindowClosed() != Misc::BOOL64_TRUE && !quit)
+	while (!main.IsWindowClosed() && !quit)
 	{
 		main.UpdateCurrentTime();
 		main.HandleEvents();
@@ -277,10 +275,10 @@ void RunProgram()
 
 		if (keyPressList.f10Key > 0)
 		{
-			if (fullscreen == Misc::BOOL64_FALSE)
-				fullscreen = Misc::BOOL64_TRUE;
+			if (fullscreen)
+				fullscreen = false;
 			else
-				fullscreen = Misc::BOOL64_FALSE;
+				fullscreen = true;
 
 			main.ChangeFullscreen(fullscreen);
 		}

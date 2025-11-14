@@ -12,6 +12,6 @@ namespace JJs2DEngine
 		windowTitle = "Unnamed";
 		windowWidth = 0;
 		aspectRatio = AspectRatio::UNSET;
-		fullscreenWindow = Misc::BOOL64_FALSE;
+		fullscreenWindow = false;
 	}
 }

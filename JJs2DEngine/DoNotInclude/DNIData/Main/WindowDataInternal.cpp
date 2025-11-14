@@ -1,12 +1,6 @@
 #include "MainDNIpch.h"
 #include "WindowDataInternal.h"
 
-#include "../../../Include/Main/WindowInitializationData.h"
-
-#include "DeviceSettingsInternal.h"
-
-#include <Miscellaneous/Bool64.h>
-
 #include <VulkanSimplified/VSCommon/VSImageSampleFlags.h>
 #include <VulkanSimplified/VSCommon/VSDataFormatFlags.h>
 #include <VulkanSimplified/VSCommon/VSDescriptorTypeFlags.h>
@@ -18,6 +12,12 @@
 #include <VulkanSimplified/VSDevice/VSWindowCreationData.h>
 #include <VulkanSimplified/VSDevice/VSSwapchainCreationData.h>
 #include <VulkanSimplified/VSDevice/VSDescriptorSetInputAttachmentWriteData.h>
+
+#include <Miscellaneous/Bool64.h>
+
+#include "../../../Include/Main/WindowInitializationData.h"
+
+#include "DeviceSettingsInternal.h"
 
 namespace JJs2DEngine
 {
@@ -39,7 +39,10 @@ namespace JJs2DEngine
 	{
 		_windowTitle = initData.windowTitle;
 
-		_fullscreen = initData.fullscreenWindow;
+		if (initData.fullscreenWindow)
+			_fullscreen = Misc::BOOL64_TRUE;
+		else
+			_fullscreen = Misc::BOOL64_FALSE;
 
 		VS::WindowCreationData windowCreationData;
 		windowCreationData.windowTitle = _windowTitle;
@@ -295,13 +298,19 @@ namespace JJs2DEngine
 		return _window->AcquireNextImage(timeoutInNS, signalSemaphore, signalFence, returnedValue);
 	}
 
-	void WindowDataInternal::ChangeFullscreen(Misc::Bool64Values newFullscreen)
+	void WindowDataInternal::ChangeFullscreen(bool newFullscreen)
 	{
-		if (_fullscreen == newFullscreen)
+		Misc::Bool64Values _newFullscreen;
+		if (newFullscreen)
+			_newFullscreen = Misc::BOOL64_TRUE;
+		else
+			_newFullscreen = Misc::BOOL64_FALSE;
+
+		if (_fullscreen == _newFullscreen)
 			return;
 
-		_window->SetFullscreen(newFullscreen);
-		_fullscreen = newFullscreen;
+		_window->SetFullscreen(_newFullscreen);
+		_fullscreen = _newFullscreen;
 	}
 
 	bool WindowDataInternal::RenderingShouldBePaused() const

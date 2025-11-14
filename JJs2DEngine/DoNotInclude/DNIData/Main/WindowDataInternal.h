@@ -1,8 +1,5 @@
 #pragma once
 
-#include <Miscellaneous/Bool64Def.h>
-#include <CustomLists/IDObject.h>
-
 #include <VulkanSimplified/VSCommon/VSDataFormatFlags.h>
 #include <VulkanSimplified/VSCommon/VSMemoryAllocationFullID.h>
 #include <VulkanSimplified/VSCommon/VSMemoryTypeProperties.h>
@@ -13,6 +10,9 @@
 #include <VulkanSimplified/VSDevice/VSWindowList.h>
 #include <VulkanSimplified/VSDevice/VSWindow.h>
 #include <VulkanSimplified/VSDevice/VSDescriptorDataLists.h>
+
+#include <Miscellaneous/Bool64Def.h>
+#include <CustomLists/IDObject.h>
 
 #include <vector>
 #include <string>
@@ -79,7 +79,7 @@ namespace JJs2DEngine
 		bool AcquireNextImage(uint64_t timeoutInNS, std::optional<IDObject<VS::AutoCleanupSemaphore>> signalSemaphore,
 			std::optional<IDObject<VS::AutoCleanupFence>> signalFence, uint32_t& returnedValue);
 
-		void ChangeFullscreen(Misc::Bool64Values newFullscreen);
+		void ChangeFullscreen(bool newFullscreen);
 
 		bool RenderingShouldBePaused() const;
 
