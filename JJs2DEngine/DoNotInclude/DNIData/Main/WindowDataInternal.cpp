@@ -51,7 +51,7 @@ namespace JJs2DEngine
 		
 		if (_fullscreen == Misc::BOOL64_FALSE)
 		{
-			windowCreationData.settings = VS::WindowSettings::RESIZABLE;
+			windowCreationData.settings = VS::WindowSettings::STANDARD;
 		}
 		else if (_fullscreen == Misc::BOOL64_TRUE)
 		{
