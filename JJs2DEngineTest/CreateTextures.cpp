@@ -42,10 +42,6 @@ void CreateBackgroundTexture(MainDataCollection& data)
 	{
 		filename = "BackgroundTexture16BitRGB.png";
 	}
-	else if (data.isRBReversed)
-	{
-		filename = "BackgroundTexture8BitBGR.png";
-	}
 	else
 	{
 		filename = "BackgroundTexture8BitRGB.png";
@@ -63,6 +59,26 @@ void CreateBackgroundTexture(MainDataCollection& data)
 		if (pixels == nullptr)
 			throw std::runtime_error("CreateBackgroundTexture Error: Program failed to load a 16 bit texture!");
 
+		if (data.isRBReversed)
+		{
+			stbi_us* currentPixelBeggining = pixels;
+
+			for (uint32_t i = 0; i < width; ++i)
+			{
+				for (size_t j = 0; j < height; ++j)
+				{
+					stbi_us* currentPixelRed = currentPixelBeggining;
+					stbi_us* currentPixelBlue = currentPixelBeggining + 2;
+
+					stbi_us swapValue = currentPixelRed[0];
+					currentPixelRed[0] = *currentPixelBlue;
+					currentPixelBlue[0] = swapValue;
+
+					currentPixelBeggining += 4;
+				}
+			}
+		}
+
 		size_t dataSize = static_cast<size_t>(width) * height;
 		dataSize *= 8;
 		filedata.resize(dataSize);
@@ -76,6 +92,26 @@ void CreateBackgroundTexture(MainDataCollection& data)
 		stbi_uc* pixels = stbi_load(filepath.c_str(), reinterpret_cast<int32_t*>(&width), reinterpret_cast<int32_t*>(&height), &channels, STBI_rgb_alpha);
 		if (pixels == nullptr)
 			throw std::runtime_error("CreateBackgroundTexture Error: Program failed to load a 8 bit texture!");
+
+		if (data.isRBReversed)
+		{
+			stbi_uc* currentPixelBeggining = pixels;
+
+			for (uint32_t i = 0; i < width; ++i)
+			{
+				for (size_t j = 0; j < height; ++j)
+				{
+					stbi_uc* currentPixelRed = currentPixelBeggining;
+					stbi_uc* currentPixelBlue = currentPixelBeggining + 2;
+
+					stbi_uc swapValue = currentPixelRed[0];
+					currentPixelRed[0] = *currentPixelBlue;
+					currentPixelBlue[0] = swapValue;
+
+					currentPixelBeggining += 4;
+				}
+			}
+		}
 
 		size_t dataSize = static_cast<size_t>(width) * height;
 		dataSize *= 4;
@@ -106,10 +142,6 @@ void CreateWorldObjectTexture(MainDataCollection& data)
 	{
 		filename = "Texture16BitRGB.png";
 	}
-	else if (data.isRBReversed)
-	{
-		filename = "Texture8BitBGR.png";
-	}
 	else
 	{
 		filename = "Texture8BitRGB.png";
@@ -127,6 +159,26 @@ void CreateWorldObjectTexture(MainDataCollection& data)
 		if (pixels == nullptr)
 			throw std::runtime_error("CreateWorldObjectTexture Error: Program failed to load a 16 bit texture!");
 
+		if (data.isRBReversed)
+		{
+			stbi_us* currentPixelBeggining = pixels;
+
+			for (uint32_t i = 0; i < width; ++i)
+			{
+				for (size_t j = 0; j < height; ++j)
+				{
+					stbi_us* currentPixelRed = currentPixelBeggining;
+					stbi_us* currentPixelBlue = currentPixelBeggining + 2;
+
+					stbi_us swapValue = currentPixelRed[0];
+					currentPixelRed[0] = *currentPixelBlue;
+					currentPixelBlue[0] = swapValue;
+
+					currentPixelBeggining += 4;
+				}
+			}
+		}
+
 		size_t dataSize = static_cast<size_t>(width) * height;
 		dataSize *= 8;
 		filedata.resize(dataSize);
@@ -140,6 +192,26 @@ void CreateWorldObjectTexture(MainDataCollection& data)
 		stbi_uc* pixels = stbi_load(filepath.c_str(), reinterpret_cast<int32_t*>(&width), reinterpret_cast<int32_t*>(&height), &channels, STBI_rgb_alpha);
 		if (pixels == nullptr)
 			throw std::runtime_error("CreateWorldObjectTexture Error: Program failed to load a 8 bit texture!");
+
+		if (data.isRBReversed)
+		{
+			stbi_uc* currentPixelBeggining = pixels;
+
+			for (uint32_t i = 0; i < width; ++i)
+			{
+				for (size_t j = 0; j < height; ++j)
+				{
+					stbi_uc* currentPixelRed = currentPixelBeggining;
+					stbi_uc* currentPixelBlue = currentPixelBeggining + 2;
+
+					stbi_uc swapValue = currentPixelRed[0];
+					currentPixelRed[0] = *currentPixelBlue;
+					currentPixelBlue[0] = swapValue;
+
+					currentPixelBeggining += 4;
+				}
+			}
+		}
 
 		size_t dataSize = static_cast<size_t>(width) * height;
 		dataSize *= 4;
@@ -170,10 +242,6 @@ void CreateWorldObjectTextureSecondFrame(MainDataCollection& data)
 	{
 		filename = "TextureSecondFrame16BitRGB.png";
 	}
-	else if (data.isRBReversed)
-	{
-		filename = "TextureSecondFrame8BitBGR.png";
-	}
 	else
 	{
 		filename = "TextureSecondFrame8BitRGB.png";
@@ -191,6 +259,26 @@ void CreateWorldObjectTextureSecondFrame(MainDataCollection& data)
 		if (pixels == nullptr)
 			throw std::runtime_error("CreateWorldObjectTextureSecondFrame Error: Program failed to load a 16 bit texture!");
 
+		if (data.isRBReversed)
+		{
+			stbi_us* currentPixelBeggining = pixels;
+
+			for (uint32_t i = 0; i < width; ++i)
+			{
+				for (size_t j = 0; j < height; ++j)
+				{
+					stbi_us* currentPixelRed = currentPixelBeggining;
+					stbi_us* currentPixelBlue = currentPixelBeggining + 2;
+
+					stbi_us swapValue = currentPixelRed[0];
+					currentPixelRed[0] = *currentPixelBlue;
+					currentPixelBlue[0] = swapValue;
+
+					currentPixelBeggining += 4;
+				}
+			}
+		}
+
 		size_t dataSize = static_cast<size_t>(width) * height;
 		dataSize *= 8;
 		filedata.resize(dataSize);
@@ -204,6 +292,26 @@ void CreateWorldObjectTextureSecondFrame(MainDataCollection& data)
 		stbi_uc* pixels = stbi_load(filepath.c_str(), reinterpret_cast<int32_t*>(&width), reinterpret_cast<int32_t*>(&height), &channels, STBI_rgb_alpha);
 		if (pixels == nullptr)
 			throw std::runtime_error("CreateWorldObjectTextureSecondFrame Error: Program failed to load a 8 bit texture!");
+
+		if (data.isRBReversed)
+		{
+			stbi_uc* currentPixelBeggining = pixels;
+
+			for (uint32_t i = 0; i < width; ++i)
+			{
+				for (size_t j = 0; j < height; ++j)
+				{
+					stbi_uc* currentPixelRed = currentPixelBeggining;
+					stbi_uc* currentPixelBlue = currentPixelBeggining + 2;
+
+					stbi_uc swapValue = currentPixelRed[0];
+					currentPixelRed[0] = *currentPixelBlue;
+					currentPixelBlue[0] = swapValue;
+
+					currentPixelBeggining += 4;
+				}
+			}
+		}
 
 		size_t dataSize = static_cast<size_t>(width) * height;
 		dataSize *= 4;
@@ -234,10 +342,6 @@ void CreateWorldObjectTextureThirdFrame(MainDataCollection& data)
 	{
 		filename = "TextureThirdFrame16BitRGB.png";
 	}
-	else if (data.isRBReversed)
-	{
-		filename = "TextureThirdFrame8BitBGR.png";
-	}
 	else
 	{
 		filename = "TextureThirdFrame8BitRGB.png";
@@ -255,6 +359,26 @@ void CreateWorldObjectTextureThirdFrame(MainDataCollection& data)
 		if (pixels == nullptr)
 			throw std::runtime_error("CreateWorldObjectTextureThirdFrame Error: Program failed to load a 16 bit texture!");
 
+		if (data.isRBReversed)
+		{
+			stbi_us* currentPixelBeggining = pixels;
+
+			for (uint32_t i = 0; i < width; ++i)
+			{
+				for (size_t j = 0; j < height; ++j)
+				{
+					stbi_us* currentPixelRed = currentPixelBeggining;
+					stbi_us* currentPixelBlue = currentPixelBeggining + 2;
+
+					stbi_us swapValue = currentPixelRed[0];
+					currentPixelRed[0] = *currentPixelBlue;
+					currentPixelBlue[0] = swapValue;
+
+					currentPixelBeggining += 4;
+				}
+			}
+		}
+
 		size_t dataSize = static_cast<size_t>(width) * height;
 		dataSize *= 8;
 		filedata.resize(dataSize);
@@ -268,6 +392,26 @@ void CreateWorldObjectTextureThirdFrame(MainDataCollection& data)
 		stbi_uc* pixels = stbi_load(filepath.c_str(), reinterpret_cast<int32_t*>(&width), reinterpret_cast<int32_t*>(&height), &channels, STBI_rgb_alpha);
 		if (pixels == nullptr)
 			throw std::runtime_error("CreateWorldObjectTextureThirdFrame Error: Program failed to load a 8 bit texture!");
+
+		if (data.isRBReversed)
+		{
+			stbi_uc* currentPixelBeggining = pixels;
+
+			for (uint32_t i = 0; i < width; ++i)
+			{
+				for (size_t j = 0; j < height; ++j)
+				{
+					stbi_uc* currentPixelRed = currentPixelBeggining;
+					stbi_uc* currentPixelBlue = currentPixelBeggining + 2;
+
+					stbi_uc swapValue = currentPixelRed[0];
+					currentPixelRed[0] = *currentPixelBlue;
+					currentPixelBlue[0] = swapValue;
+
+					currentPixelBeggining += 4;
+				}
+			}
+		}
 
 		size_t dataSize = static_cast<size_t>(width) * height;
 		dataSize *= 4;
@@ -298,10 +442,6 @@ void CreateUIObjectTexture(MainDataCollection& data)
 	{
 		filename = "UITextureCursorOff16BitRGB.png";
 	}
-	else if (data.isRBReversed)
-	{
-		filename = "UITextureCursorOff8BitBGR.png";
-	}
 	else
 	{
 		filename = "UITextureCursorOff8BitRGB.png";
@@ -319,6 +459,26 @@ void CreateUIObjectTexture(MainDataCollection& data)
 		if (pixels == nullptr)
 			throw std::runtime_error("CreateUIObjectTexture Error: Program failed to load a 16 bit texture!");
 
+		if (data.isRBReversed)
+		{
+			stbi_us* currentPixelBeggining = pixels;
+
+			for (uint32_t i = 0; i < width; ++i)
+			{
+				for (size_t j = 0; j < height; ++j)
+				{
+					stbi_us* currentPixelRed = currentPixelBeggining;
+					stbi_us* currentPixelBlue = currentPixelBeggining + 2;
+
+					stbi_us swapValue = currentPixelRed[0];
+					currentPixelRed[0] = *currentPixelBlue;
+					currentPixelBlue[0] = swapValue;
+
+					currentPixelBeggining += 4;
+				}
+			}
+		}
+
 		size_t dataSize = static_cast<size_t>(width) * height;
 		dataSize *= 8;
 		filedata.resize(dataSize);
@@ -332,6 +492,26 @@ void CreateUIObjectTexture(MainDataCollection& data)
 		stbi_uc* pixels = stbi_load(filepath.c_str(), reinterpret_cast<int32_t*>(&width), reinterpret_cast<int32_t*>(&height), &channels, STBI_rgb_alpha);
 		if (pixels == nullptr)
 			throw std::runtime_error("CreateUIObjectTexture Error: Program failed to load a 8 bit texture!");
+
+		if (data.isRBReversed)
+		{
+			stbi_uc* currentPixelBeggining = pixels;
+
+			for (uint32_t i = 0; i < width; ++i)
+			{
+				for (size_t j = 0; j < height; ++j)
+				{
+					stbi_uc* currentPixelRed = currentPixelBeggining;
+					stbi_uc* currentPixelBlue = currentPixelBeggining + 2;
+
+					stbi_uc swapValue = currentPixelRed[0];
+					currentPixelRed[0] = *currentPixelBlue;
+					currentPixelBlue[0] = swapValue;
+
+					currentPixelBeggining += 4;
+				}
+			}
+		}
 
 		size_t dataSize = static_cast<size_t>(width) * height;
 		dataSize *= 4;
@@ -362,10 +542,6 @@ void CreateUIObjectTextureSecondFrame(MainDataCollection& data)
 	{
 		filename = "UITextureCursorOn16BitRGB.png";
 	}
-	else if (data.isRBReversed)
-	{
-		filename = "UITextureCursorOn8BitBGR.png";
-	}
 	else
 	{
 		filename = "UITextureCursorOn8BitRGB.png";
@@ -383,6 +559,26 @@ void CreateUIObjectTextureSecondFrame(MainDataCollection& data)
 		if (pixels == nullptr)
 			throw std::runtime_error("CreateUIObjectTextureSecondFrame Error: Program failed to load a 16 bit texture!");
 
+		if (data.isRBReversed)
+		{
+			stbi_us* currentPixelBeggining = pixels;
+
+			for (uint32_t i = 0; i < width; ++i)
+			{
+				for (size_t j = 0; j < height; ++j)
+				{
+					stbi_us* currentPixelRed = currentPixelBeggining;
+					stbi_us* currentPixelBlue = currentPixelBeggining + 2;
+
+					stbi_us swapValue = currentPixelRed[0];
+					currentPixelRed[0] = *currentPixelBlue;
+					currentPixelBlue[0] = swapValue;
+
+					currentPixelBeggining += 4;
+				}
+			}
+		}
+
 		size_t dataSize = static_cast<size_t>(width) * height;
 		dataSize *= 8;
 		filedata.resize(dataSize);
@@ -396,6 +592,26 @@ void CreateUIObjectTextureSecondFrame(MainDataCollection& data)
 		stbi_uc* pixels = stbi_load(filepath.c_str(), reinterpret_cast<int32_t*>(&width), reinterpret_cast<int32_t*>(&height), &channels, STBI_rgb_alpha);
 		if (pixels == nullptr)
 			throw std::runtime_error("CreateUIObjectTextureSecondFrame Error: Program failed to load a 8 bit texture!");
+
+		if (data.isRBReversed)
+		{
+			stbi_uc* currentPixelBeggining = pixels;
+
+			for (uint32_t i = 0; i < width; ++i)
+			{
+				for (size_t j = 0; j < height; ++j)
+				{
+					stbi_uc* currentPixelRed = currentPixelBeggining;
+					stbi_uc* currentPixelBlue = currentPixelBeggining + 2;
+
+					stbi_uc swapValue = currentPixelRed[0];
+					currentPixelRed[0] = *currentPixelBlue;
+					currentPixelBlue[0] = swapValue;
+
+					currentPixelBeggining += 4;
+				}
+			}
+		}
 
 		size_t dataSize = static_cast<size_t>(width) * height;
 		dataSize *= 4;
@@ -426,10 +642,6 @@ void CreateUIObjectTextureThirdFrame(MainDataCollection& data)
 	{
 		filename = "UITextureClicked16BitRGB.png";
 	}
-	else if (data.isRBReversed)
-	{
-		filename = "UITextureClicked8BitBGR.png";
-	}
 	else
 	{
 		filename = "UITextureClicked8BitRGB.png";
@@ -447,6 +659,26 @@ void CreateUIObjectTextureThirdFrame(MainDataCollection& data)
 		if (pixels == nullptr)
 			throw std::runtime_error("CreateUIObjectTextureThirdFrame Error: Program failed to load a 16 bit texture!");
 
+		if (data.isRBReversed)
+		{
+			stbi_us* currentPixelBeggining = pixels;
+
+			for (uint32_t i = 0; i < width; ++i)
+			{
+				for (size_t j = 0; j < height; ++j)
+				{
+					stbi_us* currentPixelRed = currentPixelBeggining;
+					stbi_us* currentPixelBlue = currentPixelBeggining + 2;
+
+					stbi_us swapValue = currentPixelRed[0];
+					currentPixelRed[0] = *currentPixelBlue;
+					currentPixelBlue[0] = swapValue;
+
+					currentPixelBeggining += 4;
+				}
+			}
+		}
+
 		size_t dataSize = static_cast<size_t>(width) * height;
 		dataSize *= 8;
 		filedata.resize(dataSize);
@@ -460,6 +692,26 @@ void CreateUIObjectTextureThirdFrame(MainDataCollection& data)
 		stbi_uc* pixels = stbi_load(filepath.c_str(), reinterpret_cast<int32_t*>(&width), reinterpret_cast<int32_t*>(&height), &channels, STBI_rgb_alpha);
 		if (pixels == nullptr)
 			throw std::runtime_error("CreateUIObjectTextureThirdFrame Error: Program failed to load a 8 bit texture!");
+
+		if (data.isRBReversed)
+		{
+			stbi_uc* currentPixelBeggining = pixels;
+
+			for (uint32_t i = 0; i < width; ++i)
+			{
+				for (size_t j = 0; j < height; ++j)
+				{
+					stbi_uc* currentPixelRed = currentPixelBeggining;
+					stbi_uc* currentPixelBlue = currentPixelBeggining + 2;
+
+					stbi_uc swapValue = currentPixelRed[0];
+					currentPixelRed[0] = *currentPixelBlue;
+					currentPixelBlue[0] = swapValue;
+
+					currentPixelBeggining += 4;
+				}
+			}
+		}
 
 		size_t dataSize = static_cast<size_t>(width) * height;
 		dataSize *= 4;

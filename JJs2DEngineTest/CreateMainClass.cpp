@@ -104,6 +104,8 @@ JJ2DE::DeviceSettings CreateDeviceSettings(const JJ2DE::DeviceData& device, size
 			ret.textureFormat = JJ2DE::TextureFormat::TEXTURE_FORMAT_BGRA8;
 	}
 
+	ret.textureFormat = JJ2DE::TextureFormat::TEXTURE_FORMAT_BGRA8;
+
 	ret.streamedTexturesMaxAmounts[6] = 3;
 	ret.streamedTexturesMaxAmounts[7] = 4;
 

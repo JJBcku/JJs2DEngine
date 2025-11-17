@@ -735,8 +735,8 @@ namespace JJs2DEngine
 		{
 			ret.textureSupport.textureRGBA16UNORM = VS::CheckFormatSupport(formatImageSupport.sampledImage, VS::DATA_FORMAT_RGBA16_UNORM);
 
-			ret.textureSupport.textureRGBA8UNORM = VS::CheckFormatSupport(formatImageSupport.sampledImage, VS::DATA_FORMAT_RGBA8_UNORM);
-			ret.textureSupport.textureBGRA8UNORM = VS::CheckFormatSupport(formatImageSupport.sampledImage, VS::DATA_FORMAT_BGRA8_UNORM);
+			ret.textureSupport.textureRGBA8UNORM = VS::CheckFormatSupport(formatImageSupport.sampledImage, VS::DATA_FORMAT_RGBA8_SRGB);
+			ret.textureSupport.textureBGRA8UNORM = VS::CheckFormatSupport(formatImageSupport.sampledImage, VS::DATA_FORMAT_BGRA8_SRGB);
 
 			ret.textureSupport.textureBC = (deviceFeatures & VS::DEVICE_VULKAN10_FEATURE_TEXTURE_COMPRESSION_BC) == VS::DEVICE_VULKAN10_FEATURE_TEXTURE_COMPRESSION_BC;
 			ret.textureSupport.textureETC2 = (deviceFeatures & VS::DEVICE_VULKAN10_FEATURE_TEXTURE_COMPRESSION_ETC2) == VS::DEVICE_VULKAN10_FEATURE_TEXTURE_COMPRESSION_ETC2;

@@ -50,10 +50,10 @@ namespace JJs2DEngine
 			ret = VS::DataFormatSetIndependentID(VS::DATA_FORMAT_RGBA16_UNORM);
 			break;
 		case JJs2DEngine::TextureFormat::TEXTURE_FORMAT_RGBA8:
-			ret = VS::DataFormatSetIndependentID(VS::DATA_FORMAT_RGBA8_UNORM);
+			ret = VS::DataFormatSetIndependentID(VS::DATA_FORMAT_RGBA8_SRGB);
 			break;
 		case JJs2DEngine::TextureFormat::TEXTURE_FORMAT_BGRA8:
-			ret = VS::DataFormatSetIndependentID(VS::DATA_FORMAT_BGRA8_UNORM);
+			ret = VS::DataFormatSetIndependentID(VS::DATA_FORMAT_BGRA8_SRGB);
 			break;
 		default:
 			break;

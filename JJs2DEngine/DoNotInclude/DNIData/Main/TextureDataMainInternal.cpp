@@ -539,15 +539,7 @@ namespace JJs2DEngine
 		
 		std::string filepath = dataFolder + defaultTexturesFolderName + defaultTexturesName;
 		filepath += std::to_string(tileSize);
-
-		if (RBreversed)
-		{
-			filepath += BGRTexturesName;
-		}
-		else
-		{
-			filepath += RGBTexturesName;
-		}
+		filepath += RGBTexturesName;
 
 		filepath += eigthBitTexturesName;
 		filepath += defaultTexturesExtension;
@@ -564,6 +556,26 @@ namespace JJs2DEngine
 		if (static_cast<uint32_t>(width) != tileSize || static_cast<uint32_t>(height) != tileSize)
 			throw std::runtime_error("TextureDataMainInternal::LoadDefautTexture8Bit Error: Program read an incorrect default texture!");
 
+		if (RBreversed)
+		{
+			stbi_uc* currentPixelBeggining = pixels;
+
+			for (int32_t i = 0; i < width; ++i)
+			{
+				for (size_t j = 0; j < height; ++j)
+				{
+					stbi_uc* currentPixelRed = currentPixelBeggining;
+					stbi_uc* currentPixelBlue = currentPixelBeggining + 2;
+
+					stbi_uc swapValue = currentPixelRed[0];
+					currentPixelRed[0] = *currentPixelBlue;
+					currentPixelBlue[0] = swapValue;
+
+					currentPixelBeggining += 4;
+				}
+			}
+		}
+
 		size_t imageSize = static_cast<size_t>(tileSize) * tileSize * 4;
 
 		ret.resize(imageSize);
@@ -578,15 +590,7 @@ namespace JJs2DEngine
 
 		std::string filepath = dataFolder + defaultTexturesFolderName + defaultTexturesName;
 		filepath += std::to_string(tileSize);
-
-		if (RBreversed)
-		{
-			filepath += BGRTexturesName;
-		}
-		else
-		{
-			filepath += RGBTexturesName;
-		}
+		filepath += RGBTexturesName;
 
 		filepath += sixteenBitTexturesName;
 		filepath += defaultTexturesExtension;
@@ -602,6 +606,26 @@ namespace JJs2DEngine
 
 		if (static_cast<uint32_t>(width) != tileSize || static_cast<uint32_t>(height) != tileSize)
 			throw std::runtime_error("TextureDataMainInternal::LoadDefautTexture8Bit Error: Program read an incorrect default texture!");
+
+		if (RBreversed)
+		{
+			stbi_us* currentPixelBeggining = pixels;
+
+			for (int32_t i = 0; i < width; ++i)
+			{
+				for (size_t j = 0; j < height; ++j)
+				{
+					stbi_us* currentPixelRed = currentPixelBeggining;
+					stbi_us* currentPixelBlue = currentPixelBeggining + 2;
+
+					stbi_us swapValue = currentPixelRed[0];
+					currentPixelRed[0] = *currentPixelBlue;
+					currentPixelBlue[0] = swapValue;
+
+					currentPixelBeggining += 4;
+				}
+			}
+		}
 
 		size_t imageSize = static_cast<size_t>(tileSize) * tileSize * 8;
 
