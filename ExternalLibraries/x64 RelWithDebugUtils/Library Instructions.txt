@@ -1,0 +1,1 @@
+Copy VulkanSimplified projects x64 RelWithDebugUtils .lib and .pdb files to this folder

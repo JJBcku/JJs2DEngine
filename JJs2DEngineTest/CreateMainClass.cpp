@@ -24,7 +24,11 @@ void CreateMainClass(MainDataCollection& data)
 #if defined(_DEBUG) || defined(DEBUG)
 	mainInitData.appVariantName = "x64 Debug";
 #else
+#if defined(DEBUG_UTILS)
+	mainInitData.appVariantName = "x64 RelWithDebugUtils";
+#else
 	mainInitData.appVariantName = "x64 Release";
+#endif
 #endif
 
 	mainInitData.appVersion = JJ2DE::engineVersion;
