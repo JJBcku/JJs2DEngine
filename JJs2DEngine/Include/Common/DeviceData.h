@@ -67,8 +67,8 @@ namespace JJs2DEngine
 	{
 		bool textureRGBA16UNORM;
 
-		bool textureRGBA8UNORM;
-		bool textureBGRA8UNORM;
+		bool textureRGBA8SRGB;
+		bool textureBGRA8SRGB;
 
 		bool textureBC;
 		bool textureETC2;

@@ -64,8 +64,8 @@ namespace JJs2DEngine
 	{
 		textureRGBA16UNORM = false;
 
-		textureRGBA8UNORM = false;
-		textureBGRA8UNORM = false;
+		textureRGBA8SRGB = false;
+		textureBGRA8SRGB = false;
 
 		textureBC = false;
 		textureETC2 = false;
@@ -74,7 +74,7 @@ namespace JJs2DEngine
 
 	bool DeviceTextureSupport::SupportAnyUncompressedTextures() const
 	{
-		return textureRGBA16UNORM || textureRGBA8UNORM || textureBGRA8UNORM;
+		return textureRGBA16UNORM || textureRGBA8SRGB || textureBGRA8SRGB;
 	}
 
 	bool DeviceTextureSupport::Support16BitUncompressedTextures() const
