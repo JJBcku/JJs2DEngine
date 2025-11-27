@@ -54,9 +54,9 @@ namespace JJs2DEngine
 	const std::string GammaCorrectionPipelineCacheName("GammaCorrectionPipelineCache");
 
 #if defined(_DEBUG) || defined(DEBUG)
-	const std::string cacheFiletype(".debug.cache");
+	const std::string cacheFiletype(".debug.cah");
 #else
-	const std::string cacheFiletype(".cache");
+	const std::string cacheFiletype(".cah");
 #endif
 	
 	const std::string BackgroundPipelineFullName(pipelineCacheDirectoryName + BackgroundPipelineCacheName + cacheFiletype);
