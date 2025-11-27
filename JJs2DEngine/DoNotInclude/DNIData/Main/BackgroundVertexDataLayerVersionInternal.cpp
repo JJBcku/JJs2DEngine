@@ -17,9 +17,9 @@ _textureDataList(textureDataList)
 		size_t tileSize = 1ULL << (skippedSizeLevels + textureData.textureIndex.first);
 		float fTileSize = static_cast<float>(tileSize);
 
-		float textureWidth = static_cast<float>(textureData.textureWidthInPixels);
+		float textureWidth = static_cast<float>(textureData.textureWidthInPixels) - 0.5f;
 		textureWidth /= fTileSize;
-		float textureHeight = static_cast<float>(textureData.textureHeightInPixels);
+		float textureHeight = static_cast<float>(textureData.textureHeightInPixels) - 0.5f;
 		textureHeight /= fTileSize;
 
 		_data.inTextureSize = glm::vec2(textureWidth, textureHeight);
