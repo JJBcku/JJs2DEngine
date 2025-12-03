@@ -23,8 +23,8 @@ namespace JJs2DEngine
 	class RenderDataInternal
 	{
 	public:
-		RenderDataInternal(size_t currentPipelineSettings, const std::vector<PipelineSettings>& preInitializedPipelineSettings, const std::string& dataFolder,
-			VS::DeviceMain device, VS::SharedDataMainList sharedData);
+		RenderDataInternal(size_t currentPipelineSettings, const std::vector<PipelineSettings>& preInitializedPipelineSettings, const std::string& readOnlyDataFolder,
+			const std::string& writenToDataFolder, VS::DeviceMain device, VS::SharedDataMainList sharedData);
 		~RenderDataInternal();
 
 		float GetCurrentAspectRatio() const;

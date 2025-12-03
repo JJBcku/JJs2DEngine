@@ -16,7 +16,8 @@ namespace JJs2DEngine
 		VersionData minVulkanVersion;
 		VersionData maxVulkanVersion;
 
-		std::string dataFolder;
+		std::string readOnlyDataFolder;
+		std::string writenToDataFolder;
 
 		MainInitializationData();
 	};

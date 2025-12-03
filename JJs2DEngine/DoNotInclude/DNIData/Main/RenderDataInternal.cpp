@@ -59,10 +59,10 @@ namespace JJs2DEngine
 	const std::string cacheFiletype(".cah");
 #endif
 	
-	const std::string BackgroundPipelineFullName(pipelineCacheDirectoryName + BackgroundPipelineCacheName + cacheFiletype);
-	const std::string UIPipelineFullName(pipelineCacheDirectoryName + UIPipelineCacheName + cacheFiletype);
-	const std::string WorldLayerPipelineFullName(pipelineCacheDirectoryName + WorldLayerPipelineCacheName + cacheFiletype);
-	const std::string GammaCorrectionPipelineFullName(pipelineCacheDirectoryName + GammaCorrectionPipelineCacheName + cacheFiletype);
+	const std::string BackgroundPipelineFullName(BackgroundPipelineCacheName + cacheFiletype);
+	const std::string UIPipelineFullName(UIPipelineCacheName + cacheFiletype);
+	const std::string WorldLayerPipelineFullName(WorldLayerPipelineCacheName + cacheFiletype);
+	const std::string GammaCorrectionPipelineFullName(GammaCorrectionPipelineCacheName + cacheFiletype);
 
 	const std::string shaderDirectoryName("Shaders\\");
 
@@ -85,18 +85,16 @@ namespace JJs2DEngine
 
 	namespace fs = std::filesystem;
 
-	RenderDataInternal::RenderDataInternal(size_t currentPipelineSettings, const std::vector<PipelineSettings>& preInitializedPipelineSettings, const std::string& dataFolder,
-		VS::DeviceMain device, VS::SharedDataMainList sharedData) : _device(device), _sharedData(sharedData), _currentPipelineSettings(currentPipelineSettings)
+	RenderDataInternal::RenderDataInternal(size_t currentPipelineSettings, const std::vector<PipelineSettings>& preInitializedPipelineSettings, const std::string& readOnlyDataFolder,
+		const std::string& writenToDataFolder, VS::DeviceMain device, VS::SharedDataMainList sharedData) :
+		_device(device), _sharedData(sharedData), _currentPipelineSettings(currentPipelineSettings)
 	{
-		if (dataFolder != "" && !fs::exists(dataFolder))
-			throw std::runtime_error("RenderDataInternal Constructor Error: Program was given an non-existent data folder!");
+		std::string pipelineCacheDirectoryPath = writenToDataFolder + pipelineCacheDirectoryName;
 
-		std::string pipelineCacheDirectoryPath = dataFolder + pipelineCacheDirectoryName;
-
-		std::string backgroundPipelineCachePath = dataFolder + BackgroundPipelineFullName;
-		std::string UIPipelineCachePath = dataFolder + UIPipelineFullName;
-		std::string worldLayerPipelineCachePath = dataFolder + WorldLayerPipelineFullName;
-		std::string gammaCorrectionPipelineCachePath = dataFolder + GammaCorrectionPipelineFullName;
+		std::string backgroundPipelineCachePath = pipelineCacheDirectoryPath + BackgroundPipelineFullName;
+		std::string UIPipelineCachePath = pipelineCacheDirectoryPath + UIPipelineFullName;
+		std::string worldLayerPipelineCachePath = pipelineCacheDirectoryPath + WorldLayerPipelineFullName;
+		std::string gammaCorrectionPipelineCachePath = pipelineCacheDirectoryPath + GammaCorrectionPipelineFullName;
 
 		if (!fs::exists(pipelineCacheDirectoryPath))
 		{
@@ -140,7 +138,7 @@ namespace JJs2DEngine
 		}
 
 		auto shaderList = _device.GetShaderLists();
-		auto standardFragmentShaderData = LoadShaderFile(dataFolder + standardFragmentShaderName + fragmentShaderExtension);
+		auto standardFragmentShaderData = LoadShaderFile(readOnlyDataFolder + standardFragmentShaderName + fragmentShaderExtension);
 		_standardFragmentShaderID = shaderList.CreateFragmentShaderModule(*standardFragmentShaderData.data(), standardFragmentShaderData.size(), 0x10);
 
 		auto imageList = _device.GetImageDataLists();
@@ -187,7 +185,7 @@ namespace JJs2DEngine
 
 		{
 			creationDataList.clear();
-			auto backgroundVertexShaderData = LoadShaderFile(dataFolder + backgroundLayerVertexShaderName + vertexShaderExtension);
+			auto backgroundVertexShaderData = LoadShaderFile(readOnlyDataFolder + backgroundLayerVertexShaderName + vertexShaderExtension);
 			_backgroundVertexShaderID = shaderList.CreateVertexShaderModule(*backgroundVertexShaderData.data(), backgroundVertexShaderData.size(), 0x10);
 
 			VS::PipelineLayoutCreationData backgroundPipelineLayoutCreationData;
@@ -208,7 +206,7 @@ namespace JJs2DEngine
 
 		{
 			creationDataList.clear();
-			auto uiLayerVertexShaderData = LoadShaderFile(dataFolder + uiLayerVertexShaderName + vertexShaderExtension);
+			auto uiLayerVertexShaderData = LoadShaderFile(readOnlyDataFolder + uiLayerVertexShaderName + vertexShaderExtension);
 			_uiVertexShaderID = shaderList.CreateVertexShaderModule(*uiLayerVertexShaderData.data(), uiLayerVertexShaderData.size(), 0x10);
 
 			VS::PipelineLayoutCreationData uiPipelineLayoutCreationData;
@@ -228,7 +226,7 @@ namespace JJs2DEngine
 		}
 
 		{
-			auto worldLayerLayerVertexShaderData = LoadShaderFile(dataFolder + worldLayerVertexShaderName + vertexShaderExtension);
+			auto worldLayerLayerVertexShaderData = LoadShaderFile(readOnlyDataFolder + worldLayerVertexShaderName + vertexShaderExtension);
 			_worldLayerVertexShaderID = shaderList.CreateVertexShaderModule(*worldLayerLayerVertexShaderData.data(), worldLayerLayerVertexShaderData.size(), 0x10);
 
 			_worldLayerPushConstant = _sharedData.GetSharedPipelineDataLists().AddPushConstantData(VS::SHADER_TYPE_VERTEX, 0U, sizeof(CameraData));
@@ -253,10 +251,10 @@ namespace JJs2DEngine
 		}
 
 		{
-			auto gammaCorrectionFragmentShaderData = LoadShaderFile(dataFolder + gammaCorrectionFragmentShaderName + fragmentShaderExtension);
+			auto gammaCorrectionFragmentShaderData = LoadShaderFile(readOnlyDataFolder + gammaCorrectionFragmentShaderName + fragmentShaderExtension);
 			_gammaCorrectionFragmentShaderID = shaderList.CreateFragmentShaderModule(*gammaCorrectionFragmentShaderData.data(), gammaCorrectionFragmentShaderData.size(), 0x10);
 
-			auto gammaCorrectionVertexShaderData = LoadShaderFile(dataFolder + gammaCorrectionVertexShaderName + vertexShaderExtension);
+			auto gammaCorrectionVertexShaderData = LoadShaderFile(readOnlyDataFolder + gammaCorrectionVertexShaderName + vertexShaderExtension);
 			_gammaCorrectionVertexShaderID = shaderList.CreateVertexShaderModule(*gammaCorrectionVertexShaderData.data(), gammaCorrectionVertexShaderData.size(), 0x10);
 
 			auto gammaCorrectionDescriptorBinding = sharedDescriptorData.AddUniqueDescriptorSetLayoutBindingsData(VS::DescriptorTypeFlagBits::INPUT_ATTACHMENT, 1,

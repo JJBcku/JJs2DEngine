@@ -74,7 +74,15 @@ namespace JJs2DEngine
 		_minVulkanVersion = initData.minVulkanVersion;
 		_maxVulkanVersion = initData.maxVulkanVersion;
 
-		_dataFolder = initData.dataFolder;
+		_readOnlyDataFolder = initData.readOnlyDataFolder;
+		_writenToDataFolder = initData.writenToDataFolder;
+
+		if (_readOnlyDataFolder != "" && !std::filesystem::exists(_readOnlyDataFolder))
+			throw std::runtime_error("MainInternal Constructor Error: Program was given an non-existent read only data folder!");
+
+
+		if (_writenToDataFolder != "" && !std::filesystem::exists(_writenToDataFolder))
+			throw std::runtime_error("MainInternal Constructor Error: Program was given an non-existent writen to data folder!");
 
 		_windowClosed = Misc::BOOL64_FALSE;
 
@@ -197,8 +205,8 @@ namespace JJs2DEngine
 		auto graphicQFGroup = commandPoolMain.GetQueueFamiliesPoolGroup(_graphicQFGroup);
 		auto transferQFGroup = commandPoolMain.GetQueueFamiliesPoolGroup(_transferQFGroup);
 
-		_renderDataList = std::make_unique<RenderDataInternal>(deviceSettings.currentPipelineSettings, deviceSettings.preInitializedPipelineSettings, _dataFolder,
-			device, _VSMain->GetSharedDataMainList());
+		_renderDataList = std::make_unique<RenderDataInternal>(deviceSettings.currentPipelineSettings, deviceSettings.preInitializedPipelineSettings, _readOnlyDataFolder,
+			_writenToDataFolder, device, _VSMain->GetSharedDataMainList());
 
 		{
 			auto& currentPipeline = deviceSettings.preInitializedPipelineSettings[deviceSettings.currentPipelineSettings];
@@ -238,7 +246,7 @@ namespace JJs2DEngine
 			textureInitData.transferFramesInFlight = _currentDevicesSettings.value().transferFramesInFlight;
 			textureInitData.max2DImageSize = imageLimits.maxImageDimension2D;
 			textureInitData.maxImageArrayLayers = imageLimits.maxImageArrayLayers;
-			textureInitData.dataFolder = _dataFolder;
+			textureInitData.dataFolder = _readOnlyDataFolder;
 			textureInitData.preLoadedTexturesMaxAmounts = preLoadedTexturesMaxAmounts;
 			textureInitData.streamedTexturesMaxAmounts = streamedTexturesMaxAmounts;
 			textureInitData.preLoadedTexturesStagingBufferPageCount = _currentDevicesSettings.value().preLoadedTexturesStagingBuffersPageCount;

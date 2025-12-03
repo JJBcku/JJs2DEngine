@@ -85,7 +85,8 @@ namespace JJs2DEngine
 		VersionData _minVulkanVersion;
 		VersionData _maxVulkanVersion;
 
-		std::string _dataFolder;
+		std::string _readOnlyDataFolder;
+		std::string _writenToDataFolder;
 
 		std::vector<DeviceData> _deviceList;
 
