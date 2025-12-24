@@ -38,10 +38,10 @@ namespace JJs2DEngine
 		IDObject<VS::AutoCleanupGraphicsPipeline> GetWorldLayerGraphicsPipeline();
 		IDObject<VS::AutoCleanupGraphicsPipeline> GetGammaCorrectionGraphicsPipeline();
 
-		IDObject<VS::AutoCleanupPipelineLayout> GetBackgroundLayerGraphicsPipelineLayout();
-		IDObject<VS::AutoCleanupPipelineLayout> GetUILayerGraphicsPipelineLayout();
-		IDObject<VS::AutoCleanupPipelineLayout> GetWorldLayerGraphicsPipelineLayout();
-		IDObject<VS::AutoCleanupPipelineLayout> GetGammaCorrectionGraphicsPipelineLayout();
+		IDObject<VS::AutoCleanupPipelineLayout> GetBackgroundLayerGraphicsPipelineLayout() const;
+		IDObject<VS::AutoCleanupPipelineLayout> GetUILayerGraphicsPipelineLayout() const;
+		IDObject<VS::AutoCleanupPipelineLayout> GetWorldLayerGraphicsPipelineLayout() const;
+		IDObject<VS::AutoCleanupPipelineLayout> GetGammaCorrectionGraphicsPipelineLayout() const;
 
 		const std::vector<std::optional<VS::RenderPassClearValueID>>& GetClearValuesList() const;
 
@@ -57,10 +57,10 @@ namespace JJs2DEngine
 		std::vector<IDObject<VS::AutoCleanupRenderPass>> _renderPassList;
 		IDObject<VS::AutoCleanupDescriptorSetLayout> _textureDescriptorSetLayout;
 
-		IDObject<VS::AutoCleanupPipelineCache> _backgroundPipelineCache;
-		IDObject<VS::AutoCleanupPipelineCache> _uiPipelineCache;
-		IDObject<VS::AutoCleanupPipelineCache> _worldLayerPipelineCache;
-		IDObject<VS::AutoCleanupPipelineCache> _gammaCorrectionPipelineCache;
+		std::optional<IDObject<VS::AutoCleanupPipelineCache>> _backgroundPipelineCache;
+		std::optional<IDObject<VS::AutoCleanupPipelineCache>> _uiPipelineCache;
+		std::optional<IDObject<VS::AutoCleanupPipelineCache>> _worldLayerPipelineCache;
+		std::optional<IDObject<VS::AutoCleanupPipelineCache>> _gammaCorrectionPipelineCache;
 
 		IDObject<VS::AutoCleanupFragmentShaderModule> _standardFragmentShaderID;
 
@@ -100,19 +100,19 @@ namespace JJs2DEngine
 		IDObject<VS::AutoCleanupPipelineLayout> _gammaCorrectionPipelineLayout;
 		std::vector<IDObject<VS::AutoCleanupGraphicsPipeline>> _gammaCorrectionPipelineList;
 
-		void CreateBackgroundPipelineCacheFile(const std::string& datafilePath);
+		bool CreateBackgroundPipelineCacheFile(const std::string& datafilePath);
 		void LoadBackgroundPipelineCacheFile(const std::string& datafilePath);
 		void SaveBackgroundPipelineCacheFile(const std::string& datafilePath);
 
-		void CreateUILayerPipelineCacheFile(const std::string& datafilePath);
+		bool CreateUILayerPipelineCacheFile(const std::string& datafilePath);
 		void LoadUILayerPipelineCacheFile(const std::string& datafilePath);
 		void SaveUILayerPipelineCacheFile(const std::string& datafilePath);
 
-		void CreateWorldLayerPipelineCacheFile(const std::string& datafilePath);
+		bool CreateWorldLayerPipelineCacheFile(const std::string& datafilePath);
 		void LoadWorldLayerPipelineCacheFile(const std::string& datafilePath);
 		void SaveWorldLayerPipelineCacheFile(const std::string& datafilePath);
 
-		void CreateGammaCorrectionPipelineCacheFile(const std::string& datafilePath);
+		bool CreateGammaCorrectionPipelineCacheFile(const std::string& datafilePath);
 		void LoadGammaCorrectionPipelineCacheFile(const std::string& datafilePath);
 		void SaveGammaCorrectionPipelineCacheFile(const std::string& datafilePath);
 

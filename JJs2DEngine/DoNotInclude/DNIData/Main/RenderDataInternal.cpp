@@ -101,40 +101,45 @@ namespace JJs2DEngine
 			fs::create_directory(pipelineCacheDirectoryPath);
 		}
 
-		if (fs::exists(backgroundPipelineCachePath))
+		bool backgroundPipelineCacheExist = fs::exists(backgroundPipelineCachePath);
+		bool UIPipelineCacheExist = fs::exists(UIPipelineCachePath);
+		bool worldLayerPipelineCacheExist = fs::exists(worldLayerPipelineCachePath);
+		bool gammaCorrectionPipelineCacheExist = fs::exists(gammaCorrectionPipelineCachePath);
+
+		if (backgroundPipelineCacheExist)
 		{
 			LoadBackgroundPipelineCacheFile(backgroundPipelineCachePath);
 		}
 		else
 		{
-			CreateBackgroundPipelineCacheFile(backgroundPipelineCachePath);
+			backgroundPipelineCacheExist = CreateBackgroundPipelineCacheFile(backgroundPipelineCachePath);
 		}
 
-		if (fs::exists(UIPipelineCachePath))
+		if (UIPipelineCacheExist)
 		{
 			LoadUILayerPipelineCacheFile(UIPipelineCachePath);
 		}
 		else
 		{
-			CreateUILayerPipelineCacheFile(UIPipelineCachePath);
+			UIPipelineCacheExist = CreateUILayerPipelineCacheFile(UIPipelineCachePath);
 		}
 
-		if (fs::exists(worldLayerPipelineCachePath))
+		if (worldLayerPipelineCacheExist)
 		{
 			LoadWorldLayerPipelineCacheFile(worldLayerPipelineCachePath);
 		}
 		else
 		{
-			CreateWorldLayerPipelineCacheFile(worldLayerPipelineCachePath);
+			worldLayerPipelineCacheExist = CreateWorldLayerPipelineCacheFile(worldLayerPipelineCachePath);
 		}
 
-		if (fs::exists(gammaCorrectionPipelineCachePath))
+		if (gammaCorrectionPipelineCacheExist)
 		{
 			LoadGammaCorrectionPipelineCacheFile(gammaCorrectionPipelineCachePath);
 		}
 		else
 		{
-			CreateGammaCorrectionPipelineCacheFile(gammaCorrectionPipelineCachePath);
+			gammaCorrectionPipelineCacheExist = CreateGammaCorrectionPipelineCacheFile(gammaCorrectionPipelineCachePath);
 		}
 
 		auto shaderList = _device.GetShaderLists();
@@ -201,7 +206,8 @@ namespace JJs2DEngine
 			}
 
 			_backgroundPipelineList = devicePipelineList.AddGraphicPipelines(creationDataList, _backgroundPipelineCache, creationDataList.size() * 8);
-			SaveBackgroundPipelineCacheFile(backgroundPipelineCachePath);
+			if (backgroundPipelineCacheExist)
+				SaveBackgroundPipelineCacheFile(backgroundPipelineCachePath);
 		}
 
 		{
@@ -222,7 +228,8 @@ namespace JJs2DEngine
 			}
 
 			_uiPipelineList = devicePipelineList.AddGraphicPipelines(creationDataList, _uiPipelineCache, creationDataList.size() * 8);
-			SaveUILayerPipelineCacheFile(UIPipelineCachePath);
+			if (UIPipelineCacheExist)
+				SaveUILayerPipelineCacheFile(UIPipelineCachePath);
 		}
 
 		{
@@ -247,7 +254,8 @@ namespace JJs2DEngine
 			}
 
 			_worldLayerPipelineList = devicePipelineList.AddGraphicPipelines(creationDataList, _worldLayerPipelineCache);
-			SaveWorldLayerPipelineCacheFile(worldLayerPipelineCachePath);
+			if (worldLayerPipelineCacheExist)
+				SaveWorldLayerPipelineCacheFile(worldLayerPipelineCachePath);
 		}
 
 		{
@@ -278,7 +286,8 @@ namespace JJs2DEngine
 			}
 
 			_gammaCorrectionPipelineList = devicePipelineList.AddGraphicPipelines(creationDataList, _gammaCorrectionPipelineCache, creationDataList.size() * 8);
-			SaveGammaCorrectionPipelineCacheFile(gammaCorrectionPipelineCachePath);
+			if (gammaCorrectionPipelineCacheExist)
+				SaveGammaCorrectionPipelineCacheFile(gammaCorrectionPipelineCachePath);
 		}
 
 		{
@@ -344,22 +353,22 @@ namespace JJs2DEngine
 		return _gammaCorrectionPipelineList[_currentPipelineSettings];
 	}
 
-	IDObject<VS::AutoCleanupPipelineLayout> RenderDataInternal::GetBackgroundLayerGraphicsPipelineLayout()
+	IDObject<VS::AutoCleanupPipelineLayout> RenderDataInternal::GetBackgroundLayerGraphicsPipelineLayout() const
 	{
 		return _backgroundPipelineLayout;
 	}
 
-	IDObject<VS::AutoCleanupPipelineLayout> RenderDataInternal::GetUILayerGraphicsPipelineLayout()
+	IDObject<VS::AutoCleanupPipelineLayout> RenderDataInternal::GetUILayerGraphicsPipelineLayout() const
 	{
 		return _uiPipelineLayout;
 	}
 
-	IDObject<VS::AutoCleanupPipelineLayout> RenderDataInternal::GetWorldLayerGraphicsPipelineLayout()
+	IDObject<VS::AutoCleanupPipelineLayout> RenderDataInternal::GetWorldLayerGraphicsPipelineLayout() const
 	{
 		return _worldLayerPipelineLayout;
 	}
 
-	IDObject<VS::AutoCleanupPipelineLayout> RenderDataInternal::GetGammaCorrectionGraphicsPipelineLayout()
+	IDObject<VS::AutoCleanupPipelineLayout> RenderDataInternal::GetGammaCorrectionGraphicsPipelineLayout() const
 	{
 		return _gammaCorrectionPipelineLayout;
 	}
@@ -369,7 +378,7 @@ namespace JJs2DEngine
 		return _clearValues;
 	}
 
-	void RenderDataInternal::CreateBackgroundPipelineCacheFile(const std::string& datafilePath)
+	bool RenderDataInternal::CreateBackgroundPipelineCacheFile(const std::string& datafilePath)
 	{
 		auto pipelineDataList = _device.GetPipelineDataLists();
 
@@ -378,7 +387,7 @@ namespace JJs2DEngine
 		pipelineCacheFile.open(datafilePath, std::ios_base::binary | std::ios_base::in | std::ios_base::out | std::ios_base::trunc);
 
 		if (!pipelineCacheFile.is_open())
-			throw std::runtime_error("RenderDataInternal::CreateBackgroundPipelineCacheFile Error: Program failed to open the pipeline cache file!");
+			return false;
 
 		PipelineCacheMainHeader mainHeader;
 
@@ -396,6 +405,7 @@ namespace JJs2DEngine
 			throw std::runtime_error("RenderDataInternal::CreateBackgroundPipelineCacheFile Error: Program failed to create the pipeline cache!");
 
 		pipelineCacheFile.close();
+		return true;
 	}
 
 	void RenderDataInternal::LoadBackgroundPipelineCacheFile(const std::string& datafilePath)
@@ -481,7 +491,7 @@ namespace JJs2DEngine
 		std::ifstream pipelineCacheInFile;
 		std::ofstream pipelineCacheOutFile;
 
-		auto dataToSave = pipelineDataList.GetPipelineCacheData(_backgroundPipelineCache);
+		auto dataToSave = pipelineDataList.GetPipelineCacheData(_backgroundPipelineCache.value());
 		if (dataToSave.empty())
 			return;
 
@@ -583,7 +593,7 @@ namespace JJs2DEngine
 		pipelineCacheOutFile.close();
 	}
 
-	void RenderDataInternal::CreateUILayerPipelineCacheFile(const std::string& datafilePath)
+	bool RenderDataInternal::CreateUILayerPipelineCacheFile(const std::string& datafilePath)
 	{
 		auto pipelineDataList = _device.GetPipelineDataLists();
 
@@ -592,7 +602,7 @@ namespace JJs2DEngine
 		pipelineCacheFile.open(datafilePath, std::ios_base::binary | std::ios_base::in | std::ios_base::out | std::ios_base::trunc);
 
 		if (!pipelineCacheFile.is_open())
-			throw std::runtime_error("RenderDataInternal::CreateUILayerPipelineCacheFile Error: Program failed to open the pipeline cache file!");
+			return false;
 
 		PipelineCacheMainHeader mainHeader;
 
@@ -609,6 +619,7 @@ namespace JJs2DEngine
 			throw std::runtime_error("RenderDataInternal::CreateUILayerPipelineCacheFile Error: Program failed to create the pipeline cache!");
 
 		pipelineCacheFile.close();
+		return true;
 	}
 
 	void RenderDataInternal::LoadUILayerPipelineCacheFile(const std::string& datafilePath)
@@ -694,7 +705,7 @@ namespace JJs2DEngine
 		std::ifstream pipelineCacheInFile;
 		std::ofstream pipelineCacheOutFile;
 
-		auto dataToSave = pipelineDataList.GetPipelineCacheData(_uiPipelineCache);
+		auto dataToSave = pipelineDataList.GetPipelineCacheData(_uiPipelineCache.value());
 		if (dataToSave.empty())
 			return;
 
@@ -796,7 +807,7 @@ namespace JJs2DEngine
 		pipelineCacheOutFile.close();
 	}
 
-	void RenderDataInternal::CreateWorldLayerPipelineCacheFile(const std::string& datafilePath)
+	bool RenderDataInternal::CreateWorldLayerPipelineCacheFile(const std::string& datafilePath)
 	{
 		auto pipelineDataList = _device.GetPipelineDataLists();
 
@@ -805,7 +816,7 @@ namespace JJs2DEngine
 		pipelineCacheFile.open(datafilePath, std::ios_base::binary | std::ios_base::in | std::ios_base::out | std::ios_base::trunc);
 
 		if (!pipelineCacheFile.is_open())
-			throw std::runtime_error("RenderDataInternal::CreateWorldLayerPipelineCacheFile Error: Program failed to open the pipeline cache file!");
+			return false;
 
 		PipelineCacheMainHeader mainHeader;
 
@@ -823,6 +834,7 @@ namespace JJs2DEngine
 			throw std::runtime_error("RenderDataInternal::CreateWorldLayerPipelineCacheFile Error: Program failed to create the pipeline cache!");
 
 		pipelineCacheFile.close();
+		return true;
 	}
 
 	void RenderDataInternal::LoadWorldLayerPipelineCacheFile(const std::string& datafilePath)
@@ -908,7 +920,7 @@ namespace JJs2DEngine
 		std::ifstream pipelineCacheInFile;
 		std::ofstream pipelineCacheOutFile;
 
-		auto dataToSave = pipelineDataList.GetPipelineCacheData(_worldLayerPipelineCache);
+		auto dataToSave = pipelineDataList.GetPipelineCacheData(_worldLayerPipelineCache.value());
 		if (dataToSave.empty())
 			return;
 
@@ -1010,7 +1022,7 @@ namespace JJs2DEngine
 		pipelineCacheOutFile.close();
 	}
 
-	void RenderDataInternal::CreateGammaCorrectionPipelineCacheFile(const std::string& datafilePath)
+	bool RenderDataInternal::CreateGammaCorrectionPipelineCacheFile(const std::string& datafilePath)
 	{
 		auto pipelineDataList = _device.GetPipelineDataLists();
 
@@ -1019,7 +1031,7 @@ namespace JJs2DEngine
 		pipelineCacheFile.open(datafilePath, std::ios_base::binary | std::ios_base::in | std::ios_base::out | std::ios_base::trunc);
 
 		if (!pipelineCacheFile.is_open())
-			throw std::runtime_error("RenderDataInternal::CreateGammaCorrectionPipelineCacheFile Error: Program failed to open the pipeline cache file!");
+			return false;
 
 		PipelineCacheMainHeader mainHeader;
 
@@ -1037,6 +1049,7 @@ namespace JJs2DEngine
 			throw std::runtime_error("RenderDataInternal::CreateGammaCorrectionPipelineCacheFile Error: Program failed to create the pipeline cache!");
 
 		pipelineCacheFile.close();
+		return true;
 	}
 
 	void RenderDataInternal::LoadGammaCorrectionPipelineCacheFile(const std::string& datafilePath)
@@ -1122,7 +1135,7 @@ namespace JJs2DEngine
 		std::ifstream pipelineCacheInFile;
 		std::ofstream pipelineCacheOutFile;
 
-		auto dataToSave = pipelineDataList.GetPipelineCacheData(_gammaCorrectionPipelineCache);
+		auto dataToSave = pipelineDataList.GetPipelineCacheData(_gammaCorrectionPipelineCache.value());
 		if (dataToSave.empty())
 			return;
 
