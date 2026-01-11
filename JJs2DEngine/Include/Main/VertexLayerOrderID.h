@@ -28,8 +28,14 @@ namespace JJs2DEngine
 			IDObject<WorldLayerVertexDataLayerVersionListPointer> ID;
 		} worldLayerID;
 
-		VertexLayerOrderID();
-		VertexLayerOrderID(IDObject<UiVertexDataLayerVersionListPointer> ID);
-		VertexLayerOrderID(IDObject<WorldLayerVertexDataLayerVersionListPointer> ID);
+		VertexLayerOrderID() noexcept;
+		VertexLayerOrderID(const VertexLayerOrderID& rhs) noexcept;
+		VertexLayerOrderID(VertexLayerOrderID&& rhs) noexcept;
+		VertexLayerOrderID(IDObject<UiVertexDataLayerVersionListPointer> ID) noexcept;
+		VertexLayerOrderID(IDObject<WorldLayerVertexDataLayerVersionListPointer> ID) noexcept;
+		~VertexLayerOrderID();
+
+		VertexLayerOrderID& operator=(const VertexLayerOrderID& rhs) noexcept;
+		VertexLayerOrderID& operator=(VertexLayerOrderID&& rhs) noexcept;
 	};
 }

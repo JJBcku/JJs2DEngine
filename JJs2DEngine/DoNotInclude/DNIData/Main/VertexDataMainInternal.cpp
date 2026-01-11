@@ -580,12 +580,12 @@ namespace JJs2DEngine
 
 	const UiVertexDataLayerVersionListInternal& VertexDataMainInternal::GetUiVertexDataLayerVersionList(IDObject<UiVertexDataLayerVersionListPointer> ID) const
 	{
-		return *_uiLayersList.GetConstObject(ID);
+		return *_uiLayersList.GetObject(ID);
 	}
 
 	const WorldLayerVertexDataLayerVersionListInternal& VertexDataMainInternal::GetWorldLayerVertexDataLayerVersionList(IDObject<WorldLayerVertexDataLayerVersionListPointer> ID) const
 	{
-		return *_worldLayersList.GetConstObject(ID);
+		return *_worldLayersList.GetObject(ID);
 	}
 
 	bool VertexDataMainInternal::TransferStreamedTextures()
