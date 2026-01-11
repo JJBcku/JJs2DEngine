@@ -29,8 +29,15 @@ namespace VulkanSimplified
 			IDObject<AutoCleanupVertexShaderModule> vertexShaderID;
 		} vertexShader;
 
-		ArbitraryShaderID();
-		ArbitraryShaderID(IDObject<AutoCleanupFragmentShaderModule> fragmentShaderID);
-		ArbitraryShaderID(IDObject<AutoCleanupVertexShaderModule> vertexShaderID);
+		ArbitraryShaderID() noexcept;
+		ArbitraryShaderID(IDObject<AutoCleanupFragmentShaderModule> fragmentShaderID) noexcept;
+		ArbitraryShaderID(IDObject<AutoCleanupVertexShaderModule> vertexShaderID) noexcept;
+
+		ArbitraryShaderID(const ArbitraryShaderID& rhs) noexcept;
+		ArbitraryShaderID(ArbitraryShaderID&& rhs) noexcept;
+		~ArbitraryShaderID();
+
+		ArbitraryShaderID& operator=(const ArbitraryShaderID& rhs) noexcept;
+		ArbitraryShaderID& operator=(ArbitraryShaderID&& rhs) noexcept;
 	};
 }

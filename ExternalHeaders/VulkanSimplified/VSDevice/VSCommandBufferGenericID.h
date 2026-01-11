@@ -52,7 +52,12 @@ namespace VulkanSimplified
 			IDObject<std::unique_ptr<SecondaryIRCommandBufferInternal>> commandBufferID;
 		} IRSecondaryID;
 
-		CommandBufferGenericID();
+		CommandBufferGenericID() noexcept;
+		CommandBufferGenericID(const CommandBufferGenericID& rhs) noexcept;
+		CommandBufferGenericID(CommandBufferGenericID&& rhs) noexcept;
 		~CommandBufferGenericID();
+
+		CommandBufferGenericID& operator=(const CommandBufferGenericID& rhs) noexcept;
+		CommandBufferGenericID& operator=(CommandBufferGenericID&& rhs) noexcept;
 	};
 }

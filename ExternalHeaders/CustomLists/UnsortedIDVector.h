@@ -4,12 +4,15 @@
 
 #include <vector>
 #include <stdexcept>
+#include <utility>
+#include <cassert>
+#include <algorithm>
 
 template<class T>
 class UnsortedIDVector
 {
 public:
-	UnsortedIDVector(size_t initialCapacity)
+	explicit UnsortedIDVector(size_t initialCapacity)
 	{
 		_nextID = std::numeric_limits<IDType>::lowest();
 		_vectorID = GetNextVectorID();
@@ -22,24 +25,42 @@ public:
 			if (initialCapacity > _deletedList.max_size())
 				throw std::runtime_error("UnsortedIDVector::UnsortedIDVector Error: Initial capacity is above freed indexes list's maximum size!");
 
+			if (initialCapacity > _IDList.max_size())
+				throw std::runtime_error("UnsortedIDVector::UnsortedIDVector Error: Initial capacity is above ID list's maximum size!");
+
 			_list.reserve(initialCapacity);
-			_deletedList.reserve(initialCapacity);
+			_deletedList.reserve(_list.capacity());
+			_IDList.reserve(_list.capacity());
 		}
-
-		for (size_t i = 0; i < sizeof(_padding); i++)
-			_padding[i] = 0;
 	}
 
-	~UnsortedIDVector()
+	~UnsortedIDVector() noexcept(std::is_nothrow_destructible_v<IDType> && std::is_nothrow_destructible_v<decltype(_list)> && std::is_nothrow_destructible_v<decltype(_deletedList)> &&
+		std::is_nothrow_destructible_v<decltype(_IDList)>) {};
+
+	UnsortedIDVector(const UnsortedIDVector<T>& rhs) = delete;
+	UnsortedIDVector(UnsortedIDVector<T>&& rhs) noexcept(std::is_nothrow_move_constructible_v<IDType>&& std::is_nothrow_move_constructible_v<decltype(_list)>
+		&& std::is_nothrow_move_constructible_v<decltype(_deletedList)>&& std::is_nothrow_move_constructible_v<decltype(_IDList)>)
+		: _nextID(std::move(rhs._nextID)), _vectorID(std::move(rhs._vectorID)), _list(std::move(rhs._list)), _deletedList(std::move(rhs._deletedList)), _IDList(std::move(rhs._IDList))
 	{
-
+		rhs._vectorID = GetNextVectorID();
+		rhs._nextID = std::numeric_limits<IDType>::lowest();
 	}
 
-	UnsortedIDVector(const UnsortedIDVector<T>&) noexcept = default;
-	UnsortedIDVector(UnsortedIDVector<T>&&) noexcept = default;
+	UnsortedIDVector<T>& operator=(const UnsortedIDVector<T>&) = delete;
+	UnsortedIDVector<T>& operator=(UnsortedIDVector<T>&& rhs)
+	{
+		_nextID = std::move(rhs._nextID);
+		_vectorID = std::move(rhs._vectorID);
 
-	UnsortedIDVector<T>& operator=(const UnsortedIDVector<T>&) noexcept = default;
-	UnsortedIDVector<T>& operator=(UnsortedIDVector<T>&&) noexcept = default;
+		_list = std::move(rhs._list);
+		_deletedList = std::move(rhs._deletedList);
+		_IDList = std::move(rhs._IDList);
+
+		rhs._vectorID = GetNextVectorID();
+		rhs._nextID = std::numeric_limits<IDType>::lowest();
+
+		return *this;
+	}
 
 	IDObject<T> AddUniqueObject(const T& value, size_t addOnReserve)
 	{
@@ -54,8 +75,18 @@ public:
 			if (!_deletedList.empty())
 			{
 				size_t pos = _deletedList.back();
-				_list[pos].ReplaceValue(IDSubobject<T>(GetNextId()), value);
+				std::pair<IDSubobject<T>, size_t> previousIDRecord = { _list[pos].GetObjectID() , pos};
+				auto oldIDIterator = std::lower_bound(_IDList.begin(), _IDList.end(), previousIDRecord);
+				if (oldIDIterator == _IDList.end() || *oldIDIterator != previousIDRecord)
+					throw std::runtime_error("UnsortedIDVector::AddUniqueObject Error: Program failed to find previous ID in the list in copy function!");
+
+				_list[pos].AssignValueToFreePosition(IDSubobject<T>(GetNextId()), value);
 				_deletedList.pop_back();
+				_IDList.erase(oldIDIterator);
+				std::pair<IDSubobject<T>, size_t> nextIDRecord = { _list[pos].GetObjectID() , pos };
+				auto newIDIterator = std::lower_bound(_IDList.begin(), _IDList.end(), nextIDRecord);
+				_IDList.insert(newIDIterator, nextIDRecord);
+				
 				return IDObject<T>(_list[pos].GetObjectID(), _vectorID);
 			}
 			else
@@ -63,6 +94,10 @@ public:
 				CheckCapacity(addOnReserve);
 
 				_list.emplace_back(IDSubobject<T>(GetNextId()), value);
+
+				std::pair<IDSubobject<T>, size_t> newIDRecord = { _list.back().GetObjectID(), _list.size() - 1 };
+				auto IDIterator = std::lower_bound(_IDList.cbegin(), _IDList.cend(), newIDRecord);
+				_IDList.insert(IDIterator, newIDRecord);
 				return IDObject<T>(_list.back().GetObjectID(), _vectorID);
 			}
 		}
@@ -81,8 +116,18 @@ public:
 			if (!_deletedList.empty())
 			{
 				size_t pos = _deletedList.back();
-				_list[pos].ReplaceValue(IDSubobject<T>(GetNextId()), std::move(value));
+				std::pair<IDSubobject<T>, size_t> previousIDRecord = { _list[pos].GetObjectID() , pos };
+				auto oldIDIterator = std::lower_bound(_IDList.begin(), _IDList.end(), previousIDRecord);
+				if (oldIDIterator == _IDList.end() || *oldIDIterator != previousIDRecord)
+					throw std::runtime_error("UnsortedIDVector::AddUniqueObject Error: Program failed to find previous ID in the list in move function!");
+
+				_list[pos].AssignValueToFreePosition(IDSubobject<T>(GetNextId()), std::move(value));
 				_deletedList.pop_back();
+				_IDList.erase(oldIDIterator);
+				std::pair<IDSubobject<T>, size_t> nextIDRecord = { _list[pos].GetObjectID() , pos };
+				auto newIDIterator = std::lower_bound(_IDList.begin(), _IDList.end(), nextIDRecord);
+				_IDList.insert(newIDIterator, nextIDRecord);
+
 				return IDObject<T>(_list[pos].GetObjectID(), _vectorID);
 			}
 			else
@@ -90,6 +135,10 @@ public:
 				CheckCapacity(addOnReserve);
 
 				_list.emplace_back(IDSubobject<T>(GetNextId()), std::move(value));
+
+				std::pair<IDSubobject<T>, size_t> newIDRecord = { _list.back().GetObjectID(), _list.size() - 1 };
+				auto IDIterator = std::lower_bound(_IDList.cbegin(), _IDList.cend(), newIDRecord);
+				_IDList.insert(IDIterator, newIDRecord);
 				return IDObject<T>(_list.back().GetObjectID(), _vectorID);
 			}
 		}
@@ -100,8 +149,18 @@ public:
 		if (!_deletedList.empty())
 		{
 			size_t pos = _deletedList.back();
-			_list[pos].ReplaceValue(IDSubobject<T>(GetNextId()), value);
+			std::pair<IDSubobject<T>, size_t> previousIDRecord = { _list[pos].GetObjectID() , pos };
+			auto oldIDIterator = std::lower_bound(_IDList.begin(), _IDList.end(), previousIDRecord);
+			if (oldIDIterator == _IDList.end() || *oldIDIterator != previousIDRecord)
+				throw std::runtime_error("UnsortedIDVector::AddObject Error: Program failed to find previous ID in the list in copy function!");
+
+			_list[pos].AssignValueToFreePosition(IDSubobject<T>(GetNextId()), value);
 			_deletedList.pop_back();
+			_IDList.erase(oldIDIterator);
+			std::pair<IDSubobject<T>, size_t> nextIDRecord = { _list[pos].GetObjectID() , pos };
+			auto newIDIterator = std::lower_bound(_IDList.begin(), _IDList.end(), nextIDRecord);
+			_IDList.insert(newIDIterator, nextIDRecord);
+
 			return IDObject<T>(_list[pos].GetObjectID(), _vectorID);
 		}
 		else
@@ -109,6 +168,10 @@ public:
 			CheckCapacity(addOnReserve);
 
 			_list.emplace_back(IDSubobject<T>(GetNextId()), value);
+
+			std::pair<IDSubobject<T>, size_t> newIDRecord = { _list.back().GetObjectID(), _list.size() - 1 };
+			auto IDIterator = std::lower_bound(_IDList.cbegin(), _IDList.cend(), newIDRecord);
+			_IDList.insert(IDIterator, newIDRecord);
 			return IDObject<T>(_list.back().GetObjectID(), _vectorID);
 		}
 	}
@@ -118,8 +181,18 @@ public:
 		if (!_deletedList.empty())
 		{
 			size_t pos = _deletedList.back();
-			_list[pos].ReplaceValue(IDSubobject<T>(GetNextId()), std::move(value));
+			std::pair<IDSubobject<T>, size_t> previousIDRecord = { _list[pos].GetObjectID() , pos };
+			auto oldIDIterator = std::lower_bound(_IDList.begin(), _IDList.end(), previousIDRecord);
+			if (oldIDIterator == _IDList.end() || *oldIDIterator != previousIDRecord)
+				throw std::runtime_error("UnsortedIDVector::AddObject Error: Program failed to find previous ID in the list in move function!");
+
+			_list[pos].AssignValueToFreePosition(IDSubobject<T>(GetNextId()), std::move(value));
 			_deletedList.pop_back();
+			_IDList.erase(oldIDIterator);
+			std::pair<IDSubobject<T>, size_t> nextIDRecord = { _list[pos].GetObjectID() , pos };
+			auto newIDIterator = std::lower_bound(_IDList.begin(), _IDList.end(), nextIDRecord);
+			_IDList.insert(newIDIterator, nextIDRecord);
+
 			return IDObject<T>(_list[pos].GetObjectID(), _vectorID);
 		}
 		else
@@ -127,6 +200,43 @@ public:
 			CheckCapacity(addOnReserve);
 
 			_list.emplace_back(IDSubobject<T>(GetNextId()), std::move(value));
+
+			std::pair<IDSubobject<T>, size_t> newIDRecord = { _list.back().GetObjectID(), _list.size() - 1 };
+			auto IDIterator = std::lower_bound(_IDList.cbegin(), _IDList.cend(), newIDRecord);
+			_IDList.insert(IDIterator, newIDRecord);
+			return IDObject<T>(_list.back().GetObjectID(), _vectorID);
+		}
+	}
+
+	template<class... Arguments>
+	IDObject<T> EmplaceObject(size_t addOnReserve, Arguments... arguments)
+	{
+		if (!_deletedList.empty())
+		{
+			size_t pos = _deletedList.back();
+			std::pair<IDSubobject<T>, size_t> previousIDRecord = { _list[pos].GetObjectID() , pos };
+			auto oldIDIterator = std::lower_bound(_IDList.begin(), _IDList.end(), previousIDRecord);
+			if (oldIDIterator == _IDList.end() || *oldIDIterator != previousIDRecord)
+				throw std::runtime_error("UnsortedIDVector::EmplaceObject Error: Program failed to find previous ID in the list!");
+
+			_list[pos].AssignValueToFreePosition(IDSubobject<T>(GetNextId()), arguments);
+			_deletedList.pop_back();
+			_IDList.erase(oldIDIterator);
+			std::pair<IDSubobject<T>, size_t> nextIDRecord = { _list[pos].GetObjectID() , pos };
+			auto newIDIterator = std::lower_bound(_IDList.begin(), _IDList.end(), nextIDRecord);
+			_IDList.insert(newIDIterator, nextIDRecord);
+
+			return IDObject<T>(_list[pos].GetObjectID(), _vectorID);
+		}
+		else
+		{
+			CheckCapacity(addOnReserve);
+
+			_list.emplace_back(IDSubobject<T>(GetNextId()), arguments);
+
+			std::pair<IDSubobject<T>, size_t> newIDRecord = { _list.back().GetObjectID(), _list.size() - 1 };
+			auto IDIterator = std::lower_bound(_IDList.cbegin(), _IDList.cend(), newIDRecord);
+			_IDList.insert(IDIterator, newIDRecord);
 			return IDObject<T>(_list.back().GetObjectID(), _vectorID);
 		}
 	}
@@ -156,35 +266,26 @@ public:
 		}
 	}
 
-	size_t GetSize() const { return _list.size(); }
-	size_t GetUsedSize() const
+	size_t GetSize() const noexcept { return _list.size(); }
+	size_t GetUsedSize() const noexcept
 	{
-		size_t ret = _list.size() - _deletedList.size();
+		assert(_list.size() >= _deletedList.size());
 
-		if (ret > _list.size())
-			throw std::runtime_error("UnsortedIDVector::GetUsedSize Error: returned value underflowed!");
-
-		return ret;
+		return _list.size() - _deletedList.size();
 	}
 
-	size_t GetCapacity() const { return _list.capacity(); }
-	size_t GetUnusedCapacity() const
+	size_t GetCapacity() const noexcept { return _list.capacity(); }
+	size_t GetUnusedCapacity() const noexcept
 	{
-		size_t ret = _list.capacity() - _list.size();
+		assert(_list.capacity() >= _deletedList.capacity());
 
-		if (ret > _list.capacity())
-			throw std::runtime_error("UnsortedIDVector::GetUnusedCapacity Error: returned value underflowed!");
-
-		return ret;
+		return _list.capacity() - _list.size();
 	}
 
-	size_t GetUnusedAndDeletedCapacity() const
+	size_t GetUnusedAndDeletedCapacity() const noexcept
 	{
 		size_t ret = GetUnusedCapacity() + _deletedList.size();
-
-		if (ret < _deletedList.size())
-			throw std::runtime_error("UnsortedIDVector::GetUnusedAndDeletedCapacity Error: returned value overflowed!");
-
+		assert(ret >= _deletedList.size());
 		return ret;
 	}
 
@@ -195,16 +296,18 @@ public:
 
 		_list.shrink_to_fit();
 
-		std::vector<CommonVectorObject<T>> tempList;
+		decltype(_list) tempList;
+		decltype(_IDList) tempIDList;
 
 		if (addToCapacity)
 		{
 			size_t fullres = GetUsedSize() + changeToCapacity;
 
 			if (fullres < changeToCapacity)
-				throw std::runtime_error("UnsortedIDVector::ShrinkToFit Error: reservation amount overflowed!");
+				throw std::runtime_error("UnsortedIDVector::ShrinkToFit Error: Reservation amount overflowed!");
 
 			tempList.reserve(fullres);
+			tempIDList.reserve(_list.capacity());
 		}
 		else
 		{
@@ -212,43 +315,46 @@ public:
 			if (changeToCapacity > usedSize)
 			{
 				tempList.reserve(changeToCapacity);
+				tempIDList.reserve(_list.capacity());
 			}
 			else
 			{
 				tempList.reserve(usedSize);
+				tempIDList.reserve(_list.capacity());
 			}
 		}
 
-		for (auto& object : _list)
+		for (size_t i = 0; i < _list.size(); ++i)
 		{
-			if (object.HasValue())
+			if (_list[i].HasValue())
 			{
 				if constexpr (std::is_nothrow_move_constructible_v<T>)
 				{
-					tempList.push_back(std::move(object));
+					tempList.push_back(std::move(_list[i]));
+				}
+				else if constexpr (std::is_nothrow_copy_constructible_v<T>)
+				{
+					tempList.push_back(_list[i]);
+				}
+				else if constexpr (std::is_move_constructible_v<T>)
+				{
+					tempList.push_back(std::move(_list[i]));
+				}
+				else if constexpr (std::is_copy_constructible_v<T>)
+				{
+					tempList.push_back(_list[i]);
 				}
 				else
-				{
-					if constexpr (std::is_nothrow_copy_constructible_v<T>)
-					{
-						tempList.push_back(object);
-					}
-					else
-					{
-						if constexpr (std::is_move_constructible_v<T>)
-						{
-							tempList.push_back(std::move(object));
-						}
-						else
-						{
-							tempList.push_back(object);
-						}
-					}
-				}
+					throw std::runtime_error("UnsortedIDVector::ShrinkToFit Error: Program tried to copy uncopyable objects!");
+
+				tempIDList.emplace_back(_list[i].GetObjectID(), tempList.size() - 1);
 			}
 		}
 
+		std::stable_sort(tempIDList.begin(), tempIDList.end());
+
 		_list = std::move(tempList);
+		_IDList = std::move(tempIDList);
 		_deletedList.clear();
 		_deletedList.shrink_to_fit();
 		_deletedList.reserve(_list.capacity());
@@ -257,75 +363,57 @@ public:
 	bool CheckForID(IDObject<T> objectID) const
 	{
 		if (objectID.GetVectorID() != _vectorID)
-			throw std::runtime_error("UnsortedIDVector::CheckForID Error: Program tried to user an ID from another instance of this list!");
+			throw std::runtime_error("UnsortedIDVector::CheckForID Error: Program tried to use an ID from another instance of this list!");
 
-		auto it = std::find(_list.cbegin(), _list.cend(), objectID.GetObjectID());
+		auto it = std::lower_bound(_IDList.cbegin(), _IDList.cend(), std::pair<IDSubobject<T>, size_t>(objectID.GetObjectID(), std::numeric_limits<IDType>::lowest()));
 
-		return it != _list.cend();
+		return it != _IDList.cend() && it->first == objectID.GetObjectID();
 	}
 
-	std::optional<T>& GetObjectOptional(IDObject<T> objectID)
+	bool CheckForObject(IDObject<T> objectID) const
 	{
 		if (objectID.GetVectorID() != _vectorID)
-			throw std::runtime_error("UnsortedIDVector::GetObjectOptional Error: Program tried to user an ID from another instance of this list!");
+			throw std::runtime_error("UnsortedIDVector::CheckForObject Error: Program tried to use an ID from another instance of this list!");
 
-		auto it = std::find(_list.begin(), _list.end(), objectID.GetObjectID());
+		auto it = std::lower_bound(_IDList.cbegin(), _IDList.cend(), std::pair<IDSubobject<T>, size_t>(objectID.GetObjectID(), std::numeric_limits<IDType>::lowest()));
 
-		if (it == _list.end())
-			throw std::runtime_error("UnsortedIDVector::GetObject Error: Program tried to get non-existent object!");
-
-		return it->GetObjectOptional();
+		if (it == _IDList.cend() || it->first != objectID.GetObjectID())
+			return false;
+		else
+			return _list[it->second].HasValue();
 	}
 
-	const std::optional<T>& GetConstObjectOptional(IDObject<T> objectID) const
-	{
-		if (objectID.GetVectorID() != _vectorID)
-			throw std::runtime_error("UnsortedIDVector::GetConstObjectOptional Error: Program tried to user an ID from another instance of this list!");
-
-		auto it = std::find(_list.begin(), _list.end(), objectID.GetObjectID());
-
-		if (it == _list.end())
-			throw std::runtime_error("UnsortedIDVector::GetConstObject Error: Program tried to get non-existent object!");
-
-		return it->GetConstObjectOptional();
-	}
-
-	std::optional<T> GetObjectOptionalCopy(IDObject<T> objectID) const
-	{
-		if (objectID.GetVectorID() != _vectorID)
-			throw std::runtime_error("UnsortedIDVector::GetObjectOptionalCopy Error: Program tried to user an ID from another instance of this list!");
-
-		auto it = std::find(_list.begin(), _list.end(), objectID.GetObjectID());
-
-		if (it == _list.end())
-			throw std::runtime_error("UnsortedIDVector::GetObjectCopy Error: Program tried to get non-existent object!");
-
-		return it->GetObjectOptionalCopy();
-	}
-
-	std::vector<std::optional<T>> GetObjectOptionalList(const std::vector<IDObject<T>>& IDList) const
+	std::vector<std::optional<T>> TryToGetObjectList(const std::vector<IDObject<T>>& IDList) const
 	{
 		std::vector<std::optional<T>> ret;
-		ret.reserve(IDList.size());
+		ret.resize(IDList.size());
 
-		for (size_t i = 0; i < _list.size(); ++i)
+		std::vector<bool> IDTried(IDList.size(), false);
+
+		for (size_t i = 0; i < IDList.size(); ++i)
 		{
-			for (size_t j = 0; j < IDList.size(); ++j)
+			if (IDTried[i])
+				continue;
+
+			if (IDList[i].GetVectorID() != _vectorID)
+				throw std::runtime_error("UnsortedIDVector::TryToGetObjectList Error: Program tried to use an ID from another instance of this list!");
+
+			auto IDListIterator = std::lower_bound(_IDList.cbegin(), _IDList.cend(), std::pair<IDSubobject<T>, size_t>(IDList[i].GetObjectID(), std::numeric_limits<IDType>::lowest()));
+
+			for (size_t j = i; j < IDList.size(); ++j)
 			{
-				if (IDList[j].GetVectorID() != _vectorID)
-					throw std::runtime_error("UnsortedIDVector::GetObjectOptionalList Error: Program tried to user an ID from another instance of this list!");
-
-				if (_list[i] == IDList[j].GetObjectID())
-				{
-					ret.push_back(_list[i].GetObjectOptionalCopy());
-
-					if (ret.size() >= IDList.size())
-						break;
-				}
+				if (IDList[j] == IDList[i])
+					IDTried[j] = true;
 			}
 
-			if (ret.size() >= IDList.size())
-				break;
+			if (IDListIterator == _IDList.cend() || IDListIterator->first != IDList[i].GetObjectID() || !_list[IDListIterator->second].HasValue())
+				continue;
+
+			for (size_t j = i; j < IDList.size(); ++j)
+			{
+				if (IDList[j] == IDList[i])
+					ret[j] = _list[IDListIterator->second].GetObject();
+			}
 		}
 
 		return ret;
@@ -334,66 +422,83 @@ public:
 	T& GetObject(IDObject<T> objectID)
 	{
 		if (objectID.GetVectorID() != _vectorID)
-			throw std::runtime_error("UnsortedIDVector::GetObject Error: Program tried to user an ID from another instance of this list!");
+			throw std::runtime_error("UnsortedIDVector::GetObject Error: Program tried to use an ID from another instance of this list!");
 
-		auto it = std::find(_list.begin(), _list.end(), objectID.GetObjectID());
+		auto IDListIterator = std::lower_bound(_IDList.cbegin(), _IDList.cend(), std::pair<IDSubobject<T>, size_t>(objectID.GetObjectID(), std::numeric_limits<IDType>::lowest()));
 
-		if (it == _list.end())
+		if (IDListIterator == _IDList.cend() || IDListIterator->first != objectID.GetObjectID() || !_list[IDListIterator->second].HasValue())
 			throw std::runtime_error("UnsortedIDVector::GetObject Error: Program tried to get non-existent object!");
 
-		return it->GetObject();
+		return _list[IDListIterator->second].GetObject();
 	}
 
-	const T& GetConstObject(IDObject<T> objectID) const
+	const T& GetObject(IDObject<T> objectID) const
 	{
 		if (objectID.GetVectorID() != _vectorID)
-			throw std::runtime_error("UnsortedIDVector::GetConstObject Error: Program tried to user an ID from another instance of this list!");
+			throw std::runtime_error("UnsortedIDVector::GetObject Const Error: Program tried to use an ID from another instance of this list!");
 
-		auto it = std::find(_list.cbegin(), _list.cend(), objectID.GetObjectID());
+		auto IDListIterator = std::lower_bound(_IDList.cbegin(), _IDList.cend(), std::pair<IDSubobject<T>, size_t>(objectID.GetObjectID(), std::numeric_limits<IDType>::lowest()));
 
-		if (it == _list.cend())
-			throw std::runtime_error("UnsortedIDVector::GetObject Error: Program tried to get non-existent object!");
+		if (IDListIterator == _IDList.cend() || IDListIterator->first != objectID.GetObjectID() || !_list[IDListIterator->second].HasValue())
+			throw std::runtime_error("UnsortedIDVector::GetObject Const Error: Program tried to get non-existent object!");
 
-		return it->GetConstObject();
+		return _list[IDListIterator->second].GetObject();
 	}
 
-	T GetObjectCopy(IDObject<T> objectID) const
+	std::optional<T> TryToGetObject(IDObject<T> objectID, bool throwOnIDNotFound)
 	{
 		if (objectID.GetVectorID() != _vectorID)
-			throw std::runtime_error("UnsortedIDVector GetObjectCopy Error: Program tried to user an ID from another instance of this list!");
+			throw std::runtime_error("UnsortedIDVector::TryToGetObject Error: Program tried to use an ID from another instance of this list!");
 
-		auto it = std::find(_list.begin(), _list.end(), objectID.GetObjectID());
+		std::optional<T> ret;
 
-		if (it == _list.end())
-			throw std::runtime_error("UnsortedIDVector::GetObject Error: Program tried to get non-existent object!");
+		auto IDListIterator = std::lower_bound(_IDList.cbegin(), _IDList.cend(), std::pair<IDSubobject<T>, size_t>(objectID.GetObjectID(), std::numeric_limits<IDType>::lowest()));
 
-		return it->GetObjectCopy();
+		if (IDListIterator != _IDList.cend() && IDListIterator->first == objectID.GetObjectID() && _list[IDListIterator->second].HasValue())
+			ret = _list[IDListIterator->second].GetObject();
+		else if (throwOnIDNotFound && IDListIterator != _IDList.cend() && IDListIterator->first == objectID.GetObjectID())
+			throw std::runtime_error("UnsortedIDVector::TryToGetObject Error: Program cannot find the specified object!");
+
+		return ret;
 	}
 
 	std::vector<T> GetObjectList(const std::vector<IDObject<T>>& IDList) const
 	{
 		std::vector<T> ret;
+		std::vector<size_t> foundPositionsList;
+		foundPositionsList.resize(IDList.size());
 		ret.reserve(IDList.size());
 
-		for (size_t i = 0; i < _list.size(); ++i)
+		std::vector<bool> IDTried(IDList.size(), false);
+
+		for (size_t i = 0; i < IDList.size(); ++i)
 		{
-			for (size_t j = 0; j < IDList.size(); ++j)
+			if (IDTried[i])
+				continue;
+
+			if (IDList[i].GetVectorID() != _vectorID)
+				throw std::runtime_error("UnsortedIDVector::GetObjectList Error: Program tried to use an ID from another instance of this list!");
+
+			auto IDListIterator = std::lower_bound(_IDList.cbegin(), _IDList.cend(), std::pair<IDSubobject<T>, size_t>(IDList[i].GetObjectID(), std::numeric_limits<IDType>::lowest()));
+
+			for (size_t j = i; j < IDList.size(); ++j)
 			{
-				if (IDList[j].GetVectorID() != _vectorID)
-					throw std::runtime_error("UnsortedIDVector::GetObjectList Error: Program tried to user an ID from another instance of this list!");
-
-				if (_list[i] == IDList[j].GetObjectID())
-				{
-					ret.push_back(_list[i].GetObjectCopy());
-
-					if (ret.size() >= IDList.size())
-						break;
-				}
+				if (IDList[j] == IDList[i])
+					IDTried[j] = true;
 			}
 
-			if (ret.size() >= IDList.size())
-				break;
+			if (IDListIterator == _IDList.cend() || IDListIterator->first != IDList[i].GetObjectID() || !_list[IDListIterator->second].HasValue())
+				throw std::runtime_error("UnsortedIDVector::GetObjectList Error: Program failed to find an object!");
+
+			for (size_t j = i; j < IDList.size(); ++j)
+			{
+				if (IDList[j] == IDList[i])
+					foundPositionsList[j] = IDListIterator->second;
+			}
 		}
+
+		for (size_t i = 0; i < foundPositionsList.size(); ++i)
+			ret.push_back(_list[foundPositionsList[i]].GetObject());
 
 		return ret;
 	}
@@ -402,17 +507,21 @@ public:
 	{
 		_list.clear();
 		_deletedList.clear();
+		_IDList.clear();
 
 		_list.shrink_to_fit();
 		_deletedList.shrink_to_fit();
+		_IDList.shrink_to_fit();
 
 		_vectorID = GetNextVectorID();
+		_nextID = std::numeric_limits<IDType>::lowest();
 
-		if (capacityAfterReset != 0)
-		{
-			_list.reserve(capacityAfterReset);
-			_deletedList.reserve(capacityAfterReset);
-		}
+		if (capacityAfterReset == 0)
+			return;
+
+		_list.reserve(capacityAfterReset);
+		_deletedList.reserve(_list.capacity());
+		_IDList.reserve(_list.capacity());
 	}
 
 protected:
@@ -420,7 +529,7 @@ protected:
 	IDType _vectorID;
 	std::vector<CommonVectorObject<T>> _list;
 	std::vector<size_t> _deletedList;
-	char _padding[16 - (((sizeof(_deletedList) << 1) + (sizeof(_nextID) << 1)) % 8)];
+	std::vector<std::pair<IDSubobject<T>, size_t>> _IDList;
 
 	static IDType _nextVectorID;
 
@@ -449,37 +558,43 @@ protected:
 		if (reserved < addToCapacity)
 			throw std::runtime_error("UnsortedIDVector::ReserveAdditional Error: Reserved amount overflowed!");
 
-		if (reserved > _list.max_size() || reserved > _deletedList.max_size())
-		{
-			reserved = std::min(_list.max_size(), _deletedList.max_size());
+		size_t minimumMaximumSize = std::min(_list.max_size(), std::min(_deletedList.max_size(), _IDList.max_size()));
 
-			if (_list.capacity() == reserved)
+		if (reserved > minimumMaximumSize)
+		{
+			if (_list.capacity() == _list.max_size())
 				throw std::runtime_error("UnsortedIDVector::ReserveAdditional Error: Program tried to expand data list vector when it's already at maximum size!");
 
-			if (_deletedList.capacity() == reserved)
+			if (_deletedList.capacity() == _deletedList.max_size())
 				throw std::runtime_error("UnsortedIDVector::ReserveAdditional Error: Program tried to expand freed indexes vector when it's already at maximum size!");
+
+			if (_IDList.capacity() == _IDList.max_size())
+				throw std::runtime_error("UnsortedIDVector::ReserveAdditional Error: Program tried to expand ID list vector when it's already at maximum size!");
+
+			reserved = minimumMaximumSize;
 		}
 
 		_list.reserve(reserved);
-		_deletedList.reserve(reserved);
+		_deletedList.reserve(_list.capacity());
+		_IDList.reserve(_list.capacity());
 	}
 
-	void CheckCapacity(size_t addOnReserve)
+	void CheckCapacity(size_t addOnReserving)
 	{
-		if (_list.capacity() == _list.size())
+		if (_list.capacity() != _list.size())
+			return;
+
+		if (addOnReserving == 0)
 		{
-			if (addOnReserve == 0)
-			{
-				size_t capacity = _list.capacity();
-				if (capacity != 0)
-					ReserveAdditional(capacity);
-				else
-					ReserveAdditional(1);
-			}
+			size_t capacity = _list.capacity();
+			if (capacity != 0)
+				ReserveAdditional(capacity);
 			else
-			{
-				ReserveAdditional(addOnReserve);
-			}
+				ReserveAdditional(1);
+		}
+		else
+		{
+			ReserveAdditional(addOnReserving);
 		}
 	}
 };

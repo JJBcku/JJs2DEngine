@@ -39,7 +39,13 @@ namespace VulkanSimplified
 		size_t dataSize;
 		const void* data;
 
-		ShaderSpecializationData();
+		ShaderSpecializationData() noexcept;
+		ShaderSpecializationData(const ShaderSpecializationData& rhs) noexcept;
+		ShaderSpecializationData(ShaderSpecializationData&& rhs) noexcept;
+		~ShaderSpecializationData();
+
+		ShaderSpecializationData& operator=(const ShaderSpecializationData& rhs) noexcept;
+		ShaderSpecializationData& operator=(ShaderSpecializationData&& rhs) noexcept;
 	};
 
 	struct ShaderStageData
@@ -49,7 +55,13 @@ namespace VulkanSimplified
 
 		std::optional<ShaderSpecializationData> specializationData;
 
-		ShaderStageData() = default;
+		ShaderStageData() noexcept;
+		ShaderStageData(const ShaderStageData& rhs) noexcept;
+		ShaderStageData(ShaderStageData&& rhs) noexcept;
+		~ShaderStageData();
+
+		ShaderStageData& operator=(const ShaderStageData& rhs) noexcept;
+		ShaderStageData& operator=(ShaderStageData&& rhs) noexcept;
 	};
 
 	struct ViewportStatePipelineDataPoint
@@ -57,7 +69,13 @@ namespace VulkanSimplified
 		IDObject<PipelineViewportData> viewport;
 		IDObject<PipelineScissorData> scissor;
 
-		ViewportStatePipelineDataPoint() = default;
+		ViewportStatePipelineDataPoint() noexcept;
+		ViewportStatePipelineDataPoint(const ViewportStatePipelineDataPoint& rhs) noexcept;
+		ViewportStatePipelineDataPoint(ViewportStatePipelineDataPoint&& rhs) noexcept;
+		~ViewportStatePipelineDataPoint();
+
+		ViewportStatePipelineDataPoint& operator=(const ViewportStatePipelineDataPoint& rhs) noexcept;
+		ViewportStatePipelineDataPoint& operator=(ViewportStatePipelineDataPoint&& rhs) noexcept;
 	};
 
 	enum class PipelineDerrivationSettings : uint64_t
@@ -83,7 +101,13 @@ namespace VulkanSimplified
 			size_t index;
 		} pipelineIndex;
 
-		GraphicsPipelineDerrivationData();
+		GraphicsPipelineDerrivationData() noexcept;
+		GraphicsPipelineDerrivationData(const GraphicsPipelineDerrivationData& rhs) noexcept;
+		GraphicsPipelineDerrivationData(GraphicsPipelineDerrivationData&& rhs) noexcept;
+		~GraphicsPipelineDerrivationData();
+
+		GraphicsPipelineDerrivationData& operator=(const GraphicsPipelineDerrivationData& rhs) noexcept;
+		GraphicsPipelineDerrivationData& operator=(GraphicsPipelineDerrivationData&& rhs) noexcept;
 	};
 
 	struct GraphicsPipelineCreationData
@@ -103,6 +127,12 @@ namespace VulkanSimplified
 		uint32_t padding;
 		GraphicsPipelineDerrivationData pipelineDerrivationData;
 
-		GraphicsPipelineCreationData();
+		GraphicsPipelineCreationData() noexcept;
+		GraphicsPipelineCreationData(const GraphicsPipelineCreationData& rhs) noexcept;
+		GraphicsPipelineCreationData(GraphicsPipelineCreationData&& rhs) noexcept;
+		~GraphicsPipelineCreationData();
+
+		GraphicsPipelineCreationData& operator=(const GraphicsPipelineCreationData& rhs) noexcept;
+		GraphicsPipelineCreationData& operator=(GraphicsPipelineCreationData&& rhs) noexcept;
 	};
 }

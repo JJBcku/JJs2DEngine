@@ -72,15 +72,19 @@ namespace VulkanSimplified
 			IDObject<RenderPassDepthStencilClearValues> ID;
 		} depthStencilID;
 
-		RenderPassClearValueID();
-		RenderPassClearValueID(IDObject<RenderPassDoubleColorClearValues> ID);
-		RenderPassClearValueID(IDObject<RenderPassInt64ColorClearValues> ID);
-		RenderPassClearValueID(IDObject<RenderPassUInt64ColorClearValues> ID);
+		RenderPassClearValueID() noexcept;
+		RenderPassClearValueID(IDObject<RenderPassDoubleColorClearValues> ID) noexcept;
+		RenderPassClearValueID(IDObject<RenderPassInt64ColorClearValues> ID) noexcept;
+		RenderPassClearValueID(IDObject<RenderPassUInt64ColorClearValues> ID) noexcept;
 
-		RenderPassClearValueID(IDObject<RenderPassFloatColorClearValues> ID);
-		RenderPassClearValueID(IDObject<RenderPassIntColorClearValues> ID);
-		RenderPassClearValueID(IDObject<RenderPassUIntColorClearValues> ID);
+		RenderPassClearValueID(IDObject<RenderPassFloatColorClearValues> ID) noexcept;
+		RenderPassClearValueID(IDObject<RenderPassIntColorClearValues> ID) noexcept;
+		RenderPassClearValueID(IDObject<RenderPassUIntColorClearValues> ID) noexcept;
 
-		RenderPassClearValueID(IDObject<RenderPassDepthStencilClearValues> ID);
+		RenderPassClearValueID(IDObject<RenderPassDepthStencilClearValues> ID) noexcept;
+		RenderPassClearValueID(const RenderPassClearValueID& rhs) noexcept;
+		~RenderPassClearValueID();
+
+		RenderPassClearValueID& operator=(const RenderPassClearValueID& rhs) noexcept;
 	};
 }

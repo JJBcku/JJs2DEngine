@@ -6,52 +6,13 @@ template<class T>
 class IterativeUnsortedIDVector : public UnsortedIDVector<T>
 {
 public:
-	IterativeUnsortedIDVector(size_t reserve) : UnsortedIDVector<T>(reserve) {}
+	IterativeUnsortedIDVector(size_t reserve) noexcept(std::is_nothrow_constructible_v<UnsortedIDVector<T>, size_t>) : UnsortedIDVector<T>(reserve) {}
 
-	IterativeUnsortedIDVector(const IterativeUnsortedIDVector<T>&) noexcept = default;
-	IterativeUnsortedIDVector(IterativeUnsortedIDVector<T>&&) noexcept = default;
+	IterativeUnsortedIDVector(const IterativeUnsortedIDVector<T>&) noexcept = delete;
+	IterativeUnsortedIDVector(IterativeUnsortedIDVector<T>&& rhs) noexcept(std::is_nothrow_move_constructible_v<UnsortedIDVector<T>>) : UnsortedIDVector<T>(std::move(rhs)) {};
 
-	IterativeUnsortedIDVector& operator=(const IterativeUnsortedIDVector<T>&) noexcept = default;
+	IterativeUnsortedIDVector& operator=(const IterativeUnsortedIDVector<T>&) noexcept = delete;
 	IterativeUnsortedIDVector& operator=(IterativeUnsortedIDVector<T>&&) noexcept = default;
-
-	std::optional<T>& GetObjectOptional(size_t index)
-	{
-		if (index >= UnsortedIDVector<T>::_list.size())
-			throw std::runtime_error("IterativeUnsortedIDVector::GetObjectOptional Error: Program tried to read data from outside of the list!");
-
-		return UnsortedIDVector<T>::_list[index].GetObjectOptional();
-	}
-
-	std::optional<T>& GetObjectOptional(IDObject<T> ID)
-	{
-		return UnsortedIDVector<T>::GetObjectOptional(ID);
-	}
-
-	const std::optional<T>& GetConstObjectOptional(size_t index) const
-	{
-		if (index >= UnsortedIDVector<T>::_list.size())
-			throw std::runtime_error("IterativeUnsortedIDVector::GetObjectOptional Error: Program tried to read data from outside of the list!");
-
-		return UnsortedIDVector<T>::_list[index].GetConstObjectOptional();
-	}
-
-	const std::optional<T>& GetConstObjectOptional(IDObject<T> ID) const
-	{
-		return UnsortedIDVector<T>::GetConstObjectOptional(ID);
-	}
-
-	std::optional<T> GetObjectOptionalCopy(size_t index) const
-	{
-		if (index >= UnsortedIDVector<T>::_list.size())
-			throw std::runtime_error("IterativeUnsortedIDVector::GetObjectOptional Error: Program tried to read data from outside of the list!");
-
-		return UnsortedIDVector<T>::_list[index].GetObjectOptionalCopy();
-	}
-
-	std::optional<T> GetObjectOptionalCopy(IDObject<T> ID) const
-	{
-		return UnsortedIDVector<T>::GetObjectOptionalCopy(ID);
-	}
 
 	T& GetObject(size_t index)
 	{
@@ -66,29 +27,16 @@ public:
 		return UnsortedIDVector<T>::GetObject(ID);
 	}
 
-	const T& GetConstObject(size_t index) const
+	const T& GetObject(size_t index) const
 	{
 		if (index >= UnsortedIDVector<T>::_list.size())
-			throw std::runtime_error("IterativeUnsortedIDVector::GetConstObject Error: Program tried to read data from outside of the list!");
+			throw std::runtime_error("IterativeUnsortedIDVector::GetObject Const Error: Program tried to read data from outside of the list!");
 
-		return UnsortedIDVector<T>::_list[index].GetConstObject();
+		return UnsortedIDVector<T>::_list[index].GetObject();
 	}
 
-	const T& GetConstObject(IDObject<T> ID) const
+	const T& GetObject(IDObject<T> ID) const
 	{
-		return UnsortedIDVector<T>::GetConstObject(ID);
-	}
-
-	T GetObjectCopy(size_t index) const
-	{
-		if (index >= UnsortedIDVector<T>::_list.size())
-			throw std::runtime_error("IterativeUnsortedIDVector::GetObjectCopy Error: Program tried to read data from outside of the list!");
-
-		return UnsortedIDVector<T>::_list[index].GetObjectCopy();
-	}
-
-	T GetObjectCopy(IDObject<T> ID) const
-	{
-		return UnsortedIDVector<T>::GetObjectCopy(ID);
+		return UnsortedIDVector<T>::GetObject(ID);
 	}
 };

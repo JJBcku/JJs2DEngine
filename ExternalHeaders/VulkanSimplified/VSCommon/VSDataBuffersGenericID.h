@@ -45,10 +45,17 @@ namespace VulkanSimplified
 			IDObject<AutoCleanupUniformBuffer> ID;
 		} uniformID;
 
-		DataBuffersGenericID();
-		DataBuffersGenericID(IDObject<AutoCleanupVertexBuffer> ID);
-		DataBuffersGenericID(IDObject<AutoCleanupStagingBuffer> ID);
-		DataBuffersGenericID(IDObject<AutoCleanupIndexBuffer> ID);
-		DataBuffersGenericID(IDObject<AutoCleanupUniformBuffer> ID);
+		DataBuffersGenericID() noexcept;
+		DataBuffersGenericID(IDObject<AutoCleanupVertexBuffer> ID) noexcept;
+		DataBuffersGenericID(IDObject<AutoCleanupStagingBuffer> ID) noexcept;
+		DataBuffersGenericID(IDObject<AutoCleanupIndexBuffer> ID) noexcept;
+		DataBuffersGenericID(IDObject<AutoCleanupUniformBuffer> ID) noexcept;
+
+		DataBuffersGenericID(const DataBuffersGenericID& rhs) noexcept;
+		DataBuffersGenericID(DataBuffersGenericID&& rhs) noexcept;
+		~DataBuffersGenericID();
+
+		DataBuffersGenericID& operator=(const DataBuffersGenericID& rhs) noexcept;
+		DataBuffersGenericID& operator=(DataBuffersGenericID&& rhs) noexcept;
 	};
 }

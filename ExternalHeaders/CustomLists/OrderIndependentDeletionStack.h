@@ -3,6 +3,7 @@
 #include "CommonVectorObject.h"
 
 #include <vector>
+#include <cassert>
 
 template<class T>
 class OrderIndependentDeletionStack
@@ -13,97 +14,50 @@ public:
 		_nextID = std::numeric_limits<IDType>::lowest();
 		_vectorID = GetNextVectorID();
 
-		if (initialCapacity != 0)
-		{
-			if (initialCapacity > _list.max_size())
-				throw std::runtime_error("OrderIndependentDeletionStack::OrderIndependentDeletionStack Error: Initial capacity is above data list's maximum size!");
+		if (initialCapacity == 0)
+			return;
 
-			if (initialCapacity > _deletedList.max_size())
-				throw std::runtime_error("OrderIndependentDeletionStack::OrderIndependentDeletionStack Error: Initial capacity is above freed indexes list's maximum size!");
+		if (initialCapacity > _list.max_size())
+			throw std::runtime_error("OrderIndependentDeletionStack::OrderIndependentDeletionStack Error: Initial capacity is above data list's maximum size!");
 
-			if (initialCapacity > _additionOrder.max_size())
-				throw std::runtime_error("OrderIndependentDeletionStack::OrderIndependentDeletionStack Error: Initial capacity is above order of additions list's maximum size!");
+		if (initialCapacity > _deletedList.max_size())
+			throw std::runtime_error("OrderIndependentDeletionStack::OrderIndependentDeletionStack Error: Initial capacity is above freed indexes list's maximum size!");
 
-			_list.reserve(initialCapacity);
-			_deletedList.reserve(initialCapacity);
-			_additionOrder.reserve(initialCapacity);
-		}
+		if (initialCapacity > _additionOrder.max_size())
+			throw std::runtime_error("OrderIndependentDeletionStack::OrderIndependentDeletionStack Error: Initial capacity is above order of additions list's maximum size!");
 
-		for (size_t i = 0; i < sizeof(_padding); i++)
-			_padding[i] = 0;
+		_list.reserve(initialCapacity);
+		_deletedList.reserve(_list.capacity());
+		_additionOrder.reserve(_list.capacity());
 	}
 
-	~OrderIndependentDeletionStack()
+	~OrderIndependentDeletionStack() noexcept(std::is_nothrow_destructible_v<decltype(_list)>)
 	{
 
 	}
 
-	OrderIndependentDeletionStack(const OrderIndependentDeletionStack<T>&) noexcept = default;
-	OrderIndependentDeletionStack(OrderIndependentDeletionStack<T>&&) noexcept = default;
-
-	OrderIndependentDeletionStack& operator=(const OrderIndependentDeletionStack<T>&) noexcept = default;
-	OrderIndependentDeletionStack& operator=(OrderIndependentDeletionStack<T>&&) noexcept = default;
-
-	IDObject<T> AddUniqueObject(const T& value, size_t addOnReserve)
+	OrderIndependentDeletionStack(const OrderIndependentDeletionStack<T>&) = delete;
+	OrderIndependentDeletionStack(OrderIndependentDeletionStack<T>&& rhs) noexcept(std::is_nothrow_move_constructible_v<decltype(_list)>) : _nextID(std::move(rhs._nextID)),
+		_vectorID(std::move(rhs._vectorID)), _list(std::move(rhs._list)), _deletedList(std::move(rhs._deletedList)), _additionOrder(std::move(rhs._additionOrder))
 	{
-		auto found = std::find(_list.cbegin(), _list.cend(), value);
-
-		if (found != _list.cend())
-		{
-			return IDObject<T>(found->GetObjectID(), _vectorID);
-		}
-		else
-		{
-			if (!_deletedList.empty())
-			{
-				size_t pos = _deletedList.back();
-				_list[pos].ReplaceValue(IDSubobject<T>(GetNextId()), value);
-				_deletedList.pop_back();
-				auto ID = _list[pos].GetObjectID();
-				_additionOrder.push_back(ID);
-				return IDObject<T>(ID, _vectorID);
-			}
-			else
-			{
-				CheckCapacity(addOnReserve);
-
-				_list.emplace_back(IDSubobject<T>(GetNextId()), value);
-				auto ID = _list.back().GetObjectID();
-				_additionOrder.push_back(ID);
-				return IDObject<T>(ID, _vectorID);
-			}
-		}
+		rhs._nextID = std::numeric_limits<IDType>::lowest();
+		rhs._vectorID = GetNextVectorID();
 	}
 
-	IDObject<T> AddUniqueObject(T&& value, size_t addOnReserve)
+	OrderIndependentDeletionStack& operator=(const OrderIndependentDeletionStack<T>&) noexcept = delete;
+	OrderIndependentDeletionStack& operator=(OrderIndependentDeletionStack<T>&& rhs) noexcept
 	{
-		auto found = std::find(_list.cbegin(), _list.cend(), value);
+		_nextID = std::move(rhs._nextID);
+		_vectorID = std::move(rhs._vectorID);
 
-		if (found != _list.cend())
-		{
-			return IDObject<T>(found->GetObjectID(), _vectorID);
-		}
-		else
-		{
-			if (!_deletedList.empty())
-			{
-				size_t pos = _deletedList.back();
-				_list[pos].ReplaceValue(IDSubobject<T>(GetNextId()), std::move(value));
-				_deletedList.pop_back();
-				auto ID = _list[pos].GetObjectID();
-				_additionOrder.push_back(ID);
-				return IDObject<T>(ID, _vectorID);
-			}
-			else
-			{
-				CheckCapacity(addOnReserve);
+		_list = std::move(rhs._list);
+		_deletedList = std::move(rhs._deletedList);
+		_additionOrder = std::move(rhs._additionOrder);
 
-				_list.emplace_back(IDSubobject<T>(GetNextId()), std::move(value));
-				auto ID = _list.back().GetObjectID();
-				_additionOrder.push_back(ID);
-				return IDObject<T>(ID, _vectorID);
-			}
-		}
+		rhs._nextID = std::numeric_limits<IDType>::lowest();
+		rhs._vectorID = GetNextVectorID();
+
+		return *this;
 	}
 
 	IDObject<T> AddObject(const T& value, size_t addOnReserve)
@@ -111,10 +65,10 @@ public:
 		if (!_deletedList.empty())
 		{
 			size_t pos = _deletedList.back();
-			_list[pos].ReplaceValue(IDSubobject<T>(GetNextId()), value);
+			_list[pos].AssignValueToFreePosition(IDSubobject<T>(GetNextId()), value);
 			_deletedList.pop_back();
-			auto ID = _list[pos].GetObjectID();
-			_additionOrder.push_back(ID);
+			auto& ID = _list[pos].GetObjectID();
+			_additionOrder.push_back(pos);
 			return IDObject<T>(ID, _vectorID);
 		}
 		else
@@ -122,8 +76,8 @@ public:
 			CheckCapacity(addOnReserve);
 
 			_list.emplace_back(IDSubobject<T>(GetNextId()), value);
-			auto ID = _list.back().GetObjectID();
-			_additionOrder.push_back(ID);
+			auto& ID = _list.back().GetObjectID();
+			_additionOrder.push_back(_list.size() - 1);
 			return IDObject<T>(ID, _vectorID);
 		}
 	}
@@ -133,10 +87,10 @@ public:
 		if (!_deletedList.empty())
 		{
 			size_t pos = _deletedList.back();
-			_list[pos].ReplaceValue(IDSubobject<T>(GetNextId()), std::move(value));
+			_list[pos].AssignValueToFreePosition(IDSubobject<T>(GetNextId()), std::move(value));
 			_deletedList.pop_back();
-			auto ID = _list[pos].GetObjectID();
-			_additionOrder.push_back(ID);
+			auto& ID = _list[pos].GetObjectID();
+			_additionOrder.push_back(pos);
 			return IDObject<T>(ID, _vectorID);
 		}
 		else
@@ -144,8 +98,8 @@ public:
 			CheckCapacity(addOnReserve);
 
 			_list.emplace_back(IDSubobject<T>(GetNextId()), std::move(value));
-			auto ID = _list.back().GetObjectID();
-			_additionOrder.push_back(ID);
+			auto& ID = _list.back().GetObjectID();
+			_additionOrder.push_back(_list.size() - 1);
 			return IDObject<T>(ID, _vectorID);
 		}
 	}
@@ -166,32 +120,47 @@ public:
 		}
 		else
 		{
-			if (it->HasValue())
-			{
-				it->DeleteObject();
-				_deletedList.push_back(static_cast<size_t>(std::distance(_list.begin(), it)));
-			}
+			if (!it->HasValue())
+				return false;
 
-			auto orderIt = std::find(_additionOrder.begin(), _additionOrder.end(), objectID.GetObjectID());
+			size_t position = static_cast<size_t>(static_cast<size_t>(std::distance(_list.begin(), it)));
 
-			if (orderIt != _additionOrder.cend())
-			{
-				_additionOrder.erase(orderIt);
-			}
-			else if (throwOnIDNotFound)
-			{
+			it->DeleteObject();
+			_deletedList.push_back(position);
+
+			auto orderingIterator = std::find(_additionOrder.begin(), _additionOrder.end(), position);
+
+			if (orderingIterator == _additionOrder.cend())
 				throw std::runtime_error("OrderIndependentDeletionStack::RemoveObject Error: Program tried to delete a non-existent entry in an additon order list!");
-			}
+
+			_additionOrder.erase(orderingIterator);
 
 			return true;
 		}
 	}
 
-	size_t GetSize() const { return _list.size(); }
-	size_t GetUsedSize() const { return _additionOrder.size(); }
-	size_t GetCapacity() const { return _list.capacity(); }
-	size_t GetUnusedCapacity() const { return GetCapacity() - GetSize(); }
-	size_t GetUnusedAndDeletedCapacity() const { return GetCapacity() - GetUsedSize(); }
+	size_t GetSize() const noexcept { return _list.size(); }
+	size_t GetUsedSize() const noexcept
+	{
+		assert(_list.size() >= _deletedList.size());
+
+		return _list.size() - _deletedList.size();
+	}
+
+	size_t GetCapacity() const noexcept { return _list.capacity(); }
+	size_t GetUnusedCapacity() const noexcept
+	{
+		assert(_list.capacity() >= _deletedList.capacity());
+
+		return _list.capacity() - _list.size();
+	}
+
+	size_t GetUnusedAndDeletedCapacity() const noexcept
+	{
+		size_t ret = GetUnusedCapacity() + _deletedList.size();
+		assert(ret >= _deletedList.size());
+		return ret;
+	}
 
 	void ShrinkToFit(size_t changeToCapacity, bool addToCapacity) noexcept(std::is_nothrow_move_constructible_v<T> || std::is_nothrow_copy_constructible_v<T>)
 	{
@@ -201,13 +170,14 @@ public:
 		_list.shrink_to_fit();
 
 		std::vector<CommonVectorObject<T>> tempList;
+		std::vector<size_t> tempOrderList;
 
 		if (addToCapacity)
 		{
 			size_t fullres = GetUsedSize() + changeToCapacity;
 
 			if (fullres < changeToCapacity)
-				throw std::runtime_error("UnsortedList::ShrinkToFit Error: reservation amount overflowed!");
+				throw std::runtime_error("UnsortedList::ShrinkToFit Error: Reservation amount overflowed!");
 
 			tempList.reserve(fullres);
 		}
@@ -223,34 +193,33 @@ public:
 				tempList.reserve(usedSize);
 			}
 		}
+		tempOrderList.reserve(tempList.capacity());
 
-		for (auto& object : _list)
+		for (size_t i = 0; i < _additionOrder.size(); ++i)
 		{
-			if (object.HasValue())
+			if (!_list[_additionOrder[i]].HasValue())
+				continue;
+
+			if constexpr (std::is_nothrow_move_constructible_v<T>)
 			{
-				if constexpr (std::is_nothrow_move_constructible_v<T>)
-				{
-					tempList.push_back(std::move(object));
-				}
-				else
-				{
-					if constexpr (std::is_nothrow_copy_constructible_v<T>)
-					{
-						tempList.push_back(object);
-					}
-					else
-					{
-						if constexpr (std::is_move_constructible_v<T>)
-						{
-							tempList.push_back(std::move(object));
-						}
-						else
-						{
-							tempList.push_back(object);
-						}
-					}
-				}
+				tempList.push_back(std::move(_list[_additionOrder[i]]));
 			}
+			else if constexpr (std::is_nothrow_copy_constructible_v<T>)
+			{
+				tempList.push_back(_list[_additionOrder[i]]);
+			}
+			else if constexpr (std::is_move_constructible_v<T>)
+			{
+				tempList.push_back(_list[_additionOrder[i]]);
+			}
+			else if constexpr (std::is_copy_constructible_v<T>)
+			{
+				tempList.push_back(_list[_additionOrder[i]]);
+			}
+			else
+				throw std::runtime_error("UnsortedList::ShrinkToFit Error: Program tried to copy uncopyable data!");
+
+			tempOrderList.push_back(tempList.size() - 1);
 		}
 
 		_list = std::move(tempList);
@@ -258,65 +227,33 @@ public:
 		_deletedList.shrink_to_fit();
 		_deletedList.reserve(_list.capacity());
 
-		_additionOrder.shrink_to_fit();
-		_additionOrder.reserve(_list.capacity());
+		_additionOrder = std::move(tempOrderList);
 	}
 
-	T& GetObject(size_t position)
+	T& GetObject(size_t positionInOrderList)
 	{
-		if (position >= _additionOrder.size())
+		if (positionInOrderList >= _additionOrder.size())
 			throw std::runtime_error("OrderIndependentDeletionStack::GetObject Error: Program tried to read data from outside the addition order list!");
 
-		auto& ID = _additionOrder[(_additionOrder.size() - position) - 1];
+		size_t positionInDataList = _additionOrder[(_additionOrder.size() - positionInOrderList) - 1];
 
-		auto it = std::find(_list.begin(), _list.end(), ID);
+		if (positionInDataList >= _list.size())
+			throw std::runtime_error("OrderIndependentDeletionStack::GetObject Const Error: An ID from the addition order list does not exist in the object list!");
 
-		if (it != _list.cend())
-		{
-			return it->GetObject();
-		}
-		else
-		{
-			throw std::runtime_error("OrderIndependentDeletionStack::GetObject Error: An ID from the addition list does not exist in the object list!");
-		}
+		return _list[positionInDataList].GetObject();
 	}
 
-	const T& GetConstObject(size_t position) const
+	const T& GetObject(size_t positionInOrderList) const
 	{
-		if (position >= _additionOrder.size())
-			throw std::runtime_error("OrderIndependentDeletionStack::GetConstObject Error: Program tried to read data from outside the addition order list!");
+		if (positionInOrderList >= _additionOrder.size())
+			throw std::runtime_error("OrderIndependentDeletionStack::GetObject Const Error: Program tried to read data from outside the addition order list!");
 
-		auto& ID = _additionOrder[(_additionOrder.size() - position) - 1];
+		size_t positionInDataList = _additionOrder[(_additionOrder.size() - positionInOrderList) - 1];
 
-		auto it = std::find(_list.begin(), _list.end(), ID);
+		if (positionInDataList >= _list.size())
+			throw std::runtime_error("OrderIndependentDeletionStack::GetObject Const Error: An ID from the addition order list does not exist in the object list!");
 
-		if (it != _list.cend())
-		{
-			return it->GetConstObject();
-		}
-		else
-		{
-			throw std::runtime_error("OrderIndependentDeletionStack::GetConstObject Error: An ID from the addition list does not exist in the object list!");
-		}
-	}
-
-	T GetObjectCopy(size_t position)
-	{
-		if (position >= _additionOrder.size())
-			throw std::runtime_error("OrderIndependentDeletionStack::GetObjectCopy Error: Program tried to read data from outside the addition order list!");
-
-		auto& ID = _additionOrder[(_additionOrder.size() - position) - 1];
-
-		auto it = std::find(_list.begin(), _list.end(), ID);
-
-		if (it != _list.cend())
-		{
-			return it->GetObjectCopy();
-		}
-		else
-		{
-			throw std::runtime_error("OrderIndependentDeletionStack::GetObjectCopy Error: An ID from the addition list does not exist in the object list!");
-		}
+		return _list[positionInDataList].GetObject();
 	}
 
 	void Reset(size_t capacityAfterReset)
@@ -330,13 +267,14 @@ public:
 		_additionOrder.shrink_to_fit();
 
 		_vectorID = GetNextVectorID();
+		_nextID = std::numeric_limits<IDType>::lowest();
 
-		if (capacityAfterReset != 0)
-		{
-			_list.reserve(capacityAfterReset);
-			_deletedList.reserve(capacityAfterReset);
-			_additionOrder.reserve(capacityAfterReset);
-		}
+		if (capacityAfterReset == 0)
+			return;
+
+		_list.reserve(capacityAfterReset);
+		_deletedList.reserve(_list.capacity());
+		_additionOrder.reserve(_list.capacity());
 	}
 
 
@@ -345,8 +283,7 @@ private:
 	IDType _vectorID;
 	std::vector<CommonVectorObject<T>> _list;
 	std::vector<size_t> _deletedList;
-	std::vector<IDSubobject<T>> _additionOrder;
-	char _padding[16 - (((sizeof(_additionOrder) * 3) + (sizeof(_nextID) << 1)) % 8)];
+	std::vector<size_t> _additionOrder;
 
 	static IDType _nextVectorID;
 
@@ -375,41 +312,43 @@ private:
 		if (reserved < addToCapacity)
 			throw std::runtime_error("OrderIndependentDeletionStack::ReserveAdditional Error: Reserved amount overflowed!");
 
-		if (reserved > _list.max_size() || reserved > _deletedList.max_size() || reserved > _additionOrder.max_size())
-		{
-			reserved = std::min(_list.max_size(), std::min(_deletedList.max_size(), _additionOrder.max_size()));
+		size_t minimumMaximumSize = std::min(_list.max_size(), std::min(_deletedList.max_size(), _additionOrder.max_size()));
 
-			if (_list.capacity() == reserved)
+		if (reserved > minimumMaximumSize)
+		{
+			if (_list.capacity() == _list.max_size())
 				throw std::runtime_error("OrderIndependentDeletionStack::ReserveAdditional Error: Program tried to expand data list vector when it's already at maximum size!");
 
-			if (_deletedList.capacity() == reserved)
+			if (_deletedList.capacity() == _deletedList.max_size())
 				throw std::runtime_error("OrderIndependentDeletionStack::ReserveAdditional Error: Program tried to expand freed indexes vector when it's already at maximum size!");
 
-			if (_additionOrder.capacity() == reserved)
+			if (_additionOrder.capacity() == _additionOrder.max_size())
 				throw std::runtime_error("OrderIndependentDeletionStack::ReserveAdditional Error: Program tried to expand addition order vector when it's already at maximum size!");
+
+			reserved = minimumMaximumSize;
 		}
 
 		_list.reserve(reserved);
-		_deletedList.reserve(reserved);
-		_additionOrder.reserve(reserved);
+		_deletedList.reserve(_list.capacity());
+		_additionOrder.reserve(_list.capacity());
 	}
 
 	void CheckCapacity(size_t addOnReserve)
 	{
-		if (_list.capacity() == _list.size())
+		if (_list.capacity() != _list.size())
+			return;
+
+		if (addOnReserve == 0)
 		{
-			if (addOnReserve == 0)
-			{
-				size_t capacity = _list.capacity();
-				if (capacity != 0)
-					ReserveAdditional(capacity);
-				else
-					ReserveAdditional(1);
-			}
+			size_t capacity = _list.capacity();
+			if (capacity != 0)
+				ReserveAdditional(capacity);
 			else
-			{
-				ReserveAdditional(addOnReserve);
-			}
+				ReserveAdditional(1);
+		}
+		else
+		{
+			ReserveAdditional(addOnReserve);
 		}
 	}
 };

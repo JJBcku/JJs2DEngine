@@ -36,9 +36,14 @@ namespace VulkanSimplified
 			IDObject<AutoCleanupResolveRenderTargetImage> ID;
 		} resolveRenderTarget;
 
-		RenderTargetImagesID();
-		RenderTargetImagesID(const IDObject<AutoCleanupColorRenderTargetImage>& ID);
-		RenderTargetImagesID(const IDObject<AutoCleanupDepthStencilRenderTargetImage>& ID);
-		RenderTargetImagesID(const IDObject<AutoCleanupResolveRenderTargetImage>& ID);
+		RenderTargetImagesID() noexcept;
+		RenderTargetImagesID(const IDObject<AutoCleanupColorRenderTargetImage>& ID) noexcept;
+		RenderTargetImagesID(const IDObject<AutoCleanupDepthStencilRenderTargetImage>& ID) noexcept;
+		RenderTargetImagesID(const IDObject<AutoCleanupResolveRenderTargetImage>& ID) noexcept;
+
+		RenderTargetImagesID(const RenderTargetImagesID& rhs) noexcept;
+		~RenderTargetImagesID();
+
+		RenderTargetImagesID& operator=(const RenderTargetImagesID& rhs) noexcept;
 	};
 }

@@ -48,9 +48,16 @@ namespace VulkanSimplified
 			std::optional<uint32_t> arrayLayersCount;
 		} textureArray2D;
 
-		ImagesGenericID();
-		ImagesGenericID(IDObject<AutoCleanupColorRenderTargetImage> ID);
-		ImagesGenericID(IDObject<AutoCleanup2DTexture> ID);
-		ImagesGenericID(IDObject<AutoCleanup2DArrayTexture> ID);
+		ImagesGenericID() noexcept;
+		ImagesGenericID(IDObject<AutoCleanupColorRenderTargetImage> ID) noexcept;
+		ImagesGenericID(IDObject<AutoCleanup2DTexture> ID) noexcept;
+		ImagesGenericID(IDObject<AutoCleanup2DArrayTexture> ID) noexcept;
+
+		ImagesGenericID(const ImagesGenericID& rhs) noexcept;
+		ImagesGenericID(ImagesGenericID&& rhs) noexcept;
+		~ImagesGenericID();
+
+		ImagesGenericID& operator=(const ImagesGenericID& rhs) noexcept;
+		ImagesGenericID& operator=(ImagesGenericID&& rhs) noexcept;
 	};
 }

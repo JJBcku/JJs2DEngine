@@ -47,10 +47,17 @@ namespace VulkanSimplified
 			IDObject<AutoCleanupImageView> viewID;
 		} texture2DArrayViewID;
 
-		ImageViewGenericID();
-		ImageViewGenericID(IDObject<AutoCleanupColorRenderTargetImage> imageID, IDObject<AutoCleanupImageView> viewID);
-		ImageViewGenericID(IDObject<AutoCleanupDepthStencilRenderTargetImage> imageID, IDObject<AutoCleanupImageView> viewID);
-		ImageViewGenericID(IDObject<AutoCleanup2DTexture> imageID, IDObject<AutoCleanupImageView> viewID);
-		ImageViewGenericID(IDObject<AutoCleanup2DArrayTexture> imageID, IDObject<AutoCleanupImageView> viewID);
+		ImageViewGenericID() noexcept;
+		ImageViewGenericID(IDObject<AutoCleanupColorRenderTargetImage> imageID, IDObject<AutoCleanupImageView> viewID) noexcept;
+		ImageViewGenericID(IDObject<AutoCleanupDepthStencilRenderTargetImage> imageID, IDObject<AutoCleanupImageView> viewID) noexcept;
+		ImageViewGenericID(IDObject<AutoCleanup2DTexture> imageID, IDObject<AutoCleanupImageView> viewID) noexcept;
+		ImageViewGenericID(IDObject<AutoCleanup2DArrayTexture> imageID, IDObject<AutoCleanupImageView> viewID) noexcept;
+
+		ImageViewGenericID(const ImageViewGenericID& rhs) noexcept;
+		ImageViewGenericID(ImageViewGenericID&& rhs) noexcept;
+		~ImageViewGenericID();
+
+		ImageViewGenericID& operator=(const ImageViewGenericID& rhs) noexcept;
+		ImageViewGenericID& operator=(ImageViewGenericID&& rhs) noexcept;
 	};
 }
