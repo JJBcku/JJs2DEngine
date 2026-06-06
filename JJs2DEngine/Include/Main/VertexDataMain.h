@@ -18,6 +18,8 @@ namespace JJs2DEngine
 		VertexDataMain(VertexDataMainInternal& ref);
 		~VertexDataMain();
 
+		VertexDataMain& operator=(const VertexDataMain&) noexcept = delete;
+
 		void SetCameraPosition(float X, float Y);
 		void SetPerspectiveRotation(float rotation);
 		void SetCameraZoom(float zoom);

@@ -35,6 +35,10 @@ namespace JJs2DEngine
 			VS::CommandPoolQFGroupList graphicQFGroup, uint32_t graphicsFrameAmount, size_t graphicQueueID);
 		~VertexDataMainInternal();
 
+		VertexDataMainInternal(const VertexDataMainInternal&) noexcept = delete;
+
+		VertexDataMainInternal& operator=(const VertexDataMainInternal&) noexcept = delete;
+
 		void CreateBackgroundLayerVersionList(const std::vector<BackgroundObjectData>& versionDataList);
 		IDObject<UiVertexDataLayerVersionListPointer> AddUiLayerVersionList(const std::vector<size_t>& versionsMaxObjectAmountsList, size_t addOnReserving);
 		IDObject<WorldLayerVertexDataLayerVersionListPointer> AddWorldLayerVersionList(const std::vector<size_t>& versionsMaxObjectAmountsList, size_t addOnReserving);
@@ -92,6 +96,7 @@ namespace JJs2DEngine
 		size_t _graphicsQueueID;
 
 		float _gammaValue;
+		uint32_t _padding;
 
 		std::vector<VertexLayerOrderID> _layerOrderList;
 

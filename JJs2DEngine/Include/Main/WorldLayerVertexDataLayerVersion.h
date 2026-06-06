@@ -14,6 +14,8 @@ namespace JJs2DEngine
 		WorldLayerVertexDataLayerVersion(WorldLayerVertexDataLayerVersionInternal& ref);
 		~WorldLayerVertexDataLayerVersion();
 
+		WorldLayerVertexDataLayerVersion& operator=(const WorldLayerVertexDataLayerVersion&) noexcept = delete;
+
 		std::optional<size_t> AddObject(const WorldLayerObjectData& newObjectData);
 
 		void ChangeObjectsTexture(bool inPreloadedTexturesList, std::pair<size_t, size_t> newTextureID, size_t objectsIndex);

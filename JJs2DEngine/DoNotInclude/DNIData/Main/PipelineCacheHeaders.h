@@ -5,7 +5,7 @@
 
 namespace JJs2DEngine
 {
-	constexpr std::array<unsigned char, 8> pipelineHeaderCorrectMagicNumbers = { 'J', 'J', 'E', 'P', 'L', 'C', 'H', 0 };
+	constexpr std::array<unsigned char, 8> pipelineHeaderCorrectMagicNumbers = { { 'J', 'J', 'E', 'P', 'L', 'C', 'H', 0 } };
 
 	struct PipelineCacheMainHeader
 	{

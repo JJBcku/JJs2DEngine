@@ -15,6 +15,8 @@ namespace JJs2DEngine
 		BackgroundVertexDataLayerVersionInternal(TextureDataMainInternal& textureDataList, BackgroundObjectData textureData);
 		~BackgroundVertexDataLayerVersionInternal();
 
+		BackgroundVertexDataLayerVersionInternal& operator=(const BackgroundVertexDataLayerVersionInternal&) noexcept = delete;
+
 		BackgroundObjectBufferData GetBufferData(size_t frameIndex) const;
 
 		bool ChangeObjectsTexture(bool inPreloadedTexturesList, std::pair<size_t, size_t> newTextureID);

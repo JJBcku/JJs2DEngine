@@ -44,6 +44,10 @@ namespace JJs2DEngine
 		MainInternal(const MainInitializationData& initData);
 		~MainInternal();
 
+		MainInternal(const MainInternal&) noexcept = delete;
+
+		MainInternal& operator=(const MainInternal&) noexcept = delete;
+
 		const std::vector<DeviceData>& GetDeviceList() const;
 
 		void CreateDevice(const DeviceSettings& deviceSettings);

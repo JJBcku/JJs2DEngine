@@ -60,6 +60,10 @@ namespace JJs2DEngine
 			VS::SynchronizationDataLists synchroList, VS::CommandPoolQFGroupList transferQFGroup, VS::DescriptorDataLists descriptorDataList);
 		~TextureDataMainInternal();
 
+		TextureDataMainInternal(const TextureDataMainInternal&) noexcept = delete;
+
+		TextureDataMainInternal& operator=(const TextureDataMainInternal&) noexcept = delete;
+
 		std::vector<std::shared_ptr<TextureReferenceData>> GetTextureReference(bool inPreloadedTexturesList, size_t tileImageIndex, size_t referenceIndex);
 
 		IDObject<VS::AutoCleanupNIFDescriptorPool> GetTexturesDescriptorSetPool() const;

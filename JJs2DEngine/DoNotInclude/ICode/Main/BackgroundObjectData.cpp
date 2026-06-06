@@ -10,6 +10,10 @@ namespace JJs2DEngine
 
 		textureIndex = { 0, 0 };
 		inPreloadedTexturesList = false;
+
+		padding1 = 0;
+		padding2 = 0;
+		padding3 = 0;
 	}
 
 	BackgroundObjectData::~BackgroundObjectData()

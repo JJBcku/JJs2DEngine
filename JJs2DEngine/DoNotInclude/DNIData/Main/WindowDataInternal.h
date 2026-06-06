@@ -59,6 +59,8 @@ namespace JJs2DEngine
 			VS::MemoryObjectsList memoryList, VS::DescriptorDataLists descriptorList);
 		~WindowDataInternal();
 
+		WindowDataInternal& operator=(const WindowDataInternal&) noexcept = delete;
+
 		void ChangeSwapchainData(RenderImagesData newSwapchainData);
 
 		const PerFrameData& GetFrameData(size_t frameIndex) const;

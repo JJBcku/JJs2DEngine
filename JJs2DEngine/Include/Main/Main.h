@@ -22,6 +22,10 @@ namespace JJs2DEngine
 		Main(const MainInitializationData& initData);
 		~Main();
 
+		Main(const Main&) noexcept = delete;
+
+		Main& operator=(const Main&) noexcept = delete;
+
 		const std::vector<DeviceData>& GetDeviceList() const;
 
 		void CreateDevice(const DeviceSettings& deviceSettings);

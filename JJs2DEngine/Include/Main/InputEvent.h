@@ -30,8 +30,9 @@ namespace JJs2DEngine
 		bool keyPressed;
 		bool keyRepeat;
 
+		uint16_t padding;
+
 		KeyEventData();
-		~KeyEventData();
 	};
 
 	struct MouseMotionEvent
@@ -41,7 +42,6 @@ namespace JJs2DEngine
 		float positionY;
 
 		MouseMotionEvent();
-		~MouseMotionEvent();
 	};
 
 	struct MouseButtonEvent
@@ -51,9 +51,9 @@ namespace JJs2DEngine
 		uint8_t buttonIndex;
 		bool buttonPressed;
 		bool doubleClick;
+		bool padding;
 
 		MouseButtonEvent();
-		~MouseButtonEvent();
 	};
 
 	struct MouseWheelEvent
@@ -61,45 +61,58 @@ namespace JJs2DEngine
 		float scrollX;
 		float scrollY;
 		bool directionFlipped;
+		uint8_t padding1;
+		uint16_t padding2;
 
 		MouseWheelEvent();
-		~MouseWheelEvent();
 	};
 
 	union InputEvent
 	{
 		InputEventsType type;
 
-		struct
+		struct KeyEvent
 		{
 			InputEventsType type;
 			KeyEventData data;
+
+			KeyEvent(const KeyEventData& eventData) noexcept;
+			~KeyEvent() = default;
 		} keyEvent;
 
-		struct
+		struct MouseMoveEvent
 		{
 			InputEventsType type;
 			MouseMotionEvent data;
+
+			MouseMoveEvent(const MouseMotionEvent& eventData) noexcept;
+			~MouseMoveEvent() = default;
 		} mouseMotionEvent;
 
-		struct
+		struct MouseButtonPress
 		{
 			InputEventsType type;
 			MouseButtonEvent data;
+
+			MouseButtonPress(const MouseButtonEvent& eventData) noexcept;
+			~MouseButtonPress() = default;
 		} mouseButtonEvent;
 
-		struct
+		struct MouseScrollEvent
 		{
 			InputEventsType type;
 			MouseWheelEvent data;
+
+			MouseScrollEvent(const MouseWheelEvent& eventData) noexcept;
+			~MouseScrollEvent() noexcept = default;
 		} mouseWheelEvent;
 
-		InputEvent();
-		InputEvent(const KeyEventData& eventData);
-		InputEvent(const MouseMotionEvent& eventData);
-		InputEvent(const MouseButtonEvent& eventData);
-		InputEvent(const MouseWheelEvent& eventData);
+		InputEvent() noexcept;
+		InputEvent(const KeyEventData& eventData) noexcept;
+		InputEvent(const MouseMotionEvent& eventData) noexcept;
+		InputEvent(const MouseButtonEvent& eventData) noexcept;
+		InputEvent(const MouseWheelEvent& eventData) noexcept;
 
-		~InputEvent();
+		~InputEvent() = default;
 	};
 }

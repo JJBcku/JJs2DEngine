@@ -13,6 +13,8 @@ namespace JJs2DEngine
 		BackgroundVertexDataLayerVersionList(BackgroundVertexDataLayerVersionListInternal& ref);
 		~BackgroundVertexDataLayerVersionList();
 
+		BackgroundVertexDataLayerVersionList& operator=(const BackgroundVertexDataLayerVersionList&) noexcept = delete;
+
 		void SetActiveVersion(std::optional<size_t> newActiveVersion);
 		std::optional<size_t> GetActiveVersion() const;
 

@@ -17,6 +17,8 @@ namespace JJs2DEngine
 		InputDataListInternal(std::chrono::high_resolution_clock::time_point currentTime, VS::SdlEventHandler eventHandler);
 		~InputDataListInternal();
 
+		InputDataListInternal& operator=(const InputDataListInternal&) noexcept = delete;
+
 		void UpdateCurrentTime(std::chrono::high_resolution_clock::time_point currentTime);
 
 		const std::vector<InputEvent>& GetEventList() const;
@@ -39,6 +41,9 @@ namespace JJs2DEngine
 		std::vector<InputEvent> _eventList;
 
 		bool _focusLost;
+		uint8_t padding1;
+		uint16_t padding2;
+		uint32_t padding3;
 
 		void RegisterWindowEventHandler();
 		void UnregisterWindowEventHandler();

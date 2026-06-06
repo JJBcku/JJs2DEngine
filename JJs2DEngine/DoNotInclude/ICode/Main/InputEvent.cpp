@@ -11,10 +11,8 @@ namespace JJs2DEngine
 
 		keyPressed = false;
 		keyRepeat = false;
-	}
 
-	KeyEventData::~KeyEventData()
-	{
+		padding = 0;
 	}
 
 	MouseMotionEvent::MouseMotionEvent()
@@ -24,10 +22,6 @@ namespace JJs2DEngine
 		positionY = 0.0f;
 	}
 
-	MouseMotionEvent::~MouseMotionEvent()
-	{
-	}
-
 	MouseButtonEvent::MouseButtonEvent()
 	{
 		mousePositionX = 0.0f;
@@ -35,10 +29,7 @@ namespace JJs2DEngine
 		buttonIndex = 0;
 		buttonPressed = false;
 		doubleClick = false;
-	}
-
-	MouseButtonEvent::~MouseButtonEvent()
-	{
+		padding = false;
 	}
 
 	MouseWheelEvent::MouseWheelEvent()
@@ -46,43 +37,50 @@ namespace JJs2DEngine
 		scrollX = 0.0f;
 		scrollY = 0.0f;
 		directionFlipped = false;
+
+		padding1 = 0;
+		padding2 = 0;
 	}
 
-	MouseWheelEvent::~MouseWheelEvent()
-	{
-	}
-
-	InputEvent::InputEvent()
+	InputEvent::InputEvent() noexcept
 	{
 		type = InputEventsType::UNSET;
 	}
 
-	InputEvent::InputEvent(const KeyEventData& eventData)
+	InputEvent::InputEvent(const KeyEventData& eventData) noexcept : keyEvent(eventData)
 	{
-		keyEvent.type = InputEventsType::KEY_EVENT;
-		keyEvent.data = eventData;
 	}
 
-	InputEvent::InputEvent(const MouseMotionEvent& eventData)
+	InputEvent::InputEvent(const MouseMotionEvent& eventData) noexcept : mouseMotionEvent(eventData)
 	{
-		mouseMotionEvent.type = InputEventsType::MOUSE_MOTION_EVENT;
-		mouseMotionEvent.data = eventData;
 	}
 
-	InputEvent::InputEvent(const MouseButtonEvent& eventData)
+	InputEvent::InputEvent(const MouseButtonEvent& eventData) noexcept : mouseButtonEvent(eventData)
 	{
-		mouseButtonEvent.type = InputEventsType::MOUSE_BUTTON_EVENT;
-		mouseButtonEvent.data = eventData;
 	}
 
-	InputEvent::InputEvent(const MouseWheelEvent& eventData)
+	InputEvent::InputEvent(const MouseWheelEvent& eventData) noexcept : mouseWheelEvent(eventData)
 	{
-		mouseWheelEvent.type = InputEventsType::MOUSE_WHEEL_EVENT;
-		mouseWheelEvent.data = eventData;
 	}
 
-	InputEvent::~InputEvent()
+	InputEvent::KeyEvent::KeyEvent(const KeyEventData& eventData) noexcept : data(eventData)
 	{
+		type = InputEventsType::KEY_EVENT;
+	}
+
+	InputEvent::MouseMoveEvent::MouseMoveEvent(const MouseMotionEvent& eventData) noexcept : data(eventData)
+	{
+		type = InputEventsType::MOUSE_MOTION_EVENT;
+	}
+
+	InputEvent::MouseButtonPress::MouseButtonPress(const MouseButtonEvent& eventData) noexcept : data(eventData)
+	{
+		type = InputEventsType::MOUSE_BUTTON_EVENT;
+	}
+
+	InputEvent::MouseScrollEvent::MouseScrollEvent(const MouseWheelEvent& eventData) noexcept : data(eventData)
+	{
+		type = InputEventsType::MOUSE_WHEEL_EVENT;
 	}
 
 }

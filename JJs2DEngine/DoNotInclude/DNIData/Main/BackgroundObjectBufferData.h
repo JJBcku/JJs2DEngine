@@ -12,6 +12,5 @@ namespace JJs2DEngine
 		uint32_t textureIndex;
 
 		BackgroundObjectBufferData();
-		~BackgroundObjectBufferData();
 	};
 }

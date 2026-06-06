@@ -11,8 +11,4 @@ namespace JJs2DEngine
 		textureIndex = std::numeric_limits<uint32_t>::max();
 	}
 
-	BackgroundObjectBufferData::~BackgroundObjectBufferData()
-	{
-	}
-
 }

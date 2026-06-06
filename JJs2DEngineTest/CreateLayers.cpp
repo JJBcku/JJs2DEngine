@@ -41,7 +41,7 @@ void CreateLayers(MainDataCollection& data)
 		UIObject.screenWidth_UNORM = JJ2DE::onePointZeroUNORMValue;
 		UIObject.screenHeight_UNORM = JJ2DE::onePointZeroUNORMValue / 8;
 		UIObject.screenPositionX_SNORM = 0;
-		UIObject.screenPositionY_SNORM = JJ2DE::onePointZeroSNORMValue - UIObject.screenHeight_UNORM;
+		UIObject.screenPositionY_SNORM = static_cast<int32_t>(JJ2DE::onePointZeroSNORMValue - UIObject.screenHeight_UNORM);
 		UIObject.textureWidthInPixels = 2048U;
 		UIObject.textureHeightInPixels = 256U;
 		UIObject.inPreloadedTexturesList = false;

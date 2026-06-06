@@ -11,6 +11,8 @@ namespace JJs2DEngine
 		WorldLayerVertexDataLayerVersionList(WorldLayerVertexDataLayerVersionListInternal& ref);
 		~WorldLayerVertexDataLayerVersionList();
 
+		WorldLayerVertexDataLayerVersionList& operator=(const WorldLayerVertexDataLayerVersionList&) noexcept = delete;
+
 		WorldLayerVertexDataLayerVersion GetLayersVersion(size_t versionIndex);
 
 		const WorldLayerVertexDataLayerVersion GetLayersVersion(size_t versionIndex) const;

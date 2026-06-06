@@ -562,7 +562,7 @@ namespace JJs2DEngine
 
 			for (int32_t i = 0; i < width; ++i)
 			{
-				for (size_t j = 0; j < height; ++j)
+				for (int32_t j = 0; j < height; ++j)
 				{
 					stbi_uc* currentPixelRed = currentPixelBeggining;
 					stbi_uc* currentPixelBlue = currentPixelBeggining + 2;
@@ -613,7 +613,7 @@ namespace JJs2DEngine
 
 			for (int32_t i = 0; i < width; ++i)
 			{
-				for (size_t j = 0; j < height; ++j)
+				for (int32_t j = 0; j < height; ++j)
 				{
 					stbi_us* currentPixelRed = currentPixelBeggining;
 					stbi_us* currentPixelBlue = currentPixelBeggining + 2;

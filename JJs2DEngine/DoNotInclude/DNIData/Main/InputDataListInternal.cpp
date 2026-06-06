@@ -19,6 +19,10 @@ namespace JJs2DEngine
 		RegisterMouseMotionEventHandler();
 		RegisterMouseButtonEventHandler();
 		RegisterMouseWheelEventHandler();
+
+		padding1 = 0;
+		padding2 = 0;
+		padding3 = 0;
 	}
 
 	InputDataListInternal::~InputDataListInternal()

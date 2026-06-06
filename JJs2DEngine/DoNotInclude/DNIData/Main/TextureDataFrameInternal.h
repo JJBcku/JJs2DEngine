@@ -83,6 +83,8 @@ namespace JJs2DEngine
 			const std::vector<VS::SecondaryIRCommandBuffer>& commandBuffersList);
 		~TextureDataFrameInternal();
 
+		TextureDataFrameInternal& operator=(const TextureDataFrameInternal&) noexcept = delete;
+
 		void LoadDefaultTextures(const std::array<std::vector<unsigned char>, imagesInTextureArray>& defaultTexturesData, uint64_t transferQueue, uint64_t graphicsQueue);
 
 		std::array<IDObject<VS::AutoCleanup2DArrayTexture>, imagesInTextureArray> GetImageIDs(size_t frameInFlightIndice) const;

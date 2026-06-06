@@ -11,6 +11,9 @@ namespace JJs2DEngine
 
 		std::pair<size_t, size_t> textureIndex;
 		bool inPreloadedTexturesList;
+		uint8_t padding1;
+		uint16_t padding2;
+		uint32_t padding3;
 
 		BackgroundObjectData();
 		~BackgroundObjectData();

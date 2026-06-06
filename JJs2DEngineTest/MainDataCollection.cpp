@@ -27,10 +27,14 @@ MainDataCollection::MainDataCollection()
 	is16Bit = false;
 	isRBReversed = false;
 
+	padding1 = 0;
+
 	cameraX = 0.0f;
 	cameraY = 0.0f;
 	rotation = 0.0f;
 	zoom = 1.0f;
+
+	padding2 = 0;
 }
 
 MainDataCollection::~MainDataCollection()

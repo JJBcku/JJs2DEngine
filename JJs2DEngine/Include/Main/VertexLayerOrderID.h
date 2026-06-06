@@ -16,23 +16,29 @@ namespace JJs2DEngine
 	union VertexLayerOrderID
 	{
 		VertexLayerOrderIDType type;
-		struct
+		struct UILayerID
 		{
 			VertexLayerOrderIDType type;
 			IDObject<UiVertexDataLayerVersionListPointer> ID;
+
+			UILayerID(const IDObject<UiVertexDataLayerVersionListPointer>& ID) noexcept;
+			~UILayerID() = default;
 		} uiLayerID;
 
-		struct
+		struct WorldLayerID
 		{
 			VertexLayerOrderIDType type;
 			IDObject<WorldLayerVertexDataLayerVersionListPointer> ID;
+
+			WorldLayerID(const IDObject<WorldLayerVertexDataLayerVersionListPointer>& ID) noexcept;
+			~WorldLayerID() = default;
 		} worldLayerID;
 
 		VertexLayerOrderID() noexcept;
 		VertexLayerOrderID(const VertexLayerOrderID& rhs) noexcept;
 		VertexLayerOrderID(VertexLayerOrderID&& rhs) noexcept;
-		VertexLayerOrderID(IDObject<UiVertexDataLayerVersionListPointer> ID) noexcept;
-		VertexLayerOrderID(IDObject<WorldLayerVertexDataLayerVersionListPointer> ID) noexcept;
+		VertexLayerOrderID(const IDObject<UiVertexDataLayerVersionListPointer>& ID) noexcept;
+		VertexLayerOrderID(const IDObject<WorldLayerVertexDataLayerVersionListPointer>& ID) noexcept;
 		~VertexLayerOrderID();
 
 		VertexLayerOrderID& operator=(const VertexLayerOrderID& rhs) noexcept;

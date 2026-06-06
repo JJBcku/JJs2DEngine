@@ -27,6 +27,8 @@ namespace JJs2DEngine
 			const std::string& writenToDataFolder, VS::DeviceMain device, VS::SharedDataMainList sharedData);
 		~RenderDataInternal();
 
+		RenderDataInternal& operator=(const RenderDataInternal&) noexcept = delete;
+
 		float GetCurrentAspectRatio() const;
 
 		IDObject<VS::AutoCleanupRenderPass> GetCurrentRenderPass() const;

@@ -52,6 +52,7 @@ namespace JJs2DEngine
 		_graphicsQueueID = graphicsQueueID;
 
 		_gammaValue = 2.0f;
+		_padding = 0;
 
 		_vertexTransferFinishedFences.reserve(transferFrameAmount);
 		_vertexTransferFinishedSemaphores.reserve(transferFrameAmount);

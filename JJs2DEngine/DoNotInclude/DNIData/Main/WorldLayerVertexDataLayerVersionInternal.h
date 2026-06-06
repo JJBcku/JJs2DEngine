@@ -29,6 +29,8 @@ namespace JJs2DEngine
 			size_t transferFrameAmount);
 		~WorldLayerVertexDataLayerVersionInternal();
 
+		WorldLayerVertexDataLayerVersionInternal& operator=(const WorldLayerVertexDataLayerVersionInternal&) noexcept = delete;
+
 		std::optional<size_t> AddObject(const WorldLayerObjectData& newObjectData);
 
 		uint32_t GetBuffersMask() const;

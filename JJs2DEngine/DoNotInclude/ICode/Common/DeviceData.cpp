@@ -38,6 +38,8 @@ namespace JJs2DEngine
 		swapchainBGRA8Unorm = false;
 
 		swapchainABGR8Unorm = false;
+
+		padding = 0;
 	}
 
 	bool DeviceSwapchainSupport::Support8BitSwapchain() const

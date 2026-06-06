@@ -14,6 +14,8 @@ namespace JJs2DEngine
 		uint32_t textureIndex;
 
 		bool textureIsUsed;
+		uint8_t padding1;
+		uint16_t padding2;
 
 		TextureReferenceData();
 		TextureReferenceData(glm::vec2 textureCoords, glm::vec2 textureSize, uint32_t textureLayer, uint32_t textureIndex, bool textureIsUsed = false);

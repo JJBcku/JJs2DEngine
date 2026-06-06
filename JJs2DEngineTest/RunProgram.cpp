@@ -44,17 +44,18 @@ struct KeyPressList
 
 	bool eKey = false;
 	bool qKey = false;
+	std::array<unsigned char, 6> _padding = { { 0, 0, 0, 0, 0, 0 } };
 	uint64_t zKey = 0;
 	uint64_t xKey = 0;
 
-	KeyPressList() {};
-	~KeyPressList() {};
+	KeyPressList() noexcept {};
 };
 
 struct MouseDataList
 {
 	bool leftClick = false;
 	bool rightClick = false;
+	uint16_t padding1 = 0;
 
 	uint32_t leftDoubleClicks = 0;
 	uint32_t rightDoubleClicks = 0;
@@ -68,8 +69,7 @@ struct MouseDataList
 	std::optional<float> lastPositionX;
 	std::optional<float> lastPositionY;
 
-	MouseDataList() {};
-	~MouseDataList() {};
+	MouseDataList() noexcept {};
 };
 
 void HandleKeyPress(KeyPressList& keyPressData, JJ2DE::KeyEventData keyPress);

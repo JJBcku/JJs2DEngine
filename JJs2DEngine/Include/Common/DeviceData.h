@@ -51,6 +51,8 @@ namespace JJs2DEngine
 		bool swapchainBGRA8Unorm;
 		bool swapchainABGR8Unorm;
 
+		uint16_t padding;
+
 		DeviceSwapchainSupport();
 		
 		bool Support8BitSwapchain() const;

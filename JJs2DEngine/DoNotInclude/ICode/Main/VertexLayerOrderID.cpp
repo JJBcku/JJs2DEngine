@@ -19,16 +19,12 @@ namespace JJs2DEngine
 		rhs.type = VertexLayerOrderIDType::UNSET;
 	}
 
-	VertexLayerOrderID::VertexLayerOrderID(IDObject<UiVertexDataLayerVersionListPointer> ID) noexcept
+	VertexLayerOrderID::VertexLayerOrderID(const IDObject<UiVertexDataLayerVersionListPointer>& ID) noexcept : uiLayerID(ID)
 	{
-		uiLayerID.type = VertexLayerOrderIDType::UI_LAYER;
-		uiLayerID.ID = ID;
 	}
 
-	VertexLayerOrderID::VertexLayerOrderID(IDObject<WorldLayerVertexDataLayerVersionListPointer> ID) noexcept
+	VertexLayerOrderID::VertexLayerOrderID(const IDObject<WorldLayerVertexDataLayerVersionListPointer>& ID) noexcept : worldLayerID(ID)
 	{
-		worldLayerID.type = VertexLayerOrderIDType::WORLD_LAYER;
-		worldLayerID.ID = ID;
 	}
 
 	VertexLayerOrderID::~VertexLayerOrderID()
@@ -46,6 +42,16 @@ namespace JJs2DEngine
 		std::memcpy(this, &rhs, sizeof(VertexLayerOrderID));
 		rhs.type = VertexLayerOrderIDType::UNSET;
 		return *this;
+	}
+
+	VertexLayerOrderID::UILayerID::UILayerID(const IDObject<UiVertexDataLayerVersionListPointer>& ID) noexcept : ID(ID)
+	{
+		type = VertexLayerOrderIDType::UI_LAYER;
+	}
+
+	VertexLayerOrderID::WorldLayerID::WorldLayerID(const IDObject<WorldLayerVertexDataLayerVersionListPointer>& ID) noexcept : ID(ID)
+	{
+		type = VertexLayerOrderIDType::WORLD_LAYER;
 	}
 
 }

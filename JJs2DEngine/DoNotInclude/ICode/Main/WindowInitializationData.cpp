@@ -13,5 +13,9 @@ namespace JJs2DEngine
 		windowWidth = 0;
 		aspectRatio = AspectRatio::UNSET;
 		fullscreenWindow = false;
+
+		padding1 = 0;
+		padding2 = 0;
+		padding3 = 0;
 	}
 }

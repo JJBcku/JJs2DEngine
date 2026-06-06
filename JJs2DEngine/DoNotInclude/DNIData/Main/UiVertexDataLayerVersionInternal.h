@@ -28,6 +28,8 @@ namespace JJs2DEngine
 		UiVertexDataLayerVersionInternal(TextureDataMainInternal& textureDataList, VS::DataBufferLists& dataBufferList, size_t maxObjectAmount, size_t layersDepth, size_t transferFrameAmount);
 		~UiVertexDataLayerVersionInternal();
 
+		UiVertexDataLayerVersionInternal& operator=(const UiVertexDataLayerVersionInternal&) noexcept = delete;
+
 		std::optional<size_t> AddObject(const UiObjectData& newObjectData);
 
 		uint32_t GetBuffersMask() const;

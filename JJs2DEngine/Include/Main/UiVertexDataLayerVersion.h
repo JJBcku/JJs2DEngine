@@ -15,6 +15,8 @@ namespace JJs2DEngine
 		UiVertexDataLayerVersion(UiVertexDataLayerVersionInternal& ref);
 		~UiVertexDataLayerVersion();
 
+		UiVertexDataLayerVersion& operator=(const UiVertexDataLayerVersion&) noexcept = delete;
+
 		std::optional<size_t> AddObject(const UiObjectData& newObjectData);
 
 		void ChangeObjectsTexture(bool inPreloadedTexturesList, std::pair<size_t, size_t> newTextureID, size_t objectsIndex);

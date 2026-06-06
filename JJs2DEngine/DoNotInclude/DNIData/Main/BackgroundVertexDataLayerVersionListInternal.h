@@ -31,6 +31,8 @@ namespace JJs2DEngine
 			const std::vector<BackgroundObjectData>& versionDataList, size_t transferFramesAmount);
 		~BackgroundVertexDataLayerVersionListInternal();
 
+		BackgroundVertexDataLayerVersionListInternal operator=(const BackgroundVertexDataLayerVersionListInternal&) noexcept = delete;
+
 		bool WriteDataToBuffer(size_t transferFrameIndice, VS::PrimaryIRCommandBuffer transferCommandBuffer);
 		VS::DataBuffersMemoryBarrierData GetOwnershipTransferData(size_t transferFrameIndice, size_t transferQueueID, size_t graphicQueueID);
 		void RecordDrawCommand(size_t transferFrameIndice, VS::PrimaryIRCommandBuffer graphicsCommandBuffer);

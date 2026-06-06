@@ -432,7 +432,7 @@ namespace JJs2DEngine
 
 		for (uint64_t i = 0; i < mainHeader.elementCount; ++i)
 		{
-			uint64_t currentPos = pipelineCacheFile.tellg();
+			uint64_t currentPos = static_cast<uint64_t>(pipelineCacheFile.tellg());
 
 			PipelineCacheElementHeader elementHeader;
 			pipelineCacheFile.read(reinterpret_cast<char*>(&elementHeader), sizeof(elementHeader));
@@ -441,12 +441,12 @@ namespace JJs2DEngine
 
 			if (elementHeader.deleted != Misc::BOOL64_FALSE)
 			{
-				pipelineCacheFile.seekg(elementHeader.elementSize, std::ios_base::cur);
+				pipelineCacheFile.seekg(static_cast<std::streamoff>(elementHeader.elementSize), std::ios_base::cur);
 				continue;
 			}
 
 			pipelineCompatibleData.resize(elementHeader.elementSize);
-			pipelineCacheFile.read(reinterpret_cast<char*>(pipelineCompatibleData.data()), elementHeader.elementSize);
+			pipelineCacheFile.read(reinterpret_cast<char*>(pipelineCompatibleData.data()), static_cast<std::streamsize>(elementHeader.elementSize));
 			if (!pipelineCacheFile.good())
 				throw std::runtime_error("RenderDataInternal::LoadBackgroundPipelineCacheFile Error: Program failed to read a pipeline cache's element data!");
 
@@ -519,22 +519,22 @@ namespace JJs2DEngine
 
 		if (_backgroundPipelineCompatibleSavedPos.has_value())
 		{
-			pipelineCacheInFile.seekg(_backgroundPipelineCompatibleSavedPos.value());
+			pipelineCacheInFile.seekg(static_cast<std::streamoff>(_backgroundPipelineCompatibleSavedPos.value()));
 			if (!pipelineCacheInFile.good())
 				throw std::runtime_error("RenderDataInternal::SaveBackgroundPipelineCacheFile: Program failed to move reading position to the old header!");
 
-			pipelineCacheInFile.read(reinterpret_cast<char*>(&oldElementHeader), sizeof(oldElementHeader));
+			pipelineCacheInFile.read(reinterpret_cast<char*>(&oldElementHeader), static_cast<std::streamsize>(sizeof(oldElementHeader)));
 			if (!pipelineCacheInFile.good())
 				throw std::runtime_error("RenderDataInternal::SaveBackgroundPipelineCacheFile: Program failed to read the old header!");
 		}
 
 		PipelineCacheMainHeader mainHeader;
 
-		pipelineCacheInFile.seekg(mainHeader.magicNumbers.size());
+		pipelineCacheInFile.seekg(static_cast<std::streamoff>(mainHeader.magicNumbers.size()));
 		if (!pipelineCacheInFile.good())
 			throw std::runtime_error("RenderDataInternal::SaveBackgroundPipelineCacheFile: Program failed to move reading position to the main header's element count!");
 
-		pipelineCacheInFile.read(reinterpret_cast<char*>(&mainHeader.elementCount), sizeof(mainHeader.elementCount));
+		pipelineCacheInFile.read(reinterpret_cast<char*>(&mainHeader.elementCount), static_cast<std::streamsize>(sizeof(mainHeader.elementCount)));
 		if (!pipelineCacheInFile.good())
 			throw std::runtime_error("RenderDataInternal::SaveBackgroundPipelineCacheFile: Program failed to read the old main header!");
 
@@ -550,7 +550,7 @@ namespace JJs2DEngine
 
 		if (_backgroundPipelineCompatibleSavedPos.has_value())
 		{
-			pipelineCacheOutFile.seekp(_backgroundPipelineCompatibleSavedPos.value());
+			pipelineCacheOutFile.seekp(static_cast<std::streamoff>(_backgroundPipelineCompatibleSavedPos.value()));
 			if (!pipelineCacheOutFile.good())
 				throw std::runtime_error("RenderDataInternal::SaveBackgroundPipelineCacheFile: Program failed to move writing position to the old header!");
 
@@ -573,16 +573,16 @@ namespace JJs2DEngine
 		if (!pipelineCacheOutFile.good())
 			throw std::runtime_error("RenderDataInternal::SaveBackgroundPipelineCacheFile: Program failed to write the new header!");
 
-		pipelineCacheOutFile.write(reinterpret_cast<const char*>(dataToSave.data()), dataToSave.size());
+		pipelineCacheOutFile.write(reinterpret_cast<const char*>(dataToSave.data()), static_cast<std::streamsize>(dataToSave.size()));
 		if (!pipelineCacheOutFile.good())
 			throw std::runtime_error("RenderDataInternal::SaveBackgroundPipelineCacheFile: Program failed to write the new data!");
 
-		pipelineCacheOutFile.seekp(mainHeader.magicNumbers.size());
+		pipelineCacheOutFile.seekp(static_cast<std::streamoff>(mainHeader.magicNumbers.size()));
 		if (!pipelineCacheOutFile.good())
 			throw std::runtime_error("RenderDataInternal::SaveBackgroundPipelineCacheFile: Program failed to move writing position to the main header's element count!");
 
 		mainHeader.elementCount += 1;
-		pipelineCacheOutFile.write(reinterpret_cast<const char*>(&mainHeader.elementCount), sizeof(mainHeader.elementCount));
+		pipelineCacheOutFile.write(reinterpret_cast<const char*>(&mainHeader.elementCount), static_cast<std::streamsize>(sizeof(mainHeader.elementCount)));
 		if (!pipelineCacheOutFile.good())
 			throw std::runtime_error("RenderDataInternal::SaveBackgroundPipelineCacheFile: Program failed to write the updated main header!");
 
@@ -646,7 +646,7 @@ namespace JJs2DEngine
 
 		for (uint64_t i = 0; i < mainHeader.elementCount; ++i)
 		{
-			uint64_t currentPos = pipelineCacheFile.tellg();
+			uint64_t currentPos = static_cast<uint64_t>(pipelineCacheFile.tellg());
 
 			PipelineCacheElementHeader elementHeader;
 			pipelineCacheFile.read(reinterpret_cast<char*>(&elementHeader), sizeof(elementHeader));
@@ -655,12 +655,12 @@ namespace JJs2DEngine
 
 			if (elementHeader.deleted != Misc::BOOL64_FALSE)
 			{
-				pipelineCacheFile.seekg(elementHeader.elementSize, std::ios_base::cur);
+				pipelineCacheFile.seekg(static_cast<std::streamoff>(elementHeader.elementSize), std::ios_base::cur);
 				continue;
 			}
 
 			pipelineCompatibleData.resize(elementHeader.elementSize);
-			pipelineCacheFile.read(reinterpret_cast<char*>(pipelineCompatibleData.data()), elementHeader.elementSize);
+			pipelineCacheFile.read(reinterpret_cast<char*>(pipelineCompatibleData.data()), static_cast<std::streamsize>(elementHeader.elementSize));
 			if (!pipelineCacheFile.good())
 				throw std::runtime_error("RenderDataInternal::LoadUILayerPipelineCacheFile Error: Program failed to read a pipeline cache's element data!");
 
@@ -733,22 +733,22 @@ namespace JJs2DEngine
 
 		if (_uiPipelineCompatibleSavedPos.has_value())
 		{
-			pipelineCacheInFile.seekg(_uiPipelineCompatibleSavedPos.value());
+			pipelineCacheInFile.seekg(static_cast<std::streamoff>(_uiPipelineCompatibleSavedPos.value()));
 			if (!pipelineCacheInFile.good())
 				throw std::runtime_error("RenderDataInternal::SaveUILayerPipelineCacheFile: Program failed to move reading position to the old header!");
 
-			pipelineCacheInFile.read(reinterpret_cast<char*>(&oldElementHeader), sizeof(oldElementHeader));
+			pipelineCacheInFile.read(reinterpret_cast<char*>(&oldElementHeader), static_cast<std::streamsize>(sizeof(oldElementHeader)));
 			if (!pipelineCacheInFile.good())
 				throw std::runtime_error("RenderDataInternal::SaveUILayerPipelineCacheFile: Program failed to read the old header!");
 		}
 
 		PipelineCacheMainHeader mainHeader;
 
-		pipelineCacheInFile.seekg(mainHeader.magicNumbers.size());
+		pipelineCacheInFile.seekg(static_cast<std::streamoff>(mainHeader.magicNumbers.size()));
 		if (!pipelineCacheInFile.good())
 			throw std::runtime_error("RenderDataInternal::SaveUILayerPipelineCacheFile: Program failed to move reading position to the main header's element count!");
 
-		pipelineCacheInFile.read(reinterpret_cast<char*>(&mainHeader.elementCount), sizeof(mainHeader.elementCount));
+		pipelineCacheInFile.read(reinterpret_cast<char*>(&mainHeader.elementCount), static_cast<std::streamsize>(sizeof(mainHeader.elementCount)));
 		if (!pipelineCacheInFile.good())
 			throw std::runtime_error("RenderDataInternal::SaveUILayerPipelineCacheFile: Program failed to read the old main header!");
 
@@ -764,13 +764,13 @@ namespace JJs2DEngine
 
 		if (_uiPipelineCompatibleSavedPos.has_value())
 		{
-			pipelineCacheOutFile.seekp(_uiPipelineCompatibleSavedPos.value());
+			pipelineCacheOutFile.seekp(static_cast<std::streamoff>(_uiPipelineCompatibleSavedPos.value()));
 			if (!pipelineCacheOutFile.good())
 				throw std::runtime_error("RenderDataInternal::SaveUILayerPipelineCacheFile: Program failed to move writing position to the old header!");
 
 			oldElementHeader.deleted = Misc::BOOL64_TRUE;
 
-			pipelineCacheOutFile.write(reinterpret_cast<const char*>(&oldElementHeader), sizeof(oldElementHeader));
+			pipelineCacheOutFile.write(reinterpret_cast<const char*>(&oldElementHeader), static_cast<std::streamsize>(sizeof(oldElementHeader)));
 			if (!pipelineCacheOutFile.good())
 				throw std::runtime_error("RenderDataInternal::SaveUILayerPipelineCacheFile: Program failed to write to the old header!");
 		}
@@ -783,20 +783,20 @@ namespace JJs2DEngine
 		elementHeader.elementCRC64WE = currentDataCRC64WE;
 		elementHeader.deleted = Misc::BOOL64_FALSE;
 
-		pipelineCacheOutFile.write(reinterpret_cast<const char*>(&elementHeader), sizeof(elementHeader));
+		pipelineCacheOutFile.write(reinterpret_cast<const char*>(&elementHeader), static_cast<std::streamsize>(sizeof(elementHeader)));
 		if (!pipelineCacheOutFile.good())
 			throw std::runtime_error("RenderDataInternal::SaveUILayerPipelineCacheFile: Program failed to write the new header!");
 
-		pipelineCacheOutFile.write(reinterpret_cast<const char*>(dataToSave.data()), dataToSave.size());
+		pipelineCacheOutFile.write(reinterpret_cast<const char*>(dataToSave.data()), static_cast<std::streamsize>(dataToSave.size()));
 		if (!pipelineCacheOutFile.good())
 			throw std::runtime_error("RenderDataInternal::SaveUILayerPipelineCacheFile: Program failed to write the new data!");
 
-		pipelineCacheOutFile.seekp(mainHeader.magicNumbers.size());
+		pipelineCacheOutFile.seekp(static_cast<std::streamoff>(mainHeader.magicNumbers.size()));
 		if (!pipelineCacheOutFile.good())
 			throw std::runtime_error("RenderDataInternal::SaveUILayerPipelineCacheFile: Program failed to move writing position to the main header's element count!");
 
 		mainHeader.elementCount += 1;
-		pipelineCacheOutFile.write(reinterpret_cast<const char*>(&mainHeader.elementCount), sizeof(mainHeader.elementCount));
+		pipelineCacheOutFile.write(reinterpret_cast<const char*>(&mainHeader.elementCount), static_cast<std::streamsize>(sizeof(mainHeader.elementCount)));
 		if (!pipelineCacheOutFile.good())
 			throw std::runtime_error("RenderDataInternal::SaveUILayerPipelineCacheFile: Program failed to write the updated main header!");
 
@@ -861,7 +861,7 @@ namespace JJs2DEngine
 
 		for (uint64_t i = 0; i < mainHeader.elementCount; ++i)
 		{
-			uint64_t currentPos = pipelineCacheFile.tellg();
+			uint64_t currentPos = static_cast<uint64_t>(pipelineCacheFile.tellg());
 
 			PipelineCacheElementHeader elementHeader;
 			pipelineCacheFile.read(reinterpret_cast<char*>(&elementHeader), sizeof(elementHeader));
@@ -870,12 +870,12 @@ namespace JJs2DEngine
 
 			if (elementHeader.deleted != Misc::BOOL64_FALSE)
 			{
-				pipelineCacheFile.seekg(elementHeader.elementSize, std::ios_base::cur);
+				pipelineCacheFile.seekg(static_cast<std::streamoff>(elementHeader.elementSize), std::ios_base::cur);
 				continue;
 			}
 
 			pipelineCompatibleData.resize(elementHeader.elementSize);
-			pipelineCacheFile.read(reinterpret_cast<char*>(pipelineCompatibleData.data()), elementHeader.elementSize);
+			pipelineCacheFile.read(reinterpret_cast<char*>(pipelineCompatibleData.data()), static_cast<std::streamsize>(elementHeader.elementSize));
 			if (!pipelineCacheFile.good())
 				throw std::runtime_error("RenderDataInternal::LoadWorldLayerPipelineCacheFile Error: Program failed to read a pipeline cache's element data!");
 
@@ -948,7 +948,7 @@ namespace JJs2DEngine
 
 		if (_worldLayerPipelineCompatibleSavedPos.has_value())
 		{
-			pipelineCacheInFile.seekg(_worldLayerPipelineCompatibleSavedPos.value());
+			pipelineCacheInFile.seekg(static_cast<std::streamoff>(_worldLayerPipelineCompatibleSavedPos.value()));
 			if (!pipelineCacheInFile.good())
 				throw std::runtime_error("RenderDataInternal::SaveWorldLayerPipelineCacheFile: Program failed to move reading position to the old header!");
 
@@ -959,11 +959,11 @@ namespace JJs2DEngine
 
 		PipelineCacheMainHeader mainHeader;
 
-		pipelineCacheInFile.seekg(mainHeader.magicNumbers.size());
+		pipelineCacheInFile.seekg(static_cast<std::streamoff>(mainHeader.magicNumbers.size()));
 		if (!pipelineCacheInFile.good())
 			throw std::runtime_error("RenderDataInternal::SaveWorldLayerPipelineCacheFile: Program failed to move reading position to the main header's element count!");
 
-		pipelineCacheInFile.read(reinterpret_cast<char*>(&mainHeader.elementCount), sizeof(mainHeader.elementCount));
+		pipelineCacheInFile.read(reinterpret_cast<char*>(&mainHeader.elementCount), static_cast<std::streamsize>(sizeof(mainHeader.elementCount)));
 		if (!pipelineCacheInFile.good())
 			throw std::runtime_error("RenderDataInternal::SaveWorldLayerPipelineCacheFile: Program failed to read the old main header!");
 
@@ -979,13 +979,13 @@ namespace JJs2DEngine
 
 		if (_worldLayerPipelineCompatibleSavedPos.has_value())
 		{
-			pipelineCacheOutFile.seekp(_worldLayerPipelineCompatibleSavedPos.value());
+			pipelineCacheOutFile.seekp(static_cast<std::streamoff>(_worldLayerPipelineCompatibleSavedPos.value()));
 			if (!pipelineCacheOutFile.good())
 				throw std::runtime_error("RenderDataInternal::SaveWorldLayerPipelineCacheFile: Program failed to move writing position to the old header!");
 
 			oldElementHeader.deleted = Misc::BOOL64_TRUE;
 
-			pipelineCacheOutFile.write(reinterpret_cast<const char*>(&oldElementHeader), sizeof(oldElementHeader));
+			pipelineCacheOutFile.write(reinterpret_cast<const char*>(&oldElementHeader), static_cast<std::streamsize>(sizeof(oldElementHeader)));
 			if (!pipelineCacheOutFile.good())
 				throw std::runtime_error("RenderDataInternal::SaveWorldLayerPipelineCacheFile: Program failed to write to the old header!");
 		}
@@ -998,20 +998,20 @@ namespace JJs2DEngine
 		elementHeader.elementCRC64WE = currentDataCRC64WE;
 		elementHeader.deleted = Misc::BOOL64_FALSE;
 
-		pipelineCacheOutFile.write(reinterpret_cast<const char*>(&elementHeader), sizeof(elementHeader));
+		pipelineCacheOutFile.write(reinterpret_cast<const char*>(&elementHeader), static_cast<std::streamsize>(sizeof(elementHeader)));
 		if (!pipelineCacheOutFile.good())
 			throw std::runtime_error("RenderDataInternal::SaveWorldLayerPipelineCacheFile: Program failed to write the new header!");
 
-		pipelineCacheOutFile.write(reinterpret_cast<const char*>(dataToSave.data()), dataToSave.size());
+		pipelineCacheOutFile.write(reinterpret_cast<const char*>(dataToSave.data()), static_cast<std::streamsize>(dataToSave.size()));
 		if (!pipelineCacheOutFile.good())
 			throw std::runtime_error("RenderDataInternal::SaveWorldLayerPipelineCacheFile: Program failed to write the new data!");
 
-		pipelineCacheOutFile.seekp(mainHeader.magicNumbers.size());
+		pipelineCacheOutFile.seekp(static_cast<std::streamoff>(mainHeader.magicNumbers.size()));
 		if (!pipelineCacheOutFile.good())
 			throw std::runtime_error("RenderDataInternal::SaveWorldLayerPipelineCacheFile: Program failed to move writing position to the main header's element count!");
 
 		mainHeader.elementCount += 1;
-		pipelineCacheOutFile.write(reinterpret_cast<const char*>(&mainHeader.elementCount), sizeof(mainHeader.elementCount));
+		pipelineCacheOutFile.write(reinterpret_cast<const char*>(&mainHeader.elementCount), static_cast<std::streamsize>(sizeof(mainHeader.elementCount)));
 		if (!pipelineCacheOutFile.good())
 			throw std::runtime_error("RenderDataInternal::SaveWorldLayerPipelineCacheFile: Program failed to write the updated main header!");
 
@@ -1076,7 +1076,7 @@ namespace JJs2DEngine
 
 		for (uint64_t i = 0; i < mainHeader.elementCount; ++i)
 		{
-			uint64_t currentPos = pipelineCacheFile.tellg();
+			uint64_t currentPos = static_cast<uint64_t>(pipelineCacheFile.tellg());
 
 			PipelineCacheElementHeader elementHeader;
 			pipelineCacheFile.read(reinterpret_cast<char*>(&elementHeader), sizeof(elementHeader));
@@ -1085,12 +1085,12 @@ namespace JJs2DEngine
 
 			if (elementHeader.deleted != Misc::BOOL64_FALSE)
 			{
-				pipelineCacheFile.seekg(elementHeader.elementSize, std::ios_base::cur);
+				pipelineCacheFile.seekg(static_cast<std::streamoff>(elementHeader.elementSize), std::ios_base::cur);
 				continue;
 			}
 
 			pipelineCompatibleData.resize(elementHeader.elementSize);
-			pipelineCacheFile.read(reinterpret_cast<char*>(pipelineCompatibleData.data()), elementHeader.elementSize);
+			pipelineCacheFile.read(reinterpret_cast<char*>(pipelineCompatibleData.data()), static_cast<std::streamsize>(elementHeader.elementSize));
 			if (!pipelineCacheFile.good())
 				throw std::runtime_error("RenderDataInternal::LoadGammaCorrectionPipelineCacheFile Error: Program failed to read a pipeline cache's element data!");
 
@@ -1163,7 +1163,7 @@ namespace JJs2DEngine
 
 		if (_gammaCorrectionPipelineCompatibleSavedPos.has_value())
 		{
-			pipelineCacheInFile.seekg(_gammaCorrectionPipelineCompatibleSavedPos.value());
+			pipelineCacheInFile.seekg(static_cast<std::streamoff>(_gammaCorrectionPipelineCompatibleSavedPos.value()));
 			if (!pipelineCacheInFile.good())
 				throw std::runtime_error("RenderDataInternal::SaveGammaCorrectionPipelineCacheFile: Program failed to move reading position to the old header!");
 
@@ -1174,7 +1174,7 @@ namespace JJs2DEngine
 
 		PipelineCacheMainHeader mainHeader;
 
-		pipelineCacheInFile.seekg(mainHeader.magicNumbers.size());
+		pipelineCacheInFile.seekg(static_cast<std::streamoff>(mainHeader.magicNumbers.size()));
 		if (!pipelineCacheInFile.good())
 			throw std::runtime_error("RenderDataInternal::SaveGammaCorrectionPipelineCacheFile: Program failed to move reading position to the main header's element count!");
 
@@ -1194,7 +1194,7 @@ namespace JJs2DEngine
 
 		if (_gammaCorrectionPipelineCompatibleSavedPos.has_value())
 		{
-			pipelineCacheOutFile.seekp(_gammaCorrectionPipelineCompatibleSavedPos.value());
+			pipelineCacheOutFile.seekp(static_cast<std::streamoff>(_gammaCorrectionPipelineCompatibleSavedPos.value()));
 			if (!pipelineCacheOutFile.good())
 				throw std::runtime_error("RenderDataInternal::SaveGammaCorrectionPipelineCacheFile: Program failed to move writing position to the old header!");
 
@@ -1213,20 +1213,20 @@ namespace JJs2DEngine
 		elementHeader.elementCRC64WE = currentDataCRC64WE;
 		elementHeader.deleted = Misc::BOOL64_FALSE;
 
-		pipelineCacheOutFile.write(reinterpret_cast<const char*>(&elementHeader), sizeof(elementHeader));
+		pipelineCacheOutFile.write(reinterpret_cast<const char*>(&elementHeader), static_cast<std::streamsize>(sizeof(elementHeader)));
 		if (!pipelineCacheOutFile.good())
 			throw std::runtime_error("RenderDataInternal::SaveGammaCorrectionPipelineCacheFile: Program failed to write the new header!");
 
-		pipelineCacheOutFile.write(reinterpret_cast<const char*>(dataToSave.data()), dataToSave.size());
+		pipelineCacheOutFile.write(reinterpret_cast<const char*>(dataToSave.data()), static_cast<std::streamsize>(dataToSave.size()));
 		if (!pipelineCacheOutFile.good())
 			throw std::runtime_error("RenderDataInternal::SaveGammaCorrectionPipelineCacheFile: Program failed to write the new data!");
 
-		pipelineCacheOutFile.seekp(mainHeader.magicNumbers.size());
+		pipelineCacheOutFile.seekp(static_cast<std::streamoff>(mainHeader.magicNumbers.size()));
 		if (!pipelineCacheOutFile.good())
 			throw std::runtime_error("RenderDataInternal::SaveGammaCorrectionPipelineCacheFile: Program failed to move writing position to the main header's element count!");
 
 		mainHeader.elementCount += 1;
-		pipelineCacheOutFile.write(reinterpret_cast<const char*>(&mainHeader.elementCount), sizeof(mainHeader.elementCount));
+		pipelineCacheOutFile.write(reinterpret_cast<const char*>(&mainHeader.elementCount), static_cast<std::streamsize>(sizeof(mainHeader.elementCount)));
 		if (!pipelineCacheOutFile.good())
 			throw std::runtime_error("RenderDataInternal::SaveGammaCorrectionPipelineCacheFile: Program failed to write the updated main header!");
 
@@ -1252,13 +1252,13 @@ namespace JJs2DEngine
 		if (!file.is_open())
 			throw std::runtime_error("RenderDataInternal::LoadShaderFile Error: Program failed to open the shader module's file!");
 
-		uint64_t filesize = file.tellg();
+		uint64_t filesize = static_cast<uint64_t>(file.tellg());
 		file.seekg(0, std::ios_base::beg);
 		if (!file.good())
 			throw std::runtime_error("RenderDataInternal::LoadShaderFile Error: Program failed to move reading position to the beggining of the file!");
 
 		ret.resize(filesize);
-		file.read(ret.data(), filesize);
+		file.read(ret.data(), static_cast<std::streamsize>(filesize));
 		if (!file.good())
 			throw std::runtime_error("RenderDataInternal::LoadShaderFile Error: Program failed to read shader module file's data!");
 
