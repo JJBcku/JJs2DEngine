@@ -82,6 +82,7 @@
       <DisableAnalyzeExternal>true</DisableAnalyzeExternal>
       <TreatWarningAsError>true</TreatWarningAsError>
       <DisableSpecificWarnings>4464;4583;4710;4711;5045</DisableSpecificWarnings>
+      <DebugInformationFormat>OldStyle</DebugInformationFormat>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -116,6 +117,7 @@
       <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
       <TreatWarningAsError>true</TreatWarningAsError>
       <DisableSpecificWarnings>4464;4583;4710;4711;5045</DisableSpecificWarnings>
+      <DebugInformationFormat>OldStyle</DebugInformationFormat>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -152,6 +154,7 @@
       <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
       <TreatWarningAsError>true</TreatWarningAsError>
       <DisableSpecificWarnings>4464;4583;4710;4711;5045</DisableSpecificWarnings>
+      <DebugInformationFormat>OldStyle</DebugInformationFormat>
     </ClCompile>
     <Link>
       <SubSystem>
