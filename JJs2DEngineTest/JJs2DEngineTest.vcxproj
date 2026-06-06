@@ -72,7 +72,7 @@
       <ExternalWarningLevel>TurnOffAllWarnings</ExternalWarningLevel>
       <DisableAnalyzeExternal>true</DisableAnalyzeExternal>
       <AdditionalIncludeDirectories>$(SolutionDir)ExternalHeaders;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <DisableSpecificWarnings>4464;4583;5045</DisableSpecificWarnings>
+      <DisableSpecificWarnings>4464;4583;4710;4711;5045</DisableSpecificWarnings>
       <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>
     <Link>
@@ -99,7 +99,7 @@
       <ExternalWarningLevel>TurnOffAllWarnings</ExternalWarningLevel>
       <DisableAnalyzeExternal>true</DisableAnalyzeExternal>
       <AdditionalIncludeDirectories>$(SolutionDir)ExternalHeaders;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <DisableSpecificWarnings>4464;4583;5045</DisableSpecificWarnings>
+      <DisableSpecificWarnings>4464;4583;4710;4711;5045</DisableSpecificWarnings>
       <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>
     <Link>
@@ -128,7 +128,7 @@
       <ExternalWarningLevel>TurnOffAllWarnings</ExternalWarningLevel>
       <DisableAnalyzeExternal>true</DisableAnalyzeExternal>
       <AdditionalIncludeDirectories>$(SolutionDir)ExternalHeaders;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <DisableSpecificWarnings>4464;4583;5045</DisableSpecificWarnings>
+      <DisableSpecificWarnings>4464;4583;4710;4711;5045</DisableSpecificWarnings>
       <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>
     <Link>

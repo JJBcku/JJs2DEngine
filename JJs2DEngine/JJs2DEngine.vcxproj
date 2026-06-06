@@ -81,7 +81,7 @@
       <ExternalWarningLevel>TurnOffAllWarnings</ExternalWarningLevel>
       <DisableAnalyzeExternal>true</DisableAnalyzeExternal>
       <TreatWarningAsError>true</TreatWarningAsError>
-      <DisableSpecificWarnings>4464;4583;5045</DisableSpecificWarnings>
+      <DisableSpecificWarnings>4464;4583;4710;4711;5045</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -115,7 +115,7 @@
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
       <TreatWarningAsError>true</TreatWarningAsError>
-      <DisableSpecificWarnings>4464;4583;5045</DisableSpecificWarnings>
+      <DisableSpecificWarnings>4464;4583;4710;4711;5045</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -151,7 +151,7 @@
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
       <TreatWarningAsError>true</TreatWarningAsError>
-      <DisableSpecificWarnings>4464;4583;5045</DisableSpecificWarnings>
+      <DisableSpecificWarnings>4464;4583;4710;4711;5045</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>
