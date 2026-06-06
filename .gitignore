@@ -35,6 +35,18 @@ bld/
 # External headers with copied in lib files
 ExternalHeaders/VulkanSimplified/*.h
 ExternalHeaders/VulkanSimplified/*.hpp
+ExternalHeaders/VulkanSimplified/VSCommon/*.h
+ExternalHeaders/VulkanSimplified/VSCommon/*.hpp
+ExternalHeaders/VulkanSimplified/VSDevice/*.h
+ExternalHeaders/VulkanSimplified/VSDevice/*.hpp
+ExternalHeaders/VulkanSimplified/VSInstance/*.h
+ExternalHeaders/VulkanSimplified/VSInstance/*.hpp
+ExternalHeaders/VulkanSimplified/VSMain/*.h
+ExternalHeaders/VulkanSimplified/VSMain/*.hpp
+ExternalHeaders/VulkanSimplified/VSMain/EventHandler/*.h
+ExternalHeaders/VulkanSimplified/VSMain/EventHandler/*.hpp
+ExternalHeaders/VulkanSimplified/VSSharedData/*.h
+ExternalHeaders/VulkanSimplified/VSSharedData/*.hpp
 
 # Pipeline cache
 JJs2DEngineTest/PipelineCache/
