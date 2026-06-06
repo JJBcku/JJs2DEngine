@@ -23,6 +23,8 @@ namespace VulkanSimplified
 		Window(WindowInternal& ref);
 		~Window();
 
+		Window& operator=(const Window&) noexcept = delete;
+
 		void CreateSwapchain(const SwapchainCreationData& creationData, bool throwOnSwapchainExist);
 
 		bool AcquireNextImage(uint64_t timeout, std::optional<IDObject<AutoCleanupSemaphore>> semaphoreID, std::optional<IDObject<AutoCleanupFence>> fenceID,

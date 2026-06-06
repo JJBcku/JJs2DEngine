@@ -21,8 +21,8 @@ namespace VulkanSimplified
 		COLOR_INT64 = 0x2,
 		COLOR_UINT64 = 0x4,
 		COLOR_FLOAT = 0x8,
-		COLOR_INT = 0x10,
-		COLOR_UINT = 0x20,
+		COLOR_INT32 = 0x10,
+		COLOR_UINT32 = 0x20,
 		DEPTH_STENCIL = 0x40,
 	};
 
@@ -30,58 +30,79 @@ namespace VulkanSimplified
 	{
 		RenderPassClearValueIDType type;
 
-		struct
+		struct DoubleColorID
 		{
 			RenderPassClearValueIDType type;
 			IDObject<RenderPassDoubleColorClearValues> ID;
+
+			DoubleColorID(const IDObject<RenderPassDoubleColorClearValues>& ID) noexcept;
+			~DoubleColorID() = default;
 		} doubleColorID;
 
-		struct
+		struct Int64ColorID
 		{
 			RenderPassClearValueIDType type;
 			IDObject<RenderPassInt64ColorClearValues> ID;
+
+			Int64ColorID(const IDObject<RenderPassInt64ColorClearValues>& ID) noexcept;
+			~Int64ColorID() = default;
 		} int64ColorID;
 
-		struct
+		struct Uint64ColorID
 		{
 			RenderPassClearValueIDType type;
 			IDObject<RenderPassUInt64ColorClearValues> ID;
+
+			Uint64ColorID(const IDObject<RenderPassUInt64ColorClearValues>& ID) noexcept;
+			~Uint64ColorID() = default;
 		} uint64ColorID;
 
-		struct
+		struct FloatColorID
 		{
 			RenderPassClearValueIDType type;
 			IDObject<RenderPassFloatColorClearValues> ID;
+
+			FloatColorID(const IDObject<RenderPassFloatColorClearValues>& ID) noexcept;
+			~FloatColorID() = default;
 		} floatColorID;
 
-		struct
+		struct Int32ColorID
 		{
 			RenderPassClearValueIDType type;
 			IDObject<RenderPassIntColorClearValues> ID;
-		} intColorID;
 
-		struct
+			Int32ColorID(const IDObject<RenderPassIntColorClearValues>& ID) noexcept;
+			~Int32ColorID() = default;
+		} int32ColorID;
+
+		struct Uint32ColorID
 		{
 			RenderPassClearValueIDType type;
 			IDObject<RenderPassUIntColorClearValues> ID;
-		} uintColorID;
 
-		struct
+			Uint32ColorID(const IDObject<RenderPassUIntColorClearValues>& ID) noexcept;
+			~Uint32ColorID() = default;
+		} uint32ColorID;
+
+		struct DepthStencilID
 		{
 			RenderPassClearValueIDType type;
 			IDObject<RenderPassDepthStencilClearValues> ID;
+
+			DepthStencilID(const IDObject<RenderPassDepthStencilClearValues>& ID) noexcept;
+			~DepthStencilID() = default;
 		} depthStencilID;
 
 		RenderPassClearValueID() noexcept;
-		RenderPassClearValueID(IDObject<RenderPassDoubleColorClearValues> ID) noexcept;
-		RenderPassClearValueID(IDObject<RenderPassInt64ColorClearValues> ID) noexcept;
-		RenderPassClearValueID(IDObject<RenderPassUInt64ColorClearValues> ID) noexcept;
+		RenderPassClearValueID(const IDObject<RenderPassDoubleColorClearValues>& ID) noexcept;
+		RenderPassClearValueID(const IDObject<RenderPassInt64ColorClearValues>& ID) noexcept;
+		RenderPassClearValueID(const IDObject<RenderPassUInt64ColorClearValues>& ID) noexcept;
 
-		RenderPassClearValueID(IDObject<RenderPassFloatColorClearValues> ID) noexcept;
-		RenderPassClearValueID(IDObject<RenderPassIntColorClearValues> ID) noexcept;
-		RenderPassClearValueID(IDObject<RenderPassUIntColorClearValues> ID) noexcept;
+		RenderPassClearValueID(const IDObject<RenderPassFloatColorClearValues>& ID) noexcept;
+		RenderPassClearValueID(const IDObject<RenderPassIntColorClearValues>& ID) noexcept;
+		RenderPassClearValueID(const IDObject<RenderPassUIntColorClearValues>& ID) noexcept;
 
-		RenderPassClearValueID(IDObject<RenderPassDepthStencilClearValues> ID) noexcept;
+		RenderPassClearValueID(const IDObject<RenderPassDepthStencilClearValues>& ID) noexcept;
 		RenderPassClearValueID(const RenderPassClearValueID& rhs) noexcept;
 		~RenderPassClearValueID();
 

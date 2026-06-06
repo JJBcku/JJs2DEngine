@@ -30,6 +30,5 @@ namespace VulkanSimplified
 		DeviceVulkan10Limits limits;
 
 		DeviceVulkan10Properties();
-		~DeviceVulkan10Properties();
 	};
 }

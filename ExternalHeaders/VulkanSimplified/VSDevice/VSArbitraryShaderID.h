@@ -17,21 +17,27 @@ namespace VulkanSimplified
 	public:
 		ShaderTypeFlagBit type;
 
-		struct
+		struct FragmentShaderID
 		{
 			ShaderTypeFlagBit type;
 			IDObject<AutoCleanupFragmentShaderModule> fragmentShaderID;
+
+			FragmentShaderID(const IDObject<AutoCleanupFragmentShaderModule>& fragmentShaderID) noexcept;
+			~FragmentShaderID() = default;
 		} fragmentShader;
 
-		struct
+		struct VertexShaderID
 		{
 			ShaderTypeFlagBit type;
 			IDObject<AutoCleanupVertexShaderModule> vertexShaderID;
+
+			VertexShaderID(const IDObject<AutoCleanupVertexShaderModule>& vertexShaderID) noexcept;
+			~VertexShaderID() = default;
 		} vertexShader;
 
 		ArbitraryShaderID() noexcept;
-		ArbitraryShaderID(IDObject<AutoCleanupFragmentShaderModule> fragmentShaderID) noexcept;
-		ArbitraryShaderID(IDObject<AutoCleanupVertexShaderModule> vertexShaderID) noexcept;
+		ArbitraryShaderID(const IDObject<AutoCleanupFragmentShaderModule>& fragmentShaderID) noexcept;
+		ArbitraryShaderID(const IDObject<AutoCleanupVertexShaderModule>& vertexShaderID) noexcept;
 
 		ArbitraryShaderID(const ArbitraryShaderID& rhs) noexcept;
 		ArbitraryShaderID(ArbitraryShaderID&& rhs) noexcept;

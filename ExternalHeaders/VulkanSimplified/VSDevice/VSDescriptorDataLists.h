@@ -27,6 +27,8 @@ namespace VulkanSimplified
 		DescriptorDataLists(DescriptorDataListsInternal& ref);
 		~DescriptorDataLists();
 
+		DescriptorDataLists& operator=(const DescriptorDataLists&) noexcept = delete;
+
 		IDObject<AutoCleanupDescriptorSetLayout> AddDescriptorSetLayout(uint32_t firstBinding,
 			const std::vector<DescriptorSetBindingFullData>& descriptorSetLayoutBindings, size_t addOnReserving = 0);
 

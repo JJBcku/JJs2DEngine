@@ -9,14 +9,18 @@ namespace VulkanSimplified
         FINGER_DOWN,
         FINGER_UP,
         FINGER_MOTION,
+        FINGER_CANCELLED,
+
+        FINGER_UNKNOWN = std::numeric_limits<uint32_t>::max()
     };
 
     struct SdlTouchFingerEventData
     {
         SdlTouchFingerEventType type;
-        uint32_t timestamp;   /**< In milliseconds, populated using SDL_GetTicks() */
-        int64_t touchId; /**< The touch device id */
-        int64_t fingerId;
+        uint32_t reserved;
+        uint64_t timestamp;   /**< In milliseconds, populated using SDL_GetTicks() */
+        uint64_t touchId; /**< The touch device id */
+        uint64_t fingerId;
         float x;            /**< Normalized in the range 0...1 */
         float y;            /**< Normalized in the range 0...1 */
         float dx;           /**< Normalized in the range -1...1 */
@@ -26,37 +30,5 @@ namespace VulkanSimplified
 
         SdlTouchFingerEventData();
         ~SdlTouchFingerEventData();
-    };
-
-    struct SdlMultiGestureEventData
-    {
-        uint32_t timestamp;   /**< In milliseconds, populated using SDL_GetTicks() */
-        uint32_t padding2;
-        int64_t touchId; /**< The touch device id */
-        float dTheta;
-        float dDist;
-        float x;
-        float y;
-        uint16_t numFingers;
-        uint16_t padding;
-        uint32_t padding3;
-
-        SdlMultiGestureEventData();
-        ~SdlMultiGestureEventData();
-    };
-
-    struct SdlDollarGestureEventData
-    {
-        uint32_t type;        /**< 1 for gesture performed or 0 for gesture recorded */
-        uint32_t timestamp;   /**< In milliseconds, populated using SDL_GetTicks() */
-        int64_t touchId; /**< The touch device id */
-        int64_t gestureId;
-        uint32_t numFingers;
-        float error;
-        float x;            /**< Normalized center of gesture */
-        float y;            /**< Normalized center of gesture */
-
-        SdlDollarGestureEventData();
-        ~SdlDollarGestureEventData();
     };
 }

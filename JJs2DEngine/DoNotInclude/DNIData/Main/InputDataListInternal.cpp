@@ -95,10 +95,10 @@ namespace JJs2DEngine
 		KeyEventData keyAdd;
 
 		keyAdd.scanCode = eventData.keysym.scancode;
-		keyAdd.keyCode = eventData.keysym.sym;
+		keyAdd.keyCode = eventData.keysym.keycode;
 		keyAdd.keyMods = eventData.keysym.mod;
-		keyAdd.keyPressed = eventData.state > 0;
-		keyAdd.keyRepeat = eventData.repeat > 0;
+		keyAdd.keyPressed = eventData.down;
+		keyAdd.keyRepeat = eventData.repeat;
 
 		if (_eventList.size() == _eventList.capacity())
 			_eventList.reserve(_eventList.capacity() << 1);
@@ -159,7 +159,7 @@ namespace JJs2DEngine
 		mouseAdd.mousePositionX = eventData.x;
 		mouseAdd.mousePositionY = eventData.y;
 		mouseAdd.buttonIndex = eventData.button;
-		mouseAdd.buttonPressed = eventData.state > 0;
+		mouseAdd.buttonPressed = eventData.down;
 		mouseAdd.doubleClick = eventData.clicks > 1;
 
 		if (_eventList.size() == _eventList.capacity())
@@ -188,8 +188,8 @@ namespace JJs2DEngine
 	bool InputDataListInternal::HandleMouseWheelEvent(const VS::SdlMouseWheelEventData& eventData)
 	{
 		MouseWheelEvent mouseAdd;
-		mouseAdd.scrollX = eventData.preciseX;
-		mouseAdd.scrollY = eventData.preciseY;
+		mouseAdd.scrollX = eventData.mouse_x;
+		mouseAdd.scrollY = eventData.mouse_y;
 		mouseAdd.directionFlipped = eventData.direction > 0;
 
 		if (_eventList.size() == _eventList.capacity())

@@ -6,7 +6,8 @@ namespace VulkanSimplified
 {
 	struct SdlAppTerminatingEventData
 	{
-		uint32_t timestamp;
+		uint64_t reserved;
+		uint64_t timestamp;
 
 		SdlAppTerminatingEventData();
 		~SdlAppTerminatingEventData();
@@ -14,7 +15,8 @@ namespace VulkanSimplified
 
 	struct SdlAppLowMemoryEventData
 	{
-		uint32_t timestamp;
+		uint64_t reserved;
+		uint64_t timestamp;
 
 		SdlAppLowMemoryEventData();
 		~SdlAppLowMemoryEventData();
@@ -22,7 +24,8 @@ namespace VulkanSimplified
 
 	struct SdlAppWillEnterBackgroundEventData
 	{
-		uint32_t timestamp;
+		uint64_t reserved;
+		uint64_t timestamp;
 
 		SdlAppWillEnterBackgroundEventData();
 		~SdlAppWillEnterBackgroundEventData();
@@ -30,7 +33,8 @@ namespace VulkanSimplified
 
 	struct SdlAppDidEnterBackgroundEventData
 	{
-		uint32_t timestamp;
+		uint64_t reserved;
+		uint64_t timestamp;
 
 		SdlAppDidEnterBackgroundEventData();
 		~SdlAppDidEnterBackgroundEventData();
@@ -38,7 +42,8 @@ namespace VulkanSimplified
 
 	struct SdlAppWillEnterForegroundEventData
 	{
-		uint32_t timestamp;
+		uint64_t reserved;
+		uint64_t timestamp;
 
 		SdlAppWillEnterForegroundEventData();
 		~SdlAppWillEnterForegroundEventData();
@@ -46,7 +51,8 @@ namespace VulkanSimplified
 
 	struct SdlAppDidEnterForegroundEventData
 	{
-		uint32_t timestamp;
+		uint64_t reserved;
+		uint64_t timestamp;
 
 		SdlAppDidEnterForegroundEventData();
 		~SdlAppDidEnterForegroundEventData();

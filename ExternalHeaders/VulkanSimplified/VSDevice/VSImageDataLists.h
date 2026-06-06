@@ -28,6 +28,8 @@ namespace VulkanSimplified
 		ImageDataLists(ImageDataListsInternal& ref);
 		~ImageDataLists();
 
+		ImageDataLists& operator=(const ImageDataLists&) noexcept = delete;
+
 		IDObject<AutoCleanupColorRenderTargetImage> AddColorRenderTargetImage(uint32_t width, uint32_t height, DataFormatSetIndependentID format,
 			ImageSampleFlagBits imageSamples, const std::vector<size_t>& queuesUsingImage, bool preInitialized, bool transient, size_t initialImageViewListCapacity,
 			size_t addOnReserving = 0);

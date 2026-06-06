@@ -20,6 +20,8 @@ namespace VulkanSimplified
 		WindowList(WindowListInternal& ref);
 		~WindowList();
 
+		WindowList& operator=(const WindowList&) noexcept = delete;
+
 		IDObject<WindowPointer> CreateWindow(const WindowCreationData& creationData, size_t addOnReserving = 0);
 
 		Window GetWindow(IDObject<WindowPointer> windowID);

@@ -17,21 +17,27 @@ namespace VulkanSimplified
 	{
 		DescriptorPoolIDType type;
 
-		struct
+		struct NifID
 		{
 			DescriptorPoolIDType type;
 			IDObject<AutoCleanupNIFDescriptorPool> ID;
+
+			NifID(const IDObject<AutoCleanupNIFDescriptorPool>& ID) noexcept;
+			~NifID() = default;
 		} NifID;
 
-		struct
+		struct IfID
 		{
 			DescriptorPoolIDType type;
 			IDObject<AutoCleanupIFDescriptorPool> ID;
+
+			IfID(const IDObject<AutoCleanupIFDescriptorPool>& ID) noexcept;
+			~IfID() = default;
 		} IfID;
 
 		DescriptorPoolGenericID() noexcept;
-		DescriptorPoolGenericID(IDObject<AutoCleanupNIFDescriptorPool> ID) noexcept;
-		DescriptorPoolGenericID(IDObject<AutoCleanupIFDescriptorPool> ID) noexcept;
+		DescriptorPoolGenericID(const IDObject<AutoCleanupNIFDescriptorPool>& ID) noexcept;
+		DescriptorPoolGenericID(const IDObject<AutoCleanupIFDescriptorPool>& ID) noexcept;
 
 		DescriptorPoolGenericID(const DescriptorPoolGenericID& rhs) noexcept;
 		DescriptorPoolGenericID(DescriptorPoolGenericID&& rhs) noexcept;

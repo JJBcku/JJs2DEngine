@@ -37,8 +37,8 @@ namespace JJs2DEngine
 	struct MouseMotionEvent
 	{
 		uint32_t buttonState;
-		int32_t positionX;
-		int32_t positionY;
+		float positionX;
+		float positionY;
 
 		MouseMotionEvent();
 		~MouseMotionEvent();
@@ -46,8 +46,8 @@ namespace JJs2DEngine
 
 	struct MouseButtonEvent
 	{
-		uint32_t mousePositionX;
-		uint32_t mousePositionY;
+		float mousePositionX;
+		float mousePositionY;
 		uint8_t buttonIndex;
 		bool buttonPressed;
 		bool doubleClick;

@@ -20,8 +20,8 @@ namespace JJs2DEngine
 	MouseMotionEvent::MouseMotionEvent()
 	{
 		buttonState = 0;
-		positionX = 0;
-		positionY = 0;
+		positionX = 0.0f;
+		positionY = 0.0f;
 	}
 
 	MouseMotionEvent::~MouseMotionEvent()
@@ -30,8 +30,8 @@ namespace JJs2DEngine
 
 	MouseButtonEvent::MouseButtonEvent()
 	{
-		mousePositionX = 0;
-		mousePositionY = 0;
+		mousePositionX = 0.0f;
+		mousePositionY = 0.0f;
 		buttonIndex = 0;
 		buttonPressed = false;
 		doubleClick = false;

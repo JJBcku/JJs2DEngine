@@ -17,6 +17,8 @@ namespace VulkanSimplified
 		SharedDataMainList(SharedDataMainListInternal& ref);
 		~SharedDataMainList();
 
+		SharedDataMainList& operator=(const SharedDataMainList&) noexcept = delete;
+
 		SharedDescriptorDataList GetSharedDescriptorDataList();
 		SharedRenderPassDataLists GetSharedRenderPassDataLists();
 		SharedPipelineDataLists GetSharedPipelineDataLists();

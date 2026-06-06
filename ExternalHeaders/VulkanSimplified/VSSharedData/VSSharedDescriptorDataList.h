@@ -17,6 +17,8 @@ namespace VulkanSimplified
 		SharedDescriptorDataList(SharedDescriptorDataListInternal& ref);
 		~SharedDescriptorDataList();
 
+		SharedDescriptorDataList& operator=(const SharedDescriptorDataList&) noexcept = delete;
+
 		IDObject<DescriptorSetLayoutBindingData> AddDescriptorSetLayoutBindingsData(DescriptorTypeFlagBits descriptorType,
 			uint32_t descriptorAmount, ShaderTypeFlags shaderStageFlags, size_t addOnReserving = 0);
 

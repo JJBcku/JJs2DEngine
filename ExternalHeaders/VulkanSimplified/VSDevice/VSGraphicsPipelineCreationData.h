@@ -89,19 +89,27 @@ namespace VulkanSimplified
 	{
 		PipelineDerrivationSettings settings;
 
-		struct
+		struct IDDerrivationData
 		{
 			PipelineDerrivationSettings settings;
 			IDObject<AutoCleanupGraphicsPipeline> ID;
+
+			IDDerrivationData(const IDObject<AutoCleanupGraphicsPipeline>& ID) noexcept;
+			~IDDerrivationData() = default;
 		} pipelineID;
 
-		struct
+		struct IndexDerrivationData
 		{
 			PipelineDerrivationSettings settings;
 			size_t index;
+
+			IndexDerrivationData(size_t index) noexcept;
+			~IndexDerrivationData() = default;
 		} pipelineIndex;
 
 		GraphicsPipelineDerrivationData() noexcept;
+		GraphicsPipelineDerrivationData(const IDObject<AutoCleanupGraphicsPipeline>& ID) noexcept;
+		GraphicsPipelineDerrivationData(size_t index) noexcept;
 		GraphicsPipelineDerrivationData(const GraphicsPipelineDerrivationData& rhs) noexcept;
 		GraphicsPipelineDerrivationData(GraphicsPipelineDerrivationData&& rhs) noexcept;
 		~GraphicsPipelineDerrivationData();

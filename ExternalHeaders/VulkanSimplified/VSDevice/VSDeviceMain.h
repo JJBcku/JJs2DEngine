@@ -28,6 +28,8 @@ namespace VulkanSimplified
 		DeviceMain(DeviceMainInternal& ref);
 		~DeviceMain();
 
+		DeviceMain& operator=(const DeviceMain&) noexcept = delete;
+
 		DeviceCore GetDeviceCore();
 		WindowList GetWindowList();
 		ShaderLists GetShaderLists();

@@ -23,6 +23,8 @@ namespace VulkanSimplified
 		PipelineDataLists(PipelineDataListsInternal& ref);
 		~PipelineDataLists();
 
+		PipelineDataLists& operator=(const PipelineDataLists&) noexcept = delete;
+
 		std::optional<IDObject<AutoCleanupPipelineCache>> AddPipelineCache(const std::vector<unsigned char>& initialData = {}, size_t addOnReserving = 0);
 
 		IDObject<AutoCleanupPipelineLayout> AddPipelineLayout(const PipelineLayoutCreationData& creationData, size_t addOnReserving = 0);

@@ -35,6 +35,8 @@ namespace VulkanSimplified
 		SharedRenderPassDataLists(SharedRenderPassDataListsInternal& ref);
 		~SharedRenderPassDataLists();
 
+		SharedRenderPassDataLists& operator=(const SharedRenderPassDataLists&) noexcept = delete;
+
 		IDObject<RenderPassAttachmentData> AddRenderPassAttachment(DataFormatSetIndependentID format, ImageSampleFlagBits samples,
 			RenderPassAttachmentLoadOP loadOP, RenderPassAttachmentStoreOP storeOP, ImageLayoutFlags initialLayout,
 			ImageLayoutFlags finalLayout, size_t addOnReserving = 0);

@@ -17,11 +17,11 @@ namespace VulkanSimplified
 
 	struct SdlClipboardEventData;
 
-	struct SdlControllerAxisEventData;
-	struct SdlControllerButtonEventData;
-	struct SdlControllerDeviceEventData;
-	struct SdlControllerTouchpadEventData;
-	struct SdlControllerSensorEventData;
+	struct SdlGamepadAxisEventData;
+	struct SdlGamepadButtonEventData;
+	struct SdlGamepadDeviceEventData;
+	struct SdlGamepadTouchpadEventData;
+	struct SdlGamepadSensorEventData;
 
 	struct SdlDisplayEventData;
 
@@ -51,12 +51,9 @@ namespace VulkanSimplified
 	struct SdlSensorEventData;
 
 	struct SdlTextEditingEventData;
-	struct SdlTextEditingExtendedEventData;
 	struct SdlTextInputEventData;
 
 	struct SdlTouchFingerEventData;
-	struct SdlMultiGestureEventData;
-	struct SdlDollarGestureEventData;
 
 	struct SdlUserEventData;
 
@@ -73,11 +70,11 @@ namespace VulkanSimplified
 
 	typedef std::function<bool(const SdlClipboardEventData&, void*)> ClipboardEventFunction;
 
-	typedef std::function<bool(const SdlControllerAxisEventData&, void*)> ControllerAxisEventFunction;
-	typedef std::function<bool(const SdlControllerButtonEventData&, void*)> ControllerButtonEventFunction;
-	typedef std::function<bool(const SdlControllerDeviceEventData&, void*)> ControllerDeviceEventFunction;
-	typedef std::function<bool(const SdlControllerTouchpadEventData&, void*)> ControllerTouchpadEventFunction;
-	typedef std::function<bool(const SdlControllerSensorEventData&, void*)> ControllerSensorEventFunction;
+	typedef std::function<bool(const SdlGamepadAxisEventData&, void*)> GamepadAxisEventFunction;
+	typedef std::function<bool(const SdlGamepadButtonEventData&, void*)> GamepadButtonEventFunction;
+	typedef std::function<bool(const SdlGamepadDeviceEventData&, void*)> GamepadDeviceEventFunction;
+	typedef std::function<bool(const SdlGamepadTouchpadEventData&, void*)> GamepadTouchpadEventFunction;
+	typedef std::function<bool(const SdlGamepadSensorEventData&, void*)> GamepadSensorEventFunction;
 
 	typedef std::function<bool(const SdlDisplayEventData&, void*)> DisplayEventFunction;
 
@@ -107,12 +104,9 @@ namespace VulkanSimplified
 	typedef std::function<bool(const SdlSensorEventData&, void*)> SensorEventFunction;
 
 	typedef std::function<bool(const SdlTextEditingEventData&, void*)> TextEditingEventFunction;
-	typedef std::function<bool(const SdlTextEditingExtendedEventData&, void*)> TextEditingExtendedEventFunction;
 	typedef std::function<bool(const SdlTextInputEventData&, void*)> TextInputEventFunction;
 
 	typedef std::function<bool(const SdlTouchFingerEventData&, void*)> TouchFingerEventFunction;
-	typedef std::function<bool(const SdlMultiGestureEventData&, void*)> MultiGestureEventFunction;
-	typedef std::function<bool(const SdlDollarGestureEventData&, void*)> DollarGestureEventFunction;
 
 	typedef std::function<bool(const SdlUserEventData&, void*)> UserEventFunction;
 

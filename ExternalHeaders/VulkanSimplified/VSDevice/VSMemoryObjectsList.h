@@ -22,6 +22,8 @@ namespace VulkanSimplified
 		MemoryObjectsList(MemoryObjectsListInternal& ref);
 		~MemoryObjectsList();
 
+		MemoryObjectsList& operator=(const MemoryObjectsList&) noexcept = delete;
+
 		MemoryAllocationFullID AllocateMemory(size_t memorySize, size_t initialSuballocationsReserved, const std::vector<MemoryTypeProperties>& acceptableMemoryTypesProperties,
 			uint32_t memoryTypeMask = std::numeric_limits<uint32_t>::max(), size_t addOnReserving = 0);
 

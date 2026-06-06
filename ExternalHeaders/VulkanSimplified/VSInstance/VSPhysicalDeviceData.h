@@ -25,6 +25,8 @@ namespace VulkanSimplified
 		PhysicalDeviceData(PhysicalDeviceDataInternal& ref);
 		~PhysicalDeviceData();
 
+		PhysicalDeviceData& operator=(const PhysicalDeviceData&) noexcept = delete;
+
 		const DeviceVulkan10Properties& GetVulkan10Properties() const;
 		const DeviceVulkan10FeatureFlags& GetVulkan10Features() const;
 		const std::vector<QueueFamilyData>& GetVulkanQueueFamiliesData() const;

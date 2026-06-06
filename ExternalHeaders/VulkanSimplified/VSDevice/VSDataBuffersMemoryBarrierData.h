@@ -17,5 +17,12 @@ namespace VulkanSimplified
 		DataBuffersGenericID bufferID;
 
 		DataBuffersMemoryBarrierData();
+		~DataBuffersMemoryBarrierData() = default;
+
+		DataBuffersMemoryBarrierData(const DataBuffersMemoryBarrierData&) noexcept = default;
+		DataBuffersMemoryBarrierData(DataBuffersMemoryBarrierData&&) noexcept = default;
+
+		DataBuffersMemoryBarrierData& operator=(const DataBuffersMemoryBarrierData&) noexcept = default;
+		DataBuffersMemoryBarrierData& operator=(DataBuffersMemoryBarrierData&&) noexcept = default;
 	};
 }

@@ -6,7 +6,8 @@ namespace VulkanSimplified
 {
 	struct SdlRenderTargetsResetEventData
 	{
-		uint32_t timestamp;
+		uint64_t reserved;
+		uint64_t timestamp;
 
 		SdlRenderTargetsResetEventData();
 		~SdlRenderTargetsResetEventData();
@@ -14,7 +15,8 @@ namespace VulkanSimplified
 
 	struct SdlRenderDeviceResetEventData
 	{
-		uint32_t timestamp;
+		uint64_t reserved;
+		uint64_t timestamp;
 
 		SdlRenderDeviceResetEventData();
 		~SdlRenderDeviceResetEventData();

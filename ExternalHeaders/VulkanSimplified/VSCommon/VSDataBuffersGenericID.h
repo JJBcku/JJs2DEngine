@@ -21,35 +21,47 @@ namespace VulkanSimplified
 	{
 		DataBuffersIDType type;
 
-		struct
+		struct DataBuffersVertexID
 		{
 			DataBuffersIDType type;
 			IDObject<AutoCleanupVertexBuffer> ID;
+
+			DataBuffersVertexID(const IDObject<AutoCleanupVertexBuffer>& ID) noexcept;
+			~DataBuffersVertexID() = default;
 		} vertexID;
 
-		struct
+		struct DataBuffersStagingID
 		{
 			DataBuffersIDType type;
 			IDObject<AutoCleanupStagingBuffer> ID;
+
+			DataBuffersStagingID(const IDObject<AutoCleanupStagingBuffer>& ID) noexcept;
+			~DataBuffersStagingID() = default;
 		} stagingID;
 
-		struct
+		struct DataBuffersIndexID
 		{
 			DataBuffersIDType type;
 			IDObject<AutoCleanupIndexBuffer> ID;
+
+			DataBuffersIndexID(const IDObject<AutoCleanupIndexBuffer>& ID) noexcept;
+			~DataBuffersIndexID() = default;
 		} indexID;
 
-		struct
+		struct DataBuffersUniformID
 		{
 			DataBuffersIDType type;
 			IDObject<AutoCleanupUniformBuffer> ID;
+
+			DataBuffersUniformID(const IDObject<AutoCleanupUniformBuffer>& ID) noexcept;
+			~DataBuffersUniformID() = default;
 		} uniformID;
 
 		DataBuffersGenericID() noexcept;
-		DataBuffersGenericID(IDObject<AutoCleanupVertexBuffer> ID) noexcept;
-		DataBuffersGenericID(IDObject<AutoCleanupStagingBuffer> ID) noexcept;
-		DataBuffersGenericID(IDObject<AutoCleanupIndexBuffer> ID) noexcept;
-		DataBuffersGenericID(IDObject<AutoCleanupUniformBuffer> ID) noexcept;
+		DataBuffersGenericID(const IDObject<AutoCleanupVertexBuffer>& ID) noexcept;
+		DataBuffersGenericID(const IDObject<AutoCleanupStagingBuffer>& ID) noexcept;
+		DataBuffersGenericID(const IDObject<AutoCleanupIndexBuffer>& ID) noexcept;
+		DataBuffersGenericID(const IDObject<AutoCleanupUniformBuffer>& ID) noexcept;
 
 		DataBuffersGenericID(const DataBuffersGenericID& rhs) noexcept;
 		DataBuffersGenericID(DataBuffersGenericID&& rhs) noexcept;

@@ -18,22 +18,31 @@ namespace VulkanSimplified
 	{
 		ImageIDType type;
 
-		struct
+		struct ColorRenderTargetID
 		{
 			ImageIDType type;
 			IDObject<AutoCleanupColorRenderTargetImage> ID;
+
+			ColorRenderTargetID(const IDObject<AutoCleanupColorRenderTargetImage>& ID) noexcept;
+			~ColorRenderTargetID() = default;
 		} colorRenderTarget;
 
-		struct
+		struct DepthStencilRenderTargetID
 		{
 			ImageIDType type;
 			IDObject<AutoCleanupDepthStencilRenderTargetImage> ID;
+
+			DepthStencilRenderTargetID(const IDObject<AutoCleanupDepthStencilRenderTargetImage>& ID) noexcept;
+			~DepthStencilRenderTargetID() = default;
 		} depthStencilRenderTarget;
 
-		struct
+		struct ResolveRenderTargetID
 		{
 			ImageIDType type;
 			IDObject<AutoCleanupResolveRenderTargetImage> ID;
+
+			ResolveRenderTargetID(const IDObject<AutoCleanupResolveRenderTargetImage>& ID) noexcept;
+			~ResolveRenderTargetID() = default;
 		} resolveRenderTarget;
 
 		RenderTargetImagesID() noexcept;

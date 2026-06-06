@@ -24,35 +24,59 @@ namespace VulkanSimplified
 	{
 		CommandBufferIDType type;
 
-		struct
+		struct NIRPrimaryID
 		{
 			CommandBufferIDType type;
 			IDObject<std::unique_ptr<NIRCommandPoolInternal>> commandPoolID;
 			IDObject<std::unique_ptr<PrimaryNIRCommandBufferInternal>> commandBufferID;
+
+			NIRPrimaryID(const IDObject<std::unique_ptr<NIRCommandPoolInternal>>& commandPoolID,
+				const IDObject<std::unique_ptr<PrimaryNIRCommandBufferInternal>>& commandBufferID) noexcept;
+			~NIRPrimaryID() = default;
 		} NIRPrimaryID;
 
-		struct
+		struct NIRSecondaryID
 		{
 			CommandBufferIDType type;
 			IDObject<std::unique_ptr<NIRCommandPoolInternal>> commandPoolID;
 			IDObject<std::unique_ptr<SecondaryNIRCommandBufferInternal>> commandBufferID;
+
+			NIRSecondaryID(const IDObject<std::unique_ptr<NIRCommandPoolInternal>>& commandPoolID,
+				const IDObject<std::unique_ptr<SecondaryNIRCommandBufferInternal>>& commandBufferID) noexcept;
+			~NIRSecondaryID() = default;
 		} NIRSecondaryID;
 
-		struct
+		struct IRPrimaryID
 		{
 			CommandBufferIDType type;
 			IDObject<std::unique_ptr<IRCommandPoolInternal>> commandPoolID;
 			IDObject<std::unique_ptr<PrimaryIRCommandBufferInternal>> commandBufferID;
+
+			IRPrimaryID(const IDObject<std::unique_ptr<IRCommandPoolInternal>>& commandPoolID,
+				const IDObject<std::unique_ptr<PrimaryIRCommandBufferInternal>>& commandBufferID) noexcept;
+			~IRPrimaryID() = default;
 		} IRPrimaryID;
 
-		struct
+		struct IRSecondaryID
 		{
 			CommandBufferIDType type;
 			IDObject<std::unique_ptr<IRCommandPoolInternal>> commandPoolID;
 			IDObject<std::unique_ptr<SecondaryIRCommandBufferInternal>> commandBufferID;
+
+			IRSecondaryID(const IDObject<std::unique_ptr<IRCommandPoolInternal>>& commandPoolID,
+				const IDObject<std::unique_ptr<SecondaryIRCommandBufferInternal>>& commandBufferID) noexcept;
+			~IRSecondaryID() = default;
 		} IRSecondaryID;
 
 		CommandBufferGenericID() noexcept;
+		CommandBufferGenericID(const IDObject<std::unique_ptr<NIRCommandPoolInternal>>& commandPoolID,
+			const IDObject<std::unique_ptr<PrimaryNIRCommandBufferInternal>>& commandBufferID) noexcept;
+		CommandBufferGenericID(const IDObject<std::unique_ptr<NIRCommandPoolInternal>>& commandPoolID,
+			const IDObject<std::unique_ptr<SecondaryNIRCommandBufferInternal>>& commandBufferID) noexcept;
+		CommandBufferGenericID(const IDObject<std::unique_ptr<IRCommandPoolInternal>>& commandPoolID,
+			const IDObject<std::unique_ptr<PrimaryIRCommandBufferInternal>>& commandBufferID) noexcept;
+		CommandBufferGenericID(const IDObject<std::unique_ptr<IRCommandPoolInternal>>& commandPoolID,
+			const IDObject<std::unique_ptr<SecondaryIRCommandBufferInternal>>& commandBufferID) noexcept;
 		CommandBufferGenericID(const CommandBufferGenericID& rhs) noexcept;
 		CommandBufferGenericID(CommandBufferGenericID&& rhs) noexcept;
 		~CommandBufferGenericID();

@@ -6,7 +6,7 @@
 
 namespace VulkanSimplified
 {
-	enum class ImageViewIDType
+	enum class ImageViewIDType : uint64_t
 	{
 		NONE = 0,
 		COLOR = 1,
@@ -19,39 +19,51 @@ namespace VulkanSimplified
 	{
 		ImageViewIDType IDType;
 
-		struct
+		struct ImageColorViewID
 		{
 			ImageViewIDType IDType;
 			IDObject<AutoCleanupColorRenderTargetImage> imageID;
 			IDObject<AutoCleanupImageView> viewID;
+
+			ImageColorViewID(const IDObject<AutoCleanupColorRenderTargetImage>& imageID, const IDObject<AutoCleanupImageView>& viewID) noexcept;
+			~ImageColorViewID() = default;
 		} colorViewID;
 
-		struct
+		struct ImageDepthStencilViewID
 		{
 			ImageViewIDType IDType;
 			IDObject<AutoCleanupDepthStencilRenderTargetImage> imageID;
 			IDObject<AutoCleanupImageView> viewID;
+
+			ImageDepthStencilViewID(const IDObject<AutoCleanupDepthStencilRenderTargetImage>& imageID, const IDObject<AutoCleanupImageView>& viewID) noexcept;
+			~ImageDepthStencilViewID() = default;
 		} depthStencilViewID;
 
-		struct
+		struct Texture2DViewID
 		{
 			ImageViewIDType IDType;
 			IDObject<AutoCleanup2DTexture> imageID;
 			IDObject<AutoCleanupImageView> viewID;
+
+			Texture2DViewID(const IDObject<AutoCleanup2DTexture>& imageID, const IDObject<AutoCleanupImageView>& viewID) noexcept;
+			~Texture2DViewID() = default;
 		} texture2DViewID;
 
-		struct
+		struct Texture2DArrayViewID
 		{
 			ImageViewIDType IDType;
 			IDObject<AutoCleanup2DArrayTexture> imageID;
 			IDObject<AutoCleanupImageView> viewID;
+
+			Texture2DArrayViewID(const IDObject<AutoCleanup2DArrayTexture>& imageID, const IDObject<AutoCleanupImageView>& viewID) noexcept;
+			~Texture2DArrayViewID() = default;
 		} texture2DArrayViewID;
 
 		ImageViewGenericID() noexcept;
-		ImageViewGenericID(IDObject<AutoCleanupColorRenderTargetImage> imageID, IDObject<AutoCleanupImageView> viewID) noexcept;
-		ImageViewGenericID(IDObject<AutoCleanupDepthStencilRenderTargetImage> imageID, IDObject<AutoCleanupImageView> viewID) noexcept;
-		ImageViewGenericID(IDObject<AutoCleanup2DTexture> imageID, IDObject<AutoCleanupImageView> viewID) noexcept;
-		ImageViewGenericID(IDObject<AutoCleanup2DArrayTexture> imageID, IDObject<AutoCleanupImageView> viewID) noexcept;
+		ImageViewGenericID(const IDObject<AutoCleanupColorRenderTargetImage>& imageID, const IDObject<AutoCleanupImageView>& viewID) noexcept;
+		ImageViewGenericID(const IDObject<AutoCleanupDepthStencilRenderTargetImage>& imageID, const IDObject<AutoCleanupImageView>& viewID) noexcept;
+		ImageViewGenericID(const IDObject<AutoCleanup2DTexture>& imageID, const IDObject<AutoCleanupImageView>& viewID) noexcept;
+		ImageViewGenericID(const IDObject<AutoCleanup2DArrayTexture>& imageID, const IDObject<AutoCleanupImageView>& viewID) noexcept;
 
 		ImageViewGenericID(const ImageViewGenericID& rhs) noexcept;
 		ImageViewGenericID(ImageViewGenericID&& rhs) noexcept;

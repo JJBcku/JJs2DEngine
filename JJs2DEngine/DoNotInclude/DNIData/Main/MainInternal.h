@@ -68,8 +68,8 @@ namespace JJs2DEngine
 		void SetGammaValue(float newGammaValue);
 		float GetGammaValue() const;
 
-		float TranslatePositionXInPixelsToWindowSizeRatio(int32_t positionX) const;
-		float TranslatePositionYInPixelsToWindowSizeRatio(int32_t positionY) const;
+		float TranslatePositionXInPixelsToWindowSizeRatio(float positionX) const;
+		float TranslatePositionYInPixelsToWindowSizeRatio(float positionY) const;
 
 		InputDataListInternal& GetInputDataList();
 		const InputDataListInternal& GetInputDataList() const;

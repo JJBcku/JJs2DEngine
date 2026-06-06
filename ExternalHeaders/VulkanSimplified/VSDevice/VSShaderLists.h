@@ -17,6 +17,8 @@ namespace VulkanSimplified
 		ShaderLists(ShaderListsInternal& ref);
 		~ShaderLists();
 
+		ShaderLists& operator=(const ShaderLists&) noexcept = delete;
+
 		IDObject<AutoCleanupFragmentShaderModule> CreateFragmentShaderModule(const char& data, size_t dataSize, size_t addOnReservation = 0);
 		IDObject<AutoCleanupVertexShaderModule> CreateVertexShaderModule(const char& data, size_t dataSize, size_t addOnReservation = 0);
 

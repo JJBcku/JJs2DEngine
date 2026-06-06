@@ -6,7 +6,8 @@ namespace VulkanSimplified
 {
 	struct SdlLocaleChangeEventData
 	{
-		uint32_t timestamp;
+		uint64_t reserved;
+		uint64_t timestamp;
 
 		SdlLocaleChangeEventData();
 		~SdlLocaleChangeEventData();
