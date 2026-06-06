@@ -32,6 +32,10 @@ bld/
 [Ll]og/
 [Ll]ogs/
 
+# External headers with copied in lib files
+ExternalHeaders/VulkanSimplified/*.h
+ExternalHeaders/VulkanSimplified/*.hpp
+
 # Pipeline cache
 JJs2DEngineTest/PipelineCache/
 
