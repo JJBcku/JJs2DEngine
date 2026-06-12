@@ -1,1 +1,1 @@
-Please copy all of the folders and files in Vulkan Simplified projects Include folder to this directory.
+Please copy all of the folders and files in Vulkan Simplified main projects Include folder to this directory.
