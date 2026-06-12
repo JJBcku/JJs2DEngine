@@ -32,7 +32,7 @@ bld/
 [Ll]og/
 [Ll]ogs/
 
-# External headers with copied in lib files
+# External headers from projects with .lib files
 ExternalHeaders/VulkanSimplified/*.h
 ExternalHeaders/VulkanSimplified/*.hpp
 ExternalHeaders/VulkanSimplified/VSCommon/*.h
