@@ -71,7 +71,7 @@ namespace JJs2DEngine
 
 	bool InputDataListInternal::HandleWindowEvent(const VS::SdlWindowEventData& eventData)
 	{
-		if (eventData.event == VS::SDL_DATA_WINDOWEVENT_FOCUS_LOST)
+		if ((static_cast<uint32_t>(eventData.subtype) ^ static_cast<uint32_t>(VS::SdlWindowEventSubType::SDL_DATA_WINDOWEVENT_FOCUS_LOST)) == 0)
 		{
 			_focusLost = true;
 		}
